@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ *
+ * Brand design tokens, operator / control-room.
+ * Ink base + a single restrained instrument accent (Tungsten Amber).
+ * Muted greys chosen to clear WCAG AA (4.5:1) on the obsidian base.
+ * ------------------------------------------------------------------ */
+@theme {
+  --color-obsidian: #0c0f13;
+  --color-panel: #14181e;
+  --color-console: #1b2027;
+  --color-hairline: #262d38;
+
+  --color-ink-100: #eef0f3;
+  --color-ink-300: #aab2bd; /* body, ~7:1 on obsidian */
+  --color-ink-500: #8a93a0; /* muted labels, ~4.7:1 on obsidian */
+
+  --color-amber: #f0a538;
+  --color-amber-bright: #ffc064;
+  --color-phosphor: #46c98f;
+  --color-signal: #4fb0c6;
+  --color-danger: #ff8a8a;
+
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+}
+
+/* Base ------------------------------------------------------------- */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-obsidian);
+  color: var(--color-ink-300);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* clip (not hidden) prevents horizontal scroll without creating a
+     scroll container, hidden would break position: sticky descendants. */
+  overflow-x: clip;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-amber) 28%, transparent);
+  color: var(--color-ink-100);
+}
+
+/* Visible keyboard focus everywhere. */
+:focus-visible {
+  outline: 2px solid var(--color-amber);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ------------------------------------------------------------------ *
+ * Ambient motion, CSS keyframes (GPU-friendly, main-thread-free).
+ * Used for the hero showcase float and its glow. Disabled under
+ * prefers-reduced-motion.
+ * ------------------------------------------------------------------ */
+@keyframes qv-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+@keyframes qv-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.05);
+  }
+}
+.qv-float {
+  animation: qv-float 7s ease-in-out infinite;
+}
+.qv-pulse {
+  animation: qv-pulse 7s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .qv-float,
+  .qv-pulse {
+    animation: none !important;
+  }
+}
