@@ -47,3 +47,21 @@ score), pricing (Landing $1,500 / Business $3,000 / Care $150-$650), final CTA.
 Scroll-reactive WebGL object + IntersectionObserver section reveals, sticky nav.
 Accessible by design throughout. Scan is scripted; production wires the real
 agent + audit engine server-side.
+
+### Assets and the preview build
+
+`agent-teardown-site.html` is the source of truth and is production-shaped: the
+twelve concept photographs live in `public/images/concepts/` and are referenced
+as real files, served as WebP with a JPEG fallback. A card's photograph is only
+fetched once it nears the viewport, so a visit costs four images rather than
+twelve; the remaining variants prefetch quietly the first time someone reaches
+for the shuffle control. With JavaScript off, a `<noscript>` block serves the
+first design of each card.
+
+The Claude artifact preview runs under a CSP that blocks every external request,
+so the shareable review copy has to inline those photographs as base64. Generate
+it, never hand-edit it:
+
+    node prototypes/build-preview.mjs
+
+Editing the generated file instead of the source is how the two copies drift.
