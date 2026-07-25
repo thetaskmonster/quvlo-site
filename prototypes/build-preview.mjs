@@ -28,6 +28,15 @@ html = html.replace(/\s*<noscript>[\s\S]*?<\/noscript>/, '');
 // webp overrides are pointless once every rule carries its own data URI
 html = html.replace(/\s*@supports \(background-image:image-set[\s\S]*?\n {2}\}/, '');
 
+// fonts are shared files in production; the preview has to carry them
+let fonts = 0;
+html = html.replace(/url\(\/fonts\/([\w.-]+\.woff2)\)/g, (_m, name) => {
+  const buf = readFileSync(resolve(root, `public/fonts/${name}`));
+  fonts++;
+  return `url(data:font/woff2;base64,${buf.toString('base64')})`;
+});
+if (fonts !== 2) throw new Error(`expected 2 fonts, inlined ${fonts}`);
+
 // inline each photograph, preferring webp for size
 let count = 0;
 html = html.replace(
@@ -41,6 +50,7 @@ html = html.replace(
 
 if (count !== 12) throw new Error(`expected 12 photographs, inlined ${count}`);
 if (html.includes('/images/concepts/')) throw new Error('an external image reference survived');
+if (html.includes('/fonts/')) throw new Error('an external font reference survived');
 
 writeFileSync(out, html);
 console.log(`inlined ${count} photographs -> ${out} (${Math.round(html.length / 1024)}KB)`);
