@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* Keep dev-only tooling out of Tailwind's class scanning. tools/ is Node code
+   that never reaches the browser, but words like `filter` and `backdrop-filter`
+   in it were being read as class candidates and shipped 763 bytes of dead
+   utilities to production. Verified: without this line the built CSS is
+   58,760 B, with it 57,997 B, identical to the tree without tools/ at all. */
+@source not "../tools";
+
 /* ------------------------------------------------------------------ *
  * Brand design tokens, operator / control-room.
  * Ink base + a single restrained instrument accent (Tungsten Amber).
@@ -11,9 +18,11 @@
   --color-console: #1b2027;
   --color-hairline: #262d38;
 
-  --color-ink-100: #eef0f3;
-  --color-ink-300: #aab2bd; /* body, ~7:1 on obsidian */
-  --color-ink-500: #8a93a0; /* muted labels, ~4.7:1 on obsidian */
+  /* Ratios below are MEASURED in Chrome against the rendered background,
+     not estimated: node tools/contrast-audit.mjs (2026-07-24). */
+  --color-ink-100: #eef0f3; /* headings, 16.82:1 on obsidian */
+  --color-ink-300: #aab2bd; /* body, 8.97:1 on obsidian */
+  --color-ink-500: #8a93a0; /* muted labels, 6.18:1 on obsidian */
 
   --color-amber: #f0a538;
   --color-amber-bright: #ffc064;

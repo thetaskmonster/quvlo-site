@@ -9,6 +9,11 @@ import { BRAND, Container, Eyebrow } from "./ui";
  * it renders the stacked all-stages layout (no pin, no scroll reveal).
  * Non-active steps are de-emphasised with solid tokens (never opacity), so
  * all text stays above 4.5:1. Decorative previews are aria-hidden.
+ *
+ * Dimmed step text (ink-500 on obsidian) measures 6.18:1, active measures
+ * 9.28 (number) / 16.82 (title) / 8.97 (body), at both 1440x900 and 375x812.
+ * Re-check with `node tools/contrast-audit.mjs` before changing any colour
+ * here. Dimming with opacity instead of a solid token drops this to ~1.8:1.
  */
 const steps = [
   {
@@ -83,24 +88,27 @@ export function ScrollStory() {
                       : "py-8 lg:flex lg:min-h-[68vh] lg:flex-col lg:justify-center"
                   }
                 >
-                  {/* De-emphasise with solid tokens (all clear 4.5:1), not opacity */}
-                  <div className="transition-colors duration-500">
+                  {/* De-emphasise with solid tokens (dimmed = 6.18:1), not
+                      opacity. transition-colors sits on each element that
+                      actually changes colour: transition-duration does not
+                      inherit, so on the wrapper it silently did nothing. */}
+                  <div>
                     <span
-                      className={`font-mono text-xs tracking-[0.22em] ${
+                      className={`font-mono text-xs tracking-[0.22em] transition-colors duration-500 ${
                         on ? "text-amber" : "text-ink-500"
                       }`}
                     >
                       {step.n}
                     </span>
                     <h3
-                      className={`mt-3 font-display text-2xl font-semibold tracking-[-0.01em] md:text-3xl ${
+                      className={`mt-3 font-display text-2xl font-semibold tracking-[-0.01em] transition-colors duration-500 md:text-3xl ${
                         on ? "text-ink-100" : "text-ink-500"
                       }`}
                     >
                       {step.title}
                     </h3>
                     <p
-                      className={`mt-3 max-w-md font-sans leading-relaxed ${
+                      className={`mt-3 max-w-md font-sans leading-relaxed transition-colors duration-500 ${
                         on ? "text-ink-300" : "text-ink-500"
                       }`}
                     >
