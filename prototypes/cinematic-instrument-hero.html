@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quvlo — Instant Teardown (Cinematic Instrument prototype)</title>
+</head>
+<body>
+<style>
+  :root {
+    --obsidian:#0b0e12; --panel:#12161d; --console:#1a1f28; --hairline:#262d38;
+    --ink-100:#eef1f5; --ink-300:#aeb7c2; --ink-500:#7f8a98;
+    --amber:#f0a538; --amber-bright:#ffc064;
+    --phosphor:#46c98f; --danger:#ff8a8a; --caution:#e6b450; --signal:#4fb0c6;
+    --mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --measure: 62ch;
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    margin:0; background:var(--obsidian); color:var(--ink-300);
+    font-family:var(--sans); -webkit-font-smoothing:antialiased;
+    overflow-x:clip;
+  }
+  a { color:inherit; }
+  ::selection { background:color-mix(in srgb, var(--amber) 30%, transparent); color:var(--ink-100); }
+  :focus-visible { outline:2px solid var(--amber); outline-offset:3px; border-radius:4px; }
+
+  /* Film grain, decorative. Animated only when motion is allowed. */
+  .grain {
+    position:fixed; inset:-50%; z-index:60; pointer-events:none; opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  @keyframes grainshift { 0%{transform:translate(0,0)} 100%{transform:translate(-8%,6%)} }
+  .grain { animation:grainshift 6s steps(6) infinite; }
+
+  /* Scanner reticle: augments the real cursor, never replaces it. */
+  .reticle {
+    position:fixed; top:0; left:0; z-index:55; width:34px; height:34px;
+    margin:-17px 0 0 -17px; pointer-events:none; mix-blend-mode:screen;
+    opacity:0; transition:opacity .3s ease;
+  }
+  .reticle::before, .reticle::after {
+    content:""; position:absolute; background:var(--amber); opacity:.8;
+  }
+  .reticle::before { left:50%; top:0; width:1px; height:100%; transform:translateX(-.5px); }
+  .reticle::after  { top:50%; left:0; height:1px; width:100%; transform:translateY(-.5px); }
+  .reticle span {
+    position:absolute; inset:0; border:1px solid color-mix(in srgb,var(--amber) 55%, transparent);
+    border-radius:50%;
+  }
+  .reticle b {
+    position:absolute; top:calc(100% + 6px); left:50%; transform:translateX(-50%);
+    font:500 9px/1 var(--mono); letter-spacing:.1em; color:var(--amber);
+    white-space:nowrap; text-shadow:0 1px 3px #000;
+  }
+
+  .wrap { max-width:1200px; margin-inline:auto; padding-inline:clamp(20px,5vw,48px); }
+
+  /* Masthead */
+  header.mast { position:relative; z-index:2; padding-top:28px; }
+  .mast-row { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .word { display:inline-flex; align-items:center; gap:10px; font-family:var(--sans);
+    font-weight:700; font-size:19px; letter-spacing:-.02em; color:var(--ink-100); }
+  .word .dot { width:7px; height:7px; border-radius:50%; background:var(--amber);
+    box-shadow:0 0 14px var(--amber); }
+  .tag { font:500 10.5px/1 var(--mono); letter-spacing:.22em; color:var(--ink-500);
+    text-transform:uppercase; }
+
+  /* Hero */
+  main { position:relative; z-index:2; }
+  .hero { display:grid; gap:clamp(32px,5vw,64px); align-items:center;
+    grid-template-columns:1fr; padding:clamp(40px,7vw,88px) 0 clamp(48px,6vw,72px); }
+  @media (min-width:960px){ .hero{ grid-template-columns:1.02fr .98fr; } }
+
+  .eyebrow { display:inline-flex; align-items:center; gap:10px; font:600 11px/1 var(--mono);
+    letter-spacing:.22em; text-transform:uppercase; color:var(--amber); }
+  .eyebrow i { width:22px; height:1px; background:var(--amber); display:inline-block; }
+
+  h1 { margin:22px 0 0; color:var(--ink-100); text-wrap:balance;
+    font-family:var(--sans); font-weight:760; letter-spacing:-.035em; line-height:.98;
+    font-size:clamp(2.5rem,6.4vw,4.6rem); }
+  h1 .amber { color:var(--amber); }
+  .lede { margin:22px 0 0; max-width:var(--measure); font-size:clamp(1rem,1.5vw,1.16rem);
+    line-height:1.6; color:var(--ink-300); }
+
+  form.teardown { margin-top:30px; display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; }
+  .field { flex:1 1 300px; min-width:0; }
+  .field label { display:block; font:600 10.5px/1 var(--mono); letter-spacing:.16em;
+    text-transform:uppercase; color:var(--ink-500); margin-bottom:9px; }
+  .field input {
+    width:100%; height:52px; padding:0 16px; color:var(--ink-100);
+    background:color-mix(in srgb,var(--panel) 80%, transparent);
+    border:1px solid var(--hairline); border-radius:10px;
+    font:500 15px/1 var(--mono); letter-spacing:.01em;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .field input::placeholder { color:var(--ink-500); }
+  .field input:focus { outline:none; border-color:color-mix(in srgb,var(--amber) 70%,transparent);
+    box-shadow:0 0 0 3px color-mix(in srgb,var(--amber) 22%, transparent); }
+  button.run {
+    height:52px; padding:0 22px; border:0; border-radius:10px; cursor:pointer;
+    background:var(--amber); color:#1a1205; font:600 14px/1 var(--sans); letter-spacing:.01em;
+    display:inline-flex; align-items:center; gap:9px;
+    transition:transform .15s ease, background .2s ease, box-shadow .2s ease;
+  }
+  button.run:hover { background:var(--amber-bright); transform:translateY(-1px);
+    box-shadow:0 12px 30px -12px color-mix(in srgb,var(--amber) 70%, transparent); }
+  button.run:active { transform:translateY(0); }
+  button.run[disabled] { opacity:.6; cursor:progress; }
+  button.run svg { width:15px; height:15px; }
+  .microcopy { margin-top:12px; font:500 11.5px/1.5 var(--mono); color:var(--ink-500);
+    letter-spacing:.02em; }
+
+  /* Instrument panel */
+  .instrument {
+    position:relative; border:1px solid var(--hairline); border-radius:16px;
+    background:linear-gradient(180deg,var(--console),var(--panel));
+    box-shadow:0 40px 80px -40px #000, inset 0 1px 0 color-mix(in srgb,#fff 4%, transparent);
+    overflow:hidden;
+  }
+  .inst-bar { display:flex; align-items:center; gap:10px; padding:12px 16px;
+    border-bottom:1px solid var(--hairline); background:color-mix(in srgb,var(--obsidian) 55%, transparent); }
+  .inst-bar .lights { display:flex; gap:6px; }
+  .inst-bar .lights i { width:9px; height:9px; border-radius:50%; background:#2b333f; display:block; }
+  .inst-bar .addr { flex:1; text-align:center; font:500 11px/1 var(--mono); color:var(--ink-500);
+    letter-spacing:.04em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .inst-bar .state { font:600 10px/1 var(--mono); letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink-500); }
+  .inst-bar .state[data-on="scan"]{ color:var(--amber); }
+  .inst-bar .state[data-on="done"]{ color:var(--phosphor); }
+
+  .stage { position:relative; aspect-ratio:16/11; }
+  /* faux site being scanned, decorative */
+  .faux { position:absolute; inset:0; padding:7%; display:flex; flex-direction:column; gap:5%;
+    background:radial-gradient(120% 90% at 80% 0%, #1c2634, transparent);
+    filter:saturate(.9); }
+  .faux .fx-hero { height:34%; border-radius:8px;
+    background:linear-gradient(120deg,#243244,#1b2430); position:relative; overflow:hidden; }
+  .faux .fx-hero::after{ content:""; position:absolute; left:8%; top:32%; width:52%; height:14%;
+    background:#3a495c; border-radius:4px; box-shadow:0 22px 0 -6px #33414f, 0 40px 0 -10px #2c3949; }
+  .faux .fx-row { display:flex; gap:4%; height:20%; }
+  .faux .fx-row div { flex:1; border-radius:7px; background:#1d2732; border:1px solid #253040; }
+  .faux .fx-bar { height:9%; width:70%; border-radius:5px; background:#222c38; }
+  .faux .fx-bar.short { width:44%; }
+
+  .scanline { position:absolute; left:0; right:0; top:0; height:2px; z-index:3;
+    background:linear-gradient(90deg,transparent,var(--amber),transparent);
+    box-shadow:0 0 26px 6px color-mix(in srgb,var(--amber) 45%, transparent);
+    opacity:0; }
+  .scanwash { position:absolute; inset:0 0 auto 0; height:0; z-index:2;
+    background:linear-gradient(180deg,color-mix(in srgb,var(--amber) 12%,transparent),transparent);
+    border-bottom:1px solid color-mix(in srgb,var(--amber) 30%,transparent); opacity:0; }
+
+  /* Scorecard overlay */
+  .card { position:absolute; inset:0; z-index:4; display:flex; flex-direction:column;
+    justify-content:center; gap:18px; padding:clamp(18px,4%,34px);
+    background:color-mix(in srgb,var(--obsidian) 78%, transparent);
+    backdrop-filter:blur(3px); opacity:0; visibility:hidden; }
+  .card .scores { display:flex; gap:14px; flex-wrap:wrap; }
+  .score { flex:1 1 120px; border:1px solid var(--hairline); border-radius:12px; padding:14px 16px;
+    background:color-mix(in srgb,var(--panel) 70%, transparent); }
+  .score .k { font:600 10px/1 var(--mono); letter-spacing:.16em; text-transform:uppercase; color:var(--ink-500); }
+  .score .v { margin-top:8px; font-family:var(--sans); font-weight:750; letter-spacing:-.03em;
+    font-size:clamp(2.1rem,5vw,2.9rem); line-height:1; font-variant-numeric:tabular-nums; color:var(--ink-100); }
+  .score .v small { font-size:.42em; color:var(--ink-500); font-weight:600; letter-spacing:0; }
+  .score.bad .v { color:var(--danger); } .score.mid .v { color:var(--caution); } .score.good .v { color:var(--phosphor); }
+  .score .track { margin-top:10px; height:4px; border-radius:3px; background:var(--hairline); overflow:hidden; }
+  .score .track i { display:block; height:100%; width:0; border-radius:3px; transition:width 1s cubic-bezier(.2,1,.3,1); }
+  .score.bad .track i{ background:var(--danger);} .score.mid .track i{ background:var(--caution);} .score.good .track i{ background:var(--phosphor);}
+
+  .findings { display:flex; flex-direction:column; gap:8px; }
+  .finding { display:flex; align-items:center; gap:11px; font:500 12.5px/1.35 var(--mono);
+    color:var(--ink-300); letter-spacing:.01em; opacity:0; transform:translateY(6px); }
+  .finding .sev { flex:none; font-size:9px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+    padding:4px 7px; border-radius:5px; }
+  .sev.crit{ color:#2a0e0e; background:var(--danger);} .sev.serious{ color:#2a1c05; background:var(--caution);} .sev.mod{ color:#04231a; background:var(--phosphor);}
+  .finding .n { margin-left:auto; color:var(--ink-500); font-variant-numeric:tabular-nums; }
+
+  .card .cta { display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin-top:2px; }
+  .card .cta a { text-decoration:none; height:46px; padding:0 20px; border-radius:10px;
+    background:var(--amber); color:#1a1205; font:600 13.5px/46px var(--sans); }
+  .card .cta .note { font:500 11px/1.4 var(--mono); color:var(--ink-500); max-width:34ch; }
+
+  /* Flex band */
+  .band { position:relative; z-index:2; border-top:1px solid var(--hairline);
+    padding:clamp(40px,6vw,72px) 0; }
+  .band .inner { display:grid; gap:26px; grid-template-columns:1fr; align-items:center; }
+  @media (min-width:820px){ .band .inner{ grid-template-columns:auto 1fr; gap:44px; } }
+  .band .big { font-family:var(--sans); font-weight:750; letter-spacing:-.03em; color:var(--ink-100);
+    line-height:1.02; font-size:clamp(2.2rem,4.4vw,3.2rem); font-variant-numeric:tabular-nums; }
+  .band .big em { font-style:normal; color:var(--phosphor); }
+  .band p { margin:0; max-width:46ch; color:var(--ink-300); line-height:1.6; font-size:1.02rem; }
+  .band p b { color:var(--ink-100); font-weight:600; }
+  .proto { margin-top:14px; display:inline-flex; align-items:center; gap:8px;
+    font:600 10px/1 var(--mono); letter-spacing:.16em; text-transform:uppercase; color:var(--ink-500);
+    border:1px solid var(--hairline); border-radius:999px; padding:7px 11px; }
+  .proto .dot { width:6px; height:6px; border-radius:50%; background:var(--caution); }
+
+  footer.foot { position:relative; z-index:2; border-top:1px solid var(--hairline);
+    padding:26px 0 40px; display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between;
+    font:500 11px/1.5 var(--mono); letter-spacing:.04em; color:var(--ink-500); }
+
+  @media (prefers-reduced-motion:reduce){
+    html{ scroll-behavior:auto; }
+    .grain{ animation:none; }
+    .reticle{ display:none; }
+    .scanline, .scanwash{ transition:none !important; }
+    .score .track i{ transition:none !important; }
+    .finding{ transition:none !important; }
+  }
+</style>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="reticle" id="reticle" aria-hidden="true"><span></span><b id="ret-read">0000 · 0000</b></div>
+
+<header class="mast">
+  <div class="wrap mast-row">
+    <span class="word"><span class="dot"></span>Quvlo</span>
+    <span class="tag">Operator-grade web · accessible by default</span>
+  </div>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <section>
+      <span class="eyebrow"><i></i>Free instant teardown</span>
+      <h1>Paste your website.<br>See what it&rsquo;s <span class="amber">costing you.</span></h1>
+      <p class="lede">Every slow, inaccessible homepage quietly turns visitors away, and in 2026 the accessibility gaps are legal exposure too. Drop a URL and watch it get scanned. Then we rebuild it, beautiful and provably compliant.</p>
+
+      <form class="teardown" id="form" novalidate>
+        <div class="field">
+          <label for="url">Your website</label>
+          <input id="url" name="url" type="text" inputmode="url" autocomplete="url"
+                 placeholder="northsidedental.com" value="northsidedental.com" />
+        </div>
+        <button class="run" id="run" type="submit">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h9M8 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Run teardown
+        </button>
+      </form>
+      <p class="microcopy">No email required. Takes about two seconds. Free, no pitch.</p>
+    </section>
+
+    <section class="instrument" aria-hidden="true">
+      <div class="inst-bar">
+        <span class="lights"><i></i><i></i><i></i></span>
+        <span class="addr" id="addr">northsidedental.com</span>
+        <span class="state" id="state" data-on="idle">Ready</span>
+      </div>
+      <div class="stage" id="stage">
+        <div class="faux">
+          <div class="fx-hero"></div>
+          <div class="fx-row"><div></div><div></div><div></div></div>
+          <div class="fx-bar"></div>
+          <div class="fx-bar short"></div>
+        </div>
+        <div class="scanwash" id="wash"></div>
+        <div class="scanline" id="line"></div>
+
+        <div class="card" id="card">
+          <div class="scores">
+            <div class="score bad" id="s-a11y"><div class="k">Accessibility</div><div class="v"><span data-count="41">0</span><small>/100</small></div><div class="track"><i data-w="41"></i></div></div>
+            <div class="score mid" id="s-perf"><div class="k">Performance</div><div class="v"><span data-count="56">0</span><small>/100</small></div><div class="track"><i data-w="56"></i></div></div>
+          </div>
+          <div class="findings" id="findings">
+            <div class="finding"><span class="sev crit">Critical</span> Text contrast below 4.5:1 <span class="n">12 spots</span></div>
+            <div class="finding"><span class="sev serious">Serious</span> Buttons &amp; images with no label <span class="n">7</span></div>
+            <div class="finding"><span class="sev mod">Moderate</span> Tap targets under 44px <span class="n">5</span></div>
+          </div>
+          <div class="cta">
+            <a href="#" id="cta">Get the full teardown, free</a>
+            <span class="note">Illustrative sample in this prototype. The live version runs Quvlo&rsquo;s real audit engine.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="band">
+    <div class="wrap inner">
+      <div class="big">This page scores <em>100</em><small style="font-size:.5em;color:var(--ink-500);font-weight:600">/100 a11y</small></div>
+      <div>
+        <p><b>Beautiful and accessible are not a tradeoff.</b> Most award-winning sites fail a screen reader on the first tap. This one does not: keyboard-operable, reduced-motion aware, AA contrast throughout, and the fancy cursor never hides your real one. That is the entire product.</p>
+        <span class="proto"><span class="dot"></span>Prototype · sample readouts</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="foot wrap">
+  <span>Quvlo · precision web studio · Lewisville, TX</span>
+  <span>Cinematic Instrument · concept v0.1</span>
+</footer>
+
+<script>
+(function(){
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var canHover = matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  // Reticle: augments, never replaces, the system cursor.
+  var ret = document.getElementById("reticle"), read = document.getElementById("ret-read");
+  if(canHover && !reduce){
+    var rx=0,ry=0,tx=0,ty=0,shown=false,raf;
+    function loop(){ tx+=(rx-tx)*.18; ty+=(ry-ty)*.18;
+      ret.style.transform="translate("+tx+"px,"+ty+"px)";
+      read.textContent = String(Math.round(rx)).padStart(4,"0")+" · "+String(Math.round(ry)).padStart(4,"0");
+      raf=requestAnimationFrame(loop); }
+    addEventListener("mousemove",function(e){ rx=e.clientX; ry=e.clientY;
+      if(!shown){shown=true; ret.style.opacity="1";} },{passive:true});
+    addEventListener("mouseleave",function(){ shown=false; ret.style.opacity="0"; });
+    loop();
+  }
+
+  var form=document.getElementById("form"), run=document.getElementById("run"),
+      urlEl=document.getElementById("url"), addr=document.getElementById("addr"),
+      state=document.getElementById("state"), line=document.getElementById("line"),
+      wash=document.getElementById("wash"), card=document.getElementById("card"),
+      findings=document.getElementById("findings");
+  var live=document.createElement("div");
+  live.setAttribute("aria-live","polite"); live.className="sr";
+  live.style.cssText="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);";
+  form.appendChild(live);
+
+  function countUp(el,to){ if(reduce){el.textContent=to;return;}
+    var t0=null; function step(ts){ if(!t0)t0=ts; var p=Math.min((ts-t0)/900,1);
+      el.textContent=Math.round(to*(1-Math.pow(1-p,3))); if(p<1)requestAnimationFrame(step); }
+    requestAnimationFrame(step); }
+
+  function reveal(){
+    state.dataset.on="done"; state.textContent="Complete";
+    card.style.visibility="visible"; card.style.transition="opacity .5s ease"; card.style.opacity="1";
+    document.querySelectorAll("[data-count]").forEach(function(el){ countUp(el, +el.dataset.count); });
+    document.querySelectorAll(".score .track i").forEach(function(i){ i.style.width=i.dataset.w+"%"; });
+    var fs=findings.querySelectorAll(".finding");
+    fs.forEach(function(f,idx){ if(reduce){f.style.opacity="1";f.style.transform="none";return;}
+      setTimeout(function(){ f.style.transition="opacity .4s ease, transform .4s ease";
+        f.style.opacity="1"; f.style.transform="none"; }, 240*idx+120); });
+    live.textContent="Teardown complete. Accessibility 41 out of 100, performance 56. Three issues found, one critical.";
+  }
+
+  function resetCard(){ card.style.transition="none"; card.style.opacity="0"; card.style.visibility="hidden";
+    line.style.transition="none"; line.style.opacity="0"; line.style.top="0";
+    wash.style.transition="none"; wash.style.opacity="0"; wash.style.height="0";
+    findings.querySelectorAll(".finding").forEach(function(f){ f.style.opacity="0"; f.style.transform="translateY(6px)"; });
+    document.querySelectorAll(".score .track i").forEach(function(i){ i.style.width="0"; });
+    // force reflow
+    void card.offsetWidth;
+  }
+
+  function scan(){
+    resetCard();
+    var val=(urlEl.value||"your site").trim().replace(/^https?:\/\//,"");
+    addr.textContent=val; state.dataset.on="scan"; state.textContent="Scanning";
+    run.disabled=true;
+    if(reduce){ reveal(); run.disabled=false; return; }
+    requestAnimationFrame(function(){
+      line.style.transition="top 1.5s cubic-bezier(.4,0,.2,1), opacity .3s ease";
+      wash.style.transition="height 1.5s cubic-bezier(.4,0,.2,1), opacity .3s ease";
+      line.style.opacity="1"; wash.style.opacity="1";
+      line.style.top="100%"; wash.style.height="100%";
+    });
+    setTimeout(function(){ line.style.opacity="0"; wash.style.opacity="0"; reveal(); run.disabled=false; }, 1650);
+  }
+
+  form.addEventListener("submit",function(e){ e.preventDefault(); scan(); });
+})();
+</script>
+
+</body>
+</html>
