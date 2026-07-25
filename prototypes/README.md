@@ -14,3 +14,23 @@ performance scorecard, and is invited to the free full teardown.
   the real audit engine (the script used on the DFW prospect batch) server-side.
 
 Not wired into the live site. Prototype only.
+
+---
+
+## Agent Teardown — cinematic 3D hero (concept v0.2)
+
+`agent-teardown-hero.html` — the committed direction: **Cinematic 3D (Igloo)** art
+direction + the **Agent Teardown** concept.
+
+- Thesis: "Can an AI actually use your website?" By 2027 the customer is often an
+  agent booking on someone's behalf. The semantics that make a site usable by a
+  screen reader are the same ones that make it usable by an AI agent. So the scan
+  sends an agent to attempt a real task (book an appointment) and narrates where it
+  fails, then scores **Human-ready** and **Agent-ready**.
+- Visual: deep-space ground, a metallic 3D object rendered with a hand-written
+  WebGL raymarch shader (no external libraries, stays self-contained), restrained
+  champagne-platinum palette. Deliberately not the near-black + one-accent AI look.
+- Accessible by design: labelled input, `aria-live` transcript, visible focus,
+  full `prefers-reduced-motion` fallback (static object, instant transcript).
+- Prototype scan is scripted. Production wires the real agent + audit engine
+  server-side (headless browser + axe-core + an LLM agent loop, orchestrated in n8n).
