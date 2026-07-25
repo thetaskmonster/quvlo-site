@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quvlo — full site v0.4 (fonts)</title>
+<title>Quvlo v0.5</title>
 </head>
 <body>
 <style>
@@ -221,6 +221,29 @@
   h1{font-weight:700;letter-spacing:-.045em;line-height:.96;}
   h2{font-weight:700;letter-spacing:-.03em;}
   .quote{font-weight:700;letter-spacing:-.02em;}
+  .herocta{margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  #teardown .ask{max-width:620px;margin-inline:auto;}
+
+  /* Concept mockups (decorative) */
+  .stage2{position:relative;aspect-ratio:16/10;width:100%;overflow:hidden;}
+  .mk{position:absolute;inset:0;font-family:var(--sans);display:flex;flex-direction:column;overflow:hidden;}
+  .mk *{box-sizing:border-box;}
+  .mk-top{display:flex;align-items:center;justify-content:space-between;padding:15px 18px 0;flex:none;}
+  .mk-logo{font-weight:800;letter-spacing:-.02em;font-size:13px;}
+  .mk-nav{display:flex;align-items:center;gap:11px;font-size:8px;}
+  .mk-cta{border-radius:999px;padding:4px 10px;font-weight:700;font-size:8px;}
+  .mk-body{flex:1;padding:12px 18px;position:relative;}
+  .mk-ey{font-family:var(--mono);font-size:7px;letter-spacing:.16em;text-transform:uppercase;}
+  .mk-h{font-weight:800;letter-spacing:-.02em;line-height:1.02;font-size:20px;margin-top:5px;}
+  .mk-p{font-size:8px;line-height:1.4;margin-top:6px;opacity:.72;}
+  .mk-btn{display:inline-block;border-radius:6px;font-weight:700;font-size:9px;padding:6px 12px;margin-top:11px;}
+  .mk-rate{display:flex;align-items:center;gap:5px;font-size:8px;margin-top:9px;}
+  .mk-stars{letter-spacing:1px;}
+  .mk-strip{display:flex;justify-content:center;gap:12px;padding:7px;font-size:7px;font-weight:600;flex:none;}
+  .mk-chip{border-radius:5px;padding:4px 7px;font-size:8px;font-weight:600;border:1px solid rgba(15,47,58,.12);}
+  .mk-stats{display:flex;gap:16px;margin-top:11px;}
+  .mk-stat b{display:block;font-size:14px;font-weight:800;letter-spacing:-.02em;}
+  .mk-stat span{font-size:6.5px;text-transform:uppercase;letter-spacing:.06em;}
 </style>
 
 <canvas id="gl" aria-hidden="true"></canvas>
@@ -231,15 +254,31 @@
     <a class="word" href="#top"><span class="ring"></span>Quvlo</a>
     <div class="navlinks">
       <a href="#work">Work</a><a href="#services">Services</a><a href="#pricing">Pricing</a>
-      <a class="navcta" href="#top">Free teardown</a>
+      <a class="navcta" href="#teardown">Free teardown</a>
     </div>
   </div></nav>
 
   <!-- HERO -->
   <section class="hero" id="top"><div class="wrap inner">
-    <span class="eyebrow"><i></i>Agent teardown</span>
+    <span class="eyebrow"><i></i>Precision web studio &middot; compliant by default</span>
     <h1>Can an <span class="glow">AI</span> actually <b>use</b> your website?</h1>
     <p class="lede">By 2027 your customer often isn&rsquo;t clicking, their <b>assistant</b> is booking for them. A site a screen reader can&rsquo;t read is a site an agent can&rsquo;t either. Send our agent to try, and watch where it gives up.</p>
+    <div class="herocta">
+      <a class="btn" href="#teardown"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h9M8 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Run the free teardown</a>
+      <a class="btn ghost" href="#work">See our work</a>
+    </div>
+    <p class="micro">Free, no email. Watch an agent try to use your site, live.</p>
+
+    <div class="scrollcue" aria-hidden="true">Scroll<span class="ln"></span></div>
+  </div></section>
+
+  <!-- TEARDOWN TOOL (page 2) -->
+  <section class="interlude" id="teardown"><div class="wrap">
+    <div class="reveal" style="text-align:center">
+      <span class="eyebrow" style="justify-content:center"><i></i>Agent teardown</span>
+      <h2 style="margin-inline:auto;max-width:18ch">See it on your own site.</h2>
+      <p class="sub" style="margin-inline:auto">Paste your address. Our agent tries to book an appointment and shows you exactly where it gives up, the same walls a screen reader hits.</p>
+    </div>
     <form class="ask" id="form" novalidate>
       <div class="fw"><label for="url">Your website address</label>
         <input id="url" name="url" type="text" inputmode="url" autocomplete="url" placeholder="northsidedental.com" value="northsidedental.com" /></div>
@@ -260,8 +299,6 @@
           <span class="note">Illustrative prototype. The live agent runs the task for real.</span></div>
       </div>
     </div>
-
-    <div class="scrollcue" aria-hidden="true">Scroll<span class="ln"></span></div>
   </div></section>
 
   <!-- WHO -->
@@ -302,16 +339,69 @@
       <p class="sub">Original concept builds for common local businesses, each with its own layout and voice. Labeled concept because they are, no borrowed logos, no invented clients, no fake results.</p></div>
     <div class="gallery">
       <figure class="work reveal"><div class="frame"><div class="bar"><i></i><i></i><i></i><span class="u">brightsmile.dental</span></div>
-        <div class="mock" style="background:linear-gradient(135deg,#0e2b2f,#0b1c22)"><div class="h" style="background:linear-gradient(90deg,#14b8a6,#0d5c56)"></div><div class="r"><span></span><span></span><span></span></div><div class="b"></div><div class="b s"></div></div></div>
+        <div class="stage2"><div class="mk" style="background:#eefaf8;color:#0f2f3a">
+  <div class="mk-top"><span class="mk-logo" style="color:#0d5c56">Brightsmile</span>
+    <span class="mk-nav" style="color:#0f2f3aaa"><span>Services</span><span>Team</span><span class="mk-cta" style="background:#14b8a6;color:#fff">Book</span></span></div>
+  <div class="mk-body">
+    <div class="mk-ey" style="color:#0d7d73">Book in 30 seconds</div>
+    <div class="mk-h">Healthy smiles,<br>gentle care.</div>
+    <div class="mk-p" style="max-width:74%">Modern, gentle dentistry for the whole family. New patients always welcome.</div>
+    <div style="display:flex;gap:5px;margin-top:10px">
+      <span class="mk-chip" style="background:#fff">Mon</span><span class="mk-chip" style="background:#fff">Tue</span><span class="mk-chip" style="background:#14b8a6;color:#fff;border-color:transparent">Wed</span><span class="mk-chip" style="background:#fff">Thu</span><span class="mk-chip" style="background:#fff">Fri</span></div>
+    <span class="mk-btn" style="background:#14b8a6;color:#fff">Confirm appointment</span>
+    <div class="mk-rate" style="color:#0f2f3aaa"><span class="mk-stars" style="color:#f5a524">&#9733;&#9733;&#9733;&#9733;&#9733;</span><b style="color:#0f2f3a">4.9</b><span>&middot; 600+ reviews</span></div>
+  </div>
+  <div class="mk-strip" style="background:#0d7d73;color:#fff">New patients &middot; Most insurance &middot; Open Saturdays</div>
+</div></div></div>
         <figcaption><div><div class="t">Dental Practice</div><div class="d">Calm, clean, appointment-first.</div></div><span class="badge">Concept</span></figcaption></figure>
       <figure class="work reveal d1"><div class="frame"><div class="bar"><i></i><i></i><i></i><span class="u">halebishop.law</span></div>
-        <div class="mock" style="background:linear-gradient(135deg,#141b2e,#0c1120)"><div class="h" style="background:linear-gradient(90deg,#a8823f,#5f4a20)"></div><div class="r"><span></span><span></span><span></span></div><div class="b"></div><div class="b s"></div></div></div>
+        <div class="stage2"><div class="mk" style="background:#f3efe8;color:#14233b">
+  <div class="mk-strip" style="background:#14233b;color:#e6cf9b;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase">Free case review &middot; No fee unless we win</div>
+  <div class="mk-top"><span class="mk-logo" style="letter-spacing:.03em;font-size:12px">HALE &amp; BISHOP</span>
+    <span class="mk-nav" style="color:#14233baa"><span>Practice</span><span>Attorneys</span><span class="mk-cta" style="border:1px solid #a8823f;color:#8a6a2f">Consult</span></span></div>
+  <div class="mk-body">
+    <div class="mk-ey" style="color:#a8823f">Trial Attorneys &middot; Est. 1994</div>
+    <div class="mk-h" style="font-size:18px">Trusted counsel when<br>it matters most.</div>
+    <div class="mk-p" style="max-width:82%">Personal injury and family law, handled with discretion and a record of results.</div>
+    <span class="mk-btn" style="background:#a8823f;color:#f3efe8">Request a free consultation</span>
+    <div class="mk-stats" style="border-top:1px solid #14233b22;padding-top:8px">
+      <div class="mk-stat"><b>$500M+</b><span style="color:#a8823f">Recovered</span></div>
+      <div class="mk-stat"><b>40+ yrs</b><span style="color:#a8823f">Experience</span></div>
+      <div class="mk-stat"><b>5,000+</b><span style="color:#a8823f">Cases resolved</span></div>
+    </div>
+  </div>
+</div></div></div>
         <figcaption><div><div class="t">Law Firm</div><div class="d">Authoritative, editorial, credible.</div></div><span class="badge">Concept</span></figcaption></figure>
       <figure class="work reveal"><div class="frame"><div class="bar"><i></i><i></i><i></i><span class="u">lumierespa.co</span></div>
-        <div class="mock" style="background:linear-gradient(135deg,#2a1720,#160d13)"><div class="h" style="background:linear-gradient(90deg,#b76e79,#6d3d45)"></div><div class="r"><span></span><span></span><span></span></div><div class="b"></div><div class="b s"></div></div></div>
+        <div class="stage2"><div class="mk" style="background:#f4e9e6;color:#2c2224">
+  <div class="mk-top"><span class="mk-logo" style="letter-spacing:.14em">LUMI&Egrave;RE</span>
+    <span class="mk-nav" style="color:#2c2224aa"><span>Treatments</span><span>About</span><span class="mk-cta" style="background:#b76e79;color:#fff">Book</span></span></div>
+  <div class="mk-body">
+    <div class="mk-ey" style="color:#b76e79">Med Spa &amp; Skincare</div>
+    <div class="mk-h">Glow, restored.</div>
+    <div class="mk-p" style="max-width:70%">Advanced facials, injectables &amp; laser, in a calm, private studio.</div>
+    <div style="display:flex;align-items:center;gap:9px;margin-top:11px">
+      <span class="mk-btn" style="background:#2c2224;color:#f4e9e6;margin-top:0">Book a consult</span>
+      <span style="font-size:7.5px;color:#2c2224aa">Memberships from <b style="color:#2c2224">$99/mo</b></span></div>
+    <div class="mk-rate" style="color:#2c2224aa"><span class="mk-stars" style="color:#b76e79">&#9733;&#9733;&#9733;&#9733;&#9733;</span><b style="color:#2c2224">4.9</b><span>&middot; 800+ reviews</span></div>
+    <div class="mk-chip" style="position:absolute;right:16px;top:8px;background:#fff;color:#b76e79;font-weight:700;border-color:transparent;box-shadow:0 6px 16px rgba(0,0,0,.14)">New guest &middot; 20% off first facial</div>
+  </div>
+</div></div></div>
         <figcaption><div><div class="t">Med Spa</div><div class="d">Elegant, aspirational, booking-led.</div></div><span class="badge">Concept</span></figcaption></figure>
       <figure class="work reveal d1"><div class="frame"><div class="bar"><i></i><i></i><i></i><span class="u">summithvac.com</span></div>
-        <div class="mock" style="background:linear-gradient(135deg,#241505,#160d04)"><div class="h" style="background:linear-gradient(90deg,#f97316,#9a4a12)"></div><div class="r"><span></span><span></span><span></span></div><div class="b"></div><div class="b s"></div></div></div>
+        <div class="stage2"><div class="mk" style="background:linear-gradient(160deg,#1c1307,#0b0a09);color:#fff">
+  <div class="mk-top"><span class="mk-logo">Summit<span style="color:#fb923c"> HVAC</span></span>
+    <span class="mk-nav" style="color:#ffffffcc"><span>Services</span><span>Reviews</span><span style="color:#fb923c;font-weight:700">(555) 010-2033</span></span></div>
+  <div class="mk-body" style="display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:center">
+    <span class="mk-chip" style="background:#f97316;color:#fff;font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:7px;border-color:transparent">24/7 emergency service</span>
+    <div class="mk-h" style="font-size:22px;margin-top:9px">Heating &amp; cooling,<br>done right.</div>
+    <div class="mk-p" style="max-width:66%;opacity:.85">Fast, honest service across the metro. Same-day in most areas.</div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <span class="mk-btn" style="background:#f97316;color:#fff;margin-top:0">Call (555) 010-2033</span>
+      <span class="mk-btn" style="background:transparent;border:1px solid #ffffff66;color:#fff;margin-top:0">Schedule online</span></div>
+  </div>
+  <div class="mk-strip" style="background:rgba(0,0,0,.4);color:#ffffffcc;border-top:1px solid #ffffff1a">&#9733; 4.9 &middot; 1,200 reviews &middot; Licensed &amp; insured &middot; Financing</div>
+</div></div></div>
         <figcaption><div><div class="t">Home Services (HVAC)</div><div class="d">Bold, call-now urgency.</div></div><span class="badge">Concept</span></figcaption></figure>
     </div>
   </div></section>
@@ -321,7 +411,7 @@
     <span class="eyebrow" style="justify-content:center"><i></i>Practice what we sell</span>
     <h2>Don&rsquo;t take our word for it. <b>Run the teardown on us.</b></h2>
     <p class="sub">Most award-winning sites fail a screen reader on the first tap. We hold this site to the same test we run on yours, human-ready and agent-ready, both green. We publish our own live score, no marketing asterisk.</p>
-    <a class="btn" href="#top"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h9M8 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Scan quvlo.co</a>
+    <a class="btn" href="#teardown"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h9M8 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Run the teardown</a>
   </div></section>
 
   <!-- PRICING -->
@@ -359,7 +449,7 @@
     <span class="eyebrow" style="justify-content:center"><i></i>Start here</span>
     <h2>See what your site is <span class="champ">costing you.</span></h2>
     <p class="sub" style="margin-inline:auto">Free teardown, no email, no pitch. If you like what you see, we build the fixed.</p>
-    <div class="row"><a class="btn" href="#top">Run the free teardown</a><a class="btn ghost" href="#pricing">See pricing</a></div>
+    <div class="row"><a class="btn" href="#teardown">Run the free teardown</a><a class="btn ghost" href="#pricing">See pricing</a></div>
   </div></section>
 
   <footer class="foot"><div class="wrap" style="display:flex;justify-content:space-between;width:100%;gap:12px;flex-wrap:wrap">
