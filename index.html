@@ -42,6 +42,11 @@
   .lead-status{margin-top:13px;font:400 12.5px/1.6 var(--sans);color:var(--ink-1);min-height:1.2em;}
   .lead-status.ok{color:var(--good);} .lead-status.err{color:var(--crit);}
   @media(max-width:560px){ form.lead{grid-template-columns:1fr;} }
+  /* minimum target size on phones (WCAG 2.2 AA, 2.5.8) */
+  .navlinks a{display:inline-flex;align-items:center;min-height:24px;}
+  .footlinks a{display:inline-block;padding:4px 2px;min-height:24px;}
+  .foot .wrap span{line-height:1.9;}
+  .word{min-height:24px;}
 </style>
 </head>
 <body>
@@ -312,11 +317,14 @@
     .ph-hvac-3{background-image:image-set(url(/images/concepts/hvac-3.webp) type("image/webp"));}
   }
   .cap-right{display:flex;align-items:center;gap:11px;flex:none;}
-  .vswitch{display:flex;align-items:center;gap:5px;}
-  .vdot{width:8px;height:8px;padding:0;border-radius:50%;border:1px solid rgba(255,255,255,.32);background:transparent;cursor:pointer;transition:background .2s,border-color .2s,transform .2s;}
-  .vdot:hover{border-color:var(--champagne);}
-  .vdot[aria-pressed="true"]{background:var(--champagne);border-color:var(--champagne);transform:scale(1.25);}
-  .vdot:focus-visible{outline:2px solid var(--champagne);outline-offset:3px;}
+  .vswitch{display:flex;align-items:center;gap:0;margin-right:-4px;}
+  /* 24x24 hit area for WCAG 2.5.8; the visible dot stays 8px via a pseudo element */
+  .vdot{position:relative;width:24px;height:24px;padding:0;border:0;background:transparent;cursor:pointer;border-radius:50%;}
+  .vdot::before{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;
+    border-radius:50%;border:1px solid rgba(255,255,255,.32);transition:background .2s,border-color .2s,transform .2s;}
+  .vdot:hover::before{border-color:var(--champagne);}
+  .vdot[aria-pressed="true"]::before{background:var(--champagne);border-color:var(--champagne);transform:scale(1.25);}
+  .vdot:focus-visible{outline:2px solid var(--champagne);outline-offset:-1px;}
   .shuffle{margin-top:22px;display:inline-flex;align-items:center;gap:9px;font:600 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--champagne);background:transparent;border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:11px 18px;cursor:pointer;transition:border-color .2s,background .2s;}
   .shuffle:hover{border-color:var(--champagne);background:rgba(255,255,255,.05);}
   .shuffle:focus-visible{outline:2px solid var(--champagne);outline-offset:3px;}
@@ -360,7 +368,7 @@
       <a class="btn" href="#teardown"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h9M8 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Run the free teardown</a>
       <a class="btn ghost" href="#work">See our work</a>
     </div>
-    <p class="micro">Free, no email. Watch an agent try to use your site, live.</p>
+    <p class="micro">Free. We run it by hand on your real site and send you the video.</p>
 
     <div class="scrollcue" aria-hidden="true">Scroll<span class="ln"></span></div>
   </div></section>
@@ -572,7 +580,7 @@
   </main>
 
   <footer class="foot"><div class="wrap" style="display:flex;justify-content:space-between;width:100%;gap:12px;flex-wrap:wrap">
-    <span>&copy; 2026 Quvlo &middot; precision web studio &middot; Lewisville, TX</span>
+    <span>&copy; 2026 Quvlo &middot; precision web studio &middot; Dallas, TX</span>
     <span class="footlinks"><a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="mailto:hello@quvlo.co">hello@quvlo.co</a></span>
   </div></footer>
 </div>
