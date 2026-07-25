@@ -34,3 +34,16 @@ direction + the **Agent Teardown** concept.
   full `prefers-reduced-motion` fallback (static object, instant transcript).
 - Prototype scan is scripted. Production wires the real agent + audit engine
   server-side (headless browser + axe-core + an LLM agent loop, orchestrated in n8n).
+
+---
+
+## Full site — cinematic concept v0.3
+
+`agent-teardown-site.html` — the full scrolling site, not just the hero.
+Sections: agent-teardown hero, who we are (operator story), services (web +
+compliance lead, automation/AI secondary per Kyle 2026-07-24), concept work
+(labelled Concept), honest thesis ("run the teardown on us", no fabricated
+score), pricing (Landing $1,500 / Business $3,000 / Care $150-$650), final CTA.
+Scroll-reactive WebGL object + IntersectionObserver section reveals, sticky nav.
+Accessible by design throughout. Scan is scripted; production wires the real
+agent + audit engine server-side.
