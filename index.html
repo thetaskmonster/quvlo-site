@@ -733,6 +733,17 @@
           document.querySelectorAll(".gauge").forEach(function(g){g.style.display="none";});
           reveal(els); return;
         }
+        if(d.unreadable){
+          els.push(row("bad","\u2715 "+(d.findings[0]?d.findings[0].title:"this page sent no readable content")));
+          els.push(row("dim","> "+Math.round(d.bytes/1024)+" KB received, but nothing a reader could use"));
+          els.push(row("dim","> some sites serve an empty page to anything that is not a browser"));
+          els.push(row("dim","> no score is shown, because we never saw the real page"));
+          document.querySelectorAll(".gauge").forEach(function(g){g.style.display="none";});
+          flag.textContent="Could not read "+((d.finalUrl||host).replace(/^https?:\/\//,"").replace(/\/$/,""));
+          flag.className="demo-flag";
+          notMeasured.textContent="This needs a pass in a real browser, which is part of the full teardown.";
+          reveal(els); return;
+        }
         document.querySelectorAll(".gauge").forEach(function(g){g.style.display="";});
         dest.textContent=(d.finalUrl||host).replace(/^https?:\/\//,"").replace(/\/$/,"");
         els.push(row("dim","> "+Math.round(d.bytes/1024)+" KB of HTML in "+d.ms+" ms"));
