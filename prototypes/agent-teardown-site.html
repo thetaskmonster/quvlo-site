@@ -47,6 +47,9 @@
   .footlinks a{display:inline-block;padding:4px 2px;min-height:24px;}
   .foot .wrap span{line-height:1.9;}
   .word{min-height:24px;}
+  /* the header CTA stays put on phones; only the text links collapse */
+  .navcta{flex:none;display:inline-flex;align-items:center;min-height:44px;white-space:nowrap;}
+  @media(max-width:420px){ .navcta{padding:10px 13px;font-size:12.5px;} .word{font-size:16.5px;} }
 </style>
 </head>
 <body>
@@ -354,8 +357,8 @@
     <a class="word" href="#top"><span class="ring"></span>Quvlo</a>
     <div class="navlinks">
       <a href="#work">Work</a><a href="#services">Services</a><a href="#pricing">Pricing</a>
-      <a class="navcta" href="#teardown">Free teardown</a>
     </div>
+    <a class="navcta" href="#start">Free teardown</a>
   </div></nav>
 
   <!-- HERO -->
