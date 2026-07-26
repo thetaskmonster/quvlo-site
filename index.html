@@ -406,10 +406,10 @@
       <div class="log"><h3><span>Agent transcript</span><span class="dest" id="dest">northsidedental.com</span></h3>
         <div class="lines" id="lines" aria-live="polite"></div></div>
       <div class="verdict">
-        <div class="gauge human"><div class="k">Human-ready <span class="chip weak">Weak</span></div>
-          <div class="v"><span data-count="41">0</span><small>/100</small></div><div class="bar"><i data-w="41"></i></div></div>
-        <div class="gauge agent"><div class="k">Agent-ready <span class="chip fail">Fails</span></div>
-          <div class="v"><span data-count="12">0</span><small>/100</small></div><div class="bar"><i data-w="12"></i></div></div>
+        <div class="gauge human"><div class="k">Human-ready <span class="chip"></span></div>
+          <div class="v"><span>0</span><small>/100</small></div><div class="bar"><i></i></div></div>
+        <div class="gauge agent"><div class="k">Agent-ready <span class="chip"></span></div>
+          <div class="v"><span>0</span><small>/100</small></div><div class="bar"><i></i></div></div>
         <div class="cta"><a class="btn" href="#services">See how we fix it</a>
           <span class="note" id="notmeasured"></span></div>
       </div>
@@ -714,6 +714,10 @@
     notMeasured.textContent="";
     document.querySelectorAll(".gauge .bar i").forEach(function(i){i.style.width="0%";});
     document.querySelectorAll(".gauge .v span").forEach(function(v){v.textContent="0";});
+    document.querySelectorAll(".gauge").forEach(function(g){
+      g.className=g.className.replace(/\bg-(good|fair|weak|fail)\b/g,"").trim();
+      var c=g.querySelector(".chip"); c.textContent=""; c.className="chip";
+    });
     scanPulse(true);
     reveal([row("dim","> fetching "+host)]);
 
