@@ -50,10 +50,10 @@ const FIXES = [
    'The Google Map is an iframe with no title attribute, so it is announced only as &ldquo;iframe&rdquo; with no indication of what it contains.',
    'The map is labelled, and the address is also written out as real selectable text with a directions link, so nobody depends on the embed.',
    'WCAG 4.1.2 Name, Role, Value, Level A'],
-  ['A phone number that could not be tapped',
-   'The number sat on the page as plain text in places, so a visitor on a phone had to memorise it and retype it into the dialler.',
-   'The number is a real telephone link everywhere it appears, and it is in the header on every screen size.',
-   'Usability, and the single most common action on a dental site'],
+  ['What is already working, and stays',
+   'The phone number is already a real telephone link, the page declares a single clear heading, and at 51KB it is genuinely light. A rebuild that threw those away would be a downgrade.',
+   'Kept exactly as they are. This is a rebuild of what is broken, not a rewrite of what is not.',
+   'Verified by scan on 2026-07-26, not assumed'],
   ['A template old enough to prompt a browser upgrade',
    'The current page still ships a legacy &ldquo;upgrade your browser&rdquo; notice, which dates the template and adds weight every visitor downloads.',
    'Rebuilt as hand-written HTML and CSS with no vendor template underneath it.',
@@ -384,7 +384,7 @@ ${HOURS.map(([d, h, closed]) => `        <div${closed ? ' class="cl"' : ''}><dt>
 <section class="fixes" id="changed"><div class="wrap">
   <div class="head">
     <span class="eyebrow"><i></i>What changed</span>
-    <h2>The four things this rebuild fixes</h2>
+    <h2>What this rebuild changes, and what it leaves alone</h2>
     <p>Each one was checked against the practice's live site on 24 July 2026. These are the actual findings, not a generic checklist.</p>
   </div>
   <div class="fx">
