@@ -56,6 +56,15 @@
   .chip.weak{background:rgba(255,207,138,.16);color:var(--warn);}
   .l .good{color:var(--good);}
   form.ask input[aria-invalid="true"]{outline:2px solid var(--crit);}
+  .paybtn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin-top:13px;
+    padding:0 16px;border-radius:9px;border:1px solid var(--hairline);background:transparent;
+    color:var(--ink-0);font:600 13px/1 var(--sans);text-decoration:none;transition:border-color .2s,background .2s;}
+  .paybtn:hover{border-color:var(--champagne);background:rgba(255,255,255,.04);}
+  .paybtn:focus-visible{outline:2px solid var(--champagne);outline-offset:3px;}
+  .paybtn.live{background:linear-gradient(180deg,var(--champ-2),var(--champagne));color:#241d0e;border-color:transparent;}
+  .paydeposit{margin-top:20px;font:400 13px/1.6 var(--sans);color:var(--ink-2);}
+  .paydeposit a{color:var(--champagne);}
+  .paydeposit a:focus-visible{outline:2px solid var(--champagne);outline-offset:3px;border-radius:3px;}
 </style>
 </head>
 <body>
@@ -561,10 +570,11 @@
           <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Month-to-month, cancel anytime</li></ul></div>
     </div>
     <div class="subtiers reveal">
-      <div class="subtier"><div class="nm">Essential</div><div class="pr">$150<small>/mo</small></div><div class="ds">Hosting, security + accessibility monitoring, small edits.</div></div>
-      <div class="subtier"><div class="nm">Standard</div><div class="pr">$300<small>/mo</small></div><div class="ds">Plus content updates and a quarterly WCAG conformance check.</div></div>
-      <div class="subtier"><div class="nm">Compliance</div><div class="pr">$650<small>/mo</small></div><div class="ds">Plus a monthly accessibility audit, report, and same-day support.</div></div>
+      <div class="subtier"><div class="nm">Essential</div><div class="pr">$150<small>/mo</small></div><div class="ds">Hosting, security + accessibility monitoring, small edits.</div><a class="paybtn" data-pay="careEssential" data-plan="Essential" href="#start">Ask about Essential</a></div>
+      <div class="subtier"><div class="nm">Standard</div><div class="pr">$300<small>/mo</small></div><div class="ds">Plus content updates and a quarterly WCAG conformance check.</div><a class="paybtn" data-pay="careStandard" data-plan="Standard" href="#start">Ask about Standard</a></div>
+      <div class="subtier"><div class="nm">Compliance</div><div class="pr">$650<small>/mo</small></div><div class="ds">Plus a monthly accessibility audit, report, and same-day support.</div><a class="paybtn" data-pay="careCompliance" data-plan="Compliance" href="#start">Ask about Compliance</a></div>
     </div>
+    <p class="paydeposit" id="paydeposit" hidden>Already have a proposal from us? <a id="depositlink" href="#start">Pay your deposit to start</a></p>
     <p class="promise reveal"><b>Our promise:</b> we don&rsquo;t start building until you approve the design direction. If the concept isn&rsquo;t right, we refine it, or you walk, with no charge beyond the deposit. Extra hours beyond your plan are prepaid blocks, never a surprise.</p>
   </div></section>
 
@@ -599,6 +609,32 @@
 </div>
 
 <script>
+/* ============================================================================
+   STRIPE PAYMENT LINKS
+
+   Paste the hosted Payment Link Stripe gives you between the quotes below.
+   They look like https://buy.stripe.com/xxxxxxxx
+
+   These are PUBLIC urls by design. A Stripe Payment Link is the hosted
+   checkout page itself, not a credential, so it is safe in front end code.
+   No API key, secret key or webhook secret belongs in this file, ever.
+
+   Leave a value empty and nothing breaks: that plan simply keeps sending
+   people to the request form instead of rendering a button that goes nowhere.
+   ========================================================================== */
+var PAYMENT_LINKS = {
+  careEssential:  "",   // Care Plan, Essential,  $150/mo subscription
+  careStandard:   "",   // Care Plan, Standard,   $300/mo subscription
+  careCompliance: "",   // Care Plan, Compliance, $650/mo subscription
+
+  /* The build deposit is deliberately NOT advertised on the pricing cards.
+     The Terms say every project is quoted in writing before work begins, so a
+     public pay-now button on a $1,500 or $3,000 build would contradict them.
+     Set this and a discreet "already have a proposal" link appears instead,
+     which is the only person who should be paying a deposit. */
+  deposit:        "",   // build start deposit
+};
+
 (function(){
   var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
   var scrollP=0;
@@ -883,6 +919,37 @@
         })
         .then(function(){ btn.disabled=false; });
     });
+  })();
+
+  /* Stripe payment links: only render a real payment button once a link exists.
+     Until then every button keeps pointing at the request form, so the page
+     never shows a checkout that goes nowhere. */
+  (function(){
+    var L = (typeof PAYMENT_LINKS === "object" && PAYMENT_LINKS) || {};
+    function valid(u){ return typeof u === "string" && /^https:\/\/[^\s"']+$/.test(u.trim()); }
+
+    document.querySelectorAll("[data-pay]").forEach(function(el){
+      var url = L[el.getAttribute("data-pay")], plan = el.getAttribute("data-plan") || "";
+      if (valid(url)) {
+        el.href = url.trim();
+        el.rel = "noopener";
+        el.textContent = "Start " + plan;
+        el.classList.add("live");
+        el.setAttribute("aria-label", "Start the " + plan + " Care Plan, opens secure Stripe checkout");
+      } else {
+        el.href = "#start";
+        el.textContent = "Ask about " + plan;
+        el.setAttribute("aria-label", "Ask about the " + plan + " Care Plan");
+      }
+    });
+
+    var dep = document.getElementById("paydeposit"), link = document.getElementById("depositlink");
+    if (dep && link && valid(L.deposit)) {
+      link.href = L.deposit.trim();
+      link.rel = "noopener";
+      link.setAttribute("aria-label", "Pay your project deposit, opens secure Stripe checkout");
+      dep.hidden = false;
+    }
   })();
 </script>
 

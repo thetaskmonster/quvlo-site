@@ -65,3 +65,21 @@ it, never hand-edit it:
     node prototypes/build-preview.mjs
 
 Editing the generated file instead of the source is how the two copies drift.
+
+### Stripe payment links
+
+`index.html` carries a `PAYMENT_LINKS` config block at the very top of its
+script. Paste the hosted Payment Link Stripe gives you for each Care Plan tier
+between the quotes and rebuild. A Payment Link is a public hosted checkout URL,
+not a credential, so it belongs in front end code; an API key, secret key or
+webhook secret never does.
+
+Anything left empty keeps its button pointing at the request form, so the page
+never shows a checkout that goes nowhere. Only `https://` values are accepted,
+so a half pasted or placeholder value fails safe rather than shipping a broken
+or insecure link.
+
+The build deposit is deliberately not advertised on the pricing cards. The Terms
+say every project is quoted in writing before work begins, so a public pay-now
+button on a $1,500 or $3,000 build would contradict them. Setting `deposit`
+reveals a discreet "already have a proposal" line instead.
