@@ -83,3 +83,32 @@ The build deposit is deliberately not advertised on the pricing cards. The Terms
 say every project is quoted in writing before work begins, so a public pay-now
 button on a $1,500 or $3,000 build would contradict them. Setting `deposit`
 reveals a discreet "already have a proposal" line instead.
+
+### Environment variables (Cloudflare Pages, Settings, Environment variables)
+
+All three are set in the Cloudflare dashboard and marked **Encrypt**. None of
+them belong in a committed file, in the HTML, or in any response body.
+
+| Variable | Needed for | Where it comes from |
+|---|---|---|
+| `STRIPE_SECRET_KEY` | creating checkout sessions | Stripe, Developers, API keys (`sk_live_...`) |
+| `STRIPE_WEBHOOK_SECRET` | verifying webhook signatures | Stripe, Developers, Webhooks, on the endpoint (`whsec_...`) |
+| `QUVLO_NOTIFY_URL` | optional | defaults to the Formspree endpoint the site already uses |
+
+Both endpoints fail closed. With no `STRIPE_SECRET_KEY` the buy buttons say card
+payment is not switched on and point at the intro call. With no
+`STRIPE_WEBHOOK_SECRET` the webhook refuses every request, because a webhook it
+cannot verify is a webhook anyone can forge.
+
+### The Stripe webhook
+
+Add an endpoint in Stripe at `https://quvlo.co/api/stripe-webhook` listening for
+`checkout.session.completed`, then copy its signing secret into
+`STRIPE_WEBHOOK_SECRET`.
+
+It verifies the HMAC over the raw request body, rejects anything older than five
+minutes so a captured request cannot be replayed, compares in constant time, and
+only acts when `payment_status` is `paid`, since the completed event can arrive
+before a slower payment method settles. On a real deposit it posts a summary to
+Formspree: business, package, amount paid, balance due on launch, contact email
+and the Stripe session id.
