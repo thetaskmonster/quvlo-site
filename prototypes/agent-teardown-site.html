@@ -65,6 +65,45 @@
   .paydeposit{margin-top:20px;font:400 13px/1.6 var(--sans);color:var(--ink-2);}
   .paydeposit a{color:var(--champagne);}
   .paydeposit a:focus-visible{outline:2px solid var(--champagne);outline-offset:3px;border-radius:3px;}
+  .tieract{display:flex;flex-direction:column;gap:8px;margin-top:16px;}
+  .tieract .btn{width:100%;}
+  .btn.sm{height:44px;font-size:13.5px;}
+  .btn.ghost{background:transparent;border:1px solid var(--hairline);color:var(--ink-0);}
+  .btn.ghost:hover{border-color:var(--champagne);}
+  .tiernote{margin-top:9px;font:400 11.5px/1.5 var(--mono);color:var(--ink-3);letter-spacing:.02em;}
+  .ordermask{position:fixed;inset:0;background:rgba(3,5,10,.72);backdrop-filter:blur(3px);z-index:300;}
+  .order{position:fixed;z-index:301;left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,calc(100vw - 32px));
+    max-height:calc(100vh - 40px);overflow:auto;background:var(--space-1);border:1px solid var(--hairline);
+    border-radius:18px;padding:28px;box-shadow:0 40px 90px rgba(0,0,0,.6);}
+  .order h3{font:700 clamp(1.3rem,3vw,1.7rem)/1.15 var(--display);color:var(--ink-0);letter-spacing:-.02em;padding-right:30px;}
+  .o-blurb{margin-top:8px;font-size:14px;color:var(--ink-2);}
+  .orderx{position:absolute;right:14px;top:12px;width:40px;height:40px;border:0;background:transparent;
+    color:var(--ink-2);font-size:26px;line-height:1;cursor:pointer;border-radius:9px;}
+  .orderx:hover{color:var(--ink-0);} .orderx:focus-visible{outline:2px solid var(--champagne);outline-offset:2px;}
+  .o-lines{margin-top:20px;border:1px solid var(--hairline);border-radius:12px;overflow:hidden;}
+  .o-line{display:flex;justify-content:space-between;gap:14px;padding:12px 15px;font-size:14px;color:var(--ink-1);
+    border-bottom:1px solid var(--hair-2);}
+  .o-line:last-child{border-bottom:0;}
+  .o-line b{color:var(--ink-0);font-variant-numeric:tabular-nums;}
+  .o-line.pay{background:rgba(230,210,168,.08);} .o-line.pay b{color:var(--champagne);}
+  #orderform{margin-top:18px;display:grid;gap:13px;}
+  .of{display:flex;flex-direction:column;gap:6px;}
+  .of label{font:400 10.5px/1.4 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2);}
+  .of .opt{text-transform:none;letter-spacing:.03em;color:var(--ink-3);}
+  .of input[type=text],.of input[type=email]{width:100%;padding:11px 13px;border-radius:9px;border:1px solid var(--hairline);
+    background:rgba(8,11,19,.75);color:var(--ink-0);font:400 14px/1.5 var(--sans);}
+  .of input:focus-visible{outline:2px solid var(--champagne);outline-offset:2px;border-color:transparent;}
+  .of input[aria-invalid="true"]{border-color:var(--crit);}
+  .of.check{flex-direction:row;align-items:flex-start;gap:10px;}
+  .of.check input{width:20px;height:20px;flex:none;margin-top:2px;accent-color:var(--champagne);}
+  .of.check label{font:400 12.5px/1.5 var(--sans);letter-spacing:0;text-transform:none;color:var(--ink-1);}
+  .of.check a{color:var(--champagne);}
+  #o-pay{width:100%;margin-top:4px;}
+  .o-status{margin-top:11px;font:400 12.5px/1.5 var(--sans);color:var(--ink-1);min-height:1.2em;}
+  .o-status.err{color:var(--crit);} .o-status.wait{color:var(--probe);}
+  .o-fine{margin-top:12px;font:400 11.5px/1.6 var(--sans);color:var(--ink-3);}
+  .o-fine a{color:var(--champagne);}
+  @media(max-width:520px){ .order{padding:22px 18px;border-radius:14px;} }
 </style>
 </head>
 <body>
@@ -557,12 +596,18 @@
         <div class="ds">One page, engineered to turn visitors into calls.</div>
         <ul><li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Custom single-page design</li>
           <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Lead capture, wired to a trusted service</li>
-          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>WCAG AA + agent-ready</li></ul></div>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>WCAG AA + agent-ready</li></ul>
+        <div class="tieract"><button type="button" class="btn buy" data-buy="landing" data-name="Landing" data-total="$1,500" data-deposit="$750">Start now, $750 today</button><a class="btn ghost sm" data-call href="#start">Book an intro call</a></div>
+        <p class="tiernote">$750 today, $750 on completion. Total $1,500.</p>
+      </div>
       <div class="tier pop reveal d1"><span class="badge2">Most popular</span><div class="nm">Business Site</div><div class="pr">$3,000<small>one-time</small></div>
         <div class="ds">A complete presence that makes you the obvious choice.</div>
         <ul><li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Up to 5 custom pages</li>
           <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>SEO foundations + copy guidance</li>
-          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>WCAG AA + agent-ready</li></ul></div>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>WCAG AA + agent-ready</li></ul>
+        <div class="tieract"><button type="button" class="btn buy" data-buy="business" data-name="Business Site" data-total="$3,000" data-deposit="$1,500">Start now, $1,500 today</button><a class="btn ghost sm" data-call href="#start">Book an intro call</a></div>
+        <p class="tiernote">$1,500 today, $1,500 on completion. Total $3,000.</p>
+      </div>
       <div class="tier reveal d2"><div class="nm">Care Plan</div><div class="pr">$150<small>/mo start</small></div>
         <div class="ds">We keep it fast, current, and compliant. Compliance drifts as you add content, this catches it.</div>
         <ul><li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Hosting, monitoring, backups</li>
@@ -600,6 +645,38 @@
     <div class="row" style="margin-top:22px"><a class="btn ghost" href="#pricing">See pricing</a></div>
   </div></section>
 
+  
+  <div class="ordermask" id="ordermask" hidden></div>
+  <div class="order" id="order" role="dialog" aria-modal="true" aria-labelledby="order-h" hidden>
+    <button type="button" class="orderx" id="orderx" aria-label="Close and go back to pricing">&times;</button>
+    <h3 id="order-h">Start your <span id="o-name">build</span></h3>
+    <p class="o-blurb" id="o-blurb"></p>
+
+    <div class="o-lines">
+      <div class="o-line"><span>Project total</span><b id="o-total"></b></div>
+      <div class="o-line pay"><span>Due today, 50% deposit</span><b id="o-dep"></b></div>
+      <div class="o-line"><span>Due on completion, before launch</span><b id="o-bal"></b></div>
+    </div>
+
+    <form id="orderform" novalidate>
+      <div class="of"><label for="o-biz">Business name</label>
+        <input id="o-biz" name="business" type="text" autocomplete="organization" required></div>
+      <div class="of"><label for="o-email">Email for the receipt</label>
+        <input id="o-email" name="email" type="email" autocomplete="email" required></div>
+      <div class="of"><label for="o-site">Current website <span class="opt">(optional)</span></label>
+        <input id="o-site" name="website" type="text" inputmode="url" autocomplete="url"></div>
+      <div class="of check">
+        <input id="o-agree" name="agreed" type="checkbox" required>
+        <label for="o-agree">I have read the <a href="/terms" target="_blank" rel="noopener">Terms of Service</a>
+          and understand the deposit is non-refundable once design work begins.</label>
+      </div>
+      <button class="btn" type="submit" id="o-pay">Continue to secure payment</button>
+    </form>
+    <p class="o-status" id="o-status" role="status" aria-live="polite"></p>
+    <p class="o-fine">Payment is handled by Stripe. Your card details never touch this site.
+      Not ready? <a href="#start" data-call>Book an intro call instead</a>.</p>
+  </div>
+
   </main>
 
   <footer class="foot"><div class="wrap" style="display:flex;justify-content:space-between;width:100%;gap:12px;flex-wrap:wrap">
@@ -622,6 +699,10 @@
    Leave a value empty and nothing breaks: that plan simply keeps sending
    people to the request form instead of rendering a button that goes nowhere.
    ========================================================================== */
+/* Intro call booking page, for example a Calendly link. Leave empty and the
+   "Book an intro call" buttons fall back to the request form on this page. */
+var BOOKING_LINK = "";
+
 var PAYMENT_LINKS = {
   careEssential:  "",   // Care Plan, Essential,  $150/mo subscription
   careStandard:   "",   // Care Plan, Standard,   $300/mo subscription
@@ -950,6 +1031,112 @@ var PAYMENT_LINKS = {
       link.setAttribute("aria-label", "Pay your project deposit, opens secure Stripe checkout");
       dep.hidden = false;
     }
+  })();
+
+  /* Store: pick a package, confirm the split, hand off to Stripe.
+     The browser never sends an amount. It sends a package key and the server
+     prices it from lib/catalogue.js, because a client that can name its own
+     price eventually will. */
+  (function(){
+    var mask=document.getElementById("ordermask"), dlg=document.getElementById("order");
+    if(!dlg) return;
+    var form=document.getElementById("orderform"), out=document.getElementById("o-status"),
+        payBtn=document.getElementById("o-pay"), closeBtn=document.getElementById("orderx");
+    var current=null, lastFocus=null;
+
+    function setText(id,v){ document.getElementById(id).textContent=v; }
+
+    function open(btn){
+      current=btn.getAttribute("data-buy");
+      lastFocus=btn;
+      setText("o-name", btn.getAttribute("data-name"));
+      setText("o-total", btn.getAttribute("data-total"));
+      setText("o-dep",   btn.getAttribute("data-deposit"));
+      setText("o-bal",   btn.getAttribute("data-deposit"));
+      document.getElementById("o-blurb").textContent =
+        "Half today to book the slot and start design, half when it is finished and before it goes live.";
+      out.textContent=""; out.className="o-status";
+      form.reset();
+      ["o-biz","o-email"].forEach(function(i){document.getElementById(i).removeAttribute("aria-invalid");});
+      mask.hidden=false; dlg.hidden=false;
+      document.body.style.overflow="hidden";
+      document.getElementById("o-biz").focus();
+    }
+    function close(){
+      mask.hidden=true; dlg.hidden=true;
+      document.body.style.overflow="";
+      if(lastFocus) lastFocus.focus();
+    }
+
+    document.querySelectorAll("[data-buy]").forEach(function(b){
+      b.addEventListener("click",function(){ open(b); });
+    });
+    closeBtn.addEventListener("click", close);
+    mask.addEventListener("click", close);
+
+    /* A modal that swallows the keyboard would be indefensible on this site. */
+    document.addEventListener("keydown", function(e){
+      if(dlg.hidden) return;
+      if(e.key==="Escape"){ close(); return; }
+      if(e.key!=="Tab") return;
+      var f=dlg.querySelectorAll('a[href],button:not([disabled]),input:not([disabled])');
+      if(!f.length) return;
+      var first=f[0], last=f[f.length-1];
+      if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+    });
+
+    function bad(id,msg){
+      var el=document.getElementById(id);
+      el.setAttribute("aria-invalid","true");
+      out.className="o-status err"; out.textContent=msg; el.focus();
+    }
+
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+      ["o-biz","o-email"].forEach(function(i){document.getElementById(i).removeAttribute("aria-invalid");});
+      var biz=document.getElementById("o-biz"), mail=document.getElementById("o-email"),
+          agree=document.getElementById("o-agree");
+      if(!biz.value.trim()) return bad("o-biz","Please tell us which business this is for.");
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail.value.trim()))
+        return bad("o-email","Please check that email, the receipt goes there.");
+      if(!agree.checked){
+        out.className="o-status err";
+        out.textContent="Please confirm you have read the terms before paying.";
+        agree.focus(); return;
+      }
+      payBtn.disabled=true;
+      out.className="o-status wait"; out.textContent="Opening secure checkout…";
+
+      fetch("/api/checkout",{
+        method:"POST", headers:{"content-type":"application/json"},
+        body:JSON.stringify({
+          "package": current,
+          business: biz.value.trim(),
+          email: mail.value.trim(),
+          website: document.getElementById("o-site").value.trim(),
+          agreed: true
+        })
+      }).then(function(r){return r.json();}).then(function(d){
+        if(d && d.ok && d.url){ window.location.href=d.url; return; }
+        out.className="o-status err";
+        out.textContent=(d && d.error) || "We could not start the checkout. Please book a call instead.";
+        payBtn.disabled=false;
+      }).catch(function(){
+        out.className="o-status err";
+        out.textContent="We could not reach the payment provider. Please book a call instead.";
+        payBtn.disabled=false;
+      });
+    });
+
+    /* Intro call: send it to the booking link when one is configured,
+       otherwise to the request form, which already reaches a human. */
+    var cal = (typeof BOOKING_LINK === "string" && /^https:\/\/\S+$/.test(BOOKING_LINK.trim()))
+      ? BOOKING_LINK.trim() : "";
+    if(cal) document.querySelectorAll("[data-call]").forEach(function(a){
+      a.href=cal; a.rel="noopener"; a.target="_blank";
+      a.setAttribute("aria-label","Book an intro call, opens the booking page in a new tab");
+    });
   })();
 </script>
 
