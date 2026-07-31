@@ -180,6 +180,11 @@
 
   .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1);}
   .reveal.in{opacity:1;transform:none;}
+  /* Keyboard focus can outrun the scroll-reveal transition (Tab moves focus into
+     a .reveal block before its IntersectionObserver fires, or while it is still
+     mid-fade), leaving the focused control invisible. Force it visible the
+     instant focus lands inside, no matter what .in state it is in. */
+  .reveal:focus-within{opacity:1!important;transform:none!important;transition:none!important;}
   .reveal.d1{transition-delay:.08s;} .reveal.d2{transition-delay:.16s;} .reveal.d3{transition-delay:.24s;}
 
   /* HERO */
@@ -197,6 +202,7 @@
   form.ask input{width:100%;height:52px;padding:0 18px;border:0;background:transparent;color:var(--ink-0);
     font:500 15px/1 var(--mono);}
   form.ask input::placeholder{color:var(--ink-2);} form.ask input:focus{outline:none;}
+  form.ask input:focus-visible{outline:2px solid var(--champagne);outline-offset:-2px;}
   .btn{height:52px;padding:0 22px;border:0;border-radius:11px;cursor:pointer;white-space:nowrap;
     background:linear-gradient(180deg,var(--champ-2),var(--champagne));color:#241d0e;font:650 14px/1 var(--sans);
     display:inline-flex;align-items:center;justify-content:center;gap:9px;
@@ -471,9 +477,10 @@
     <p class="micro">No email needed. This checks the HTML your server sends; the full teardown adds contrast, keyboard order and speed, run by hand and sent as a video.</p>
 
     <div class="report" id="report">
-      <p class="demo-flag" id="scanflag"></p>
+      <p class="demo-flag" id="scanflag" role="status" aria-live="polite"></p>
       <div class="log"><h3><span>Agent transcript</span><span class="dest" id="dest">northsidedental.com</span></h3>
         <div class="lines" id="lines" aria-live="polite"></div></div>
+      <p id="verdict-live" class="sr-only" role="status" aria-live="polite"></p>
       <div class="verdict">
         <div class="gauge human"><div class="k">Human-ready <span class="chip"></span></div>
           <div class="v"><span>0</span><small>/100</small></div><div class="bar"><i></i></div></div>
@@ -549,6 +556,7 @@
       <figure class="work reveal"><div class="frame"><div class="bar"><i></i><i></i><i></i><span class="u">brightsmile.dental</span></div>
         <div class="stage2"><div class="mk" style="flex-direction:row;background:#fff;color:#0f2f3a">
   <div class="ph" data-ph="dental" style="position:relative;width:44%;flex:none;display:flex;flex-direction:column;justify-content:space-between;padding:16px;color:#fff">
+    <span class="sr-only">Photo of a bright, clean dental-practice interior, used as the design's backdrop image.</span>
     <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,70,64,.35),rgba(11,50,46,.82))"></div>
     <span class="mk-logo" style="position:relative">Brightsmile</span>
     <div style="position:relative"><div class="mk-h" style="font-size:17px;color:#fff">Healthy smiles,<br>gentle care.</div>
@@ -581,12 +589,13 @@
         <div class="mk-stat"><b>$500M+</b><span style="color:#a8823f">Recovered</span></div>
         <div class="mk-stat"><b>40+ yrs</b><span style="color:#a8823f">Experience</span></div></div>
     </div>
-    <div class="ph" data-ph="law" style="flex:.85;border-radius:9px;box-shadow:0 12px 24px rgba(20,35,59,.2)"></div>
+    <div class="ph" data-ph="law" style="flex:.85;border-radius:9px;box-shadow:0 12px 24px rgba(20,35,59,.2)"><span class="sr-only">Photo of a law-office interior, used as the design's backdrop image.</span></div>
   </div>
 </div></div></div>
         <figcaption><div><div class="t">Law Firm</div><div class="d">Authoritative, editorial, credible.</div></div><span class="badge">Concept</span></figcaption></figure>
       <figure class="work reveal"><div class="frame"><div class="bar"><i></i><i></i><i></i><span class="u">lumierespa.co</span></div>
         <div class="stage2"><div class="mk ph" data-ph="medspa" style="color:#fff">
+  <span class="sr-only">Photo of a med-spa treatment room, used as the design's full-bleed backdrop image.</span>
   <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,14,20,.52),rgba(28,14,20,.1) 30%,rgba(28,14,20,.6) 62%,rgba(28,14,20,.95))"></div>
   <div class="mk-top" style="position:relative"><span class="mk-logo" style="letter-spacing:.14em">LUMI&Egrave;RE</span>
     <span class="mk-nav" style="color:#ffffffdd"><span>Treatments</span><span class="mk-cta" style="background:#b76e79;color:#fff">Book</span></span></div>
@@ -604,6 +613,7 @@
         <figcaption><div><div class="t">Med Spa</div><div class="d">Elegant, aspirational, booking-led.</div></div><span class="badge">Concept</span></figcaption></figure>
       <figure class="work reveal"><div class="frame"><div class="bar"><i></i><i></i><i></i><span class="u">summithvac.com</span></div>
         <div class="stage2"><div class="mk ph" data-ph="hvac" style="color:#fff">
+  <span class="sr-only">Photo of an HVAC technician at work, used as the design's full-bleed backdrop image.</span>
   <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,10,.58),rgba(8,8,10,.66) 45%,rgba(8,8,10,.9))"></div>
   <div class="mk-top" style="position:relative"><span class="mk-logo">Summit<span style="color:#fb923c"> HVAC</span></span>
     <span class="mk-nav" style="color:#ffffffdd"><span>Services</span><span>Reviews</span><span style="color:#fb923c;font-weight:700">(555) 010-2033</span></span></div>
@@ -839,7 +849,10 @@ var QUVLO_SCAN = null;
      that response; nothing here is scripted. */
   var form=document.getElementById("form"),send=document.getElementById("send"),urlEl=document.getElementById("url"),
       dest=document.getElementById("dest"),report=document.getElementById("report"),lines=document.getElementById("lines"),
-      flag=document.getElementById("scanflag"),notMeasured=document.getElementById("notmeasured");
+      flag=document.getElementById("scanflag"),notMeasured=document.getElementById("notmeasured"),
+      verdictLive=document.getElementById("verdict-live");
+  var TIER_WORD={good:"Strong",fair:"Fair",weak:"Weak",fail:"Fails"};
+  function tierOf(val){return val>=90?"good": val>=75?"fair": val>=50?"weak":"fail";}
   var SEV={critical:"bad",serious:"bad",moderate:"warn"};
 
   function row(cls,text){
@@ -854,9 +867,9 @@ var QUVLO_SCAN = null;
     var g=document.querySelector(sel);
     countUp(g.querySelector(".v span"),val);
     g.querySelector(".bar i").style.width=val+"%";
-    var tier = val>=90?"good": val>=75?"fair": val>=50?"weak":"fail";
+    var tier = tierOf(val);
     var chip=g.querySelector(".chip");
-    chip.textContent = {good:"Strong",fair:"Fair",weak:"Weak",fail:"Fails"}[tier];
+    chip.textContent = TIER_WORD[tier];
     chip.className="chip "+tier;
     g.className = g.className.replace(/\bg-(good|fair|weak|fail)\b/g,"").trim()+" g-"+tier;
   }
@@ -876,7 +889,7 @@ var QUVLO_SCAN = null;
     QUVLO_SCAN=null;
     var gfEl=document.getElementById("getfull");
     if(gfEl){ gfEl.hidden=true; document.getElementById("gf-status").textContent=""; }
-    lines.innerHTML=""; dest.textContent=host;
+    lines.innerHTML=""; dest.textContent=host; if(verdictLive) verdictLive.textContent="";
     report.classList.add("show");
     send.disabled=true; send.textContent="Scanning\u2026";
     flag.textContent="Scanning "+host+" now";
@@ -936,6 +949,8 @@ var QUVLO_SCAN = null;
         notMeasured.textContent="Measured from the HTML this site served. Not checked here: "+d.notMeasured.join(", ")+". Those need a browser driving the page, and they are in the full teardown.";
         reveal(els,function(){
           setGauge(".gauge.human",d.scores.human); setGauge(".gauge.agent",d.scores.agent);
+          if(verdictLive) verdictLive.textContent="Human-ready score "+d.scores.human+" of 100, "+TIER_WORD[tierOf(d.scores.human)]+
+            ". Agent-ready score "+d.scores.agent+" of 100, "+TIER_WORD[tierOf(d.scores.agent)]+".";
           var gf=document.getElementById("getfull");
           if(gf){ document.getElementById("gf-site").textContent=dest.textContent; gf.hidden=false; }
         });
