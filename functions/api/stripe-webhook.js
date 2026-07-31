@@ -17,7 +17,48 @@
  *   QUVLO_NOTIFY_URL        optional, the Formspree endpoint to notify. Falls
  *                           back to the same form the site already uses, so no
  *                           new service and no new cost.
+ *
+ * KV BINDING (Cloudflare Pages, Settings, Functions, KV namespace bindings):
+ *   QUVLO_EVENTS            optional but recommended. Remembers which Stripe
+ *                           event ids have already been acted on, so the
+ *                           retries Stripe sends after any hiccup do not send
+ *                           the same deposit alert twice. With no binding the
+ *                           webhook still works and simply loses that
+ *                           protection, because a duplicate email is a far
+ *                           smaller problem than a missed deposit.
  */
+
+/** Stripe retries a failing endpoint for about three days. Thirty covers that
+ *  comfortably and an event id is a few dozen bytes. */
+const SEEN_TTL_SECONDS = 60 * 60 * 24 * 30;
+
+/**
+ * Claim an event id before acting on it.
+ *
+ * Claiming first, rather than recording after, is what stops two retries that
+ * arrive at the same moment from both sending. The caller MUST release the
+ * claim if the work then fails, otherwise a delivery that failed to notify
+ * would be permanently marked as handled and the deposit would go unnoticed.
+ */
+async function claimEvent(kv, id) {
+  if (!kv) return { claimed: true, tracked: false };
+  const key = `evt:${id}`;
+  try {
+    if (await kv.get(key)) return { claimed: false, tracked: true };
+    await kv.put(key, new Date().toISOString(), { expirationTtl: SEEN_TTL_SECONDS });
+    return { claimed: true, tracked: true };
+  } catch (e) {
+    // Storage trouble must not cost us a real deposit alert.
+    console.error('event store unavailable, proceeding without duplicate protection', e?.message);
+    return { claimed: true, tracked: false };
+  }
+}
+
+async function releaseEvent(kv, id) {
+  if (!kv) return;
+  try { await kv.delete(`evt:${id}`); }
+  catch (e) { console.error('could not release event claim', id, e?.message); }
+}
 
 const TOLERANCE_SECONDS = 300;
 const DEFAULT_NOTIFY = 'https://formspree.io/f/mzdlnbkj';
@@ -125,24 +166,43 @@ export async function onRequestPost({ request, env, waitUntil }) {
     return text(`session ${session.id} not paid yet (${session.payment_status})`, 200);
   }
 
+  // Stripe retries on any hiccup, so the same paid event can arrive more than
+  // once. Claim it before doing anything with side effects.
+  const kv = env.QUVLO_EVENTS;
+  const { claimed, tracked } = await claimEvent(kv, event.id);
+  if (!claimed) {
+    return text(`duplicate ${event.id} already handled`, 200);
+  }
+
   const note = describe(session);
   const notifyUrl = env.QUVLO_NOTIFY_URL || DEFAULT_NOTIFY;
-  const send = fetch(notifyUrl, {
-    method: 'POST',
-    headers: { accept: 'application/json', 'content-type': 'application/json' },
-    body: JSON.stringify({
-      _subject: note.subject,
-      name: 'Quvlo deposit alert',
-      email: session.customer_details?.email || session.customer_email || 'hello@quvlo.co',
-      message: note.lines.join('\n'),
-      stripe_event: event.id,
-    }),
-  }).catch((e) => console.error('deposit notification failed', e?.message));
+
+  const deliver = (async () => {
+    try {
+      const res = await fetch(notifyUrl, {
+        method: 'POST',
+        headers: { accept: 'application/json', 'content-type': 'application/json' },
+        body: JSON.stringify({
+          _subject: note.subject,
+          name: 'Quvlo deposit alert',
+          email: session.customer_details?.email || session.customer_email || 'hello@quvlo.co',
+          message: note.lines.join('\n'),
+          stripe_event: event.id,
+        }),
+      });
+      if (!res.ok) throw new Error(`notify returned ${res.status}`);
+    } catch (e) {
+      // Hand the id back so Stripe's next retry is allowed to try again.
+      // Without this a failed send would sit marked as handled forever.
+      console.error('deposit notification failed, releasing claim', event.id, e?.message);
+      await releaseEvent(kv, event.id);
+    }
+  })();
 
   // Answer Stripe immediately; let the notification finish in the background.
-  if (typeof waitUntil === 'function') waitUntil(send); else await send;
+  if (typeof waitUntil === 'function') waitUntil(deliver); else await deliver;
 
-  return text(`ok ${session.id}`, 200);
+  return text(`ok ${session.id}${tracked ? '' : ' (untracked)'}`, 200);
 }
 
 /** A browser hitting this by hand should get an explanation, not a stack trace. */

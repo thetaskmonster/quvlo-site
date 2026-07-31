@@ -112,3 +112,20 @@ only acts when `payment_status` is `paid`, since the completed event can arrive
 before a slower payment method settles. On a real deposit it posts a summary to
 Formspree: business, package, amount paid, balance due on launch, contact email
 and the Stripe session id.
+
+**Duplicate protection.** Bind a KV namespace as `QUVLO_EVENTS` under Settings,
+Functions, KV namespace bindings. The webhook claims each Stripe event id there
+before it notifies, so the retries Stripe sends after any hiccup do not send the
+same alert twice. Entries expire after thirty days, which comfortably covers the
+roughly three days Stripe keeps retrying.
+
+The ordering matters. It claims the id first, then notifies, and **releases the
+claim if the notification fails**. Recording the id after a successful send
+would look simpler but leaves a window where two simultaneous retries both send;
+recording it first without releasing on failure is worse still, because a failed
+send would sit marked as handled forever and a real deposit would go unnoticed.
+
+With no binding the webhook still works and simply loses the protection, and
+says `untracked` in its response so that is visible. The same applies if KV
+itself errors. A duplicate email is a far smaller problem than a missed
+deposit.
