@@ -104,6 +104,24 @@
   .o-fine{margin-top:12px;font:400 11.5px/1.6 var(--sans);color:var(--ink-3);}
   .o-fine a{color:var(--champagne);}
   @media(max-width:520px){ .order{padding:22px 18px;border-radius:14px;} }
+  .getfull{max-width:760px;margin:26px auto 0;padding:24px;border:1px solid rgba(230,210,168,.28);
+    border-radius:15px;background:rgba(230,210,168,.05);text-align:left;}
+  .getfull h3{font:700 clamp(1.05rem,2.4vw,1.35rem)/1.2 var(--display);color:var(--ink-0);letter-spacing:-.015em;}
+  .getfull p{margin-top:9px;font-size:14px;color:var(--ink-1);}
+  #gfform{margin-top:16px;}
+  .gf-row{display:flex;gap:10px;flex-wrap:wrap;}
+  .gf-row input{flex:1 1 240px;min-height:48px;padding:0 14px;border-radius:10px;border:1px solid var(--hairline);
+    background:rgba(8,11,19,.8);color:var(--ink-0);font:400 15px/1 var(--sans);}
+  .gf-row input::placeholder{color:var(--ink-3);}
+  .gf-row input:focus-visible{outline:2px solid var(--champagne);outline-offset:2px;border-color:transparent;}
+  .gf-row input[aria-invalid="true"]{border-color:var(--crit);}
+  .gf-row .btn{flex:0 0 auto;}
+  .gf-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
+  .gf-fine{margin-top:11px;font:400 11.5px/1.6 var(--sans);color:var(--ink-3);}
+  .gf-fine a{color:var(--champagne);}
+  .gf-status{margin-top:10px;font:400 13px/1.5 var(--sans);color:var(--ink-1);min-height:1.2em;}
+  .gf-status.ok{color:var(--good);} .gf-status.err{color:var(--crit);}
+  @media(max-width:560px){ .gf-row .btn{width:100%;} }
 </style>
 </head>
 <body>
@@ -462,6 +480,28 @@
           <span class="note" id="notmeasured"></span></div>
       </div>
     </div>
+
+    <div class="getfull" id="getfull" hidden>
+      <h3 id="getfull-h">Want the four things we could not check?</h3>
+      <p>This scan reads the HTML your server sends. Colour contrast, keyboard order,
+        focus visibility and real speed on a phone need a browser driving the page.
+        We run those by hand on <span id="gf-site">your site</span> and send you the video. Free.</p>
+      <form id="gfform" novalidate>
+        <div class="gf-row">
+          <label class="sr-only" for="gf-email">Your email</label>
+          <input id="gf-email" name="email" type="email" inputmode="email" autocomplete="email"
+            placeholder="you@yourpractice.com" required>
+          <button class="btn" type="submit" id="gf-send">Send me the full teardown</button>
+        </div>
+        <p class="gf-hp" aria-hidden="true"><label for="gf-co">Company</label><input id="gf-co" name="company" type="text" tabindex="-1" autocomplete="off"></p>
+        <p class="gf-fine">We email you the teardown, then at most two short follow-ups about
+          this same site, and then we stop. Every email has a one click unsubscribe.
+          We never sell or share your address.
+          See our <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>.</p>
+      </form>
+      <p class="gf-status" id="gf-status" role="status" aria-live="polite"></p>
+    </div>
+
   </div></section>
 
   <!-- WHO -->
@@ -716,6 +756,13 @@ var PAYMENT_LINKS = {
   deposit:        "",   // build start deposit
 };
 
+/* The findings a visitor has just been shown. The scanner writes it and the
+   follow-up offer underneath the results reads it, and those two live in
+   separate closures, so it is declared out here where both can see it. Null
+   whenever there is no result on screen, which is what keeps the offer from
+   ever sending an empty lead. */
+var QUVLO_SCAN = null;
+
 (function(){
   var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
   var scrollP=0;
@@ -823,6 +870,9 @@ var PAYMENT_LINKS = {
     urlEl.removeAttribute("aria-invalid");
     var host=raw.replace(/^https?:\/\//,"").replace(/\/$/,"");
 
+    QUVLO_SCAN=null;
+    var gfEl=document.getElementById("getfull");
+    if(gfEl){ gfEl.hidden=true; document.getElementById("gf-status").textContent=""; }
     lines.innerHTML=""; dest.textContent=host;
     report.classList.add("show");
     send.disabled=true; send.textContent="Scanning\u2026";
@@ -876,10 +926,16 @@ var PAYMENT_LINKS = {
         els.push(row(stop?"bad":"dim", stop
           ? "\u2715 "+stop+" of these would stop an agent completing a booking"
           : "> nothing here outright blocks an automated booking"));
+        QUVLO_SCAN={site:d.finalUrl||host, human:d.scores.human, agent:d.scores.agent,
+                  kb:Math.round(d.bytes/1024), findings:d.findings};
         flag.textContent="Live scan of "+dest.textContent+" \u00b7 "+new Date().toLocaleString();
         flag.className="demo-flag done";
         notMeasured.textContent="Measured from the HTML this site served. Not checked here: "+d.notMeasured.join(", ")+". Those need a browser driving the page, and they are in the full teardown.";
-        reveal(els,function(){ setGauge(".gauge.human",d.scores.human); setGauge(".gauge.agent",d.scores.agent); });
+        reveal(els,function(){
+          setGauge(".gauge.human",d.scores.human); setGauge(".gauge.agent",d.scores.agent);
+          var gf=document.getElementById("getfull");
+          if(gf){ document.getElementById("gf-site").textContent=dest.textContent; gf.hidden=false; }
+        });
       })
       .catch(function(){
         reveal([row("bad","\u2715 the scan could not run just now, please try again")]);
@@ -1136,6 +1192,51 @@ var PAYMENT_LINKS = {
     if(cal) document.querySelectorAll("[data-call]").forEach(function(a){
       a.href=cal; a.rel="noopener"; a.target="_blank";
       a.setAttribute("aria-label","Book an intro call, opens the booking page in a new tab");
+    });
+  })();
+
+  /* The scan never asks for an email. This offer appears only after results are
+     on screen, so the visitor is deciding with the findings in front of them. */
+  (function(){
+    var f=document.getElementById("gfform"); if(!f) return;
+    var out=document.getElementById("gf-status"), btn=document.getElementById("gf-send"),
+        mail=document.getElementById("gf-email");
+    f.addEventListener("submit",function(e){
+      e.preventDefault();
+      mail.removeAttribute("aria-invalid");
+      var v=mail.value.trim();
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){
+        mail.setAttribute("aria-invalid","true");
+        out.className="gf-status err";
+        out.textContent="Please check that email so the teardown reaches you.";
+        mail.focus(); return;
+      }
+      btn.disabled=true; out.className="gf-status"; out.textContent="Sending…";
+      fetch("/api/lead",{method:"POST",headers:{"content-type":"application/json"},
+        body:JSON.stringify({
+          email:v,
+          company:document.getElementById("gf-co").value,
+          site:(QUVLO_SCAN&&QUVLO_SCAN.site)||"",
+          human:(QUVLO_SCAN&&QUVLO_SCAN.human),
+          agent:(QUVLO_SCAN&&QUVLO_SCAN.agent),
+          kb:(QUVLO_SCAN&&QUVLO_SCAN.kb),
+          findings:(QUVLO_SCAN&&QUVLO_SCAN.findings)||[]
+        })
+      }).then(function(r){return r.json();}).then(function(d){
+        if(d&&d.ok){
+          f.hidden=true;
+          out.className="gf-status ok";
+          out.textContent="Got it. Your teardown is on its way, usually within two business days.";
+        } else {
+          out.className="gf-status err";
+          out.textContent=(d&&d.error)||"That did not send. Email hello@quvlo.co and we will pick it up.";
+          btn.disabled=false;
+        }
+      }).catch(function(){
+        out.className="gf-status err";
+        out.textContent="That did not send. Email hello@quvlo.co and we will pick it up.";
+        btn.disabled=false;
+      });
     });
   })();
 </script>
