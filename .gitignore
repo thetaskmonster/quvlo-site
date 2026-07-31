@@ -30,3 +30,7 @@ dist-ssr
 
 # Generated preview build (see prototypes/build-preview.mjs)
 prototypes/.preview-body.html
+
+# Claude Code scratch: agent worktrees and local session state. Transient,
+# auto-removed when a workflow finishes; never part of the site.
+.claude/
