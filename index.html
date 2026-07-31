@@ -167,13 +167,13 @@
 <style>*{margin:0;padding:0;box-sizing:border-box}  .footlinks a{color:var(--ink-2);text-decoration:none;}
   .footlinks a:hover{color:var(--champagne);}
   .footlinks a:focus-visible{outline:2px solid var(--champagne);outline-offset:3px;border-radius:3px;}
-  .demo-flag{grid-column:1/-1;margin:0 0 14px;padding:9px 13px;border:1px solid rgba(255,207,138,.4);border-radius:9px;background:rgba(255,207,138,.09);color:var(--warn);font:400 10.5px/1.5 var(--mono);letter-spacing:.1em;text-transform:uppercase;}
+  .demo-flag{grid-column:1/-1;margin:0 0 14px;padding:9px 13px;border:1px solid rgba(255,207,138,.4);border-radius:9px;background:rgba(255,207,138,.09);color:var(--warn);font:400 10.5px/1.5 var(--mono);letter-spacing:.1em;text-transform:uppercase;overflow-wrap:anywhere;} /* WCAG 1.4.10: wrap long tokens rather than overflow at 320px */
   form.lead{max-width:620px;margin:30px auto 0;display:grid;grid-template-columns:1fr 1fr;gap:13px;text-align:left;}
   form.lead .lf{display:flex;flex-direction:column;gap:6px;}
   form.lead .lf.full{grid-column:1/-1;}
   form.lead label{font:400 10.5px/1.4 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2);}
   form.lead .opt{text-transform:none;letter-spacing:.04em;color:var(--ink-3);}
-  form.lead input,form.lead textarea{width:100%;padding:11px 13px;border-radius:9px;border:1px solid var(--hairline);
+  form.lead input,form.lead textarea{width:100%;padding:11px 13px;border-radius:9px;border:1px solid var(--field-line); /* WCAG 1.4.11: visible field edge on the primary conversion form */
     background:rgba(8,11,19,.75);color:var(--ink-0);font:400 14px/1.5 var(--sans);}
   form.lead input::placeholder{color:var(--ink-3);}
   form.lead input:focus-visible,form.lead textarea:focus-visible{outline:2px solid var(--champagne);outline-offset:2px;border-color:transparent;}
@@ -231,7 +231,7 @@
   .of{display:flex;flex-direction:column;gap:6px;}
   .of label{font:400 10.5px/1.4 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2);}
   .of .opt{text-transform:none;letter-spacing:.03em;color:var(--ink-3);}
-  .of input[type=text],.of input[type=email]{width:100%;padding:11px 13px;border-radius:9px;border:1px solid var(--hairline);
+  .of input[type=text],.of input[type=email]{width:100%;padding:11px 13px;border-radius:9px;border:1px solid var(--field-line); /* WCAG 1.4.11: visible field edge in the order dialog */
     background:rgba(8,11,19,.75);color:var(--ink-0);font:400 14px/1.5 var(--sans);}
   .of input:focus-visible{outline:2px solid var(--champagne);outline-offset:2px;border-color:transparent;}
   .of input[aria-invalid="true"]{border-color:var(--crit);}
@@ -251,7 +251,7 @@
   .getfull p{margin-top:9px;font-size:14px;color:var(--ink-1);}
   #gfform{margin-top:16px;}
   .gf-row{display:flex;gap:10px;flex-wrap:wrap;}
-  .gf-row input{flex:1 1 240px;min-height:48px;padding:0 14px;border-radius:10px;border:1px solid var(--hairline);
+  .gf-row input{flex:1 1 240px;min-height:48px;padding:0 14px;border-radius:10px;border:1px solid var(--field-line); /* WCAG 1.4.11: visible field edge on the scan email row */
     background:rgba(8,11,19,.8);color:var(--ink-0);font:400 15px/1 var(--sans);}
   .gf-row input::placeholder{color:var(--ink-3);}
   .gf-row input:focus-visible{outline:2px solid var(--champagne);outline-offset:2px;border-color:transparent;}
@@ -273,7 +273,8 @@
   :root{
     --space-0:#05070d; --space-1:#080b13; --space-2:#0d1220;
     --panel:rgba(16,21,32,.82); --hairline:rgba(184,200,224,.14); --hair-2:rgba(184,200,224,.09);
-    --ink-0:#f2f5fa; --ink-1:#c3ccd9; --ink-2:#8b96a8; --ink-3:#5f6a7c;
+    --field-line:rgba(184,200,224,.55); /* WCAG 1.4.11: visible edge on form controls; .55 measures >=3:1 vs the near-black field fill (the suggested .42 only reached 2.8:1) */
+    --ink-0:#f2f5fa; --ink-1:#c3ccd9; --ink-2:#8b96a8; --ink-3:#7c8698; /* WCAG 1.4.3: raised from #5f6a7c (capped 3.84:1) to ~5.4:1 on #05070d */
     --champagne:#e6d2a8; --champ-2:#f2e2bc; --platinum:#cdd6e2;
     --probe:#7fd4ff; --good:#7ee0a8; --warn:#ffcf8a; --crit:#ff9b9b;
     --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -281,7 +282,7 @@
     --mono:'Space Mono',ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth;scroll-padding-top:80px;} /* WCAG 2.4.11: clears the ~65px sticky nav so focused/anchored targets aren't obscured */
   body{margin:0;background:var(--space-0);color:var(--ink-1);font-family:var(--sans);
     -webkit-font-smoothing:antialiased;overflow-x:clip;}
   ::selection{background:rgba(230,210,168,.28);color:#fff;}
@@ -323,6 +324,13 @@
   /* HERO */
   .hero{min-height:100vh;display:flex;align-items:center;text-align:center;}
   .hero .inner{width:100%;padding:96px 0 64px;}
+  /* WCAG 1.4.3: dark scrim behind the hero + teardown copy. The fixed shader paints a
+     near-white torus behind both columns, dropping this text to 1.00-1.94:1; the floor
+     alpha (.86) holds every glyph over AA. */
+  #top .wrap.inner, #teardown .wrap{
+    background:radial-gradient(120% 100% at 50% 45%, rgba(5,7,13,.92), rgba(5,7,13,.86));
+    border-radius:22px;}
+  #teardown .wrap{padding-block:clamp(28px,5vh,56px);}
   h1{margin:22px auto 0;max-width:15ch;color:var(--ink-0);font-weight:300;letter-spacing:-.03em;
     line-height:1.0;font-size:clamp(2.6rem,7.2vw,5.4rem);}
   h1 b{font-weight:600;} h1 .glow{color:#fff;text-shadow:0 0 42px rgba(230,210,168,.4);}
@@ -335,6 +343,7 @@
   form.ask input{width:100%;height:52px;padding:0 18px;border:0;background:transparent;color:var(--ink-0);
     font:500 15px/1 var(--mono);}
   form.ask input::placeholder{color:var(--ink-2);} form.ask input:focus{outline:none;}
+  form.ask:focus-within{outline:2px solid var(--champagne);outline-offset:2px;} /* WCAG 2.4.7: ring moves to the pill so the scan input keeps a visible focus indicator */
   .btn{height:52px;padding:0 22px;border:0;border-radius:11px;cursor:pointer;white-space:nowrap;
     background:linear-gradient(180deg,var(--champ-2),var(--champagne));color:#241d0e;font:650 14px/1 var(--sans);
     display:inline-flex;align-items:center;justify-content:center;gap:9px;
@@ -348,12 +357,12 @@
   .scrollcue .ln{width:1px;height:34px;background:linear-gradient(var(--champagne),transparent);}
 
   /* Report */
-  .report{margin:30px auto 0;max-width:760px;display:none;grid-template-columns:1fr;gap:16px;text-align:left;}
+  .report{margin:30px auto 0;max-width:760px;display:none;grid-template-columns:minmax(0,1fr);gap:16px;text-align:left;} /* WCAG 1.4.10: minmax(0,1fr) lets the column shrink so content reflows at 320px */
   .report.show{display:grid;}
   @media(min-width:720px){ .report{grid-template-columns:1.3fr .9fr;} }
   .log{border:1px solid var(--hairline);border-radius:14px;background:var(--panel);backdrop-filter:blur(12px);padding:16px 18px;min-height:206px;}
   .log h3{margin:0 0 12px;font:600 10px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);display:flex;justify-content:space-between;}
-  .log h3 .dest{color:var(--champagne);}
+  .log h3 .dest{color:var(--champagne);overflow-wrap:anywhere;text-transform:none;letter-spacing:normal;} /* WCAG 1.4.10: let a long URL wrap instead of forcing 320px overflow */
   .lines{font:500 12.5px/1.85 var(--mono);color:var(--ink-1);}
   .lines .l{display:block;opacity:0;transform:translateY(3px);} .lines .l.in{opacity:1;transform:none;transition:opacity .3s,transform .3s;}
   .l .ok{color:var(--good);} .l .bad{color:var(--crit);} .l .warn{color:var(--warn);} .l .dim{color:var(--ink-2);} .l .probe{color:var(--probe);}
@@ -383,7 +392,7 @@
   .interlude{padding:clamp(72px,12vh,150px) 0;text-align:center;}
 
   h2{margin:16px 0 0;color:var(--ink-0);font-weight:350;letter-spacing:-.025em;line-height:1.06;
-    font-size:clamp(2rem,4.6vw,3.4rem);}
+    font-size:clamp(2rem,4.6vw,3.4rem);overflow-wrap:break-word;} /* WCAG 1.4.4: long heading words break rather than force scroll at 200% zoom */
   h2 b{font-weight:600;} h2 .champ{color:var(--champagne);}
   .sub{margin:18px 0 0;max-width:58ch;color:var(--ink-1);line-height:1.62;font-size:clamp(1rem,1.4vw,1.1rem);}
 
@@ -417,8 +426,8 @@
   .alsobar .txt b{color:var(--ink-0);}
 
   /* Work */
-  .gallery{margin-top:40px;display:grid;gap:18px;grid-template-columns:1fr;}
-  @media(min-width:640px){ .gallery{grid-template-columns:1fr 1fr;} }
+  .gallery{margin-top:40px;display:grid;gap:18px;grid-template-columns:minmax(0,1fr);} /* WCAG 1.4.4: shrinkable track so cards reflow at 200% zoom */
+  @media(min-width:640px){ .gallery{grid-template-columns:minmax(0,1fr) minmax(0,1fr);} }
   figure.work{margin:0;}
   .frame{border:1px solid var(--hairline);border-radius:14px;overflow:hidden;background:#0b0f18;
     box-shadow:0 30px 60px -40px #000;transition:transform .35s,border-color .35s;}
@@ -430,6 +439,7 @@
   .mock .h{height:26%;border-radius:6px;} .mock .r{display:flex;gap:6%;height:30%;} .mock .r span{flex:1;border-radius:6px;background:rgba(255,255,255,.06);}
   .mock .b{height:9%;width:64%;border-radius:4px;background:rgba(255,255,255,.10);} .mock .b.s{width:40%;}
   figure.work figcaption{margin-top:14px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;}
+  figure.work figcaption > div{min-width:0;} /* WCAG 1.4.4: let the caption text shrink instead of widening the card at 200% zoom */
   figcaption .t{color:var(--ink-0);font-weight:600;} figcaption .d{color:var(--ink-2);font-size:.85rem;margin-top:3px;}
   .badge{flex:none;font:600 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--champagne);
     border:1px solid rgba(230,210,168,.4);border-radius:999px;padding:6px 9px;}
@@ -440,8 +450,10 @@
   .thesis .btn{margin-top:26px;}
 
   /* Pricing */
-  .tiers{margin-top:40px;display:grid;gap:16px;grid-template-columns:1fr;}
-  @media(min-width:900px){ .tiers{grid-template-columns:repeat(3,1fr);} }
+  /* WCAG 1.4.10/1.4.4: minmax(0,1fr) lets tracks shrink below min-content so the
+     tier cards do not force horizontal scroll at 320px + 200% zoom. */
+  .tiers{margin-top:40px;display:grid;gap:16px;grid-template-columns:minmax(0,1fr);}
+  @media(min-width:900px){ .tiers{grid-template-columns:repeat(3,minmax(0,1fr));} }
   .tier{border:1px solid var(--hairline);border-radius:16px;background:var(--panel);padding:26px;display:flex;flex-direction:column;gap:6px;}
   .tier.pop{border-color:rgba(230,210,168,.5);box-shadow:0 0 0 1px rgba(230,210,168,.15),0 30px 60px -40px #000;}
   .tier .badge2{align-self:flex-start;font:600 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#241d0e;
@@ -449,6 +461,14 @@
   .tier .nm{font:600 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);}
   .tier .pr{margin-top:8px;font-weight:650;letter-spacing:-.02em;font-size:2.4rem;line-height:1;color:var(--ink-0);}
   .tier .pr small{font-size:.36em;color:var(--ink-2);font-weight:600;letter-spacing:0;}
+  /* WCAG 1.4.4/1.4.10: at a very narrow layout (small phones, and 320px under
+     200% text zoom) the 2.4rem price would otherwise be the last thing forcing
+     sideways scroll. Shrink it and drop the qualifier onto its own line so the
+     card fits. Placed AFTER the base rule so the cascade keeps it. */
+  @media(max-width:420px){
+    .tier .pr{font-size:1.9rem;}
+    .tier .pr small{display:block;font-size:.5em;}
+  }
   .tier .ds{margin-top:8px;color:var(--ink-1);font-size:.92rem;line-height:1.5;}
   .tier ul{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;}
   .tier li{display:flex;gap:9px;color:var(--ink-1);font-size:.9rem;line-height:1.4;}
@@ -541,7 +561,7 @@
   /* 24x24 hit area for WCAG 2.5.8; the visible dot stays 8px via a pseudo element */
   .vdot{position:relative;width:24px;height:24px;padding:0;border:0;background:transparent;cursor:pointer;border-radius:50%;}
   .vdot::before{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;
-    border-radius:50%;border:1px solid rgba(255,255,255,.32);transition:background .2s,border-color .2s,transform .2s;}
+    border-radius:50%;border:1px solid rgba(255,255,255,.5);transition:background .2s,border-color .2s,transform .2s;} /* WCAG 1.4.11: unpressed ring raised .32 -> .5 alpha (~4.6:1) */
   .vdot:hover::before{border-color:var(--champagne);}
   .vdot[aria-pressed="true"]::before{background:var(--champagne);border-color:var(--champagne);transform:scale(1.25);}
   .vdot:focus-visible{outline:2px solid var(--champagne);outline-offset:-1px;}
@@ -558,6 +578,7 @@
   main:focus{outline:none;}
 </style>
   <noscript><style>
+    .reveal{opacity:1 !important;transform:none !important;}
     [data-ph="dental"]{background-image:url(/images/concepts/dental-1.jpg);}
     [data-ph="law"]{background-image:url(/images/concepts/law-1.jpg);}
     [data-ph="medspa"]{background-image:url(/images/concepts/medspa-1.jpg);}
@@ -602,17 +623,18 @@
     </div>
     <form class="ask" id="form" novalidate>
       <div class="fw"><label for="url">Your website address</label>
-        <input id="url" name="url" type="text" inputmode="url" autocomplete="url" placeholder="yourpractice.com" value="" autocomplete="url" spellcheck="false" /></div>
+        <input id="url" name="url" type="text" inputmode="url" autocomplete="url" placeholder="yourpractice.com" value="" autocomplete="url" spellcheck="false" /><p id="url-err" role="alert" class="scan-err"></p></div>
       <button class="btn" id="send" type="submit">
         <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h9M8 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Scan my site</button>
     </form>
+    <noscript><p class="micro">Live scanning needs JavaScript. You can still <a href="#start">request a teardown by hand</a> below.</p></noscript>
     <p class="micro">No email needed. This checks the HTML your server sends; the full teardown adds contrast, keyboard order and speed, run by hand and sent as a video.</p>
 
-    <div class="report" id="report">
+    <div class="report" id="report" tabindex="-1">
       <p class="demo-flag" id="scanflag"></p>
-      <div class="log"><h3><span>Agent transcript</span><span class="dest" id="dest">northsidedental.com</span></h3>
+      <div class="log"><h3 tabindex="-1"><span>Agent transcript</span><span class="dest" id="dest">northsidedental.com</span></h3>
         <div class="lines" id="lines" aria-live="polite"></div></div>
-      <div class="verdict">
+      <div class="verdict" aria-live="polite" aria-atomic="true">
         <div class="gauge human"><div class="k">Human-ready <span class="chip"></span></div>
           <div class="v"><span>0</span><small>/100</small></div><div class="bar"><i></i></div></div>
         <div class="gauge agent"><div class="k">Agent-ready <span class="chip"></span></div>
@@ -665,11 +687,11 @@
       <h2>Websites that are impossible to ignore, <b>by humans or machines.</b></h2>
       <p class="sub">The same craft that wins on looks is the craft that passes a screen reader and lets an AI agent complete the task. We do all three, on purpose.</p></div>
     <div class="cards">
-      <div class="card reveal"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H4zM9 20h6M12 16v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="card reveal"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M4 5h16v11H4zM9 20h6M12 16v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <h3>Custom websites</h3><p>Hand-built, fast, and yours to keep. No page-builder, no theme off a shelf, no monthly hostage situation.</p></div>
-      <div class="card reveal d1"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6l7-3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="card reveal d1"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M12 3l7 3v5c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6l7-3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <h3>Compliant by default</h3><p>WCAG 2.1 AA, ADA and EAA, built in from the first line. Not a plugin, not a lawsuit waiting to happen.</p></div>
-      <div class="card reveal d2"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      <div class="card reveal d2"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
         <h3>Agent-ready</h3><p>Structured so an AI assistant can actually book, buy, or contact, because your next customer&rsquo;s agent will try.</p></div>
     </div>
     <div class="alsobar reveal"><span class="tag">Also on request</span>
@@ -684,8 +706,8 @@
     <button type="button" id="shuffle" class="shuffle reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg>Shuffle the concepts</button>
     <p id="work-live" class="sr-only" role="status" aria-live="polite"></p>
     <div class="gallery">
-      <figure class="work reveal"><div class="frame"><div class="bar"><i></i><i></i><i></i><span class="u">brightsmile.dental</span></div>
-        <div class="stage2"><div class="mk" style="flex-direction:row;background:#fff;color:#0f2f3a">
+      <figure class="work reveal"><div class="frame"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="u">brightsmile.dental</span></div>
+        <div class="stage2" aria-hidden="true"><div class="mk" style="flex-direction:row;background:#fff;color:#0f2f3a">
   <div class="ph" data-ph="dental" style="position:relative;width:44%;flex:none;display:flex;flex-direction:column;justify-content:space-between;padding:16px;color:#fff">
     <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,70,64,.35),rgba(11,50,46,.82))"></div>
     <span class="mk-logo" style="position:relative">Brightsmile</span>
@@ -704,8 +726,8 @@
   </div>
 </div></div></div>
         <figcaption><div><div class="t">Dental Practice</div><div class="d">Calm, clean, appointment-first.</div></div><span class="badge">Concept</span></figcaption></figure>
-      <figure class="work reveal"><div class="frame"><div class="bar"><i></i><i></i><i></i><span class="u">halebishop.law</span></div>
-        <div class="stage2"><div class="mk" style="background:#f3efe8;color:#14233b">
+      <figure class="work reveal"><div class="frame"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="u">halebishop.law</span></div>
+        <div class="stage2" aria-hidden="true"><div class="mk" style="background:#f3efe8;color:#14233b">
   <div class="mk-strip" style="background:#14233b;color:#e6cf9b;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase">Free case review &middot; No fee unless we win</div>
   <div class="mk-top"><span class="mk-logo" style="letter-spacing:.03em;font-size:12px">HALE &amp; BISHOP</span>
     <span class="mk-nav" style="color:#14233baa"><span>Practice</span><span>Attorneys</span><span class="mk-cta" style="border:1px solid #a8823f;color:#8a6a2f">Consult</span></span></div>
@@ -723,8 +745,8 @@
   </div>
 </div></div></div>
         <figcaption><div><div class="t">Law Firm</div><div class="d">Authoritative, editorial, credible.</div></div><span class="badge">Concept</span></figcaption></figure>
-      <figure class="work reveal"><div class="frame"><div class="bar"><i></i><i></i><i></i><span class="u">lumierespa.co</span></div>
-        <div class="stage2"><div class="mk ph" data-ph="medspa" style="color:#fff">
+      <figure class="work reveal"><div class="frame"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="u">lumierespa.co</span></div>
+        <div class="stage2" aria-hidden="true"><div class="mk ph" data-ph="medspa" style="color:#fff">
   <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,14,20,.52),rgba(28,14,20,.1) 30%,rgba(28,14,20,.6) 62%,rgba(28,14,20,.95))"></div>
   <div class="mk-top" style="position:relative"><span class="mk-logo" style="letter-spacing:.14em">LUMI&Egrave;RE</span>
     <span class="mk-nav" style="color:#ffffffdd"><span>Treatments</span><span class="mk-cta" style="background:#b76e79;color:#fff">Book</span></span></div>
@@ -740,8 +762,8 @@
   <div class="mk-chip" style="position:absolute;right:16px;top:46px;background:#fff;color:#b76e79;font-weight:700;border-color:transparent;box-shadow:0 8px 22px rgba(0,0,0,.35)">New guest &middot; 20% off first facial</div>
 </div></div></div>
         <figcaption><div><div class="t">Med Spa</div><div class="d">Elegant, aspirational, booking-led.</div></div><span class="badge">Concept</span></figcaption></figure>
-      <figure class="work reveal"><div class="frame"><div class="bar"><i></i><i></i><i></i><span class="u">summithvac.com</span></div>
-        <div class="stage2"><div class="mk ph" data-ph="hvac" style="color:#fff">
+      <figure class="work reveal"><div class="frame"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="u">summithvac.com</span></div>
+        <div class="stage2" aria-hidden="true"><div class="mk ph" data-ph="hvac" style="color:#fff">
   <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,10,.58),rgba(8,8,10,.66) 45%,rgba(8,8,10,.9))"></div>
   <div class="mk-top" style="position:relative"><span class="mk-logo">Summit<span style="color:#fb923c"> HVAC</span></span>
     <span class="mk-nav" style="color:#ffffffdd"><span>Services</span><span>Reviews</span><span style="color:#fb923c;font-weight:700">(555) 010-2033</span></span></div>
@@ -763,7 +785,7 @@
   <section class="interlude thesis" id="thesis"><div class="wrap reveal">
     <span class="eyebrow" style="justify-content:center"><i></i>Practice what we sell</span>
     <h2>Don&rsquo;t take our word for it. <b>Run the teardown on us.</b></h2>
-    <p class="sub">Most award-winning sites fail a screen reader on the first tap. We hold this site to the same test we run on yours, human-ready and agent-ready, both green. We publish our own live score, no marketing asterisk.</p>
+    <p class="sub">Most award-winning sites fail a screen reader on the first tap. We hold this site to the same test we run on yours, human-ready and agent-ready, both green. Run it on us &mdash; paste quvlo.co into the scanner above.</p>
     <a class="btn" href="#teardown"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h9M8 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Run the teardown</a>
   </div></section>
 
@@ -775,25 +797,25 @@
     <div class="tiers">
       <div class="tier reveal"><div class="nm">Landing</div><div class="pr">$1,500<small>one-time</small></div>
         <div class="ds">One page, engineered to turn visitors into calls.</div>
-        <ul><li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Custom single-page design</li>
-          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Lead capture, wired to a trusted service</li>
-          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>WCAG AA + agent-ready</li></ul>
+        <ul><li><svg viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Custom single-page design</li>
+          <li><svg viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Lead capture, wired to a trusted service</li>
+          <li><svg viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>WCAG AA + agent-ready</li></ul>
         <div class="tieract"><button type="button" class="btn buy" data-buy="landing" data-name="Landing" data-total="$1,500" data-deposit="$750">Start now, $750 today</button><a class="btn ghost sm" data-call href="#start">Book an intro call</a></div>
         <p class="tiernote">$750 today, $750 on completion. Total $1,500.</p>
       </div>
-      <div class="tier pop reveal d1"><span class="badge2">Most popular</span><div class="nm">Business Site</div><div class="pr">$3,000<small>one-time</small></div>
+      <div class="tier pop reveal d1"><span class="badge2">Recommended</span><div class="nm">Business Site</div><div class="pr">$3,000<small>one-time</small></div>
         <div class="ds">A complete presence that makes you the obvious choice.</div>
-        <ul><li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Up to 5 custom pages</li>
-          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>SEO foundations + copy guidance</li>
-          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>WCAG AA + agent-ready</li></ul>
+        <ul><li><svg viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Up to 5 custom pages</li>
+          <li><svg viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>SEO foundations + copy guidance</li>
+          <li><svg viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>WCAG AA + agent-ready</li></ul>
         <div class="tieract"><button type="button" class="btn buy" data-buy="business" data-name="Business Site" data-total="$3,000" data-deposit="$1,500">Start now, $1,500 today</button><a class="btn ghost sm" data-call href="#start">Book an intro call</a></div>
         <p class="tiernote">$1,500 today, $1,500 on completion. Total $3,000.</p>
       </div>
       <div class="tier reveal d2"><div class="nm">Care Plan</div><div class="pr">$150<small>/mo start</small></div>
         <div class="ds">We keep it fast, current, and compliant. Compliance drifts as you add content, this catches it.</div>
-        <ul><li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Hosting, monitoring, backups</li>
-          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Ongoing accessibility checks</li>
-          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Month-to-month, cancel anytime</li></ul></div>
+        <ul><li><svg viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Hosting, monitoring, backups</li>
+          <li><svg viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Ongoing accessibility checks</li>
+          <li><svg viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Month-to-month, cancel anytime</li></ul></div>
     </div>
     <div class="subtiers reveal">
       <div class="subtier"><div class="nm">Essential</div><div class="pr">$150<small>/mo</small></div><div class="ds">Hosting, security + accessibility monitoring, small edits.</div><a class="paybtn" data-pay="careEssential" data-plan="Essential" href="#start">Ask about Essential</a></div>
@@ -809,7 +831,7 @@
     <span class="eyebrow" style="justify-content:center"><i></i>Start here</span>
     <h2>See what your site is <span class="champ">costing you.</span></h2>
     <p class="sub" style="margin-inline:auto">A real teardown of your real site, run by hand and sent to you as a short video. No pitch.</p>
-    <form class="lead" id="lead" novalidate>
+    <form class="lead" id="lead" action="https://formspree.io/f/mzdlnbkj" method="POST" novalidate>
       <div class="lf"><label for="lf-name">Your name</label>
         <input id="lf-name" name="name" type="text" autocomplete="name" required></div>
       <div class="lf"><label for="lf-site">Your website</label>
@@ -822,7 +844,7 @@
       <button class="btn" type="submit" id="lf-send">Request my free teardown</button>
     </form>
     <p class="lead-status" id="lead-status" role="status" aria-live="polite"></p>
-    <p class="micro">Prefer email? <a href="mailto:hello@quvlo.co">hello@quvlo.co</a></p>
+    <p class="micro">Prefer email? <!--email_off--><a href="mailto:hello@quvlo.co">hello@quvlo.co</a><!--/email_off--></p>
     <div class="row" style="margin-top:22px"><a class="btn ghost" href="#pricing">See pricing</a></div>
   </div></section>
 
@@ -862,7 +884,7 @@
 
   <footer class="foot"><div class="wrap" style="display:flex;justify-content:space-between;width:100%;gap:12px;flex-wrap:wrap">
     <span>&copy; 2026 Quvlo &middot; precision web studio &middot; Dallas, TX</span>
-    <span class="footlinks"><a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="mailto:hello@quvlo.co">hello@quvlo.co</a></span>
+    <span class="footlinks"><a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot; <!--email_off--><a href="mailto:hello@quvlo.co">hello@quvlo.co</a><!--/email_off--></span>
   </div></footer>
 </div>
 
@@ -908,11 +930,28 @@ var QUVLO_SCAN = null;
   var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
   var scrollP=0;
 
-  /* WebGL object, scroll-reactive */
-  var cv=document.getElementById("gl");
-  var gl=cv.getContext("webgl")||cv.getContext("experimental-webgl");
-  var glOK=!!gl, uScan={v:0};
-  if(glOK){
+  /* reveal on scroll — declared FIRST and guarded so nothing below (a shader
+     exception in particular) can leave .reveal nodes stuck at opacity:0.
+     Defence in depth: keeps page content visible per WCAG 1.3.2 / 1.4.13. */
+  try{
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}});},{rootMargin:"0px 0px -12% 0px",threshold:.12});
+    document.querySelectorAll(".reveal").forEach(function(el){io.observe(el);});
+  }catch(e){ document.querySelectorAll(".reveal").forEach(function(el){el.classList.add("in");}); }
+
+  /* scroll: progress + nav state */
+  var nav=document.getElementById("nav");
+  function onScroll(){var h=document.documentElement;scrollP=h.scrollTop/Math.max(1,(h.scrollHeight-innerHeight));
+    if(h.scrollTop>10)nav.classList.add("stuck");else nav.classList.remove("stuck");}
+  addEventListener("scroll",onScroll,{passive:true});onScroll();
+
+  /* WebGL object, scroll-reactive. Wrapped in try/catch so any GL failure is
+     contained; the reveal observer above has already run, so 89% of the page
+     can never vanish behind a shader bug again. */
+  var cv=document.getElementById("gl"), glOK=false, uScan={v:0};
+  try{
+    var gl=cv.getContext("webgl")||cv.getContext("experimental-webgl");
+    glOK=!!gl;
+    if(glOK){
     var vs="attribute vec2 p;void main(){gl_Position=vec4(p,0.0,1.0);}";
     var fs=["precision highp float;","uniform vec2 R;uniform float T;uniform float S;uniform float P;uniform vec2 M;",
 "mat2 rot(float a){float s=sin(a),c=cos(a);return mat2(c,-s,s,c);}",
@@ -949,28 +988,49 @@ var QUVLO_SCAN = null;
       if(!reduce && matchMedia("(hover:hover) and (pointer:fine)").matches){
         addEventListener("mousemove",function(e){mx=(e.clientX/innerWidth-0.5)*2;my=-(e.clientY/innerHeight-0.5)*2;},{passive:true});
       }
-      function size(){var dpr=Math.min(devicePixelRatio||1,1.5);cv.width=Math.floor(innerWidth*dpr);cv.height=Math.floor(innerHeight*dpr);gl.viewport(0,0,cv.width,cv.height);}
+      /* perf: pin the backing store to DPR 1 and cap width ~1280 so retina /
+         ultrawide screens don't raymarch millions of extra fragments */
+      function size(){var w=innerWidth,h=innerHeight,s=w>1280?1280/w:1;
+        cv.width=Math.max(1,Math.floor(w*s));cv.height=Math.max(1,Math.floor(h*s));gl.viewport(0,0,cv.width,cv.height);}
       size();addEventListener("resize",size,{passive:true});
-      var start=null;
-      function frame(ts){if(start===null)start=ts;var t=(ts-start)/1000;
+
+      var start=null,lastDraw=-1e9,INTERVAL=1000/32,rafId=0,stopped=false;
+      function draw(t){
         smx+=(mx-smx)*0.06;smy+=(my-smy)*0.06;
         gl.uniform2f(uR,cv.width,cv.height);gl.uniform1f(uT,reduce?1.4:t);gl.uniform1f(uS,uScan.v);gl.uniform1f(uP,scrollP);
         gl.uniform2f(uM,reduce?0.0:smx,reduce?0.0:smy);
-        gl.drawArrays(gl.TRIANGLES,0,3);requestAnimationFrame(frame);}
-      requestAnimationFrame(frame);
+        gl.drawArrays(gl.TRIANGLES,0,3);}
+      function fallback(){stopped=true;if(rafId)cancelAnimationFrame(rafId);
+        cv.style.background="radial-gradient(120% 90% at 50% 28%,#141c30,#05070d 72%)";}
+      if(reduce){                    /* reduced motion: frames are identical, paint one and stop */
+        start=performance.now();draw(1.4);
+      }else{
+        var probe=[],guarded=false,prevTs=0;
+        function frame(ts){
+          if(stopped)return;
+          if(start===null){start=ts;prevTs=ts;}
+          if(!guarded){
+            /* runtime guard: sample the first ~20 real frame intervals; if the
+               median tops ~33ms this device has no usable GPU, so stop the loop
+               and fall back to the CSS gradient to free the main thread */
+            probe.push(ts-prevTs);prevTs=ts;
+            if(probe.length>=20){guarded=true;
+              var srt=probe.slice().sort(function(a,b){return a-b;});
+              if(srt[srt.length>>1]>33){fallback();return;}}
+            draw((ts-start)/1000);
+          }else if(ts-lastDraw>=INTERVAL){   /* then cap the loop to ~30fps */
+            lastDraw=ts;draw((ts-start)/1000);
+          }
+          rafId=requestAnimationFrame(frame);}
+        rafId=requestAnimationFrame(frame);
+      }
     }
   }
+  }catch(e){ glOK=false; }
   if(!glOK){cv.style.background="radial-gradient(120% 90% at 50% 28%,#141c30,#05070d 72%)";}
 
-  /* scroll: progress + nav state */
-  var nav=document.getElementById("nav");
-  function onScroll(){var h=document.documentElement;scrollP=h.scrollTop/Math.max(1,(h.scrollHeight-innerHeight));
-    if(h.scrollTop>10)nav.classList.add("stuck");else nav.classList.remove("stuck");}
-  addEventListener("scroll",onScroll,{passive:true});onScroll();
-
-  /* reveal on scroll */
-  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}});},{rootMargin:"0px 0px -12% 0px",threshold:.12});
-  document.querySelectorAll(".reveal").forEach(function(el){io.observe(el);});
+  /* (reveal + scroll setup moved above the WebGL block so a shader exception
+     can never suppress content reveal — see top of this IIFE) */
 
   /* agent report: posts the address to /api/scan, which fetches the page and
      audits the HTML the server actually sent. Every number below comes from
@@ -980,6 +1040,33 @@ var QUVLO_SCAN = null;
       flag=document.getElementById("scanflag"),notMeasured=document.getElementById("notmeasured");
   var SEV={critical:"bad",serious:"bad",moderate:"warn"};
 
+  /* WCAG 4.1.3: a dedicated polite sr-only region for one settled sentence per
+     gauge, kept out of the animating digits so nothing is announced per frame */
+  var srLive=document.getElementById("scan-sr");
+  if(!srLive && report){ srLive=document.createElement("p"); srLive.id="scan-sr";
+    srLive.className="sr-only"; srLive.setAttribute("aria-live","polite"); report.appendChild(srLive); }
+  function announceScore(name,word,val){
+    if(!srLive) return;
+    var s=document.createElement("span");   /* append a fresh node so only the new sentence is spoken */
+    s.textContent=name+": "+word+", "+val+" out of 100. ";
+    srLive.appendChild(s);
+  }
+
+  /* WCAG 3.3.1: expose the reason a submit was rejected in #url-err (a role=alert
+     the markup provides) and tie it to #url via aria-describedby. Looked up
+     lazily so it works whether the hook is present at parse or added later. */
+  function urlError(msg,focus){
+    var e=document.getElementById("url-err"); if(e) e.textContent=msg;
+    urlEl.setAttribute("aria-invalid","true");
+    urlEl.setAttribute("aria-describedby","url-err");
+    if(focus) urlEl.focus();
+  }
+  function urlClear(){
+    var e=document.getElementById("url-err"); if(e) e.textContent="";
+    urlEl.removeAttribute("aria-invalid");
+    urlEl.removeAttribute("aria-describedby");
+  }
+
   function row(cls,text){
     var d=document.createElement("span"); d.className="l";
     var i=document.createElement("span"); i.className=cls;
@@ -987,14 +1074,16 @@ var QUVLO_SCAN = null;
                                                  scanned site's markup is untrusted */
     d.appendChild(i); lines.appendChild(d); return d;
   }
-  function countUp(el,to){if(reduce){el.textContent=to;return;}var s=null;function st(ts){if(!s)s=ts;var p=Math.min((ts-s)/900,1);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(st);}requestAnimationFrame(st);}
-  function setGauge(sel,val){
+  function countUp(el,to,done){if(reduce){el.textContent=to;done&&done();return;}var s=null;function st(ts){if(!s)s=ts;var p=Math.min((ts-s)/900,1);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(st);else done&&done();}requestAnimationFrame(st);}
+  function setGauge(sel,val,name){
     var g=document.querySelector(sel);
-    countUp(g.querySelector(".v span"),val);
-    g.querySelector(".bar i").style.width=val+"%";
     var tier = val>=90?"good": val>=75?"fair": val>=50?"weak":"fail";
+    var word = {good:"Strong",fair:"Fair",weak:"Weak",fail:"Fails"}[tier];
+    /* announce ONCE, only after the digit animation settles (WCAG 4.1.3) */
+    countUp(g.querySelector(".v span"),val,function(){ announceScore(name,word,val); });
+    g.querySelector(".bar i").style.width=val+"%";
     var chip=g.querySelector(".chip");
-    chip.textContent = {good:"Strong",fair:"Fair",weak:"Weak",fail:"Fails"}[tier];
+    chip.textContent = word;
     chip.className="chip "+tier;
     g.className = g.className.replace(/\bg-(good|fair|weak|fail)\b/g,"").trim()+" g-"+tier;
   }
@@ -1007,13 +1096,14 @@ var QUVLO_SCAN = null;
   form.addEventListener("submit",function(e){
     e.preventDefault();
     var raw=(urlEl.value||"").trim();
-    if(!raw){ urlEl.setAttribute("aria-invalid","true"); urlEl.focus(); return; }
-    urlEl.removeAttribute("aria-invalid");
+    if(!raw){ urlError("Please enter your website address so we know what to scan.",true); return; }
+    urlClear();
     var host=raw.replace(/^https?:\/\//,"").replace(/\/$/,"");
 
     QUVLO_SCAN=null;
     var gfEl=document.getElementById("getfull");
     if(gfEl){ gfEl.hidden=true; document.getElementById("gf-status").textContent=""; }
+    if(srLive) srLive.textContent="";     /* drop the previous scan's score announcements */
     lines.innerHTML=""; dest.textContent=host;
     report.classList.add("show");
     send.disabled=true; send.textContent="Scanning\u2026";
@@ -1036,6 +1126,7 @@ var QUVLO_SCAN = null;
         if(!d.ok){
           els.push(row("bad","\u2715 "+d.error));
           els.push(row("dim","> nothing was scanned, so no score is shown"));
+          urlError(d.error||"That address could not be scanned.",false);   /* WCAG 3.3.1: surface the server's reason on #url */
           flag.textContent="Scan could not run";
           flag.className="demo-flag";
           document.querySelectorAll(".gauge").forEach(function(g){g.style.display="none";});
@@ -1073,7 +1164,8 @@ var QUVLO_SCAN = null;
         flag.className="demo-flag done";
         notMeasured.textContent="Measured from the HTML this site served. Not checked here: "+d.notMeasured.join(", ")+". Those need a browser driving the page, and they are in the full teardown.";
         reveal(els,function(){
-          setGauge(".gauge.human",d.scores.human); setGauge(".gauge.agent",d.scores.agent);
+          setGauge(".gauge.human",d.scores.human,"Human-ready"); setGauge(".gauge.agent",d.scores.agent,"Agent-ready");
+          if(report) report.focus();   /* WCAG 2.4.3: move focus to the results heading once they settle */
           var gf=document.getElementById("getfull");
           if(gf){ document.getElementById("gf-site").textContent=dest.textContent; gf.hidden=false; }
         });
