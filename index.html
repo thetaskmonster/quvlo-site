@@ -4,7 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Quvlo: Websites Built So People and AI Agents Can Both Use Them</title>
-<meta name="description" content="Quvlo is a precision web studio in Dallas Fort Worth. We build custom sites with ADA and EAA compliance by default, so screen readers and AI agents can both complete a booking. Run a free teardown of your site.">
+<!-- Keep under ~155 characters. Google truncates around there, and the old
+     210 character version lost everything after "screen readers and AI agents". -->
+<meta name="description" content="A Dallas Fort Worth web studio. Custom sites screen readers and AI agents can both use, ADA and EAA compliant. Run a free scan of your site.">
 <meta name="theme-color" content="#05070d">
 <link rel="canonical" href="https://quvlo.co/">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -24,6 +26,142 @@
 <meta name="twitter:description" content="A precision web studio building custom sites with ADA and EAA compliance by default.">
 <meta name="twitter:image" content="https://quvlo.co/og-image.jpg">
 <meta name="twitter:image:alt" content="Quvlo. Can an AI agent actually use your website? Two scores, one for people using screen readers and one for booking agents.">
+<!--
+  Structured data. Every claim below is already stated in public on this site or
+  in the Terms, and nothing here is decorative.
+
+  What is deliberately ABSENT, and must stay absent until it is true:
+    aggregateRating, review   Quvlo has zero clients. There is nothing to rate.
+    streetAddress, telephone  Not published anywhere, so not asserted here.
+    foundingDate, employees   Not verified, so left out rather than guessed.
+  Search engines treat this as a factual claim about the business. Adding a
+  rating nobody left is the kind of thing this studio charges to find on other
+  people's sites.
+
+  NOTE: founder name changes in November. Update it here, in terms.html and in
+  privacy.html together, or the three will disagree.
+-->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ProfessionalService",
+      "@id": "https://quvlo.co/#studio",
+      "name": "Quvlo",
+      "url": "https://quvlo.co/",
+      "email": "hello@quvlo.co",
+      "image": "https://quvlo.co/og-image.jpg",
+      "logo": "https://quvlo.co/favicon.svg",
+      "description": "A web studio building custom sites that screen readers and AI agents can both use, with ADA and EAA compliance by default.",
+      "priceRange": "$150-$3,000",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Dallas",
+        "addressRegion": "TX",
+        "addressCountry": "US"
+      },
+      "areaServed": [
+        { "@type": "City", "name": "Dallas" },
+        { "@type": "City", "name": "Fort Worth" },
+        { "@type": "AdministrativeArea", "name": "Dallas Fort Worth Metroplex" }
+      ],
+      "founder": { "@type": "Person", "name": "Kyle Chalk" },
+      "knowsAbout": [
+        "Web accessibility",
+        "WCAG 2.2 AA conformance",
+        "Americans with Disabilities Act compliance",
+        "European Accessibility Act compliance",
+        "Agentic web readiness"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Websites and care plans",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "name": "Landing Page",
+            "price": "1500",
+            "priceCurrency": "USD",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Landing Page",
+              "description": "A single custom page built to WCAG 2.2 AA."
+            }
+          },
+          {
+            "@type": "Offer",
+            "name": "Business Site",
+            "price": "3000",
+            "priceCurrency": "USD",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Business Site",
+              "description": "A multi page custom site built to WCAG 2.2 AA."
+            }
+          },
+          {
+            "@type": "Offer",
+            "name": "Care Plan, Essential",
+            "priceCurrency": "USD",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "150",
+              "priceCurrency": "USD",
+              "unitCode": "MON",
+              "unitText": "month"
+            },
+            "itemOffered": { "@type": "Service", "name": "Care Plan, Essential" }
+          },
+          {
+            "@type": "Offer",
+            "name": "Care Plan, Standard",
+            "priceCurrency": "USD",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "300",
+              "priceCurrency": "USD",
+              "unitCode": "MON",
+              "unitText": "month"
+            },
+            "itemOffered": { "@type": "Service", "name": "Care Plan, Standard" }
+          },
+          {
+            "@type": "Offer",
+            "name": "Care Plan, Compliance",
+            "priceCurrency": "USD",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "650",
+              "priceCurrency": "USD",
+              "unitCode": "MON",
+              "unitText": "month"
+            },
+            "itemOffered": { "@type": "Service", "name": "Care Plan, Compliance" }
+          }
+        ]
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://quvlo.co/#website",
+      "url": "https://quvlo.co/",
+      "name": "Quvlo",
+      "inLanguage": "en",
+      "publisher": { "@id": "https://quvlo.co/#studio" }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://quvlo.co/#webpage",
+      "url": "https://quvlo.co/",
+      "name": "Quvlo: Websites Built So People and AI Agents Can Both Use Them",
+      "isPartOf": { "@id": "https://quvlo.co/#website" },
+      "about": { "@id": "https://quvlo.co/#studio" },
+      "primaryImageOfPage": "https://quvlo.co/og-image.jpg"
+    }
+  ]
+}
+</script>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/bricolage-grotesque-700.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/space-mono-400.woff2" crossorigin>
 <style>*{margin:0;padding:0;box-sizing:border-box}  .footlinks a{color:var(--ink-2);text-decoration:none;}
