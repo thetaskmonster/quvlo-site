@@ -120,7 +120,7 @@ async function readCapped(res) {
   return { text: new TextDecoder('utf-8', { fatal: false }).decode(buf), truncated, bytes: total };
 }
 
-export async function onRequestPost({ request }) {
+export async function onRequestPost({ request, env, waitUntil }) {
   let target;
   try {
     const ct = request.headers.get('content-type') || '';
@@ -151,6 +151,29 @@ export async function onRequestPost({ request }) {
     const result = audit(text, { bytes: bytes ?? text.length, ms, finalUrl: url.toString(), status: res.status });
     result.truncated = !!truncated;
     result.scannedAt = new Date().toISOString();
+
+    // Every completed scan (anonymous or not) feeds the lead-enrichment pipeline:
+    // it scrapes the scanned site itself and looks up the business independently
+    // of anything above, so this fires even when our own audit found the page
+    // unreadable. Best-effort and never on the request's critical path: no
+    // webhook configured, or a failure to reach it, must never affect the scan
+    // response the visitor is waiting on.
+    if (env?.QUVLO_ENRICH_WEBHOOK_URL) {
+      const notify = fetch(env.QUVLO_ENRICH_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          domain: target.hostname,
+          finalUrl: result.finalUrl,
+          humanScore: result.scores?.human ?? null,
+          agentScore: result.scores?.agent ?? null,
+          scannedAt: result.scannedAt,
+        }),
+        signal: AbortSignal.timeout(5000),
+      }).catch((e) => console.error('enrichment webhook unreachable', e?.message));
+      if (typeof waitUntil === 'function') waitUntil(notify);
+    }
+
     return json(result);
   } catch (e) {
     const aborted = e?.name === 'AbortError';
