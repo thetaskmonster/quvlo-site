@@ -38,3 +38,12 @@ prototypes/.preview-body.html
 # Claude Code scratch: agent worktrees and local session state. Transient,
 # auto-removed when a workflow finishes; never part of the site.
 .claude/
+
+# ScrollCraft: vendored skill is committed; generated video/asset binaries and
+# screenshot scratch are not (build HTML + BRIEF.md source ARE committed).
+scrollcraft/**/assets/
+scrollcraft/**/shots/
+scrollcraft/**/*.mp4
+scrollcraft/**/*.webm
+scrollcraft/**/*.mov
+.env
