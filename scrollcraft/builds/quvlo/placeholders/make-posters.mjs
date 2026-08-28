@@ -21,10 +21,11 @@ const OUT = dirname(fileURLToPath(import.meta.url));
 const W = 1600, H = 900, CX = W / 2, CY = H / 2;
 
 // Quvlo tokens — the champagne is the ONE accent; everything else is ink on space.
-const SPACE = '#05070d';
-const CHAMP = '#e6d2a8';
-const INK   = '#8b96a8';
-const INK_2 = '#4a5568';
+const SPACE   = '#05070d';
+const CHAMP   = '#e6d2a8';   // warm — the human
+const MACHINE = '#a4c9e9';   // cool twin — the machine / agent
+const INK     = '#8b96a8';
+const INK_2   = '#4a5568';
 
 const R = (n) => Math.round(n * 1000) / 1000;
 
@@ -188,11 +189,11 @@ const legs = {
             <circle r="4" fill="${CHAMP}"/></g>`;
           g += label(x, y1 + 46, 'HUMAN', { anchor: 'middle', size: 16, spacing: 5 });
         } else {
-          // agent: a bracketed cursor glyph
-          g += `<g transform="translate(${x} ${my})" fill="none" stroke="${CHAMP}" stroke-width="2.2">
+          // agent: a bracketed cursor glyph — the machine, in the cool tone
+          g += `<g transform="translate(${x} ${my})" fill="none" stroke="${MACHINE}" stroke-width="2.2">
             <path d="M-40 -26 h-16 v52 h16"/><path d="M40 -26 h16 v52 h-16"/>
             <line x1="-14" y1="0" x2="14" y2="0"/><line x1="0" y1="-14" x2="0" y2="14"/></g>`;
-          g += label(x, y1 + 46, 'AGENT', { anchor: 'middle', size: 16, spacing: 5 });
+          g += label(x, y1 + 46, 'AGENT', { anchor: 'middle', size: 16, spacing: 5, fill: MACHINE });
         }
       });
       // the held-beat marker at the bottom (authored silence)
@@ -210,18 +211,18 @@ const legs = {
       let g = '';
       // left: the rendered page, dissolving to the right into tokens
       g += pagePanel(CX - 360, CY, 300, 200, 0.5);
-      // scanning reticle sweeping right
+      // scanning reticle sweeping right — the machine's read, in the cool tone
       g += `<line x1="${CX - 200}" y1="${CY - 240}" x2="${CX - 200}" y2="${CY + 240}"
-        stroke="${CHAMP}" stroke-width="2" opacity="0.7"/>`;
-      g += `<path d="M${CX - 200} ${CY - 240} l14 10 l-14 10" fill="${CHAMP}" opacity="0.7"/>`;
-      // right: the semantic reading
+        stroke="${MACHINE}" stroke-width="2" opacity="0.7"/>`;
+      g += `<path d="M${CX - 200} ${CY - 240} l14 10 l-14 10" fill="${MACHINE}" opacity="0.7"/>`;
+      // right: the semantic reading — the structure plane, machine-coloured
       const tokens = ['h1  "Can an AI use your site?"', 'nav  6 links', 'button  "Start here"',
         'main  landmark', 'img  alt: missing', 'form  label: ok'];
       tokens.forEach((t, i) => {
         const ty = CY - 150 + i * 56;
         g += `<rect x="${CX - 40}" y="${ty - 26}" width="440" height="40" rx="5"
-          fill="none" stroke="${INK}" stroke-width="1" opacity="0.35"/>`;
-        g += label(CX - 22, ty, t, { size: 17, fill: CHAMP, spacing: 1, op: 0.85 });
+          fill="none" stroke="${MACHINE}" stroke-width="1" opacity="0.3"/>`;
+        g += label(CX - 22, ty, t, { size: 17, fill: MACHINE, spacing: 1, op: 0.9 });
       });
       return g;
     })()}

@@ -1,0 +1,199 @@
+<!doctype html>
+<!--
+  Quvlo design system — spec sheet. NON-DEPLOYED working page (not a vite input).
+  It dogfoods the system it documents: human voice in Bricolage Grotesque, every
+  measured value in the machine's mono voice, warm = human, cool = machine, and
+  each contrast ratio is real (computed in tokens/color.mjs, printed here as proof).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quvlo design system — two readers, one surface</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2305070d'/><circle cx='16' cy='16' r='7' fill='none' stroke='%23e6d2a8' stroke-width='2.4'/></svg>">
+<style>
+  @font-face{font-family:'Bricolage Grotesque';font-weight:700;font-display:swap;src:url(fonts/bricolage-grotesque-700.woff2) format('woff2');}
+  @font-face{font-family:'Space Mono';font-weight:400;font-display:swap;src:url(fonts/space-mono-400.woff2) format('woff2');}
+
+  /* ===== the token layer — identical to index.html, authored in OKLCH ===== */
+  :root{
+    --space:#05070d; --surface:#0b0f1a;
+    --ink-0:#f0f4f7; --ink-1:#bcc3cd; --ink-2:#8a93a0;
+    --human:#e6d2a8; --machine:#a4c9e9;
+    --pass:#76cf8a; --warn:#e5bf6d; --fail:#f3625d;
+    --hair:color-mix(in oklab, var(--ink-0) 12%, transparent);
+    --display:'Bricolage Grotesque', system-ui, sans-serif;
+    --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --mono:'Space Mono', ui-monospace,'SF Mono',Menlo,monospace;
+    --gutter:clamp(1.25rem,5vw,5rem); --unit:8px;
+  }
+  *{box-sizing:border-box;margin:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--space);color:var(--ink-1);font-family:var(--sans);line-height:1.6;
+    -webkit-font-smoothing:antialiased;}
+  .skip{position:absolute;left:-9999px;}
+  .skip:focus{left:16px;top:16px;z-index:9;padding:12px 18px;border-radius:10px;background:var(--human);color:var(--space);font:700 13px/1 var(--display);text-decoration:none;}
+  a{color:var(--human);}
+  :focus-visible{outline:2px solid var(--machine);outline-offset:3px;border-radius:4px;}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 var(--gutter);}
+  header.top{border-bottom:1px solid var(--hair);padding:56px 0 40px;}
+  .eyebrow{font:400 12px/1 var(--mono);letter-spacing:.32em;text-transform:uppercase;color:var(--machine);}
+  h1{font:700 clamp(2.4rem,6vw,4.4rem)/1.0 var(--display);color:var(--ink-0);letter-spacing:-.03em;margin:20px 0 0;text-wrap:balance;}
+  .sub{margin-top:20px;max-width:60ch;color:var(--ink-1);font-size:clamp(1rem,.95rem+.4vw,1.2rem);}
+  .sub b{color:var(--ink-0);font-weight:600;}
+  .warm{color:var(--human);} .cool{color:var(--machine);}
+
+  section{padding:56px 0;border-bottom:1px solid var(--hair);}
+  .kick{display:flex;align-items:baseline;gap:16px;margin-bottom:28px;}
+  .kick .n{font:400 12px/1 var(--mono);color:var(--machine);letter-spacing:.1em;}
+  .kick h2{font:700 clamp(1.4rem,1rem+2vw,2.2rem)/1.05 var(--display);color:var(--ink-0);letter-spacing:-.02em;}
+  .kick p{margin-left:auto;max-width:34ch;font-size:14px;color:var(--ink-2);text-align:right;}
+
+  /* colour language */
+  .swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+  .sw{border:1px solid var(--hair);border-radius:12px;overflow:hidden;background:var(--surface);}
+  .sw .chip{height:96px;display:flex;align-items:flex-end;justify-content:space-between;padding:12px;}
+  .sw .meta{padding:12px 14px;font-family:var(--mono);font-size:12px;line-height:1.7;}
+  .sw .meta .name{color:var(--ink-0);font-size:13px;} .sw .meta .role{color:var(--ink-2);}
+  .sw .meta .aa{color:var(--pass);} .sw .tag{font:400 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:4px 8px;border-radius:999px;}
+  .tag.human{color:var(--human);border:1px solid color-mix(in oklab,var(--human) 40%,transparent);}
+  .tag.mach{color:var(--machine);border:1px solid color-mix(in oklab,var(--machine) 40%,transparent);}
+
+  /* type as voice */
+  .voices{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  @media(max-width:720px){.voices{grid-template-columns:1fr;}}
+  .voice{border:1px solid var(--hair);border-radius:14px;padding:24px;background:var(--surface);}
+  .voice .lbl{font:400 11px/1 var(--mono);letter-spacing:.24em;text-transform:uppercase;margin-bottom:16px;}
+  .voice.h .lbl{color:var(--human);} .voice.m .lbl{color:var(--machine);}
+  .voice.h .spec{font-family:var(--display);font-weight:700;color:var(--ink-0);font-size:34px;line-height:1.05;letter-spacing:-.02em;}
+  .voice.m .spec{font-family:var(--mono);color:var(--machine);font-size:20px;line-height:1.5;}
+  .voice small{display:block;margin-top:16px;font-family:var(--mono);font-size:12px;color:var(--ink-2);}
+  .scale{margin-top:26px;display:grid;gap:6px;}
+  .scale div{font-family:var(--display);font-weight:700;color:var(--ink-0);letter-spacing:-.02em;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .scale span{font-family:var(--mono);font-weight:400;font-size:11px;color:var(--ink-2);letter-spacing:0;margin-left:12px;}
+
+  /* spatial + depth */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  @media(max-width:720px){.cols{grid-template-columns:1fr;}}
+  .panel{border:1px solid var(--hair);border-radius:14px;padding:24px;background:var(--surface);position:relative;overflow:hidden;}
+  .panel h3{font:700 1.05rem/1.2 var(--display);color:var(--ink-0);margin-bottom:8px;}
+  .panel p{font-size:14px;color:var(--ink-2);max-width:40ch;}
+  .grid-demo{margin-top:20px;height:150px;border-radius:8px;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 calc(12.5% - 1px), color-mix(in oklab,var(--machine) 22%,transparent) calc(12.5% - 1px) 12.5%),
+      repeating-linear-gradient(0deg, transparent 0 calc(var(--unit)*3 - 1px), color-mix(in oklab,var(--ink-0) 6%,transparent) calc(var(--unit)*3 - 1px) calc(var(--unit)*3));
+    border:1px solid var(--hair);position:relative;}
+  .grid-demo .bar{position:absolute;left:12.5%;right:25%;top:24px;height:40px;border-radius:6px;background:color-mix(in oklab,var(--human) 22%,transparent);border:1px solid color-mix(in oklab,var(--human) 50%,transparent);}
+  .grid-demo .bar2{position:absolute;left:25%;right:12.5%;top:86px;height:28px;border-radius:6px;background:color-mix(in oklab,var(--machine) 16%,transparent);border:1px solid color-mix(in oklab,var(--machine) 45%,transparent);}
+  /* depth: surface plane over structure plane */
+  .planes{margin-top:20px;height:150px;position:relative;}
+  .plane{position:absolute;border-radius:10px;padding:12px 14px;font-family:var(--mono);font-size:12px;}
+  .plane.structure{inset:34px 0 0 40px;background:color-mix(in oklab,var(--machine) 12%,var(--space));border:1px solid color-mix(in oklab,var(--machine) 38%,transparent);color:var(--machine);}
+  .plane.surface{inset:0 40px 34px 0;background:color-mix(in oklab,var(--human) 10%,var(--space));border:1px solid color-mix(in oklab,var(--human) 42%,transparent);color:var(--human);backdrop-filter:blur(1px);box-shadow:0 18px 40px -12px #05070d;}
+  .plane .t{font-weight:400;text-transform:uppercase;letter-spacing:.18em;font-size:10px;opacity:.85;}
+
+  footer{padding:44px 0 80px;font-family:var(--mono);font-size:12px;color:var(--ink-2);}
+  footer b{color:var(--ink-1);font-weight:400;}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+  <header class="top" id="main">
+    <span class="eyebrow">Quvlo · design system</span>
+    <h1>Two readers,<br>one surface.</h1>
+    <p class="sub">Every page is two things at once: a <b class="warm">surface</b> a person sees, and a
+      <b class="cool">structure</b> a machine reads. This system encodes that split in four pillars &mdash;
+      <b>warm is the human, cool is the machine</b> &mdash; so the design doesn&rsquo;t just describe Quvlo&rsquo;s
+      thesis, it performs it. Built for people <em>and</em> agents: <b>AX-native</b>.</p>
+  </header>
+
+  <!-- 1 · COLOUR -->
+  <section>
+    <div class="kick"><span class="n">01</span><h2>Colour language</h2>
+      <p>OKLCH-authored, so contrast is computed, not asserted. Every ratio below is measured on the ground.</p></div>
+    <div class="swatches" id="swatches"></div>
+  </section>
+
+  <!-- 2 · TYPE -->
+  <section>
+    <div class="kick"><span class="n">02</span><h2>Typography is voice</h2>
+      <p>Who is speaking decides the face. The human is drawn; the machine is typed.</p></div>
+    <div class="voices">
+      <div class="voice h">
+        <span class="lbl">Human voice · display</span>
+        <div class="spec">The studio<br>that reads<br>your page.</div>
+        <small>Bricolage Grotesque 700 · headlines &amp; human copy · variable-weight upgrade planned</small>
+      </div>
+      <div class="voice m">
+        <span class="lbl">Machine voice · data</span>
+        <div class="spec">h1 · 1<br>landmarks · 4<br>alt · missing&nbsp;×1</div>
+        <small>Space Mono · scan results, the agent readout, every measured value</small>
+      </div>
+    </div>
+    <div class="scale">
+      <div style="font-size:64px">Display <span>clamp 3.4–7.5rem</span></div>
+      <div style="font-size:38px">Headline <span>clamp 2.1–3.4rem</span></div>
+      <div style="font-size:20px">Body reading <span>humanist sans · 1–1.125rem</span></div>
+      <div style="font-size:15px;font-family:var(--mono);font-weight:400;color:var(--machine)">data · the machine&rsquo;s line <span>Space Mono · 0.85rem</span></div>
+    </div>
+  </section>
+
+  <!-- 3 · SPACE + DEPTH -->
+  <section style="border-bottom:none">
+    <div class="kick"><span class="n">03</span><h2>Space &amp; depth</h2>
+      <p>An instrument, not a document: a measured grid, and two planes you move between.</p></div>
+    <div class="cols">
+      <div class="panel">
+        <h3>Spatial composition</h3>
+        <p>An 8px baseline rhythm on an editorial grid. Copy breaks the column on purpose &mdash; confidence, not decoration.</p>
+        <div class="grid-demo"><div class="bar"></div><div class="bar2"></div></div>
+      </div>
+      <div class="panel">
+        <h3>Depth = descent</h3>
+        <p>The warm <span class="warm">surface</span> sits over the cool <span class="cool">structure</span>. Moving through z-space reveals the machine&rsquo;s reading &mdash; the signature move, made literal.</p>
+        <div class="planes">
+          <div class="plane structure"><span class="t">structure · machine</span><br>main · nav · h1 · button</div>
+          <div class="plane surface"><span class="t">surface · human</span><br>What the person sees</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <b>Non-deployed spec.</b> Tokens are the same block the scroll page ships; contrast ratios computed in
+    <b>tokens/color.mjs</b>. Reduced motion and keyboard operability are first-class, not afterthoughts.
+  </footer>
+</div>
+
+<script>
+  /* Build the colour swatches from the real tokens, and PRINT each ratio so the
+     page proves its own accessibility rather than claiming it. */
+  var TOK = [
+    ['--space','space','ground / surface plane','#05070d','—','pinned brand'],
+    ['--surface','surface','structure plane, raised','#0b0f1a','—','pinned brand'],
+    ['--ink-0','ink-0','primary text','#f0f4f7','18.21','oklch(96.5% .006 250)'],
+    ['--ink-1','ink-1','secondary text','#bcc3cd','11.34','oklch(81.5% .016 255)'],
+    ['--ink-2','ink-2','labels / tertiary','#8a93a0','6.49','oklch(66% .022 258)'],
+    ['--human','human','warm — the person','#e6d2a8','13.57','pinned champagne','human'],
+    ['--machine','machine','cool — the machine','#a4c9e9','11.61','oklch(82% .06 245)','mach'],
+    ['--pass','pass','data · ok','#76cf8a','10.08','on surface'],
+    ['--warn','warn','data · warning','#e5bf6d','10.94','on surface'],
+    ['--fail','fail','data · error','#f3625d','6.12','on surface'],
+  ];
+  var esc = function(s){return String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
+  document.getElementById('swatches').innerHTML = TOK.map(function(t){
+    var tag = t[6] ? '<span class="tag '+t[6]+'">'+(t[6]==='human'?'human':'machine')+'</span>' : '';
+    var aa = t[4]==='—' ? '<span class="role">—</span>' : '<span class="aa">'+t[4]+':1 AA</span>';
+    return '<div class="sw"><div class="chip" style="background:'+t[3]+'">'+
+      '<span></span>'+tag+'</div>'+
+      '<div class="meta"><div class="name">'+esc(t[0])+'</div>'+
+      '<div class="role">'+esc(t[2])+'</div>'+
+      '<div>'+esc(t[3])+' · '+aa+'</div>'+
+      '<div class="role">'+esc(t[5])+'</div></div></div>';
+  }).join('');
+</script>
+</body>
+</html>

@@ -30,17 +30,38 @@
   /* ---- The whole rebrand: Quvlo's six colours + two faces over the floor. -- */
   @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/bricolage-grotesque-700.woff2) format('woff2');}
   @font-face{font-family:'Space Mono';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/space-mono-400.woff2) format('woff2');}
+  /* ===== Quvlo design system — "two readers, one surface" ================
+     Authored in OKLCH so contrast is computable, not asserted: tokens/color.mjs
+     prints every pairing's WCAG ratio (worst body pairing 6.1:1 — all AA).
+     Warm champagne = the human; a cool twin = the machine. Ground + champagne
+     are pinned to brand hex so a later port to the live site shifts nothing. */
   :root{
-    --sc-canvas:      #05070d;
-    --sc-surface:     #0b0f1a;
-    --sc-ink:         #f2f5fa;
-    --sc-ink-soft:    #a9b4c4;   /* ≥4.5:1 on canvas */
-    --sc-accent:      #e6d2a8;   /* champagne — the ONE accent */
-    --sc-accent-ink:  #05070d;
+    /* ground + the two planes */
+    --space:   #05070d;              /* surface plane / page ground        */
+    --surface: #0b0f1a;              /* structure plane, raised            */
+    /* ink scale — oklch(96.5..66% · 0.006..0.022 · 250..258°) */
+    --ink-0:   #f0f4f7;
+    --ink-1:   #bcc3cd;
+    --ink-2:   #8a93a0;
+    /* the two readers */
+    --human:   #e6d2a8;              /* warm champagne — the person        */
+    --machine: #a4c9e9;              /* cool twin — the machine / agent     */
+    /* functional data states, kept distinct from the two brand accents */
+    --pass: #76cf8a; --warn: #e5bf6d; --fail: #f3625d;
+
+    /* mapped onto the engine's expected names; the page's default voice is human */
+    --sc-canvas: var(--space);
+    --sc-surface: var(--surface);
+    --sc-ink: var(--ink-0);
+    --sc-ink-soft: var(--ink-1);
+    --sc-accent: var(--human);
+    --sc-accent-ink: var(--space);
     --sc-font-display:'Bricolage Grotesque', system-ui, sans-serif;
     --sc-font-text:   system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     --sc-font-mono:   'Space Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   }
+  /* the two readers, made literal wherever both are named in one line */
+  .tr-human{color:var(--human);} .tr-machine{color:var(--machine);}
 
   /* ---- Page-owned classes. Nothing here restyles a [data-sc-*] mechanism. -- */
   .skip{position:absolute;left:-9999px;top:0;z-index:200;}
@@ -63,18 +84,20 @@
   .sc-copy .sc-body{margin-top:16px;color:var(--sc-ink-soft);font-size:clamp(1rem,.95rem+.4vw,1.2rem);max-width:42ch;}
 
   /* the Agent's-Eye signature panel (leg 5) */
+  /* The Agent's-Eye panel is the STRUCTURE PLANE surfaced: the machine speaking,
+     so it speaks in the machine's colour and a mono voice, with a faint cool tint. */
   .eye{position:absolute;left:50%;top:50%;translate:-50% -50%;width:min(92vw,720px);
-    background:color-mix(in oklab,var(--sc-canvas) 86%,transparent);
-    border:1px solid color-mix(in oklab,var(--sc-accent) 34%,transparent);
+    background:color-mix(in oklab,var(--surface) 90%,var(--machine) 4%);
+    border:1px solid color-mix(in oklab,var(--machine) 40%,transparent);
     border-radius:14px;padding:clamp(20px,3vw,34px);box-shadow:var(--sc-e3);}
   .eye h2{font:700 clamp(1.3rem,1rem+1.6vw,2rem)/1.05 var(--sc-font-display);color:var(--sc-ink);letter-spacing:-.02em;}
-  .eye .kicker{display:block;font:400 12px/1 var(--sc-font-mono);letter-spacing:.28em;text-transform:uppercase;color:var(--sc-accent);margin-bottom:14px;}
+  .eye .kicker{display:block;font:400 12px/1 var(--sc-font-mono);letter-spacing:.28em;text-transform:uppercase;color:var(--machine);margin-bottom:14px;}
   .eye p.lead{margin:12px 0 20px;color:var(--sc-ink-soft);font-size:15px;max-width:52ch;}
   .eye dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 18px;
     font-family:var(--sc-font-mono);font-size:13.5px;line-height:1.5;}
-  .eye dt{color:var(--sc-accent);white-space:nowrap;}
+  .eye dt{color:var(--machine);white-space:nowrap;}
   .eye dd{margin:0;color:var(--sc-ink);overflow-wrap:anywhere;}
-  .eye dd .ok{color:#8fd6a0;} .eye dd .warn{color:#e6c07a;}
+  .eye dd .ok{color:var(--pass);} .eye dd .warn{color:var(--warn);}
   .eye .foot{margin-top:18px;font:400 12px/1.5 var(--sc-font-mono);color:var(--sc-ink-soft);}
 
   /* route rail — a depth gauge, built in the page from the two published numbers */
@@ -154,7 +177,7 @@
 
     <div class="sc-copy sc-copy--lead" data-sc-copy data-sc-window="0.50 0.66">
       <h2 class="sc-display sc-display--lg">Two readers, one path.</h2>
-      <p class="sc-body">A person, and a machine acting for one &mdash; a screen reader, an assistant, a search crawler. Your site has to work for both, or it quietly loses one.</p>
+      <p class="sc-body"><span class="tr-human">A person</span>, and <span class="tr-machine">a machine</span> acting for one &mdash; a screen reader, an assistant, a search crawler. Your site has to work for both, or it quietly loses one.</p>
     </div>
 
     <!-- PEAK · the signature. Rendered live from this page's own DOM. -->

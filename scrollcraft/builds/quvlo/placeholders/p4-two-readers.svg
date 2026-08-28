@@ -10,10 +10,10 @@
             <circle r="4" fill="#e6d2a8"/></g><text x="650" y="746" font-family="'Space Mono',ui-monospace,monospace"
     font-size="16" letter-spacing="5" fill="#e6d2a8" opacity="0.85"
     text-anchor="middle">HUMAN</text><line x1="950" y1="180" x2="950" y2="700"
-          stroke="#8b96a8" stroke-width="1.5" opacity="0.4"/><g transform="translate(950 410)" fill="none" stroke="#e6d2a8" stroke-width="2.2">
+          stroke="#8b96a8" stroke-width="1.5" opacity="0.4"/><g transform="translate(950 410)" fill="none" stroke="#a4c9e9" stroke-width="2.2">
             <path d="M-40 -26 h-16 v52 h16"/><path d="M40 -26 h16 v52 h-16"/>
             <line x1="-14" y1="0" x2="14" y2="0"/><line x1="0" y1="-14" x2="0" y2="14"/></g><text x="950" y="746" font-family="'Space Mono',ui-monospace,monospace"
-    font-size="16" letter-spacing="5" fill="#e6d2a8" opacity="0.85"
+    font-size="16" letter-spacing="5" fill="#a4c9e9" opacity="0.85"
     text-anchor="middle">AGENT</text><circle cx="800" cy="692" r="6" fill="#e6d2a8" opacity="0.8"/><text x="800" y="740" font-family="'Space Mono',ui-monospace,monospace"
     font-size="30" letter-spacing="3" fill="#e6d2a8" opacity="0.4"
     text-anchor="middle">·</text>
