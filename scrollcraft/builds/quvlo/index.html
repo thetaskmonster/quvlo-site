@@ -5,12 +5,12 @@
   This is a PARALLEL deliverable. It is not one of vite's five build inputs, so
   it never deploys. quvlo.co and every live page stay untouched.
 
-  State: placeholders. Every leg mounts a champagne-on-near-black SVG still and
-  NO <video>. With no clip mounted the engine cross-dissolves the stills through
-  the real seams at the real scroll positions — which is exactly the
-  reduced-motion experience, so what you review here is also the accessible
-  fallback. Route A swaps each poster for a frame of the kie.ai render and drops
-  a <video data-sc-src> beside it; nothing else in this file changes.
+  State: full photoreal flight. All six legs mount a kie.ai-generated clip
+  (Kling 2.1 Pro), seam-chained end-to-start so the descent is continuous, with
+  the poster set to each clip's own first frame. Under reduced motion no clip is
+  fetched and the posters carry the same story through the same seams — a
+  first-class accessible fallback, not a degraded one. SVG placeholders are kept
+  in placeholders/ as the design source.
 
   Honesty gate (Quvlo rules + ScrollCraft): zero clients, no testimonials, no
   invented numbers. Every line of copy is true today. The signature panel reads
@@ -135,24 +135,29 @@
   <!-- ============================ the flight ============================ -->
   <div data-sc-world>
     <div data-sc-segment data-sc-w="1.3" data-sc-waypoint="Surface">
-      <img class="sc-world__poster" src="placeholders/p1-surface.svg" alt="" decoding="async">
+      <img class="sc-world__poster" src="assets/leg1-poster.jpg" alt="" decoding="async">
+      <video data-sc-src="assets/leg1.mp4" data-sc-src-mobile="assets/leg1-m.mp4" muted playsinline></video>
     </div>
     <div data-sc-segment data-sc-w="1.3" data-sc-waypoint="Descent">
       <img class="sc-world__poster" src="assets/leg2-poster.jpg" alt="" decoding="async">
       <video data-sc-src="assets/leg2.mp4" data-sc-src-mobile="assets/leg2-m.mp4" muted playsinline></video>
     </div>
     <div data-sc-segment data-sc-w="1.3" data-sc-waypoint="Lattice">
-      <img class="sc-world__poster" src="placeholders/p3-lattice.svg" alt="" decoding="async">
+      <img class="sc-world__poster" src="assets/leg3-poster.jpg" alt="" decoding="async">
+      <video data-sc-src="assets/leg3.mp4" data-sc-src-mobile="assets/leg3-m.mp4" muted playsinline></video>
     </div>
     <!-- authored silence: a held beat at the bottom of Two Readers before the peak -->
     <div data-sc-segment data-sc-w="1.3" data-sc-linger="0.42" data-sc-waypoint="Two Readers">
-      <img class="sc-world__poster" src="placeholders/p4-two-readers.svg" alt="" decoding="async">
+      <img class="sc-world__poster" src="assets/leg4-poster.jpg" alt="" decoding="async">
+      <video data-sc-src="assets/leg4.mp4" data-sc-src-mobile="assets/leg4-m.mp4" muted playsinline></video>
     </div>
     <div data-sc-segment data-sc-w="1.3" data-sc-waypoint="The Agent's Eye">
-      <img class="sc-world__poster" src="placeholders/p5-agents-eye.svg" alt="" decoding="async">
+      <img class="sc-world__poster" src="assets/leg5-poster.jpg" alt="" decoding="async">
+      <video data-sc-src="assets/leg5.mp4" data-sc-src-mobile="assets/leg5-m.mp4" muted playsinline></video>
     </div>
     <div data-sc-segment data-sc-w="1.3" data-sc-waypoint="Return">
-      <img class="sc-world__poster" src="placeholders/p6-return.svg" alt="" decoding="async">
+      <img class="sc-world__poster" src="assets/leg6-poster.jpg" alt="" decoding="async">
+      <video data-sc-src="assets/leg6.mp4" data-sc-src-mobile="assets/leg6-m.mp4" muted playsinline></video>
     </div>
   </div>
 
