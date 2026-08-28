@@ -42,8 +42,10 @@ prototypes/.preview-body.html
 # ScrollCraft: vendored skill is committed; generated video/asset binaries and
 # screenshot scratch are not (build HTML + BRIEF.md source ARE committed).
 scrollcraft/**/assets/
+scrollcraft/**/out/
 scrollcraft/**/shots/
 scrollcraft/**/*.mp4
+scrollcraft/**/*.png
 scrollcraft/**/*.webm
 scrollcraft/**/*.mov
 .env
