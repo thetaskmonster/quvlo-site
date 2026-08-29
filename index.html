@@ -328,7 +328,10 @@
   #cinematic.sc-done [data-sc-world-copy],
   #cinematic.sc-done .rail{display:none;} /* release the working site once past the intro */
   .m-hero{display:none;}
-  @media (max-width:860px){ #cinematic{display:none;} .m-hero{display:flex;} }
+  /* Show the cinematic only where the scroll engine actually mounts: wide AND a fine pointer.
+     Any touch device (incl. a landscape iPad ≥861px) gets the light mobile hero instead, so it
+     never renders an unmounted, un-scrubbable worldflight. Mirrors the JS mount gate exactly. */
+  @media (max-width:860px), (pointer:coarse){ #cinematic{display:none;} .m-hero{display:flex;} }
 
   /* worldflight copy voice + halos (footage-preserving contrast) */
   .tr-human{color:var(--human);} .tr-machine{color:var(--machine);}
@@ -371,7 +374,7 @@
     padding:6px 11px;border-radius:999px;background:rgba(5,7,13,.5);border:1px solid rgba(184,200,224,.09);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);}
   .rail li .dot{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--ink-1);flex:none;}
   .rail li[aria-current="true"]{opacity:1;color:var(--champagne);background:rgba(5,7,13,.64);border-color:color-mix(in oklab,var(--champagne) 34%,transparent);} .rail li[aria-current="true"] .dot{background:var(--champagne);border-color:var(--champagne);}
-  @media (max-width:860px){ .rail{display:none;} }
+  @media (max-width:860px), (pointer:coarse){ .rail{display:none;} }
 
   /* mobile static hero — fast, no video */
   .m-hero{position:relative;overflow:hidden;min-height:88vh;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;
