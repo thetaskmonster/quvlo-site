@@ -415,7 +415,8 @@
   @media(min-width:760px){ .navlinks{display:flex;align-items:center;} }
   .navlinks a:hover{color:var(--ink-0);}
   .navcta{padding:10px 16px;border-radius:9px;background:linear-gradient(180deg,var(--champ-2),var(--champagne));
-    color:#241d0e;font:650 13px/1 var(--sans);}
+    color:#241d0e;font:650 13px/1 var(--sans);transition:filter .2s,box-shadow .2s,transform .2s;}
+  .navcta:hover{filter:brightness(1.05);box-shadow:0 6px 20px -8px var(--champagne);transform:translateY(-1px);}
 
   section{position:relative;}
   .eyebrow{display:inline-flex;align-items:center;gap:9px;font:600 11px/1 var(--mono);
@@ -574,6 +575,16 @@
   .ag-l b{color:var(--ink-0);font-weight:600;flex:1;min-width:0;text-align:right;}
   .ag-l i{font-style:normal;font-size:10px;color:var(--machine);flex:none;}
   .ag-done .ag-k{color:var(--machine);} .ag-done b{color:var(--machine);} .ag-done i{color:var(--good);}
+  /* the machine reads its checks one at a time as the row scrolls in — motion that means something.
+     Gated on scripting:enabled so the lines are never left hidden when JS can't reveal them. */
+  @media (scripting: enabled){
+    .pf-agent .ag-l{opacity:0;transform:translateX(7px);transition:opacity .5s ease,transform .5s ease;}
+    .svc-row.in .pf-agent .ag-l{opacity:1;transform:none;}
+    .svc-row.in .pf-agent .ag-l:nth-child(2){transition-delay:.22s;}
+    .svc-row.in .pf-agent .ag-l:nth-child(3){transition-delay:.44s;}
+    .svc-row.in .pf-agent .ag-l:nth-child(4){transition-delay:.7s;}
+  }
+  @media (prefers-reduced-motion:reduce){ .pf-agent .ag-l{opacity:1 !important;transform:none !important;transition:none !important;} }
   .alsobar{margin-top:20px;border:1px dashed var(--hairline);border-radius:13px;padding:16px 20px;
     display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;background:rgba(9,12,20,.4);}
   .alsobar .tag{font:600 10px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);}
