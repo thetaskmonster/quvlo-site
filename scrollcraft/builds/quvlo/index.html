@@ -63,6 +63,28 @@
   /* the two readers, made literal wherever both are named in one line */
   .tr-human{color:var(--human);} .tr-machine{color:var(--machine);}
 
+  /* Copy legibility over bright footage: the stock band scrim protects the very
+     bottom, but the headline sits higher, where the gold lattice is bright. Back
+     the left-aligned copy with a bottom-left-anchored plate so every line clears
+     AA over any frame, while the footage focal point (upper right) stays clear. */
+  .sc-world__scrim.sc-scrim--band{
+    background: radial-gradient(135% 105% at 0% 100%,
+      color-mix(in oklab, var(--space) 93%, transparent) 0%,
+      color-mix(in oklab, var(--space) 74%, transparent) 24%,
+      color-mix(in oklab, var(--space) 40%, transparent) 46%,
+      transparent 66%);
+  }
+  @media (max-width:860px){
+    /* copy spans full width on mobile — widen the plate to the whole bottom */
+    .sc-world__scrim.sc-scrim--band{
+      background: linear-gradient(to top,
+        color-mix(in oklab, var(--space) 93%, transparent) 0%,
+        color-mix(in oklab, var(--space) 72%, transparent) 26%,
+        color-mix(in oklab, var(--space) 34%, transparent) 48%,
+        transparent 66%);
+    }
+  }
+
   /* ---- Page-owned classes. Nothing here restyles a [data-sc-*] mechanism. -- */
   .skip{position:absolute;left:-9999px;top:0;z-index:200;}
   .skip:focus{left:16px;top:16px;padding:12px 18px;border-radius:10px;background:var(--sc-accent);color:#05070d;font:700 13px/1 var(--sc-font-display);text-decoration:none;outline:3px solid #fff;outline-offset:2px;}
@@ -72,6 +94,8 @@
   .bar a{pointer-events:auto;}
   .word{display:inline-flex;align-items:center;gap:10px;font:700 19px/1 var(--sc-font-display);
     color:var(--sc-ink);text-decoration:none;letter-spacing:-.01em;}
+  /* fixed chrome sits over footage too — give it the same halo so it never drops out */
+  .word,.rail li{text-shadow:0 1px 8px color-mix(in oklab,var(--space) 70%,transparent),0 0 3px color-mix(in oklab,var(--space) 82%,transparent);}
   .word .ring{width:14px;height:14px;border-radius:50%;border:2px solid var(--sc-accent);}
   .bar .cta{font:700 13px/1 var(--sc-font-display);color:#05070d;background:var(--sc-accent);
     padding:11px 18px;border-radius:10px;text-decoration:none;}
@@ -79,6 +103,13 @@
 
   /* copy voice */
   .sc-copy h1,.sc-copy h2{font-family:var(--sc-font-display);letter-spacing:-.025em;line-height:1.02;text-wrap:balance;}
+  /* Per-glyph dark halo so a bright lattice bar crossing a stroke can never sink
+     legibility — the footage-preserving half of the contrast fix (the scrim plate
+     is the other half). Subtle; not a drop shadow. */
+  .sc-copy :is(h1,h2,.sc-body,.kicker,.cta){
+    text-shadow: 0 1px 10px color-mix(in oklab, var(--space) 72%, transparent),
+                 0 0 3px color-mix(in oklab, var(--space) 86%, transparent);
+  }
   .sc-copy .kicker{display:block;font:400 12px/1 var(--sc-font-mono);letter-spacing:.28em;text-transform:uppercase;
     color:var(--sc-accent);margin-bottom:18px;}
   .sc-copy .sc-body{margin-top:16px;color:var(--sc-ink-soft);font-size:clamp(1rem,.95rem+.4vw,1.2rem);max-width:42ch;}
