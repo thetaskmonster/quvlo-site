@@ -684,7 +684,12 @@
   #teardown .ask{max-width:620px;margin-inline:auto;}
 
   /* Concept mockups (decorative) */
-  .stage2{position:relative;aspect-ratio:1.9;width:100%;overflow:hidden;}
+  .stage2{position:relative;aspect-ratio:1.9;width:100%;overflow:hidden;touch-action:pan-y;}
+  /* real swipe carousel: a track of full-width slides that drags with the finger and snaps */
+  .track{display:flex;height:100%;transition:transform .42s cubic-bezier(.2,.7,.2,1);will-change:transform;}
+  .track.grab{transition:none;} /* no transition while the finger is down, so it tracks 1:1 */
+  .slide{flex:0 0 100%;height:100%;position:relative;overflow:hidden;}
+  @media(prefers-reduced-motion:reduce){ .track{transition:none;} }
   .mk{position:absolute;inset:0;font-family:var(--sans);display:flex;flex-direction:column;overflow:hidden;}
   .mk *{box-sizing:border-box;}
   .mk-top{display:flex;align-items:center;justify-content:space-between;padding:15px 18px 0;flex:none;}
@@ -989,80 +994,147 @@
     <button type="button" id="shuffle" class="shuffle reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg>Shuffle the concepts</button>
     <p id="work-live" class="sr-only" role="status" aria-live="polite"></p>
     <div class="gallery">
+      <!-- DENTAL — three directions: booking split · photo hero · clinical card -->
       <figure class="work reveal"><div class="frame"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="u">brightsmile.dental</span></div>
-        <div class="stage2" aria-hidden="true"><div class="mk" style="flex-direction:row;background:#fff;color:#0f2f3a">
-  <div class="ph" data-ph="dental" style="position:relative;width:44%;flex:none;display:flex;flex-direction:column;justify-content:space-between;padding:16px;color:#fff">
-    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,70,64,.35),rgba(11,50,46,.82))"></div>
-    <span class="mk-logo" style="position:relative">Brightsmile</span>
-    <div style="position:relative"><div class="mk-h" style="font-size:17px;color:#fff">Healthy smiles,<br>gentle care.</div>
-      <div class="mk-rate" style="color:#ffffffcc;margin-top:6px"><span class="mk-stars" style="color:#ffd47a">&#9733;&#9733;&#9733;&#9733;&#9733;</span><b style="color:#fff">4.9</b></div></div>
-  </div>
-  <div style="flex:1;padding:15px 17px;display:flex;flex-direction:column">
-    <div style="display:flex;justify-content:space-between;align-items:center"><span class="mk-ey" style="color:#0d7d73">Book in 30 seconds</span><span class="mk-cta" style="background:#14b8a6;color:#fff">Book</span></div>
-    <div class="mk-h" style="font-size:15px;margin-top:9px">Reserve your visit</div>
-    <div style="display:flex;gap:5px;margin-top:9px">
-      <span class="mk-chip" style="background:#f3faf9">Mon</span><span class="mk-chip" style="background:#f3faf9">Tue</span><span class="mk-chip" style="background:#14b8a6;color:#fff;border-color:transparent">Wed</span><span class="mk-chip" style="background:#f3faf9">Thu</span><span class="mk-chip" style="background:#f3faf9">Fri</span></div>
-    <div style="display:flex;gap:5px;margin-top:6px">
-      <span class="mk-chip" style="background:#f3faf9">9:00</span><span class="mk-chip" style="background:rgba(20,184,166,.12);color:#0d7d73;border-color:#14b8a6">10:30</span><span class="mk-chip" style="background:#f3faf9">1:15</span><span class="mk-chip" style="background:#f3faf9">2:45</span></div>
-    <span class="mk-btn" style="background:#14b8a6;color:#fff">Confirm appointment</span>
-    <div class="mk-rate" style="color:#0f2f3aaa;margin-top:auto"><span class="mk-stars" style="color:#f5a524">&#9733;&#9733;&#9733;&#9733;&#9733;</span><b style="color:#0f2f3a">4.9</b><span>&middot; 600+ reviews</span></div>
-  </div>
-</div></div>
+        <div class="stage2" aria-hidden="true"><div class="track">
+          <div class="slide"><div class="mk" style="flex-direction:row;background:#fff;color:#0f2f3a">
+            <div class="ph" data-phc="ph-dental-1" style="position:relative;width:44%;flex:none;display:flex;flex-direction:column;justify-content:space-between;padding:16px;color:#fff">
+              <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,70,64,.35),rgba(11,50,46,.82))"></div>
+              <span class="mk-logo" style="position:relative">Brightsmile</span>
+              <div style="position:relative"><div class="mk-h" style="font-size:17px;color:#fff">Healthy smiles,<br>gentle care.</div>
+                <div class="mk-rate" style="color:#ffffffcc;margin-top:6px"><span class="mk-stars" style="color:#ffd47a">&#9733;&#9733;&#9733;&#9733;&#9733;</span><b style="color:#fff">4.9</b></div></div></div>
+            <div style="flex:1;padding:15px 17px;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center"><span class="mk-ey" style="color:#0d7d73">Book in 30 seconds</span><span class="mk-cta" style="background:#14b8a6;color:#fff">Book</span></div>
+              <div class="mk-h" style="font-size:15px;margin-top:9px">Reserve your visit</div>
+              <div style="display:flex;gap:5px;margin-top:9px"><span class="mk-chip" style="background:#f3faf9">Mon</span><span class="mk-chip" style="background:#f3faf9">Tue</span><span class="mk-chip" style="background:#14b8a6;color:#fff;border-color:transparent">Wed</span><span class="mk-chip" style="background:#f3faf9">Thu</span><span class="mk-chip" style="background:#f3faf9">Fri</span></div>
+              <div style="display:flex;gap:5px;margin-top:6px"><span class="mk-chip" style="background:#f3faf9">9:00</span><span class="mk-chip" style="background:rgba(20,184,166,.12);color:#0d7d73;border-color:#14b8a6">10:30</span><span class="mk-chip" style="background:#f3faf9">1:15</span><span class="mk-chip" style="background:#f3faf9">2:45</span></div>
+              <span class="mk-btn" style="background:#14b8a6;color:#fff">Confirm appointment</span>
+              <div class="mk-rate" style="color:#0f2f3aaa;margin-top:auto"><span class="mk-stars" style="color:#f5a524">&#9733;&#9733;&#9733;&#9733;&#9733;</span><b style="color:#0f2f3a">4.9</b><span>&middot; 600+ reviews</span></div></div></div></div>
+          <div class="slide"><div class="mk ph" data-phc="ph-dental-2" style="color:#fff">
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,26,24,.32),rgba(6,26,24,.12) 34%,rgba(6,26,24,.84))"></div>
+            <div class="mk-top" style="position:relative"><span class="mk-logo">Brightsmile</span><span class="mk-nav" style="color:#ffffffdd"><span>Services</span><span>New patients</span><span class="mk-cta" style="background:#14b8a6;color:#fff">Book</span></span></div>
+            <div class="mk-body" style="position:relative;display:flex;flex-direction:column;justify-content:flex-end">
+              <div class="mk-ey" style="color:#7fe3d4">Family &amp; cosmetic dentistry</div>
+              <div class="mk-h" style="font-size:27px;color:#fff">Healthy smiles,<br>gentle care.</div>
+              <div class="mk-p" style="max-width:56%;color:#fff;opacity:.92">Same-week appointments, calm rooms, and dentists who explain everything.</div>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:11px"><span class="mk-btn" style="background:#14b8a6;color:#fff;margin-top:0">Book in 30 seconds</span><span style="font-size:7.5px;color:#ffffffcc">&#9733; 4.9 &middot; 600+ reviews</span></div></div></div></div>
+          <div class="slide"><div class="mk" style="background:#eef6f5;color:#0f2f3a">
+            <div class="mk-top"><span class="mk-logo">Brightsmile</span><span class="mk-nav" style="color:#0f2f3a99"><span>Services</span><span style="color:#0d7d73;font-weight:700">(555) 120-8890</span><span class="mk-cta" style="background:#14b8a6;color:#fff">Book</span></span></div>
+            <div class="mk-body" style="display:flex;gap:15px;align-items:center">
+              <div style="flex:1.1;display:flex;flex-direction:column">
+                <div class="mk-ey" style="color:#0d7d73">New patients welcome</div>
+                <div class="mk-h" style="font-size:19px">Modern care,<br>gentle hands.</div>
+                <div style="display:flex;gap:5px;margin-top:10px;flex-wrap:wrap"><span class="mk-chip" style="background:#fff">Cleanings</span><span class="mk-chip" style="background:#fff">Whitening</span><span class="mk-chip" style="background:#fff">Implants</span></div>
+                <span class="mk-btn" style="background:#14b8a6;color:#fff">Reserve your visit</span></div>
+              <div class="ph" data-phc="ph-dental-3" style="flex:.8;align-self:stretch;border-radius:10px;box-shadow:0 14px 30px rgba(15,47,58,.2)"></div></div></div></div>
+        </div></div>
           <div class="score" aria-hidden="true"><span class="sc-h">Human-ready &check;</span><span class="sc-a">Agent-ready &check;</span></div></div>
         <figcaption><div><div class="t">Dental Practice</div><div class="d">Calm, clean, appointment-first.</div></div><span class="badge">Concept</span></figcaption></figure>
+      <!-- LAW — three directions: editorial split · authority hero · results card -->
       <figure class="work reveal"><div class="frame"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="u">halebishop.law</span></div>
-        <div class="stage2" aria-hidden="true"><div class="mk" style="background:#f3efe8;color:#14233b">
-  <div class="mk-strip" style="background:#14233b;color:#e6cf9b;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase">Free case review &middot; No fee unless we win</div>
-  <div class="mk-top"><span class="mk-logo" style="letter-spacing:.03em;font-size:12px">HALE &amp; BISHOP</span>
-    <span class="mk-nav" style="color:#14233baa"><span>Practice</span><span>Attorneys</span><span class="mk-cta" style="border:1px solid #a8823f;color:#8a6a2f">Consult</span></span></div>
-  <div class="mk-body" style="display:flex;gap:15px;align-items:stretch">
-    <div style="flex:1.25;display:flex;flex-direction:column">
-      <div class="mk-ey" style="color:#a8823f">Trial Attorneys &middot; Est. 1994</div>
-      <div class="mk-h" style="font-size:16px">Trusted counsel<br>when it matters.</div>
-      <div class="mk-p" style="max-width:96%">Personal injury and family law, handled with discretion and a record of results.</div>
-      <span class="mk-btn" style="background:#a8823f;color:#f3efe8">Request a consultation</span>
-      <div class="mk-stats" style="border-top:1px solid #14233b22;padding-top:8px;margin-top:auto">
-        <div class="mk-stat"><b>$500M+</b><span style="color:#a8823f">Recovered</span></div>
-        <div class="mk-stat"><b>40+ yrs</b><span style="color:#a8823f">Experience</span></div></div>
-    </div>
-    <div class="ph" data-ph="law" style="flex:.85;border-radius:9px;box-shadow:0 12px 24px rgba(20,35,59,.2)"></div>
-  </div>
-</div></div>
+        <div class="stage2" aria-hidden="true"><div class="track">
+          <div class="slide"><div class="mk" style="background:#f3efe8;color:#14233b">
+            <div class="mk-strip" style="background:#14233b;color:#e6cf9b;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase">Free case review &middot; No fee unless we win</div>
+            <div class="mk-top"><span class="mk-logo" style="letter-spacing:.03em;font-size:12px">HALE &amp; BISHOP</span>
+              <span class="mk-nav" style="color:#14233baa"><span>Practice</span><span>Attorneys</span><span class="mk-cta" style="border:1px solid #a8823f;color:#8a6a2f">Consult</span></span></div>
+            <div class="mk-body" style="display:flex;gap:15px;align-items:stretch">
+              <div style="flex:1.25;display:flex;flex-direction:column">
+                <div class="mk-ey" style="color:#a8823f">Trial Attorneys &middot; Est. 1994</div>
+                <div class="mk-h" style="font-size:16px">Trusted counsel<br>when it matters.</div>
+                <div class="mk-p" style="max-width:96%">Personal injury and family law, handled with discretion and a record of results.</div>
+                <span class="mk-btn" style="background:#a8823f;color:#f3efe8">Request a consultation</span>
+                <div class="mk-stats" style="border-top:1px solid #14233b22;padding-top:8px;margin-top:auto">
+                  <div class="mk-stat"><b>$500M+</b><span style="color:#a8823f">Recovered</span></div>
+                  <div class="mk-stat"><b>40+ yrs</b><span style="color:#a8823f">Experience</span></div></div></div>
+              <div class="ph" data-phc="ph-law-1" style="flex:.85;border-radius:9px;box-shadow:0 12px 24px rgba(20,35,59,.2)"></div></div></div></div>
+          <div class="slide"><div class="mk ph" data-phc="ph-law-2" style="color:#fff">
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,17,30,.62),rgba(10,17,30,.55) 40%,rgba(10,17,30,.9))"></div>
+            <div class="mk-strip" style="position:relative;background:#a8823f;color:#14233b;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;font-weight:700">Free case review &middot; No fee unless we win</div>
+            <div class="mk-body" style="position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:center">
+              <div class="mk-ey" style="color:#e6cf9b">Trial Attorneys &middot; Est. 1994</div>
+              <div class="mk-h" style="font-size:24px;color:#fff;max-width:82%">When it matters,<br>call Hale &amp; Bishop.</div>
+              <span class="mk-btn" style="background:#a8823f;color:#14233b">Request a consultation</span>
+              <div class="mk-stats" style="justify-content:center;margin-top:12px"><div class="mk-stat"><b style="color:#fff">$500M+</b><span style="color:#e6cf9b">Recovered</span></div><div class="mk-stat"><b style="color:#fff">40+ yrs</b><span style="color:#e6cf9b">Experience</span></div><div class="mk-stat"><b style="color:#fff">24/7</b><span style="color:#e6cf9b">Available</span></div></div></div></div></div>
+          <div class="slide"><div class="mk" style="background:#f3efe8;color:#14233b">
+            <div class="mk-top"><span class="mk-logo" style="letter-spacing:.03em;font-size:12px">HALE &amp; BISHOP</span><span class="mk-nav" style="color:#14233baa"><span>Results</span><span class="mk-cta" style="border:1px solid #a8823f;color:#8a6a2f">Consult</span></span></div>
+            <div class="mk-body" style="display:flex;gap:14px;align-items:center">
+              <div style="flex:1;display:flex;flex-direction:column">
+                <div class="mk-ey" style="color:#a8823f">Case results</div>
+                <div class="mk-h" style="font-size:20px">Results that<br>speak for us.</div>
+                <div class="mk-p" style="max-width:92%">Decades of verdicts and settlements for families across the state.</div>
+                <span class="mk-btn" style="background:#a8823f;color:#f3efe8">Free case review</span></div>
+              <div style="flex:.92;display:flex;flex-direction:column;gap:8px">
+                <div style="background:#14233b;color:#fff;border-radius:9px;padding:13px 14px"><b style="font-size:19px;letter-spacing:-.02em">$4.2M</b><div style="font-size:7px;color:#e6cf9b;text-transform:uppercase;letter-spacing:.08em;margin-top:2px">Auto injury verdict</div></div>
+                <div style="background:#fff;border:1px solid #14233b1a;border-radius:9px;padding:11px 14px;font-size:8px;line-height:1.5;color:#14233bcc">&#9733;&#9733;&#9733;&#9733;&#9733;<br>&ldquo;They fought for my family and won.&rdquo;</div></div></div></div></div>
+        </div></div>
           <div class="score" aria-hidden="true"><span class="sc-h">Human-ready &check;</span><span class="sc-a">Agent-ready &check;</span></div></div>
         <figcaption><div><div class="t">Law Firm</div><div class="d">Authoritative, editorial, credible.</div></div><span class="badge">Concept</span></figcaption></figure>
+      <!-- MED SPA — three directions: photo hero · treatments split · membership card -->
       <figure class="work reveal"><div class="frame"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="u">lumierespa.co</span></div>
-        <div class="stage2" aria-hidden="true"><div class="mk ph" data-ph="medspa" style="color:#fff">
-  <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,14,20,.52),rgba(28,14,20,.1) 30%,rgba(28,14,20,.6) 62%,rgba(28,14,20,.95))"></div>
-  <div class="mk-top" style="position:relative"><span class="mk-logo" style="letter-spacing:.14em">LUMI&Egrave;RE</span>
-    <span class="mk-nav" style="color:#ffffffdd"><span>Treatments</span><span class="mk-cta" style="background:#b76e79;color:#fff">Book</span></span></div>
-  <div class="mk-body" style="position:relative;display:flex;flex-direction:column;justify-content:flex-end">
-    <div class="mk-ey" style="color:#f0c9d0">Med Spa &amp; Skincare</div>
-    <div class="mk-h" style="font-size:26px;color:#fff">Glow, restored.</div>
-    <div class="mk-p" style="max-width:62%;opacity:.92;color:#fff">Advanced facials, injectables &amp; laser, in a calm, private studio.</div>
-    <div style="display:flex;align-items:center;gap:9px;margin-top:11px">
-      <span class="mk-btn" style="background:#fff;color:#2c2224;margin-top:0">Book a consult</span>
-      <span style="font-size:7.5px;color:#ffffffcc">Memberships from <b style="color:#fff">$99/mo</b></span></div>
-    <div class="mk-rate" style="color:#ffffffcc"><span class="mk-stars" style="color:#f0b6c0">&#9733;&#9733;&#9733;&#9733;&#9733;</span><b style="color:#fff">4.9</b><span>&middot; 800+ reviews</span></div>
-  </div>
-  <div class="mk-chip" style="position:absolute;right:16px;top:46px;background:#fff;color:#b76e79;font-weight:700;border-color:transparent;box-shadow:0 8px 22px rgba(0,0,0,.35)">New guest &middot; 20% off first facial</div>
-</div></div>
+        <div class="stage2" aria-hidden="true"><div class="track">
+          <div class="slide"><div class="mk ph" data-phc="ph-medspa-1" style="color:#fff">
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,14,20,.52),rgba(28,14,20,.1) 30%,rgba(28,14,20,.6) 62%,rgba(28,14,20,.95))"></div>
+            <div class="mk-top" style="position:relative"><span class="mk-logo" style="letter-spacing:.14em">LUMI&Egrave;RE</span>
+              <span class="mk-nav" style="color:#ffffffdd"><span>Treatments</span><span class="mk-cta" style="background:#b76e79;color:#fff">Book</span></span></div>
+            <div class="mk-body" style="position:relative;display:flex;flex-direction:column;justify-content:flex-end">
+              <div class="mk-ey" style="color:#f0c9d0">Med Spa &amp; Skincare</div>
+              <div class="mk-h" style="font-size:26px;color:#fff">Glow, restored.</div>
+              <div class="mk-p" style="max-width:62%;opacity:.92;color:#fff">Advanced facials, injectables &amp; laser, in a calm, private studio.</div>
+              <div style="display:flex;align-items:center;gap:9px;margin-top:11px"><span class="mk-btn" style="background:#fff;color:#2c2224;margin-top:0">Book a consult</span><span style="font-size:7.5px;color:#ffffffcc">Memberships from <b style="color:#fff">$99/mo</b></span></div>
+              <div class="mk-rate" style="color:#ffffffcc"><span class="mk-stars" style="color:#f0b6c0">&#9733;&#9733;&#9733;&#9733;&#9733;</span><b style="color:#fff">4.9</b><span>&middot; 800+ reviews</span></div></div>
+            <div class="mk-chip" style="position:absolute;right:16px;top:46px;background:#fff;color:#b76e79;font-weight:700;border-color:transparent;box-shadow:0 8px 22px rgba(0,0,0,.35)">New guest &middot; 20% off first facial</div></div></div>
+          <div class="slide"><div class="mk" style="flex-direction:row;background:#f7edef;color:#2c2224">
+            <div class="ph" data-phc="ph-medspa-2" style="width:46%;flex:none"></div>
+            <div style="flex:1;padding:16px 18px;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center"><span class="mk-logo" style="letter-spacing:.14em">LUMI&Egrave;RE</span><span class="mk-cta" style="background:#b76e79;color:#fff">Book</span></div>
+              <div class="mk-ey" style="color:#b76e79;margin-top:10px">Treatment menu</div>
+              <div class="mk-h" style="font-size:17px;margin-top:3px">Glow, restored.</div>
+              <div style="margin-top:10px;display:flex;flex-direction:column;gap:7px;font-size:8.5px">
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid #2c222415;padding-bottom:5px"><span>Signature facial</span><b>$180</b></div>
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid #2c222415;padding-bottom:5px"><span>Injectables</span><b>from $12/u</b></div>
+                <div style="display:flex;justify-content:space-between"><span>Laser resurfacing</span><b>$250</b></div></div>
+              <span class="mk-btn" style="background:#b76e79;color:#fff;margin-top:14px">Book a consult</span></div></div></div>
+          <div class="slide"><div class="mk" style="background:#efe0e3;color:#2c2224;align-items:center;justify-content:center">
+            <div style="width:74%;background:#fff;border-radius:12px;padding:16px 18px;box-shadow:0 18px 40px rgba(44,34,36,.18);display:flex;flex-direction:column">
+              <div class="mk-ey" style="color:#b76e79">Memberships</div>
+              <div style="display:flex;align-items:baseline;gap:7px;margin-top:3px"><div class="mk-h" style="font-size:19px">Glow all year.</div><b style="color:#b76e79;font-size:15px;letter-spacing:-.02em">$99<span style="font-size:8px">/mo</span></b></div>
+              <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px;font-size:8.5px;color:#2c2224cc">
+                <div>&#10003; &nbsp;One signature facial monthly</div><div>&#10003; &nbsp;Member-only pricing on all services</div><div>&#10003; &nbsp;Priority booking &amp; guest passes</div></div>
+              <span class="mk-btn" style="background:#b76e79;color:#fff;align-self:flex-start">Join Lumi&egrave;re</span></div></div></div>
+        </div></div>
           <div class="score" aria-hidden="true"><span class="sc-h">Human-ready &check;</span><span class="sc-a">Agent-ready &check;</span></div></div>
         <figcaption><div><div class="t">Med Spa</div><div class="d">Elegant, aspirational, booking-led.</div></div><span class="badge">Concept</span></figcaption></figure>
+      <!-- HVAC — three directions: urgency hero · call-now split · review-forward -->
       <figure class="work reveal"><div class="frame"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="u">summithvac.com</span></div>
-        <div class="stage2" aria-hidden="true"><div class="mk ph" data-ph="hvac" style="color:#fff">
-  <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,10,.58),rgba(8,8,10,.66) 45%,rgba(8,8,10,.9))"></div>
-  <div class="mk-top" style="position:relative"><span class="mk-logo">Summit<span style="color:#fb923c"> HVAC</span></span>
-    <span class="mk-nav" style="color:#ffffffdd"><span>Services</span><span>Reviews</span><span style="color:#fb923c;font-weight:700">(555) 010-2033</span></span></div>
-  <div class="mk-body" style="position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:center">
-    <span class="mk-chip" style="background:#f97316;color:#fff;font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:7px;border-color:transparent">24/7 emergency service</span>
-    <div class="mk-h" style="font-size:23px;margin-top:9px;color:#fff">Heating &amp; cooling,<br>done right.</div>
-    <div class="mk-p" style="max-width:64%;opacity:.9;color:#fff">Fast, honest service across the metro. Same-day in most areas.</div>
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <span class="mk-btn" style="background:#f97316;color:#fff;margin-top:0">Call (555) 010-2033</span>
-      <span class="mk-btn" style="background:transparent;border:1px solid #ffffff66;color:#fff;margin-top:0">Schedule online</span></div>
-  </div>
-  <div class="mk-strip" style="position:relative;background:rgba(0,0,0,.42);color:#ffffffcc;border-top:1px solid #ffffff1a">&#9733; 4.9 &middot; 1,200 reviews &middot; Licensed &amp; insured &middot; Financing</div>
-</div></div>
+        <div class="stage2" aria-hidden="true"><div class="track">
+          <div class="slide"><div class="mk ph" data-phc="ph-hvac-1" style="color:#fff">
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,10,.58),rgba(8,8,10,.66) 45%,rgba(8,8,10,.9))"></div>
+            <div class="mk-top" style="position:relative"><span class="mk-logo">Summit<span style="color:#fb923c"> HVAC</span></span>
+              <span class="mk-nav" style="color:#ffffffdd"><span>Services</span><span>Reviews</span><span style="color:#fb923c;font-weight:700">(555) 010-2033</span></span></div>
+            <div class="mk-body" style="position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:center">
+              <span class="mk-chip" style="background:#f97316;color:#fff;font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:7px;border-color:transparent">24/7 emergency service</span>
+              <div class="mk-h" style="font-size:23px;margin-top:9px;color:#fff">Heating &amp; cooling,<br>done right.</div>
+              <div class="mk-p" style="max-width:64%;opacity:.9;color:#fff">Fast, honest service across the metro. Same-day in most areas.</div>
+              <div style="display:flex;gap:8px;margin-top:12px"><span class="mk-btn" style="background:#f97316;color:#fff;margin-top:0">Call (555) 010-2033</span><span class="mk-btn" style="background:transparent;border:1px solid #ffffff66;color:#fff;margin-top:0">Schedule online</span></div></div>
+            <div class="mk-strip" style="position:relative;background:rgba(0,0,0,.42);color:#ffffffcc;border-top:1px solid #ffffff1a">&#9733; 4.9 &middot; 1,200 reviews &middot; Licensed &amp; insured &middot; Financing</div></div></div>
+          <div class="slide"><div class="mk" style="flex-direction:row;background:#0c0d10;color:#fff">
+            <div class="ph" data-phc="ph-hvac-2" style="width:44%;flex:none"></div>
+            <div style="flex:1;padding:16px 18px;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:center"><span class="mk-logo">Summit<span style="color:#fb923c"> HVAC</span></span><span style="color:#fb923c;font-weight:700;font-size:9px">(555) 010-2033</span></div>
+              <span class="mk-chip" style="background:#f97316;color:#fff;font-weight:800;letter-spacing:.1em;text-transform:uppercase;font-size:7px;border-color:transparent;align-self:flex-start;margin-top:10px">24/7 emergency</span>
+              <div class="mk-h" style="font-size:19px;margin-top:8px">Comfort,<br>restored fast.</div>
+              <span class="mk-btn" style="background:#f97316;color:#fff;font-size:11px;padding:9px 14px">&#9742; Call (555) 010-2033</span>
+              <div style="margin-top:11px;display:flex;flex-direction:column;gap:5px;font-size:8px;color:#ffffffcc"><div>&#10003; &nbsp;Same-day service</div><div>&#10003; &nbsp;Licensed &amp; insured</div><div>&#10003; &nbsp;Financing available</div></div></div></div></div>
+          <div class="slide"><div class="mk" style="background:#0c0d10;color:#fff">
+            <div class="mk-top"><span class="mk-logo">Summit<span style="color:#fb923c"> HVAC</span></span><span class="mk-nav" style="color:#ffffffcc"><span>Services</span><span>Reviews</span><span class="mk-cta" style="background:#f97316;color:#fff">Book</span></span></div>
+            <div class="mk-body" style="display:flex;flex-direction:column;justify-content:center">
+              <div class="mk-ey" style="color:#fb923c">Rated 4.9 across 1,200 reviews</div>
+              <div class="mk-h" style="font-size:18px">Trusted across<br>the metro.</div>
+              <div style="display:flex;gap:8px;margin-top:11px">
+                <div style="flex:1;background:#16171c;border:1px solid #ffffff12;border-radius:9px;padding:10px 11px;font-size:8px;line-height:1.5;color:#ffffffcc"><span style="color:#fb923c">&#9733;&#9733;&#9733;&#9733;&#9733;</span><br>&ldquo;Fast and honest. Fixed it same day.&rdquo;</div>
+                <div style="flex:1;background:#16171c;border:1px solid #ffffff12;border-radius:9px;padding:10px 11px;font-size:8px;line-height:1.5;color:#ffffffcc"><span style="color:#fb923c">&#9733;&#9733;&#9733;&#9733;&#9733;</span><br>&ldquo;Up-front pricing, no surprises.&rdquo;</div></div>
+              <span class="mk-btn" style="background:#f97316;color:#fff;align-self:flex-start;margin-top:12px">Schedule online</span></div></div></div>
+        </div></div>
           <div class="score" aria-hidden="true"><span class="sc-h">Human-ready &check;</span><span class="sc-a">Agent-ready &check;</span></div></div>
         <figcaption><div><div class="t">Home Services (HVAC)</div><div class="d">Bold, call-now urgency.</div></div><span class="badge">Concept</span></figcaption></figure>
     </div>
@@ -1524,109 +1596,89 @@ var QUVLO_SCAN = null;
       .then(function(){ send.disabled=false; send.textContent="Scan my site"; scanPulse(false); });
   });
 
-  /* concept variant rotation: 3 designs per card, chosen on load.
-     Images are external and only fetched once a card nears the viewport, so a
-     visit costs 4 photographs instead of 12. The rest prefetch quietly the
-     first time someone reaches for the shuffle. */
+  /* concept carousel: each card is a track of full-width slides, and each slide is a
+     genuinely different layout. On touch the track drags with the finger and snaps;
+     the dots, taps and the Shuffle button animate to a slide. A card's photos load
+     only once it nears the viewport. */
   (function(){
-    var COUNT=3, BASE="/images/concepts", live=document.getElementById("work-live");
-    var phs=[].slice.call(document.querySelectorAll("[data-ph]"));
-    if(!phs.length) return;
-    var EXT=(function(){ try{ return document.createElement("canvas")
-      .toDataURL("image/webp").indexOf("data:image/webp")===0?".webp":".jpg"; }catch(e){ return ".jpg"; } })();
-    var want={};
-    function paint(el,n){
-      var set=el.getAttribute("data-ph"), fig=el.closest("figure");
-      for(var i=1;i<=COUNT;i++) el.classList.remove("ph-"+set+"-"+i);
-      el.classList.add("ph-"+set+"-"+n);
-      el.setAttribute("data-v",n);
-      if(fig) fig.querySelectorAll(".vdot").forEach(function(d){
-        d.setAttribute("aria-pressed", d.getAttribute("data-n")===String(n)?"true":"false"); });
-    }
-    function swap(el,n,say){
-      if(reduce){paint(el,n);}
-      else{el.classList.add("swapping");setTimeout(function(){paint(el,n);el.classList.remove("swapping");},150);}
-      if(say&&live){var fig=el.closest("figure"),t=fig&&fig.querySelector(".t");
-        live.textContent=(t?t.textContent:"Concept")+", design "+n+" of "+COUNT+".";}
-    }
-    var primed=false;
-    function primeRest(){
-      if(primed) return; primed=true;
-      phs.forEach(function(el){
-        var set=el.getAttribute("data-ph"), cur=+el.getAttribute("data-v")||0;
-        for(var i=1;i<=COUNT;i++) if(i!==cur){ var im=new Image(); im.src=BASE+"/"+set+"-"+i+EXT; }
-      });
-    }
-    phs.forEach(function(el){
-      var fig=el.closest("figure"), cap=fig&&fig.querySelector("figcaption");
-      if(cap){
+    var live=document.getElementById("work-live");
+    var figs=[].slice.call(document.querySelectorAll("figure.work"));
+    if(!figs.length) return;
+    var cards=[];
+    figs.forEach(function(fig){
+      var stage=fig.querySelector(".stage2"), track=fig.querySelector(".track");
+      if(!stage||!track) return;
+      var slides=[].slice.call(track.children), n=slides.length;
+      var title=(fig.querySelector(".t")||{}).textContent||"Concept";
+      var idx=n>1?Math.floor(Math.random()*n):0, loaded=false;
+      function loadImgs(){ if(loaded) return; loaded=true;
+        track.querySelectorAll("[data-phc]").forEach(function(el){
+          el.className+=" "+el.getAttribute("data-phc"); el.removeAttribute("data-phc"); }); }
+      var dots=[], cap=fig.querySelector("figcaption");
+      if(cap && n>1){
         var badge=cap.querySelector(".badge");
         var right=document.createElement("div"); right.className="cap-right";
         var hint=document.createElement("span"); hint.className="swipe-hint"; hint.setAttribute("aria-hidden","true"); hint.textContent="↔ Swipe";
-        var sw=document.createElement("div"); sw.className="vswitch";
-        sw.setAttribute("role","group");
-        sw.setAttribute("aria-label",(fig.querySelector(".t")||{}).textContent+" design variations");
-        for(var i=1;i<=COUNT;i++)(function(i){
-          var b=document.createElement("button");
-          b.type="button"; b.className="vdot"; b.setAttribute("data-n",i);
-          b.setAttribute("aria-pressed","false");
-          b.setAttribute("aria-label","Show design "+i+" of "+COUNT);
-          b.addEventListener("click",function(){swap(el,i,true);});
-          b.addEventListener("pointerenter",primeRest);
-          b.addEventListener("focus",primeRest);
-          sw.appendChild(b);
+        var sw=document.createElement("div"); sw.className="vswitch"; sw.setAttribute("role","group"); sw.setAttribute("aria-label",title+" design variations");
+        for(var i=0;i<n;i++)(function(i){
+          var b=document.createElement("button"); b.type="button"; b.className="vdot"; b.setAttribute("data-n",i+1);
+          b.setAttribute("aria-pressed","false"); b.setAttribute("aria-label","Show design "+(i+1)+" of "+n);
+          b.addEventListener("click",function(){ loadImgs(); go(i,true); });
+          sw.appendChild(b); dots.push(b);
         })(i);
         badge.parentNode.insertBefore(right,badge);
         right.appendChild(hint); right.appendChild(sw); right.appendChild(badge);
       }
-      /* touch: swipe left/right across the card to move through its designs.
-         Passive + horizontal-dominance check so vertical page scroll is never hijacked. */
-      var frame=fig&&fig.querySelector(".frame");
-      if(frame){
-        var sx=0,sy=0,track=false;
-        frame.addEventListener("touchstart",function(e){
-          if(e.touches.length!==1){track=false;return;}
-          sx=e.touches[0].clientX; sy=e.touches[0].clientY; track=true;
-        },{passive:true});
-        frame.addEventListener("touchcancel",function(){track=false;},{passive:true});
-        frame.addEventListener("touchend",function(e){
-          if(!track) return; track=false;
-          var t=e.changedTouches[0], dx=t.clientX-sx, dy=t.clientY-sy;
-          if(Math.abs(dx)<40 || Math.abs(dx)<Math.abs(dy)*1.3) return; /* not a horizontal swipe */
-          primeRest();
-          var cur=+el.getAttribute("data-v")||1, dir=dx<0?1:-1; /* swipe left -> next */
-          swap(el, ((cur-1+dir)+COUNT)%COUNT+1, true);
-        },{passive:true});
+      function setDots(){ for(var i=0;i<dots.length;i++) dots[i].setAttribute("aria-pressed", i===idx?"true":"false"); }
+      function go(i,say){
+        idx=Math.max(0,Math.min(n-1,i));
+        track.classList.remove("grab");
+        track.style.transform="translateX("+(-idx*100)+"%)";
+        setDots();
+        if(say && live) live.textContent=title+", design "+(idx+1)+" of "+n+".";
       }
-      want[el.getAttribute("data-ph")]=1+Math.floor(Math.random()*COUNT);
+      track.style.transform="translateX("+(-idx*100)+"%)"; setDots();
+      if(n>1){
+        var W=0,sx=0,sy=0,lock=0,drag=false;
+        stage.addEventListener("touchstart",function(e){
+          if(e.touches.length!==1) return;
+          W=stage.clientWidth||1; sx=e.touches[0].clientX; sy=e.touches[0].clientY; lock=0; drag=true;
+          track.classList.add("grab"); loadImgs();
+        },{passive:true});
+        stage.addEventListener("touchmove",function(e){
+          if(!drag) return;
+          var dx=e.touches[0].clientX-sx, dy=e.touches[0].clientY-sy;
+          if(lock===0 && (Math.abs(dx)>8||Math.abs(dy)>8)) lock=Math.abs(dx)>Math.abs(dy)?1:2;
+          if(lock===1){ e.preventDefault();
+            var over=(idx===0&&dx>0)||(idx===n-1&&dx<0);
+            track.style.transform="translateX("+(-idx*100 + (dx/W*100)*(over?0.35:1))+"%)";
+          }
+        },{passive:false});
+        function end(e){
+          if(!drag) return; drag=false; track.classList.remove("grab");
+          if(lock!==1){ go(idx,false); return; }
+          var t=e.changedTouches&&e.changedTouches[0], dx=t?t.clientX-sx:0, th=W*0.16;
+          if(dx<=-th && idx<n-1) go(idx+1,true);
+          else if(dx>=th && idx>0) go(idx-1,true);
+          else go(idx,false);
+        }
+        stage.addEventListener("touchend",end,{passive:true});
+        stage.addEventListener("touchcancel",end,{passive:true});
+      }
+      cards.push({fig:fig, n:n, go:go, load:loadImgs, cur:function(){return idx;}});
     });
-    /* only load a card's photograph once it is nearly on screen */
     if("IntersectionObserver" in window){
-      var pio=new IntersectionObserver(function(es){
-        es.forEach(function(e){
-          if(!e.isIntersecting) return;
-          pio.unobserve(e.target);
-          paint(e.target, want[e.target.getAttribute("data-ph")]||1);
-        });
-      },{rootMargin:"300px 0px"});
-      phs.forEach(function(el){pio.observe(el);});
-    } else {
-      phs.forEach(function(el){paint(el, want[el.getAttribute("data-ph")]||1);});
-    }
+      var io=new IntersectionObserver(function(es){ es.forEach(function(e){
+        if(!e.isIntersecting) return; io.unobserve(e.target);
+        var c=cards.filter(function(x){return x.fig===e.target;})[0]; if(c) c.load();
+      });},{rootMargin:"400px 0px"});
+      cards.forEach(function(c){ io.observe(c.fig); });
+    } else { cards.forEach(function(c){ c.load(); }); }
     var sh=document.getElementById("shuffle");
-    if(sh){
-      sh.addEventListener("pointerenter",primeRest);
-      sh.addEventListener("focus",primeRest);
-      sh.addEventListener("click",function(){
-        primeRest();
-        phs.forEach(function(el){
-          var cur=+el.getAttribute("data-v")||1, n;
-          do{ n=1+Math.floor(Math.random()*COUNT); }while(n===cur);
-          swap(el,n,false);
-        });
-        if(live) live.textContent="New set of concept designs shown.";
-      });
-    }
+    if(sh) sh.addEventListener("click",function(){
+      cards.forEach(function(c){ if(c.n<2) return; c.load(); var r; do{ r=Math.floor(Math.random()*c.n); }while(r===c.cur()); c.go(r,false); });
+      if(live) live.textContent="New set of concept designs shown.";
+    });
   })();
 })();
 
