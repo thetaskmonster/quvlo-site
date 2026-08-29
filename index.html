@@ -580,15 +580,21 @@
   .alsobar .txt b{color:var(--ink-0);}
 
   /* Work */
-  .gallery{margin-top:40px;display:grid;gap:18px;grid-template-columns:minmax(0,1fr);} /* WCAG 1.4.4: shrinkable track so cards reflow at 200% zoom */
-  @media(min-width:640px){ .gallery{grid-template-columns:minmax(0,1fr) minmax(0,1fr);} }
+  /* Work — the concepts shown big. Full-width frames read as real products, not thumbnails,
+     and each is stamped with the two-reader promise (built human-ready + agent-ready). */
+  .gallery{margin-top:40px;display:grid;gap:34px;grid-template-columns:minmax(0,1fr);} /* WCAG 1.4.4: shrinkable track so cards reflow at 200% zoom; one-up so each concept reads full-size */
   figure.work{margin:0;}
-  .frame{border:1px solid var(--hairline);border-radius:14px;overflow:hidden;background:#0b0f18;
-    box-shadow:0 30px 60px -40px #000;transition:transform .35s,border-color .35s;}
-  figure.work:hover .frame{transform:translateY(-4px);border-color:rgba(230,210,168,.4);}
-  .frame .bar{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--hair-2);background:rgba(255,255,255,.02);}
-  .frame .bar i{width:8px;height:8px;border-radius:50%;background:#2a3040;display:block;}
-  .frame .bar .u{margin-left:auto;font:500 10px/1 var(--mono);color:var(--ink-3);}
+  .frame{position:relative;border:1px solid var(--hairline);border-radius:16px;overflow:hidden;background:#0b0f18;
+    box-shadow:0 40px 80px -46px #000, inset 0 1px 0 rgba(255,255,255,.04);transition:transform .35s,border-color .35s,box-shadow .35s;}
+  figure.work:hover .frame{transform:translateY(-5px);border-color:rgba(230,210,168,.4);box-shadow:0 54px 100px -46px #000, inset 0 1px 0 rgba(255,255,255,.06);}
+  .frame .bar{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--hair-2);background:rgba(255,255,255,.02);}
+  .frame .bar i{width:9px;height:9px;border-radius:50%;background:#2a3040;display:block;}
+  .frame .bar .u{margin-left:auto;font:500 11px/1 var(--mono);color:var(--ink-3);}
+  /* the two-reader stamp, floated on each concept */
+  .score{position:absolute;right:13px;bottom:13px;z-index:3;display:flex;gap:7px;}
+  .score span{font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:7px 11px;border-radius:999px;
+    background:rgba(5,7,13,.7);border:1px solid var(--hair-2);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);}
+  .score .sc-h{color:var(--champagne);} .score .sc-a{color:var(--machine);}
   .mock{aspect-ratio:16/10;position:relative;padding:9%;display:flex;flex-direction:column;gap:8%;}
   .mock .h{height:26%;border-radius:6px;} .mock .r{display:flex;gap:6%;height:30%;} .mock .r span{flex:1;border-radius:6px;background:rgba(255,255,255,.06);}
   .mock .b{height:9%;width:64%;border-radius:4px;background:rgba(255,255,255,.10);} .mock .b.s{width:40%;}
@@ -663,7 +669,7 @@
   #teardown .ask{max-width:620px;margin-inline:auto;}
 
   /* Concept mockups (decorative) */
-  .stage2{position:relative;aspect-ratio:16/10;width:100%;overflow:hidden;}
+  .stage2{position:relative;aspect-ratio:1.9;width:100%;overflow:hidden;}
   .mk{position:absolute;inset:0;font-family:var(--sans);display:flex;flex-direction:column;overflow:hidden;}
   .mk *{box-sizing:border-box;}
   .mk-top{display:flex;align-items:center;justify-content:space-between;padding:15px 18px 0;flex:none;}
@@ -984,7 +990,8 @@
     <span class="mk-btn" style="background:#14b8a6;color:#fff">Confirm appointment</span>
     <div class="mk-rate" style="color:#0f2f3aaa;margin-top:auto"><span class="mk-stars" style="color:#f5a524">&#9733;&#9733;&#9733;&#9733;&#9733;</span><b style="color:#0f2f3a">4.9</b><span>&middot; 600+ reviews</span></div>
   </div>
-</div></div></div>
+</div></div>
+          <div class="score" aria-hidden="true"><span class="sc-h">Human-ready &check;</span><span class="sc-a">Agent-ready &check;</span></div></div>
         <figcaption><div><div class="t">Dental Practice</div><div class="d">Calm, clean, appointment-first.</div></div><span class="badge">Concept</span></figcaption></figure>
       <figure class="work reveal"><div class="frame"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="u">halebishop.law</span></div>
         <div class="stage2" aria-hidden="true"><div class="mk" style="background:#f3efe8;color:#14233b">
@@ -1003,7 +1010,8 @@
     </div>
     <div class="ph" data-ph="law" style="flex:.85;border-radius:9px;box-shadow:0 12px 24px rgba(20,35,59,.2)"></div>
   </div>
-</div></div></div>
+</div></div>
+          <div class="score" aria-hidden="true"><span class="sc-h">Human-ready &check;</span><span class="sc-a">Agent-ready &check;</span></div></div>
         <figcaption><div><div class="t">Law Firm</div><div class="d">Authoritative, editorial, credible.</div></div><span class="badge">Concept</span></figcaption></figure>
       <figure class="work reveal"><div class="frame"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="u">lumierespa.co</span></div>
         <div class="stage2" aria-hidden="true"><div class="mk ph" data-ph="medspa" style="color:#fff">
@@ -1020,7 +1028,8 @@
     <div class="mk-rate" style="color:#ffffffcc"><span class="mk-stars" style="color:#f0b6c0">&#9733;&#9733;&#9733;&#9733;&#9733;</span><b style="color:#fff">4.9</b><span>&middot; 800+ reviews</span></div>
   </div>
   <div class="mk-chip" style="position:absolute;right:16px;top:46px;background:#fff;color:#b76e79;font-weight:700;border-color:transparent;box-shadow:0 8px 22px rgba(0,0,0,.35)">New guest &middot; 20% off first facial</div>
-</div></div></div>
+</div></div>
+          <div class="score" aria-hidden="true"><span class="sc-h">Human-ready &check;</span><span class="sc-a">Agent-ready &check;</span></div></div>
         <figcaption><div><div class="t">Med Spa</div><div class="d">Elegant, aspirational, booking-led.</div></div><span class="badge">Concept</span></figcaption></figure>
       <figure class="work reveal"><div class="frame"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="u">summithvac.com</span></div>
         <div class="stage2" aria-hidden="true"><div class="mk ph" data-ph="hvac" style="color:#fff">
@@ -1036,7 +1045,8 @@
       <span class="mk-btn" style="background:transparent;border:1px solid #ffffff66;color:#fff;margin-top:0">Schedule online</span></div>
   </div>
   <div class="mk-strip" style="position:relative;background:rgba(0,0,0,.42);color:#ffffffcc;border-top:1px solid #ffffff1a">&#9733; 4.9 &middot; 1,200 reviews &middot; Licensed &amp; insured &middot; Financing</div>
-</div></div></div>
+</div></div>
+          <div class="score" aria-hidden="true"><span class="sc-h">Human-ready &check;</span><span class="sc-a">Agent-ready &check;</span></div></div>
         <figcaption><div><div class="t">Home Services (HVAC)</div><div class="d">Bold, call-now urgency.</div></div><span class="badge">Concept</span></figcaption></figure>
     </div>
   </div></section>
