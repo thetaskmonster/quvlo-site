@@ -1,0 +1,350 @@
+<!doctype html>
+<!--
+  Quvlo · "The Legibility Descent" — ScrollCraft worldflight SCAFFOLD.
+
+  This is a PARALLEL deliverable. It is not one of vite's five build inputs, so
+  it never deploys. quvlo.co and every live page stay untouched.
+
+  State: full photoreal flight. All six legs mount a kie.ai-generated clip
+  (Kling 2.1 Pro), seam-chained end-to-start so the descent is continuous, with
+  the poster set to each clip's own first frame. Under reduced motion no clip is
+  fetched and the posters carry the same story through the same seams — a
+  first-class accessible fallback, not a degraded one. SVG placeholders are kept
+  in placeholders/ as the design source.
+
+  Honesty gate (Quvlo rules + ScrollCraft): zero clients, no testimonials, no
+  invented numbers. Every line of copy is true today. The signature panel reads
+  THIS page's own accessibility tree live — it cannot lie, because it is the
+  document, not a picture of one.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quvlo — can an AI agent actually use your website?</title>
+<meta name="description" content="A scroll you fly down into a web page — and watch how an AI agent actually reads it. Quvlo builds sites people and machines can both use.">
+<meta name="robots" content="noindex"><!-- scaffold: never index the demo -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2305070d'/><circle cx='16' cy='16' r='7' fill='none' stroke='%23e6d2a8' stroke-width='2.4'/></svg>">
+<link rel="stylesheet" href="scrollcraft.css">
+<style>
+  /* ---- The whole rebrand: Quvlo's six colours + two faces over the floor. -- */
+  @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/bricolage-grotesque-700.woff2) format('woff2');}
+  @font-face{font-family:'Space Mono';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/space-mono-400.woff2) format('woff2');}
+  /* ===== Quvlo design system — "two readers, one surface" ================
+     Authored in OKLCH so contrast is computable, not asserted: tokens/color.mjs
+     prints every pairing's WCAG ratio (worst body pairing 6.1:1 — all AA).
+     Warm champagne = the human; a cool twin = the machine. Ground + champagne
+     are pinned to brand hex so a later port to the live site shifts nothing. */
+  :root{
+    /* ground + the two planes */
+    --space:   #05070d;              /* surface plane / page ground        */
+    --surface: #0b0f1a;              /* structure plane, raised            */
+    /* ink scale — oklch(96.5..66% · 0.006..0.022 · 250..258°) */
+    --ink-0:   #f0f4f7;
+    --ink-1:   #bcc3cd;
+    --ink-2:   #8a93a0;
+    /* the two readers */
+    --human:   #e6d2a8;              /* warm champagne — the person        */
+    --machine: #a4c9e9;              /* cool twin — the machine / agent     */
+    /* functional data states, kept distinct from the two brand accents */
+    --pass: #76cf8a; --warn: #e5bf6d; --fail: #f3625d;
+
+    /* mapped onto the engine's expected names; the page's default voice is human */
+    --sc-canvas: var(--space);
+    --sc-surface: var(--surface);
+    --sc-ink: var(--ink-0);
+    --sc-ink-soft: var(--ink-1);
+    --sc-accent: var(--human);
+    --sc-accent-ink: var(--space);
+    --sc-font-display:'Bricolage Grotesque', system-ui, sans-serif;
+    --sc-font-text:   system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --sc-font-mono:   'Space Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  }
+  /* the two readers, made literal wherever both are named in one line */
+  .tr-human{color:var(--human);} .tr-machine{color:var(--machine);}
+
+  /* Copy legibility over bright footage: the stock band scrim protects the very
+     bottom, but the headline sits higher, where the gold lattice is bright. Back
+     the left-aligned copy with a bottom-left-anchored plate so every line clears
+     AA over any frame, while the footage focal point (upper right) stays clear. */
+  .sc-world__scrim.sc-scrim--band{
+    background: radial-gradient(135% 105% at 0% 100%,
+      color-mix(in oklab, var(--space) 93%, transparent) 0%,
+      color-mix(in oklab, var(--space) 74%, transparent) 24%,
+      color-mix(in oklab, var(--space) 40%, transparent) 46%,
+      transparent 66%);
+  }
+  @media (max-width:860px){
+    /* copy spans full width on mobile — widen the plate to the whole bottom */
+    .sc-world__scrim.sc-scrim--band{
+      background: linear-gradient(to top,
+        color-mix(in oklab, var(--space) 93%, transparent) 0%,
+        color-mix(in oklab, var(--space) 72%, transparent) 26%,
+        color-mix(in oklab, var(--space) 34%, transparent) 48%,
+        transparent 66%);
+    }
+  }
+
+  /* ---- Page-owned classes. Nothing here restyles a [data-sc-*] mechanism. -- */
+  .skip{position:absolute;left:-9999px;top:0;z-index:200;}
+  .skip:focus{left:16px;top:16px;padding:12px 18px;border-radius:10px;background:var(--sc-accent);color:#05070d;font:700 13px/1 var(--sc-font-display);text-decoration:none;outline:3px solid #fff;outline-offset:2px;}
+
+  .bar{position:fixed;inset:0 0 auto 0;z-index:60;display:flex;align-items:center;justify-content:space-between;
+    padding:18px clamp(1.25rem,5vw,3rem);pointer-events:none;}
+  .bar a{pointer-events:auto;}
+  .word{display:inline-flex;align-items:center;gap:10px;font:700 19px/1 var(--sc-font-display);
+    color:var(--sc-ink);text-decoration:none;letter-spacing:-.01em;}
+  /* fixed chrome sits over footage too — give it the same halo so it never drops out */
+  .word,.rail li{text-shadow:0 1px 8px color-mix(in oklab,var(--space) 70%,transparent),0 0 3px color-mix(in oklab,var(--space) 82%,transparent);}
+  .word .ring{width:14px;height:14px;border-radius:50%;border:2px solid var(--sc-accent);}
+  .bar .cta{font:700 13px/1 var(--sc-font-display);color:#05070d;background:var(--sc-accent);
+    padding:11px 18px;border-radius:10px;text-decoration:none;}
+  .bar .cta:hover{filter:brightness(1.06);}
+
+  /* copy voice */
+  .sc-copy h1,.sc-copy h2{font-family:var(--sc-font-display);letter-spacing:-.025em;line-height:1.02;text-wrap:balance;}
+  /* Per-glyph dark halo so a bright lattice bar crossing a stroke can never sink
+     legibility — the footage-preserving half of the contrast fix (the scrim plate
+     is the other half). Subtle; not a drop shadow. */
+  .sc-copy :is(h1,h2,.sc-body,.kicker,.cta){
+    text-shadow: 0 1px 10px color-mix(in oklab, var(--space) 72%, transparent),
+                 0 0 3px color-mix(in oklab, var(--space) 86%, transparent);
+  }
+  .sc-copy .kicker{display:block;font:400 12px/1 var(--sc-font-mono);letter-spacing:.28em;text-transform:uppercase;
+    color:var(--sc-accent);margin-bottom:18px;}
+  .sc-copy .sc-body{margin-top:16px;color:var(--sc-ink-soft);font-size:clamp(1rem,.95rem+.4vw,1.2rem);max-width:42ch;}
+
+  /* the Agent's-Eye signature panel (leg 5) */
+  /* The Agent's-Eye panel is the STRUCTURE PLANE surfaced: the machine speaking,
+     so it speaks in the machine's colour and a mono voice, with a faint cool tint. */
+  .eye{position:absolute;left:50%;top:50%;translate:-50% -50%;width:min(92vw,720px);
+    background:color-mix(in oklab,var(--surface) 90%,var(--machine) 4%);
+    border:1px solid color-mix(in oklab,var(--machine) 40%,transparent);
+    border-radius:14px;padding:clamp(20px,3vw,34px);box-shadow:var(--sc-e3);}
+  .eye h2{font:700 clamp(1.3rem,1rem+1.6vw,2rem)/1.05 var(--sc-font-display);color:var(--sc-ink);letter-spacing:-.02em;}
+  .eye .kicker{display:block;font:400 12px/1 var(--sc-font-mono);letter-spacing:.28em;text-transform:uppercase;color:var(--machine);margin-bottom:14px;}
+  .eye p.lead{margin:12px 0 20px;color:var(--sc-ink-soft);font-size:15px;max-width:52ch;}
+  .eye dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 18px;
+    font-family:var(--sc-font-mono);font-size:13.5px;line-height:1.5;}
+  .eye dt{color:var(--machine);white-space:nowrap;}
+  .eye dd{margin:0;color:var(--sc-ink);overflow-wrap:anywhere;}
+  .eye dd .ok{color:var(--pass);} .eye dd .warn{color:var(--warn);}
+  .eye .foot{margin-top:18px;font:400 12px/1.5 var(--sc-font-mono);color:var(--sc-ink-soft);}
+
+  /* route rail — a depth gauge, built in the page from the two published numbers */
+  .rail{position:fixed;right:clamp(12px,2vw,26px);top:50%;translate:0 -50%;z-index:60;
+    display:flex;flex-direction:column;gap:14px;pointer-events:none;}
+  .rail li{list-style:none;display:flex;align-items:center;gap:10px;justify-content:flex-end;
+    font:400 10px/1 var(--sc-font-mono);letter-spacing:.14em;text-transform:uppercase;
+    color:var(--sc-ink-soft);opacity:.5;transition:opacity .3s;}
+  .rail li .dot{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--sc-ink-soft);}
+  .rail li[aria-current="true"]{opacity:1;color:var(--sc-accent);}
+  .rail li[aria-current="true"] .dot{background:var(--sc-accent);border-color:var(--sc-accent);}
+  @media (max-width:860px){.rail{display:none;}}
+
+  /* reduced-motion / no-JS static reader — real document flow, full story */
+  .fallback{max-width:720px;margin:0 auto;padding:96px 24px 120px;}
+  .fallback h1{font:700 clamp(2rem,5vw,3.2rem)/1.04 var(--sc-font-display);letter-spacing:-.025em;color:var(--sc-ink);}
+  .fallback h2{font:700 1.3rem/1.2 var(--sc-font-display);color:var(--sc-ink);margin:40px 0 8px;}
+  .fallback p{color:var(--sc-ink-soft);margin-top:10px;}
+  .fallback .cta{display:inline-block;margin-top:28px;background:var(--sc-accent);color:#05070d;
+    font:700 14px/1 var(--sc-font-display);padding:14px 22px;border-radius:11px;text-decoration:none;}
+  .fallback img{margin-top:28px;border-radius:12px;border:1px solid var(--sc-hairline);}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#start">Skip to the one thing this page asks &mdash; start here</a>
+
+<header class="bar">
+  <a class="word" href="https://quvlo.co"><span class="ring" aria-hidden="true"></span>Quvlo</a>
+  <a class="cta" href="https://quvlo.co">Start here</a>
+</header>
+
+<main data-sc-mode="worldflight" data-sc-seam="0.18" data-sc-lerp="0.15">
+
+  <!-- ============================ the flight ============================ -->
+  <div data-sc-world>
+    <div data-sc-segment data-sc-w="1.15" data-sc-waypoint="Surface">
+      <img class="sc-world__poster" src="assets/leg1-poster.jpg" alt="" decoding="async">
+      <video data-sc-src="assets/leg1.mp4" data-sc-src-mobile="assets/leg1-m.mp4" muted playsinline></video>
+    </div>
+    <div data-sc-segment data-sc-w="1.15" data-sc-waypoint="Descent">
+      <img class="sc-world__poster" src="assets/leg2-poster.jpg" alt="" decoding="async">
+      <video data-sc-src="assets/leg2.mp4" data-sc-src-mobile="assets/leg2-m.mp4" muted playsinline></video>
+    </div>
+    <div data-sc-segment data-sc-w="1.15" data-sc-waypoint="Lattice">
+      <img class="sc-world__poster" src="assets/leg3-poster.jpg" alt="" decoding="async">
+      <video data-sc-src="assets/leg3.mp4" data-sc-src-mobile="assets/leg3-m.mp4" muted playsinline></video>
+    </div>
+    <!-- authored silence: a held beat at the bottom of Two Readers before the peak -->
+    <div data-sc-segment data-sc-w="1.15" data-sc-linger="0.22" data-sc-waypoint="Two Readers">
+      <img class="sc-world__poster" src="assets/leg4-poster.jpg" alt="" decoding="async">
+      <video data-sc-src="assets/leg4.mp4" data-sc-src-mobile="assets/leg4-m.mp4" muted playsinline></video>
+    </div>
+    <div data-sc-segment data-sc-w="1.15" data-sc-waypoint="The Agent's Eye">
+      <img class="sc-world__poster" src="assets/leg5-poster.jpg" alt="" decoding="async">
+      <video data-sc-src="assets/leg5.mp4" data-sc-src-mobile="assets/leg5-m.mp4" muted playsinline></video>
+    </div>
+    <div data-sc-segment data-sc-w="1.15" data-sc-waypoint="Return">
+      <img class="sc-world__poster" src="assets/leg6-poster.jpg" alt="" decoding="async">
+      <video data-sc-src="assets/leg6.mp4" data-sc-src-mobile="assets/leg6-m.mp4" muted playsinline></video>
+    </div>
+  </div>
+
+  <!-- ============================ the copy ============================= -->
+  <div data-sc-world-copy>
+    <div class="sc-world__scrim sc-scrim sc-scrim--band" aria-hidden="true"></div>
+
+    <div class="sc-copy sc-copy--lead" data-sc-copy data-sc-window="hero">
+      <span class="kicker">Quvlo · the legibility descent</span>
+      <h1 class="sc-display sc-display--xl">Can an AI agent actually use your website?</h1>
+      <p class="sc-body">Most can&rsquo;t. Scroll down &mdash; this is what that looks like.</p>
+    </div>
+
+    <div class="sc-copy sc-copy--lead" data-sc-copy data-sc-window="0.17 0.33">
+      <h2 class="sc-display sc-display--lg">A page is two things at once.</h2>
+      <p class="sc-body">What a person sees, and what a machine reads. We&rsquo;re about to fall past the first into the second.</p>
+    </div>
+
+    <div class="sc-copy sc-copy--lead" data-sc-copy data-sc-window="0.34 0.49">
+      <h2 class="sc-display sc-display--lg">Underneath is a structure.</h2>
+      <p class="sc-body">Headings, landmarks, labels, links. Screen readers and AI agents travel this lattice &mdash; or get lost in it.</p>
+    </div>
+
+    <div class="sc-copy sc-copy--lead" data-sc-copy data-sc-window="0.50 0.66">
+      <h2 class="sc-display sc-display--lg">Two readers, one path.</h2>
+      <p class="sc-body"><span class="tr-human">A person</span>, and <span class="tr-machine">a machine</span> acting for one &mdash; a screen reader, an assistant, a search crawler. Your site has to work for both, or it quietly loses one.</p>
+    </div>
+
+    <!-- PEAK · the signature. Rendered live from this page's own DOM. -->
+    <section class="eye" data-sc-copy data-sc-window="0.66 0.84 0.22 0.22"
+             data-agenteye aria-label="How an AI agent reads this page">
+      <span class="kicker">The agent&rsquo;s eye</span>
+      <h2>This is your page, as an agent reads it.</h2>
+      <p class="lead">Not a mock-up. The panel below is this very page&rsquo;s accessibility tree, read live from the document you&rsquo;re scrolling. A well-built page reads clean here. Most don&rsquo;t.</p>
+      <dl id="eye-readout"><dt>reading&hellip;</dt><dd>&mdash;</dd></dl>
+      <p class="foot">Every Quvlo build is measured against exactly this reading.</p>
+    </section>
+
+    <div class="sc-copy sc-copy--lead" data-sc-copy data-sc-window="finale">
+      <span class="kicker">Return · start here</span>
+      <h2 class="sc-display sc-display--lg">Quvlo builds sites both can use.</h2>
+      <p class="sc-body">People and machines, on the same page &mdash; accessible and agent-ready by default.</p>
+      <p><a id="start" class="cta" href="https://quvlo.co"
+        style="display:inline-block;margin-top:20px;background:var(--sc-accent);color:#05070d;font:700 14px/1 var(--sc-font-display);padding:14px 22px;border-radius:11px;text-decoration:none;">Start here &rarr;</a></p>
+    </div>
+  </div>
+
+  <div data-sc-spacer aria-hidden="true"></div>
+</main>
+
+<!-- depth gauge, fed by sc:waypoint -->
+<ol class="rail" aria-hidden="true">
+  <li data-leg="0"><span>Surface</span><span class="dot"></span></li>
+  <li data-leg="1"><span>Descent</span><span class="dot"></span></li>
+  <li data-leg="2"><span>Lattice</span><span class="dot"></span></li>
+  <li data-leg="3"><span>Two readers</span><span class="dot"></span></li>
+  <li data-leg="4"><span>Agent&rsquo;s eye</span><span class="dot"></span></li>
+  <li data-leg="5"><span>Return</span><span class="dot"></span></li>
+</ol>
+
+<noscript>
+  <div class="fallback">
+    <h1>Can an AI agent actually use your website?</h1>
+    <p>Most can&rsquo;t &mdash; and the ones that can&rsquo;t are invisible to a fast-growing set of visitors: screen-reader users, AI assistants acting on someone&rsquo;s behalf, and search crawlers.</p>
+    <h2>A page is two things at once</h2>
+    <p>What a person sees, and what a machine reads. Underneath the visible page is a structure &mdash; headings, landmarks, labels, links. Screen readers and AI agents travel that structure, or get lost in it.</p>
+    <h2>Two readers, one path</h2>
+    <p>A person and a machine arrive at the same page. Your site has to work for both, or it quietly loses one.</p>
+    <h2>Quvlo builds sites both can use</h2>
+    <p>Accessible and agent-ready by default &mdash; ADA/EAA compliance built in, not bolted on. Quvlo is a Dallas&ndash;Fort Worth web studio run by Kyle Chalk.</p>
+    <a class="cta" href="https://quvlo.co">Start here</a>
+    <img src="placeholders/p5-agents-eye.svg" width="1600" height="900" alt="Diagram: on the left, a rendered web page dissolves under a scanning line into a list of what an AI agent reads on the right — a level-one heading, six navigation links, a Start-here button, the main landmark, an image missing its alternative text, and a labelled form.">
+  </div>
+</noscript>
+
+<script src="scrollcraft.js"></script>
+<script>
+  ScrollCraft.mount(document.body);
+
+  /* Worldflight relayout: the spacer is sized once at mount, and a 0-height
+     innerHeight (embedded panes, early load) leaves the page unscrollable. One
+     resize re-measures it; fonts settling changes copy-block heights too. */
+  function relayout(){ dispatchEvent(new Event('resize')); }
+  addEventListener('load', relayout);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
+
+  /* The depth gauge: same two numbers the engine already publishes. */
+  addEventListener('sc:waypoint', function(e){
+    document.querySelectorAll('.rail li').forEach(function(li){
+      li.setAttribute('aria-current', String(+li.dataset.leg === e.detail.index));
+    });
+  });
+
+  /* ---- The Agent's-Eye signature: read THIS page's accessibility tree live.
+     It walks the real DOM (skipping its own subtree) and reports what a screen
+     reader or agent would find. It is a genuine accessibility feature, not an
+     illustration — which is the entire point of putting it at the peak. ---- */
+  (function agentEye(){
+    var out = document.getElementById('eye-readout');
+    if (!out) return;
+    var esc = function(s){ return String(s).replace(/[&<>]/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]; }); };
+    var row = function(k, v){ return '<dt>' + esc(k) + '</dt><dd>' + v + '</dd>'; };
+
+    function build(){
+      var skip = function(el){ return el.closest && el.closest('[data-agenteye]'); };
+      var all = function(sel){ return Array.prototype.filter.call(
+        document.querySelectorAll(sel), function(el){ return !skip(el); }); };
+
+      // headings outline
+      var hs = all('h1,h2,h3,h4,h5,h6').map(function(h){
+        return h.tagName.toLowerCase() + ' &middot; ' + esc((h.textContent||'').trim().slice(0,52));
+      });
+      // landmarks
+      var lm = [];
+      if (all('header').length) lm.push('banner');
+      if (all('nav').length) lm.push('navigation');
+      if (all('main').length) lm.push('main');
+      if (all('footer').length) lm.push('contentinfo');
+      // links & the primary action
+      var links = all('a[href]');
+      // match the real call to action, not the skip link that merely mentions it
+      var cta = links.filter(function(a){ return /^\s*start here/i.test(a.textContent||''); })[0];
+      // images and their alt state
+      var imgs = all('img');
+      var missingAlt = imgs.filter(function(i){ return !i.hasAttribute('alt'); }).length;
+      var decorative = imgs.filter(function(i){ return i.getAttribute('alt') === ''; }).length;
+
+      var h1s = all('h1');
+      var altState = missingAlt
+        ? '<span class="warn">' + missingAlt + ' missing alt</span>'
+        : '<span class="ok">all described</span>';
+
+      out.innerHTML =
+        row('document', esc(document.title).slice(0,54)) +
+        row('language', document.documentElement.lang
+              ? '<span class="ok">' + esc(document.documentElement.lang) + '</span>'
+              : '<span class="warn">not set</span>') +
+        row('landmarks', lm.length ? '<span class="ok">' + lm.join(', ') + '</span>'
+              : '<span class="warn">none</span>') +
+        row('h1', h1s.length === 1 ? '<span class="ok">1 &middot; ' + esc((h1s[0].textContent||'').trim().slice(0,40)) + '</span>'
+              : '<span class="warn">' + h1s.length + ' (want exactly 1)</span>') +
+        row('headings', esc(String(hs.length)) + ' &middot; ' + (hs.slice(0,3).join(' / ') || '&mdash;')) +
+        row('links', String(links.length) + ' reachable') +
+        row('primary action', cta
+              ? '<span class="ok">&ldquo;' + esc(cta.textContent.trim()) + '&rdquo; &rarr; ' + esc(cta.getAttribute('href')) + '</span>'
+              : '<span class="warn">no clear call to action</span>') +
+        row('images', imgs.length ? (String(imgs.length) + ' &middot; ' + altState +
+              (decorative ? ' &middot; ' + decorative + ' decorative' : ''))
+              : '<span class="ok">none</span>');
+    }
+
+    build();
+    // Re-read after fonts/layout settle, so it reflects the final document.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(build);
+  })();
+</script>
+</body>
+</html>
