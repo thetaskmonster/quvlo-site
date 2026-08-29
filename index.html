@@ -328,7 +328,10 @@
   #cinematic.sc-done [data-sc-world-copy],
   #cinematic.sc-done .rail{display:none;} /* release the working site once past the intro */
   .m-hero{display:none;}
-  @media (max-width:860px){ #cinematic{display:none;} .m-hero{display:flex;} }
+  /* Show the cinematic only where the scroll engine actually mounts: wide AND a fine pointer.
+     Any touch device (incl. a landscape iPad ≥861px) gets the light mobile hero instead, so it
+     never renders an unmounted, un-scrubbable worldflight. Mirrors the JS mount gate exactly. */
+  @media (max-width:860px), (pointer:coarse){ #cinematic{display:none;} .m-hero{display:flex;} }
 
   /* worldflight copy voice + halos (footage-preserving contrast) */
   .tr-human{color:var(--human);} .tr-machine{color:var(--machine);}
@@ -366,11 +369,12 @@
 
   /* depth-gauge rail */
   .rail{position:fixed;right:clamp(12px,2vw,26px);top:50%;translate:0 -50%;z-index:60;display:flex;flex-direction:column;gap:14px;pointer-events:none;}
-  .rail li{list-style:none;display:flex;align-items:center;gap:10px;justify-content:flex-end;font:400 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-1);opacity:.5;transition:opacity .3s;
-    text-shadow:0 1px 8px color-mix(in oklab,var(--space) 70%,transparent),0 0 3px color-mix(in oklab,var(--space) 82%,transparent);}
-  .rail li .dot{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--ink-1);}
-  .rail li[aria-current="true"]{opacity:1;color:var(--champagne);} .rail li[aria-current="true"] .dot{background:var(--champagne);border-color:var(--champagne);}
-  @media (max-width:860px){ .rail{display:none;} }
+  /* Dark-glass pills keep the labels legible over the bright lattice legs, not just the dark ones. */
+  .rail li{list-style:none;display:flex;align-items:center;gap:9px;justify-content:flex-end;font:400 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-1);opacity:.66;transition:opacity .3s,color .3s,border-color .3s,background .3s;
+    padding:6px 11px;border-radius:999px;background:rgba(5,7,13,.5);border:1px solid rgba(184,200,224,.09);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);}
+  .rail li .dot{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--ink-1);flex:none;}
+  .rail li[aria-current="true"]{opacity:1;color:var(--champagne);background:rgba(5,7,13,.64);border-color:color-mix(in oklab,var(--champagne) 34%,transparent);} .rail li[aria-current="true"] .dot{background:var(--champagne);border-color:var(--champagne);}
+  @media (max-width:860px), (pointer:coarse){ .rail{display:none;} }
 
   /* mobile static hero — fast, no video */
   .m-hero{position:relative;overflow:hidden;min-height:88vh;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;
@@ -414,7 +418,8 @@
   @media(min-width:760px){ .navlinks{display:flex;align-items:center;} }
   .navlinks a:hover{color:var(--ink-0);}
   .navcta{padding:10px 16px;border-radius:9px;background:linear-gradient(180deg,var(--champ-2),var(--champagne));
-    color:#241d0e;font:650 13px/1 var(--sans);}
+    color:#241d0e;font:650 13px/1 var(--sans);transition:filter .2s,box-shadow .2s,transform .2s;}
+  .navcta:hover{filter:brightness(1.05);box-shadow:0 6px 20px -8px var(--champagne);transform:translateY(-1px);}
 
   section{position:relative;}
   .eyebrow{display:inline-flex;align-items:center;gap:9px;font:600 11px/1 var(--mono);
@@ -502,8 +507,7 @@
   #teardown > .wrap > .reveal .eyebrow i{background:var(--machine);box-shadow:0 0 12px var(--machine);}
   .log{border-left:2px solid color-mix(in oklab,var(--machine) 42%,transparent);}
   .log h3 .agent-lbl{color:var(--machine);}
-  .card.machine .ic{color:var(--machine);border-color:color-mix(in oklab,var(--machine) 45%,transparent);}
-  .card.machine:hover{border-color:color-mix(in oklab,var(--machine) 45%,transparent);}
+  /* (agent-ready service now lives in the Services "proof" panel, .pf-agent) */
 
   /* Content sections sit on near-opaque grounds for legibility; the object
      ghosts through at the transparent interludes. */
@@ -532,15 +536,58 @@
   .cred .t{margin-top:4px;font:500 12px/1.5 var(--mono);letter-spacing:.02em;color:var(--ink-2);}
 
   /* Services */
-  .cards{margin-top:40px;display:grid;gap:16px;grid-template-columns:1fr;}
-  @media(min-width:720px){ .cards{grid-template-columns:repeat(3,1fr);} }
-  .card{border:1px solid var(--hairline);border-radius:15px;background:var(--panel);padding:24px;
-    display:flex;flex-direction:column;gap:10px;transition:transform .3s,border-color .3s;}
-  .card:hover{transform:translateY(-3px);border-color:rgba(230,210,168,.4);}
-  .card .ic{width:38px;height:38px;border-radius:10px;border:1px solid rgba(230,210,168,.4);
-    display:flex;align-items:center;justify-content:center;color:var(--champagne);}
-  .card h3{margin:6px 0 0;color:var(--ink-0);font-size:1.15rem;font-weight:600;letter-spacing:-.01em;}
-  .card p{margin:0;color:var(--ink-1);line-height:1.55;font-size:.95rem;}
+  /* Services — three proofs, not three cards. Each claim is demonstrated on the right,
+     so the section shows the craft instead of asserting it. */
+  .svc{margin-top:44px;display:flex;flex-direction:column;}
+  .svc-row{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;padding:34px 0;border-top:1px solid var(--hair-2);}
+  .svc-row:first-child{border-top:0;padding-top:8px;}
+  @media(min-width:840px){ .svc-row{grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);gap:48px;align-items:start;} }
+  .svc-ix{font:600 11px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);}
+  .svc-ix.mach{color:var(--machine);}
+  .svc-say h3{margin:14px 0 0;color:var(--ink-0);font-weight:600;letter-spacing:-.02em;line-height:1.1;
+    font-size:clamp(1.5rem,2.5vw,2rem);}
+  .svc-say p{margin:13px 0 0;color:var(--ink-1);line-height:1.6;font-size:1.02rem;max-width:44ch;}
+  .svc-proof{border:1px solid var(--hairline);border-radius:14px;background:var(--panel);padding:18px;
+    box-shadow:0 34px 64px -52px #000;transition:transform .35s,border-color .35s;}
+  .svc-row:hover .svc-proof{transform:translateY(-3px);border-color:color-mix(in oklab,var(--champagne) 32%,transparent);}
+  .svc-row:hover .svc-proof.pf-agent{border-color:color-mix(in oklab,var(--machine) 42%,transparent);}
+  /* 01 — the surface a person sees, sitting on the structure a machine reads */
+  .pf-surface{border:1px solid var(--hair-2);border-radius:9px;overflow:hidden;background:var(--space-2);}
+  .pf-bar{display:flex;align-items:center;gap:7px;padding:9px 12px;border-bottom:1px solid var(--hair-2);background:rgba(255,255,255,.02);}
+  .pf-bar i{width:8px;height:8px;border-radius:50%;background:#2a3040;}
+  .pf-url{margin-left:auto;font:500 10px/1 var(--mono);color:var(--ink-3);}
+  .pf-render{padding:20px 18px;display:flex;flex-direction:column;gap:9px;
+    background:radial-gradient(120% 140% at 15% 0,rgba(230,210,168,.10),transparent 60%);}
+  .pf-ey{font:600 9.5px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--champagne);}
+  .pf-h{font-size:1.5rem;font-weight:600;letter-spacing:-.02em;color:var(--ink-0);}
+  .pf-pill{align-self:flex-start;font:600 11px/1 var(--sans);color:#0b0f18;background:var(--champagne);border-radius:999px;padding:7px 13px;}
+  .pf-struct{margin-top:10px;font:500 11.5px/1.7 var(--mono);color:var(--ink-2);overflow-x:auto;}
+  .pf-struct span{display:block;white-space:pre;}
+  /* 02 — the contrast ledger, printed in the site's own real ratios */
+  .pf-aa{display:flex;flex-direction:column;gap:11px;}
+  .aa-row{display:flex;align-items:center;gap:12px;font:500 12px/1.2 var(--mono);color:var(--ink-1);}
+  .aa-sw{width:22px;height:22px;border-radius:5px;flex:none;border:1px solid var(--hairline);}
+  .aa-lbl{flex:1;min-width:0;color:var(--ink-2);}
+  .aa-n{font-variant-numeric:tabular-nums;color:var(--ink-0);}
+  .aa-tag{font:700 9.5px/1 var(--mono);color:var(--good);border:1px solid color-mix(in oklab,var(--good) 42%,transparent);border-radius:5px;padding:3px 6px;}
+  .aa-stamp{margin-top:3px;border-top:1px solid var(--hair-2);padding-top:11px;font:600 10.5px/1.45 var(--mono);letter-spacing:.03em;color:var(--good);}
+  /* 03 — the agent's readout, in the machine voice */
+  .pf-agent{display:flex;flex-direction:column;gap:9px;border-left:2px solid color-mix(in oklab,var(--machine) 42%,transparent);padding-left:15px;}
+  .ag-l{display:flex;align-items:center;gap:9px;font:500 12px/1.3 var(--mono);color:var(--ink-1);}
+  .ag-k{color:var(--ink-3);flex:none;}
+  .ag-l b{color:var(--ink-0);font-weight:600;flex:1;min-width:0;text-align:right;}
+  .ag-l i{font-style:normal;font-size:10px;color:var(--machine);flex:none;}
+  .ag-done .ag-k{color:var(--machine);} .ag-done b{color:var(--machine);} .ag-done i{color:var(--good);}
+  /* the machine reads its checks one at a time as the row scrolls in — motion that means something.
+     Gated on scripting:enabled so the lines are never left hidden when JS can't reveal them. */
+  @media (scripting: enabled){
+    .pf-agent .ag-l{opacity:0;transform:translateX(7px);transition:opacity .5s ease,transform .5s ease;}
+    .svc-row.in .pf-agent .ag-l{opacity:1;transform:none;}
+    .svc-row.in .pf-agent .ag-l:nth-child(2){transition-delay:.22s;}
+    .svc-row.in .pf-agent .ag-l:nth-child(3){transition-delay:.44s;}
+    .svc-row.in .pf-agent .ag-l:nth-child(4){transition-delay:.7s;}
+  }
+  @media (prefers-reduced-motion:reduce){ .pf-agent .ag-l{opacity:1 !important;transform:none !important;transition:none !important;} }
   .alsobar{margin-top:20px;border:1px dashed var(--hairline);border-radius:13px;padding:16px 20px;
     display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;background:rgba(9,12,20,.4);}
   .alsobar .tag{font:600 10px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);}
@@ -548,15 +595,21 @@
   .alsobar .txt b{color:var(--ink-0);}
 
   /* Work */
-  .gallery{margin-top:40px;display:grid;gap:18px;grid-template-columns:minmax(0,1fr);} /* WCAG 1.4.4: shrinkable track so cards reflow at 200% zoom */
-  @media(min-width:640px){ .gallery{grid-template-columns:minmax(0,1fr) minmax(0,1fr);} }
+  /* Work — the concepts shown big. Full-width frames read as real products, not thumbnails,
+     and each is stamped with the two-reader promise (built human-ready + agent-ready). */
+  .gallery{margin-top:40px;display:grid;gap:34px;grid-template-columns:minmax(0,1fr);} /* WCAG 1.4.4: shrinkable track so cards reflow at 200% zoom; one-up so each concept reads full-size */
   figure.work{margin:0;}
-  .frame{border:1px solid var(--hairline);border-radius:14px;overflow:hidden;background:#0b0f18;
-    box-shadow:0 30px 60px -40px #000;transition:transform .35s,border-color .35s;}
-  figure.work:hover .frame{transform:translateY(-4px);border-color:rgba(230,210,168,.4);}
-  .frame .bar{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--hair-2);background:rgba(255,255,255,.02);}
-  .frame .bar i{width:8px;height:8px;border-radius:50%;background:#2a3040;display:block;}
-  .frame .bar .u{margin-left:auto;font:500 10px/1 var(--mono);color:var(--ink-3);}
+  .frame{position:relative;border:1px solid var(--hairline);border-radius:16px;overflow:hidden;background:#0b0f18;
+    box-shadow:0 40px 80px -46px #000, inset 0 1px 0 rgba(255,255,255,.04);transition:transform .35s,border-color .35s,box-shadow .35s;}
+  figure.work:hover .frame{transform:translateY(-5px);border-color:rgba(230,210,168,.4);box-shadow:0 54px 100px -46px #000, inset 0 1px 0 rgba(255,255,255,.06);}
+  .frame .bar{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--hair-2);background:rgba(255,255,255,.02);}
+  .frame .bar i{width:9px;height:9px;border-radius:50%;background:#2a3040;display:block;}
+  .frame .bar .u{margin-left:auto;font:500 11px/1 var(--mono);color:var(--ink-3);}
+  /* the two-reader stamp, floated on each concept */
+  .score{position:absolute;right:13px;bottom:13px;z-index:3;display:flex;gap:7px;}
+  .score span{font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:7px 11px;border-radius:999px;
+    background:rgba(5,7,13,.7);border:1px solid var(--hair-2);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);}
+  .score .sc-h{color:var(--champagne);} .score .sc-a{color:var(--machine);}
   .mock{aspect-ratio:16/10;position:relative;padding:9%;display:flex;flex-direction:column;gap:8%;}
   .mock .h{height:26%;border-radius:6px;} .mock .r{display:flex;gap:6%;height:30%;} .mock .r span{flex:1;border-radius:6px;background:rgba(255,255,255,.06);}
   .mock .b{height:9%;width:64%;border-radius:4px;background:rgba(255,255,255,.10);} .mock .b.s{width:40%;}
@@ -631,7 +684,13 @@
   #teardown .ask{max-width:620px;margin-inline:auto;}
 
   /* Concept mockups (decorative) */
-  .stage2{position:relative;aspect-ratio:16/10;width:100%;overflow:hidden;}
+  .stage2{position:relative;aspect-ratio:16/9;width:100%;overflow:hidden;touch-action:pan-y;}
+  /* real swipe carousel: a track of full-width slides that drags with the finger and snaps */
+  .track{display:flex;height:100%;transition:transform .42s cubic-bezier(.2,.7,.2,1);will-change:transform;}
+  .track.grab{transition:none;} /* no transition while the finger is down, so it tracks 1:1 */
+  .slide{flex:0 0 100%;height:100%;position:relative;overflow:hidden;}
+  .slide .shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;user-select:none;-webkit-user-drag:none;}
+  @media(prefers-reduced-motion:reduce){ .track{transition:none;} }
   .mk{position:absolute;inset:0;font-family:var(--sans);display:flex;flex-direction:column;overflow:hidden;}
   .mk *{box-sizing:border-box;}
   .mk-top{display:flex;align-items:center;justify-content:space-between;padding:15px 18px 0;flex:none;}
@@ -680,6 +739,8 @@
   }
   .cap-right{display:flex;align-items:center;gap:11px;flex:none;}
   .vswitch{display:flex;align-items:center;gap:0;margin-right:-4px;}
+  .swipe-hint{display:none;} /* discoverability affordance, touch only */
+  @media (pointer:coarse){ .swipe-hint{display:inline-flex;align-items:center;font:600 9px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;} }
   /* 24x24 hit area for WCAG 2.5.8; the visible dot stays 8px via a pseudo element */
   .vdot{position:relative;width:24px;height:24px;padding:0;border:0;background:transparent;cursor:pointer;border-radius:50%;}
   .vdot::before{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;
@@ -872,13 +933,55 @@
     <div class="reveal"><span class="eyebrow"><i></i>What we do</span>
       <h2>Websites that are impossible to ignore, <b>by <span class="champ">humans</span> or <span class="mach">machines</span>.</b></h2>
       <p class="sub">The same craft that wins on looks is the craft that passes a screen reader and lets an AI agent complete the task. We do all three, on purpose.</p></div>
-    <div class="cards">
-      <div class="card reveal"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M4 5h16v11H4zM9 20h6M12 16v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <h3>Custom websites</h3><p>Hand-built, fast, and yours to keep. No page-builder, no theme off a shelf, no monthly hostage situation.</p></div>
-      <div class="card reveal d1"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M12 3l7 3v5c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6l7-3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <h3>Compliant by default</h3><p>WCAG 2.1 AA, ADA and EAA, built in from the first line. Not a plugin, not a lawsuit waiting to happen.</p></div>
-      <div class="card reveal d2 machine"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
-        <h3>Agent-ready</h3><p>Structured so an AI assistant can actually book, buy, or contact, because your next customer&rsquo;s agent will try.</p></div>
+    <div class="svc">
+      <!-- Each claim is proven on the right, not just stated. The page dogfoods what it sells. -->
+      <article class="svc-row reveal">
+        <div class="svc-say">
+          <span class="svc-ix">01 / Craft</span>
+          <h3>Custom websites</h3>
+          <p>Hand-built, fast, and yours to keep. No page-builder, no theme off a shelf, no monthly hostage situation.</p>
+        </div>
+        <div class="svc-proof" aria-hidden="true">
+          <div class="pf-surface">
+            <div class="pf-bar"><i></i><i></i><i></i><span class="pf-url">yourbusiness.com</span></div>
+            <div class="pf-render"><span class="pf-ey">Established locally</span><b class="pf-h">Built by hand.</b><span class="pf-pill">Get started</span></div>
+          </div>
+          <div class="pf-struct">
+            <span>&lt;main&gt;</span>
+            <span>  &lt;h1&gt;Built by hand.&lt;/h1&gt;</span>
+            <span>  &lt;a href="/start"&gt;Get started&lt;/a&gt;</span>
+            <span>&lt;/main&gt;</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="svc-row reveal d1">
+        <div class="svc-say">
+          <span class="svc-ix">02 / Compliance</span>
+          <h3>Compliant by default</h3>
+          <p>WCAG 2.1 AA, ADA and EAA, built in from the first line. Not a plugin, not a lawsuit waiting to happen.</p>
+        </div>
+        <div class="svc-proof pf-aa" aria-hidden="true">
+          <div class="aa-row"><span class="aa-sw" style="background:#e6d2a8"></span><span class="aa-lbl">Heading on ground</span><b class="aa-n">13.6:1</b><span class="aa-tag">AA</span></div>
+          <div class="aa-row"><span class="aa-sw" style="background:#c3ccd9"></span><span class="aa-lbl">Body on ground</span><b class="aa-n">9.6:1</b><span class="aa-tag">AA</span></div>
+          <div class="aa-row"><span class="aa-sw" style="background:#a4c9e9"></span><span class="aa-lbl">Machine tone</span><b class="aa-n">11.6:1</b><span class="aa-tag">AA</span></div>
+          <div class="aa-stamp">WCAG 2.1 AA &middot; ADA &middot; EAA &mdash; every pairing, measured</div>
+        </div>
+      </article>
+
+      <article class="svc-row reveal d2">
+        <div class="svc-say">
+          <span class="svc-ix mach">03 / Agents</span>
+          <h3>Agent-ready</h3>
+          <p>Structured so an AI assistant can actually book, buy, or contact, because your next customer&rsquo;s agent will try.</p>
+        </div>
+        <div class="svc-proof pf-agent" aria-hidden="true">
+          <span class="ag-l"><span class="ag-k">landmarks</span><b>header &middot; nav &middot; main</b><i>ok</i></span>
+          <span class="ag-l"><span class="ag-k">form label</span><b>&ldquo;Book a visit&rdquo;</b><i>ok</i></span>
+          <span class="ag-l"><span class="ag-k">button</span><b>&ldquo;Confirm&rdquo; reachable</b><i>ok</i></span>
+          <span class="ag-l ag-done"><span class="ag-k">agent can complete</span><b>booking</b><i>&check;</i></span>
+        </div>
+      </article>
     </div>
     <div class="alsobar reveal"><span class="tag">Also on request</span>
       <span class="txt"><b>Automation &amp; AI systems</b>, lead response, invoice chasing, meeting-to-task pipelines. The systems that run your business behind the site, built when you&rsquo;re ready.</span></div>
@@ -892,77 +995,41 @@
     <button type="button" id="shuffle" class="shuffle reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg>Shuffle the concepts</button>
     <p id="work-live" class="sr-only" role="status" aria-live="polite"></p>
     <div class="gallery">
+      <!-- DENTAL — three directions: booking split · photo hero · clinical card -->
       <figure class="work reveal"><div class="frame"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="u">brightsmile.dental</span></div>
-        <div class="stage2" aria-hidden="true"><div class="mk" style="flex-direction:row;background:#fff;color:#0f2f3a">
-  <div class="ph" data-ph="dental" style="position:relative;width:44%;flex:none;display:flex;flex-direction:column;justify-content:space-between;padding:16px;color:#fff">
-    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,70,64,.35),rgba(11,50,46,.82))"></div>
-    <span class="mk-logo" style="position:relative">Brightsmile</span>
-    <div style="position:relative"><div class="mk-h" style="font-size:17px;color:#fff">Healthy smiles,<br>gentle care.</div>
-      <div class="mk-rate" style="color:#ffffffcc;margin-top:6px"><span class="mk-stars" style="color:#ffd47a">&#9733;&#9733;&#9733;&#9733;&#9733;</span><b style="color:#fff">4.9</b></div></div>
-  </div>
-  <div style="flex:1;padding:15px 17px;display:flex;flex-direction:column">
-    <div style="display:flex;justify-content:space-between;align-items:center"><span class="mk-ey" style="color:#0d7d73">Book in 30 seconds</span><span class="mk-cta" style="background:#14b8a6;color:#fff">Book</span></div>
-    <div class="mk-h" style="font-size:15px;margin-top:9px">Reserve your visit</div>
-    <div style="display:flex;gap:5px;margin-top:9px">
-      <span class="mk-chip" style="background:#f3faf9">Mon</span><span class="mk-chip" style="background:#f3faf9">Tue</span><span class="mk-chip" style="background:#14b8a6;color:#fff;border-color:transparent">Wed</span><span class="mk-chip" style="background:#f3faf9">Thu</span><span class="mk-chip" style="background:#f3faf9">Fri</span></div>
-    <div style="display:flex;gap:5px;margin-top:6px">
-      <span class="mk-chip" style="background:#f3faf9">9:00</span><span class="mk-chip" style="background:rgba(20,184,166,.12);color:#0d7d73;border-color:#14b8a6">10:30</span><span class="mk-chip" style="background:#f3faf9">1:15</span><span class="mk-chip" style="background:#f3faf9">2:45</span></div>
-    <span class="mk-btn" style="background:#14b8a6;color:#fff">Confirm appointment</span>
-    <div class="mk-rate" style="color:#0f2f3aaa;margin-top:auto"><span class="mk-stars" style="color:#f5a524">&#9733;&#9733;&#9733;&#9733;&#9733;</span><b style="color:#0f2f3a">4.9</b><span>&middot; 600+ reviews</span></div>
-  </div>
-</div></div></div>
+        <div class="stage2" aria-hidden="true"><div class="track">
+          <div class="slide"><img class="shot" src="/images/concepts/dental-a.webp" alt="" loading="lazy" decoding="async"></div>
+          <div class="slide"><img class="shot" src="/images/concepts/dental-b.webp" alt="" loading="lazy" decoding="async"></div>
+          <div class="slide"><img class="shot" src="/images/concepts/dental-c.webp" alt="" loading="lazy" decoding="async"></div>
+        </div></div>
+          <div class="score" aria-hidden="true"><span class="sc-h">Human-ready &check;</span><span class="sc-a">Agent-ready &check;</span></div></div>
         <figcaption><div><div class="t">Dental Practice</div><div class="d">Calm, clean, appointment-first.</div></div><span class="badge">Concept</span></figcaption></figure>
+      <!-- LAW — three directions: editorial split · authority hero · results card -->
       <figure class="work reveal"><div class="frame"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="u">halebishop.law</span></div>
-        <div class="stage2" aria-hidden="true"><div class="mk" style="background:#f3efe8;color:#14233b">
-  <div class="mk-strip" style="background:#14233b;color:#e6cf9b;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase">Free case review &middot; No fee unless we win</div>
-  <div class="mk-top"><span class="mk-logo" style="letter-spacing:.03em;font-size:12px">HALE &amp; BISHOP</span>
-    <span class="mk-nav" style="color:#14233baa"><span>Practice</span><span>Attorneys</span><span class="mk-cta" style="border:1px solid #a8823f;color:#8a6a2f">Consult</span></span></div>
-  <div class="mk-body" style="display:flex;gap:15px;align-items:stretch">
-    <div style="flex:1.25;display:flex;flex-direction:column">
-      <div class="mk-ey" style="color:#a8823f">Trial Attorneys &middot; Est. 1994</div>
-      <div class="mk-h" style="font-size:16px">Trusted counsel<br>when it matters.</div>
-      <div class="mk-p" style="max-width:96%">Personal injury and family law, handled with discretion and a record of results.</div>
-      <span class="mk-btn" style="background:#a8823f;color:#f3efe8">Request a consultation</span>
-      <div class="mk-stats" style="border-top:1px solid #14233b22;padding-top:8px;margin-top:auto">
-        <div class="mk-stat"><b>$500M+</b><span style="color:#a8823f">Recovered</span></div>
-        <div class="mk-stat"><b>40+ yrs</b><span style="color:#a8823f">Experience</span></div></div>
-    </div>
-    <div class="ph" data-ph="law" style="flex:.85;border-radius:9px;box-shadow:0 12px 24px rgba(20,35,59,.2)"></div>
-  </div>
-</div></div></div>
+        <div class="stage2" aria-hidden="true"><div class="track">
+          <div class="slide"><img class="shot" src="/images/concepts/law-a.webp" alt="" loading="lazy" decoding="async"></div>
+          <div class="slide"><img class="shot" src="/images/concepts/law-b.webp" alt="" loading="lazy" decoding="async"></div>
+          <div class="slide"><img class="shot" src="/images/concepts/law-c.webp" alt="" loading="lazy" decoding="async"></div>
+        </div></div>
+          <div class="score" aria-hidden="true"><span class="sc-h">Human-ready &check;</span><span class="sc-a">Agent-ready &check;</span></div></div>
         <figcaption><div><div class="t">Law Firm</div><div class="d">Authoritative, editorial, credible.</div></div><span class="badge">Concept</span></figcaption></figure>
+      <!-- MED SPA — three directions: photo hero · treatments split · membership card -->
       <figure class="work reveal"><div class="frame"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="u">lumierespa.co</span></div>
-        <div class="stage2" aria-hidden="true"><div class="mk ph" data-ph="medspa" style="color:#fff">
-  <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,14,20,.52),rgba(28,14,20,.1) 30%,rgba(28,14,20,.6) 62%,rgba(28,14,20,.95))"></div>
-  <div class="mk-top" style="position:relative"><span class="mk-logo" style="letter-spacing:.14em">LUMI&Egrave;RE</span>
-    <span class="mk-nav" style="color:#ffffffdd"><span>Treatments</span><span class="mk-cta" style="background:#b76e79;color:#fff">Book</span></span></div>
-  <div class="mk-body" style="position:relative;display:flex;flex-direction:column;justify-content:flex-end">
-    <div class="mk-ey" style="color:#f0c9d0">Med Spa &amp; Skincare</div>
-    <div class="mk-h" style="font-size:26px;color:#fff">Glow, restored.</div>
-    <div class="mk-p" style="max-width:62%;opacity:.92;color:#fff">Advanced facials, injectables &amp; laser, in a calm, private studio.</div>
-    <div style="display:flex;align-items:center;gap:9px;margin-top:11px">
-      <span class="mk-btn" style="background:#fff;color:#2c2224;margin-top:0">Book a consult</span>
-      <span style="font-size:7.5px;color:#ffffffcc">Memberships from <b style="color:#fff">$99/mo</b></span></div>
-    <div class="mk-rate" style="color:#ffffffcc"><span class="mk-stars" style="color:#f0b6c0">&#9733;&#9733;&#9733;&#9733;&#9733;</span><b style="color:#fff">4.9</b><span>&middot; 800+ reviews</span></div>
-  </div>
-  <div class="mk-chip" style="position:absolute;right:16px;top:46px;background:#fff;color:#b76e79;font-weight:700;border-color:transparent;box-shadow:0 8px 22px rgba(0,0,0,.35)">New guest &middot; 20% off first facial</div>
-</div></div></div>
+        <div class="stage2" aria-hidden="true"><div class="track">
+          <div class="slide"><img class="shot" src="/images/concepts/medspa-a.webp" alt="" loading="lazy" decoding="async"></div>
+          <div class="slide"><img class="shot" src="/images/concepts/medspa-b.webp" alt="" loading="lazy" decoding="async"></div>
+          <div class="slide"><img class="shot" src="/images/concepts/medspa-c.webp" alt="" loading="lazy" decoding="async"></div>
+        </div></div>
+          <div class="score" aria-hidden="true"><span class="sc-h">Human-ready &check;</span><span class="sc-a">Agent-ready &check;</span></div></div>
         <figcaption><div><div class="t">Med Spa</div><div class="d">Elegant, aspirational, booking-led.</div></div><span class="badge">Concept</span></figcaption></figure>
+      <!-- HVAC — three directions: urgency hero · call-now split · review-forward -->
       <figure class="work reveal"><div class="frame"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="u">summithvac.com</span></div>
-        <div class="stage2" aria-hidden="true"><div class="mk ph" data-ph="hvac" style="color:#fff">
-  <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,10,.58),rgba(8,8,10,.66) 45%,rgba(8,8,10,.9))"></div>
-  <div class="mk-top" style="position:relative"><span class="mk-logo">Summit<span style="color:#fb923c"> HVAC</span></span>
-    <span class="mk-nav" style="color:#ffffffdd"><span>Services</span><span>Reviews</span><span style="color:#fb923c;font-weight:700">(555) 010-2033</span></span></div>
-  <div class="mk-body" style="position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:center">
-    <span class="mk-chip" style="background:#f97316;color:#fff;font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:7px;border-color:transparent">24/7 emergency service</span>
-    <div class="mk-h" style="font-size:23px;margin-top:9px;color:#fff">Heating &amp; cooling,<br>done right.</div>
-    <div class="mk-p" style="max-width:64%;opacity:.9;color:#fff">Fast, honest service across the metro. Same-day in most areas.</div>
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <span class="mk-btn" style="background:#f97316;color:#fff;margin-top:0">Call (555) 010-2033</span>
-      <span class="mk-btn" style="background:transparent;border:1px solid #ffffff66;color:#fff;margin-top:0">Schedule online</span></div>
-  </div>
-  <div class="mk-strip" style="position:relative;background:rgba(0,0,0,.42);color:#ffffffcc;border-top:1px solid #ffffff1a">&#9733; 4.9 &middot; 1,200 reviews &middot; Licensed &amp; insured &middot; Financing</div>
-</div></div></div>
+        <div class="stage2" aria-hidden="true"><div class="track">
+          <div class="slide"><img class="shot" src="/images/concepts/hvac-a.webp" alt="" loading="lazy" decoding="async"></div>
+          <div class="slide"><img class="shot" src="/images/concepts/hvac-b.webp" alt="" loading="lazy" decoding="async"></div>
+          <div class="slide"><img class="shot" src="/images/concepts/hvac-c.webp" alt="" loading="lazy" decoding="async"></div>
+        </div></div>
+          <div class="score" aria-hidden="true"><span class="sc-h">Human-ready &check;</span><span class="sc-a">Agent-ready &check;</span></div></div>
         <figcaption><div><div class="t">Home Services (HVAC)</div><div class="d">Bold, call-now urgency.</div></div><span class="badge">Concept</span></figcaption></figure>
     </div>
   </div></section>
@@ -1423,89 +1490,89 @@ var QUVLO_SCAN = null;
       .then(function(){ send.disabled=false; send.textContent="Scan my site"; scanPulse(false); });
   });
 
-  /* concept variant rotation: 3 designs per card, chosen on load.
-     Images are external and only fetched once a card nears the viewport, so a
-     visit costs 4 photographs instead of 12. The rest prefetch quietly the
-     first time someone reaches for the shuffle. */
+  /* concept carousel: each card is a track of full-width slides, and each slide is a
+     genuinely different layout. On touch the track drags with the finger and snaps;
+     the dots, taps and the Shuffle button animate to a slide. A card's photos load
+     only once it nears the viewport. */
   (function(){
-    var COUNT=3, BASE="/images/concepts", live=document.getElementById("work-live");
-    var phs=[].slice.call(document.querySelectorAll("[data-ph]"));
-    if(!phs.length) return;
-    var EXT=(function(){ try{ return document.createElement("canvas")
-      .toDataURL("image/webp").indexOf("data:image/webp")===0?".webp":".jpg"; }catch(e){ return ".jpg"; } })();
-    var want={};
-    function paint(el,n){
-      var set=el.getAttribute("data-ph"), fig=el.closest("figure");
-      for(var i=1;i<=COUNT;i++) el.classList.remove("ph-"+set+"-"+i);
-      el.classList.add("ph-"+set+"-"+n);
-      el.setAttribute("data-v",n);
-      if(fig) fig.querySelectorAll(".vdot").forEach(function(d){
-        d.setAttribute("aria-pressed", d.getAttribute("data-n")===String(n)?"true":"false"); });
-    }
-    function swap(el,n,say){
-      if(reduce){paint(el,n);}
-      else{el.classList.add("swapping");setTimeout(function(){paint(el,n);el.classList.remove("swapping");},150);}
-      if(say&&live){var fig=el.closest("figure"),t=fig&&fig.querySelector(".t");
-        live.textContent=(t?t.textContent:"Concept")+", design "+n+" of "+COUNT+".";}
-    }
-    var primed=false;
-    function primeRest(){
-      if(primed) return; primed=true;
-      phs.forEach(function(el){
-        var set=el.getAttribute("data-ph"), cur=+el.getAttribute("data-v")||0;
-        for(var i=1;i<=COUNT;i++) if(i!==cur){ var im=new Image(); im.src=BASE+"/"+set+"-"+i+EXT; }
-      });
-    }
-    phs.forEach(function(el){
-      var fig=el.closest("figure"), cap=fig&&fig.querySelector("figcaption");
-      if(cap){
+    var live=document.getElementById("work-live");
+    var figs=[].slice.call(document.querySelectorAll("figure.work"));
+    if(!figs.length) return;
+    var cards=[];
+    figs.forEach(function(fig){
+      var stage=fig.querySelector(".stage2"), track=fig.querySelector(".track");
+      if(!stage||!track) return;
+      var slides=[].slice.call(track.children), n=slides.length;
+      var title=(fig.querySelector(".t")||{}).textContent||"Concept";
+      var idx=n>1?Math.floor(Math.random()*n):0, loaded=false;
+      function loadImgs(){ if(loaded) return; loaded=true;
+        /* preload every slide image in this card so swiping never lands on a blank slide */
+        track.querySelectorAll("img[loading]").forEach(function(im){ im.loading="eager"; var s=im.getAttribute("src"); if(s){ var p=new Image(); p.src=s; } }); }
+      var dots=[], cap=fig.querySelector("figcaption");
+      if(cap && n>1){
         var badge=cap.querySelector(".badge");
         var right=document.createElement("div"); right.className="cap-right";
-        var sw=document.createElement("div"); sw.className="vswitch";
-        sw.setAttribute("role","group");
-        sw.setAttribute("aria-label",(fig.querySelector(".t")||{}).textContent+" design variations");
-        for(var i=1;i<=COUNT;i++)(function(i){
-          var b=document.createElement("button");
-          b.type="button"; b.className="vdot"; b.setAttribute("data-n",i);
-          b.setAttribute("aria-pressed","false");
-          b.setAttribute("aria-label","Show design "+i+" of "+COUNT);
-          b.addEventListener("click",function(){swap(el,i,true);});
-          b.addEventListener("pointerenter",primeRest);
-          b.addEventListener("focus",primeRest);
-          sw.appendChild(b);
+        var hint=document.createElement("span"); hint.className="swipe-hint"; hint.setAttribute("aria-hidden","true"); hint.textContent="↔ Swipe";
+        var sw=document.createElement("div"); sw.className="vswitch"; sw.setAttribute("role","group"); sw.setAttribute("aria-label",title+" design variations");
+        for(var i=0;i<n;i++)(function(i){
+          var b=document.createElement("button"); b.type="button"; b.className="vdot"; b.setAttribute("data-n",i+1);
+          b.setAttribute("aria-pressed","false"); b.setAttribute("aria-label","Show design "+(i+1)+" of "+n);
+          b.addEventListener("click",function(){ loadImgs(); go(i,true); });
+          sw.appendChild(b); dots.push(b);
         })(i);
         badge.parentNode.insertBefore(right,badge);
-        right.appendChild(sw); right.appendChild(badge);
+        right.appendChild(hint); right.appendChild(sw); right.appendChild(badge);
       }
-      want[el.getAttribute("data-ph")]=1+Math.floor(Math.random()*COUNT);
+      function setDots(){ for(var i=0;i<dots.length;i++) dots[i].setAttribute("aria-pressed", i===idx?"true":"false"); }
+      function go(i,say){
+        idx=Math.max(0,Math.min(n-1,i));
+        track.classList.remove("grab");
+        track.style.transform="translateX("+(-idx*100)+"%)";
+        setDots();
+        if(say && live) live.textContent=title+", design "+(idx+1)+" of "+n+".";
+      }
+      track.style.transform="translateX("+(-idx*100)+"%)"; setDots();
+      if(n>1){
+        var W=0,sx=0,sy=0,lock=0,drag=false;
+        stage.addEventListener("touchstart",function(e){
+          if(e.touches.length!==1) return;
+          W=stage.clientWidth||1; sx=e.touches[0].clientX; sy=e.touches[0].clientY; lock=0; drag=true;
+          track.classList.add("grab"); loadImgs();
+        },{passive:true});
+        stage.addEventListener("touchmove",function(e){
+          if(!drag) return;
+          var dx=e.touches[0].clientX-sx, dy=e.touches[0].clientY-sy;
+          if(lock===0 && (Math.abs(dx)>8||Math.abs(dy)>8)) lock=Math.abs(dx)>Math.abs(dy)?1:2;
+          if(lock===1){ e.preventDefault();
+            var over=(idx===0&&dx>0)||(idx===n-1&&dx<0);
+            track.style.transform="translateX("+(-idx*100 + (dx/W*100)*(over?0.35:1))+"%)";
+          }
+        },{passive:false});
+        function end(e){
+          if(!drag) return; drag=false; track.classList.remove("grab");
+          if(lock!==1){ go(idx,false); return; }
+          var t=e.changedTouches&&e.changedTouches[0], dx=t?t.clientX-sx:0, th=W*0.16;
+          if(dx<=-th && idx<n-1) go(idx+1,true);
+          else if(dx>=th && idx>0) go(idx-1,true);
+          else go(idx,false);
+        }
+        stage.addEventListener("touchend",end,{passive:true});
+        stage.addEventListener("touchcancel",end,{passive:true});
+      }
+      cards.push({fig:fig, n:n, go:go, load:loadImgs, cur:function(){return idx;}});
     });
-    /* only load a card's photograph once it is nearly on screen */
     if("IntersectionObserver" in window){
-      var pio=new IntersectionObserver(function(es){
-        es.forEach(function(e){
-          if(!e.isIntersecting) return;
-          pio.unobserve(e.target);
-          paint(e.target, want[e.target.getAttribute("data-ph")]||1);
-        });
-      },{rootMargin:"300px 0px"});
-      phs.forEach(function(el){pio.observe(el);});
-    } else {
-      phs.forEach(function(el){paint(el, want[el.getAttribute("data-ph")]||1);});
-    }
+      var io=new IntersectionObserver(function(es){ es.forEach(function(e){
+        if(!e.isIntersecting) return; io.unobserve(e.target);
+        var c=cards.filter(function(x){return x.fig===e.target;})[0]; if(c) c.load();
+      });},{rootMargin:"400px 0px"});
+      cards.forEach(function(c){ io.observe(c.fig); });
+    } else { cards.forEach(function(c){ c.load(); }); }
     var sh=document.getElementById("shuffle");
-    if(sh){
-      sh.addEventListener("pointerenter",primeRest);
-      sh.addEventListener("focus",primeRest);
-      sh.addEventListener("click",function(){
-        primeRest();
-        phs.forEach(function(el){
-          var cur=+el.getAttribute("data-v")||1, n;
-          do{ n=1+Math.floor(Math.random()*COUNT); }while(n===cur);
-          swap(el,n,false);
-        });
-        if(live) live.textContent="New set of concept designs shown.";
-      });
-    }
+    if(sh) sh.addEventListener("click",function(){
+      cards.forEach(function(c){ if(c.n<2) return; c.load(); var r; do{ r=Math.floor(Math.random()*c.n); }while(r===c.cur()); c.go(r,false); });
+      if(live) live.textContent="New set of concept designs shown.";
+    });
   })();
 })();
 
