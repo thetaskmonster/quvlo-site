@@ -1730,6 +1730,16 @@ var QUVLO_SCAN = null;
   // never fetch a clip. The video worldflight is a desktop experience.
   if(!matchMedia('(min-width:861px) and (pointer:fine)').matches) return;
 
+  // Serve AV1 to browsers that support it (~half the bytes at identical quality);
+  // the H.264 path in data-sc-src stays as the fallback for the rest (~7%).
+  try{
+    if(document.createElement('video').canPlayType('video/mp4; codecs="av01.0.05M.08"')){
+      cine.querySelectorAll('[data-sc-segment] video[data-sc-src]').forEach(function(v){
+        v.setAttribute('data-sc-src', v.getAttribute('data-sc-src').replace('/hero/','/hero/av1/'));
+      });
+    }
+  }catch(e){}
+
   ScrollCraft.mount(document.body);
   function relayout(){ dispatchEvent(new Event('resize')); }
   addEventListener('load', relayout);
