@@ -164,6 +164,7 @@
 </script>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/bricolage-grotesque-700.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/space-mono-400.woff2" crossorigin>
+<link rel="stylesheet" href="/hero/scrollcraft.css"><!-- cinematic intro engine (desktop) -->
 <style>*{margin:0;padding:0;box-sizing:border-box}  .footlinks a{color:var(--ink-2);text-decoration:none;}
   .footlinks a:hover{color:var(--champagne);}
   .footlinks a:focus-visible{outline:2px solid var(--champagne);outline-offset:3px;border-radius:3px;}
@@ -309,6 +310,77 @@
     --display:'Bricolage Grotesque',system-ui,sans-serif;
     --mono:'Space Mono',ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   }
+
+  /* ============================================================ CINEMATIC INTRO
+     The full photoreal descent opens the homepage (desktop), then hides so the
+     working site shows underneath. Mobile skips the video for a fast static hero.
+     Bridge the engine's --sc-* tokens to the homepage palette. */
+  :root{
+    --space: var(--space-0); --surface: var(--space-2);
+    --human: var(--champagne); --pass: var(--good); --fail: var(--crit);
+    --sc-canvas: var(--space-0); --sc-surface: var(--space-2);
+    --sc-ink: var(--ink-0); --sc-ink-soft: var(--ink-1);
+    --sc-accent: var(--champagne); --sc-accent-ink: var(--space-0);
+    --sc-font-display: var(--display); --sc-font-text: var(--sans); --sc-font-mono: var(--mono);
+  }
+  #cinematic{position:relative;z-index:3;}
+  #cinematic.sc-done [data-sc-world],
+  #cinematic.sc-done [data-sc-world-copy],
+  #cinematic.sc-done .rail{display:none;} /* release the working site once past the intro */
+  .m-hero{display:none;}
+  @media (max-width:860px){ #cinematic{display:none;} .m-hero{display:flex;} }
+
+  /* worldflight copy voice + halos (footage-preserving contrast) */
+  .tr-human{color:var(--human);} .tr-machine{color:var(--machine);}
+  .sc-world__scrim.sc-scrim--band{
+    background: radial-gradient(135% 105% at 0% 100%,
+      color-mix(in oklab, var(--space) 93%, transparent) 0%,
+      color-mix(in oklab, var(--space) 74%, transparent) 24%,
+      color-mix(in oklab, var(--space) 40%, transparent) 46%,
+      transparent 66%);}
+  @media (max-width:860px){ .sc-world__scrim.sc-scrim--band{
+      background: linear-gradient(to top,
+        color-mix(in oklab, var(--space) 93%, transparent) 0%,
+        color-mix(in oklab, var(--space) 72%, transparent) 26%,
+        color-mix(in oklab, var(--space) 34%, transparent) 48%, transparent 66%);} }
+  .sc-copy h1,.sc-copy h2{font-family:var(--display);letter-spacing:-.025em;line-height:1.02;text-wrap:balance;}
+  .sc-copy :is(h1,h2,.sc-body,.kicker,.sc-cta){
+    text-shadow:0 1px 10px color-mix(in oklab,var(--space) 72%,transparent),0 0 3px color-mix(in oklab,var(--space) 86%,transparent);}
+  .sc-copy .kicker{display:block;font:400 12px/1 var(--mono);letter-spacing:.28em;text-transform:uppercase;color:var(--sc-accent);margin-bottom:18px;}
+  .sc-copy .sc-body{margin-top:16px;color:var(--ink-1);font-size:clamp(1rem,.95rem+.4vw,1.2rem);max-width:42ch;}
+  .sc-cta{display:inline-block;margin-top:20px;background:var(--champagne);color:#05070d;font:700 14px/1 var(--display);padding:14px 22px;border-radius:11px;text-decoration:none;}
+  .sc-cta:hover{filter:brightness(1.06);}
+
+  /* Agent's-Eye panel — the machine speaking, cool voice */
+  .eye{position:absolute;left:50%;top:50%;translate:-50% -50%;width:min(92vw,720px);
+    background:color-mix(in oklab,var(--space-2) 90%,var(--machine) 4%);
+    border:1px solid color-mix(in oklab,var(--machine) 40%,transparent);
+    border-radius:14px;padding:clamp(20px,3vw,34px);box-shadow:0 40px 90px -30px #000;}
+  .eye h2{font:700 clamp(1.3rem,1rem+1.6vw,2rem)/1.05 var(--display);color:var(--ink-0);letter-spacing:-.02em;}
+  .eye .kicker{display:block;font:400 12px/1 var(--mono);letter-spacing:.28em;text-transform:uppercase;color:var(--machine);margin-bottom:14px;}
+  .eye p.lead{margin:12px 0 20px;color:var(--ink-1);font-size:15px;max-width:52ch;}
+  .eye dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 18px;font-family:var(--mono);font-size:13.5px;line-height:1.5;}
+  .eye dt{color:var(--machine);white-space:nowrap;} .eye dd{margin:0;color:var(--ink-0);overflow-wrap:anywhere;}
+  .eye dd .ok{color:var(--good);} .eye dd .warn{color:var(--warn);}
+  .eye .foot{margin-top:18px;font:400 12px/1.5 var(--mono);color:var(--ink-1);}
+
+  /* depth-gauge rail */
+  .rail{position:fixed;right:clamp(12px,2vw,26px);top:50%;translate:0 -50%;z-index:60;display:flex;flex-direction:column;gap:14px;pointer-events:none;}
+  .rail li{list-style:none;display:flex;align-items:center;gap:10px;justify-content:flex-end;font:400 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-1);opacity:.5;transition:opacity .3s;
+    text-shadow:0 1px 8px color-mix(in oklab,var(--space) 70%,transparent),0 0 3px color-mix(in oklab,var(--space) 82%,transparent);}
+  .rail li .dot{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--ink-1);}
+  .rail li[aria-current="true"]{opacity:1;color:var(--champagne);} .rail li[aria-current="true"] .dot{background:var(--champagne);border-color:var(--champagne);}
+  @media (max-width:860px){ .rail{display:none;} }
+
+  /* mobile static hero — fast, no video */
+  .m-hero{min-height:88vh;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;
+    background:linear-gradient(180deg,rgba(5,7,13,.55),rgba(5,7,13,.9)),url(/hero/leg2-poster.jpg);
+    background-size:cover;background-position:center;padding:96px clamp(20px,7vw,40px) 64px;}
+  .m-hero .kicker{font:600 11px/1 var(--mono);letter-spacing:.26em;text-transform:uppercase;color:var(--machine);}
+  .m-hero h1{margin:18px 0 0;color:var(--ink-0);font-weight:700;letter-spacing:-.03em;line-height:1.02;font-size:clamp(2.3rem,9vw,3.2rem);max-width:16ch;}
+  .m-hero p{margin:16px 0 0;color:var(--ink-1);line-height:1.6;font-size:1.05rem;max-width:40ch;}
+  .m-hero .sc-cta{margin-top:26px;}
+
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;scroll-padding-top:80px;} /* WCAG 2.4.11: clears the ~65px sticky nav so focused/anchored targets aren't obscured */
   body{margin:0;background:var(--space-0);color:var(--ink-1);font-family:var(--sans);
@@ -638,7 +710,7 @@
 <div class="shell">
   <a class="skip" href="#main">Skip to content</a>
   <nav class="nav" id="nav"><div class="wrap row">
-    <a class="word" href="#top"><span class="ring"></span>Quvlo</a>
+    <a class="word" href="#main"><span class="ring"></span>Quvlo</a>
     <div class="navlinks">
       <a href="#work">Work</a><a href="#services">Services</a><a href="#pricing">Pricing</a>
     </div>
@@ -647,18 +719,73 @@
 
   <!-- HERO -->
   <main id="main" tabindex="-1">
-  <section class="hero" id="top"><div class="wrap inner">
-    <span class="eyebrow"><i></i>Precision web studio &middot; compliant by default</span>
-    <h1>Can an <span class="glow">AI</span> actually <b>use</b> your website?</h1>
-    <p class="lede">By 2027 your customer often isn&rsquo;t clicking, their <b>assistant</b> is booking for them. A site a screen reader can&rsquo;t read is a site an agent can&rsquo;t either. Send our agent to try, and watch where it gives up.</p>
-    <div class="herocta">
-      <a class="btn" href="#teardown"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h9M8 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Run the free teardown</a>
-      <a class="btn ghost" href="#work">See our work</a>
+  <!-- ============ CINEMATIC INTRO (desktop): the photoreal descent ============ -->
+  <div id="cinematic" data-sc-mode="worldflight" data-sc-seam="0.18" data-sc-lerp="0.15" aria-label="Intro: how an AI agent reads a web page">
+    <div data-sc-world>
+      <div data-sc-segment data-sc-w="1.15" data-sc-waypoint="Surface">
+        <img class="sc-world__poster" src="/hero/leg1-poster.jpg" alt="" decoding="async">
+        <video data-sc-src="/hero/leg1.mp4" muted playsinline></video></div>
+      <div data-sc-segment data-sc-w="1.15" data-sc-waypoint="Descent">
+        <img class="sc-world__poster" src="/hero/leg2-poster.jpg" alt="" decoding="async">
+        <video data-sc-src="/hero/leg2.mp4" muted playsinline></video></div>
+      <div data-sc-segment data-sc-w="1.15" data-sc-waypoint="Lattice">
+        <img class="sc-world__poster" src="/hero/leg3-poster.jpg" alt="" decoding="async">
+        <video data-sc-src="/hero/leg3.mp4" muted playsinline></video></div>
+      <div data-sc-segment data-sc-w="1.15" data-sc-linger="0.22" data-sc-waypoint="Two Readers">
+        <img class="sc-world__poster" src="/hero/leg4-poster.jpg" alt="" decoding="async">
+        <video data-sc-src="/hero/leg4.mp4" muted playsinline></video></div>
+      <div data-sc-segment data-sc-w="1.15" data-sc-waypoint="The Agent's Eye">
+        <img class="sc-world__poster" src="/hero/leg5-poster.jpg" alt="" decoding="async">
+        <video data-sc-src="/hero/leg5.mp4" muted playsinline></video></div>
+      <div data-sc-segment data-sc-w="1.15" data-sc-waypoint="Return">
+        <img class="sc-world__poster" src="/hero/leg6-poster.jpg" alt="" decoding="async">
+        <video data-sc-src="/hero/leg6.mp4" muted playsinline></video></div>
     </div>
-    <p class="micro">Free. We run it by hand on your real site and send you the video.</p>
+    <div data-sc-world-copy>
+      <div class="sc-world__scrim sc-scrim sc-scrim--band" aria-hidden="true"></div>
+      <div class="sc-copy sc-copy--lead" data-sc-copy data-sc-window="hero">
+        <span class="kicker">Quvlo &middot; the legibility descent</span>
+        <h1 class="sc-display sc-display--xl">Can an AI agent actually use your website?</h1>
+        <p class="sc-body">Most can&rsquo;t. Scroll down &mdash; this is what that looks like.</p></div>
+      <div class="sc-copy sc-copy--lead" data-sc-copy data-sc-window="0.17 0.33">
+        <h2 class="sc-display sc-display--lg">A page is two things at once.</h2>
+        <p class="sc-body">What a person sees, and what a machine reads. We&rsquo;re about to fall past the first into the second.</p></div>
+      <div class="sc-copy sc-copy--lead" data-sc-copy data-sc-window="0.34 0.49">
+        <h2 class="sc-display sc-display--lg">Underneath is a structure.</h2>
+        <p class="sc-body">Headings, landmarks, labels, links. Screen readers and AI agents travel this lattice &mdash; or get lost in it.</p></div>
+      <div class="sc-copy sc-copy--lead" data-sc-copy data-sc-window="0.50 0.66">
+        <h2 class="sc-display sc-display--lg">Two readers, one path.</h2>
+        <p class="sc-body"><span class="tr-human">A person</span>, and <span class="tr-machine">a machine</span> acting for one &mdash; a screen reader, an assistant, a search crawler. Your site has to work for both, or it quietly loses one.</p></div>
+      <section class="eye" data-sc-copy data-sc-window="0.66 0.84 0.22 0.22" data-agenteye aria-label="How an AI agent reads this page">
+        <span class="kicker">The agent&rsquo;s eye</span>
+        <h2>This is your page, as an agent reads it.</h2>
+        <p class="lead">Not a mock-up. The panel below is this very page&rsquo;s accessibility tree, read live from the document you&rsquo;re on. A well-built page reads clean here. Most don&rsquo;t.</p>
+        <dl id="eye-readout"><dt>reading&hellip;</dt><dd>&mdash;</dd></dl>
+        <p class="foot">Every Quvlo build is measured against exactly this reading.</p></section>
+      <div class="sc-copy sc-copy--lead" data-sc-copy data-sc-window="finale">
+        <span class="kicker">Start here</span>
+        <h2 class="sc-display sc-display--lg">Quvlo builds sites both can use.</h2>
+        <p class="sc-body">People and machines, on the same page &mdash; accessible and agent-ready by default. See it on your own site, free.</p>
+        <p><a class="sc-cta" href="#teardown">Run the free teardown &rarr;</a></p></div>
+    </div>
+    <ol class="rail" aria-hidden="true">
+      <li data-leg="0"><span>Surface</span><span class="dot"></span></li>
+      <li data-leg="1"><span>Descent</span><span class="dot"></span></li>
+      <li data-leg="2"><span>Lattice</span><span class="dot"></span></li>
+      <li data-leg="3"><span>Two readers</span><span class="dot"></span></li>
+      <li data-leg="4"><span>Agent&rsquo;s eye</span><span class="dot"></span></li>
+      <li data-leg="5"><span>Return</span><span class="dot"></span></li>
+    </ol>
+    <div data-sc-spacer aria-hidden="true"></div>
+  </div>
 
-    <div class="scrollcue" aria-hidden="true">Scroll<span class="ln"></span></div>
-  </div></section>
+  <!-- ============ MOBILE HERO (fast, static, no video) ============ -->
+  <section class="m-hero">
+    <span class="kicker">Quvlo &middot; compliant by default</span>
+    <h1>Can an AI agent actually use your website?</h1>
+    <p>Most can&rsquo;t. We build sites people and machines can both use &mdash; then prove it on yours, free.</p>
+    <a class="sc-cta" href="#teardown">Run the free teardown &rarr;</a>
+  </section>
 
   <!-- TEARDOWN TOOL (page 2) -->
   <section class="interlude" id="teardown"><div class="wrap">
@@ -1586,6 +1713,76 @@ var QUVLO_SCAN = null;
       });
     });
   })();
+</script>
+
+<!-- ============ cinematic intro engine (desktop only) ============ -->
+<script src="/hero/scrollcraft.js"></script>
+<script>
+(function(){
+  var cine = document.getElementById('cinematic');
+  if(!cine || !window.ScrollCraft) return;
+  // Mobile / touch / coarse pointer: keep the static hero, never mount the engine,
+  // never fetch a clip. The video worldflight is a desktop experience.
+  if(!matchMedia('(min-width:861px) and (pointer:fine)').matches) return;
+
+  ScrollCraft.mount(document.body);
+  function relayout(){ dispatchEvent(new Event('resize')); }
+  addEventListener('load', relayout);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
+
+  // depth-gauge rail
+  addEventListener('sc:waypoint', function(e){
+    cine.querySelectorAll('.rail li').forEach(function(li){
+      li.setAttribute('aria-current', String(+li.dataset.leg === e.detail.index));
+    });
+  });
+
+  // Release the working site: once scrolled past the intro track, hide the fixed
+  // stage/copy/rail so the scanner and the rest show cleanly (the spacer stays,
+  // so nothing jumps).
+  function glue(){
+    var end = cine.offsetTop + cine.offsetHeight - innerHeight * 0.75;
+    cine.classList.toggle('sc-done', scrollY > end);
+  }
+  addEventListener('scroll', glue, {passive:true});
+  addEventListener('resize', glue);
+  glue();
+
+  // The Agent's-Eye signature: read THIS homepage's live accessibility tree.
+  var out = document.getElementById('eye-readout');
+  if(!out) return;
+  var esc = function(s){ return String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); };
+  var row = function(k,v){ return '<dt>'+esc(k)+'</dt><dd>'+v+'</dd>'; };
+  var visible = function(el){ return el.getClientRects().length > 0; }; // an agent skips display:none too
+  function build(){
+    var all = function(sel){ return Array.prototype.filter.call(document.querySelectorAll(sel),
+      function(el){ return !(el.closest && el.closest('[data-agenteye]')) && visible(el); }); };
+    var hs = all('h1,h2,h3,h4,h5,h6').map(function(h){ return h.tagName.toLowerCase()+' &middot; '+esc((h.textContent||'').trim().slice(0,52)); });
+    var lm = [];
+    if(all('header').length) lm.push('banner');
+    if(all('nav').length) lm.push('navigation');
+    if(all('main').length) lm.push('main');
+    if(all('footer').length) lm.push('contentinfo');
+    var links = all('a[href]');
+    var cta = links.filter(function(a){ return /run the free teardown|free teardown|scan my site/i.test(a.textContent||''); })[0];
+    var imgs = all('img');
+    var missingAlt = imgs.filter(function(i){ return !i.hasAttribute('alt'); }).length;
+    var decorative = imgs.filter(function(i){ return i.getAttribute('alt')===''; }).length;
+    var h1s = all('h1');
+    var altState = missingAlt ? '<span class="warn">'+missingAlt+' missing alt</span>' : '<span class="ok">all described</span>';
+    out.innerHTML =
+      row('document', esc(document.title).slice(0,54)) +
+      row('language', document.documentElement.lang ? '<span class="ok">'+esc(document.documentElement.lang)+'</span>' : '<span class="warn">not set</span>') +
+      row('landmarks', lm.length ? '<span class="ok">'+lm.join(', ')+'</span>' : '<span class="warn">none</span>') +
+      row('h1', h1s.length===1 ? '<span class="ok">1 &middot; '+esc((h1s[0].textContent||'').trim().slice(0,40))+'</span>' : '<span class="warn">'+h1s.length+' (want exactly 1)</span>') +
+      row('headings', esc(String(hs.length))+' &middot; '+(hs.slice(0,3).join(' / ')||'&mdash;')) +
+      row('links', String(links.length)+' reachable') +
+      row('primary action', cta ? '<span class="ok">&ldquo;'+esc(cta.textContent.trim())+'&rdquo;</span>' : '<span class="warn">no clear call to action</span>') +
+      row('images', imgs.length ? (String(imgs.length)+' &middot; '+altState+(decorative?' &middot; '+decorative+' decorative':'')) : '<span class="ok">none</span>');
+  }
+  build();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(build);
+})();
 </script>
 
 </body>
