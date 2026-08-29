@@ -366,10 +366,11 @@
 
   /* depth-gauge rail */
   .rail{position:fixed;right:clamp(12px,2vw,26px);top:50%;translate:0 -50%;z-index:60;display:flex;flex-direction:column;gap:14px;pointer-events:none;}
-  .rail li{list-style:none;display:flex;align-items:center;gap:10px;justify-content:flex-end;font:400 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-1);opacity:.5;transition:opacity .3s;
-    text-shadow:0 1px 8px color-mix(in oklab,var(--space) 70%,transparent),0 0 3px color-mix(in oklab,var(--space) 82%,transparent);}
-  .rail li .dot{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--ink-1);}
-  .rail li[aria-current="true"]{opacity:1;color:var(--champagne);} .rail li[aria-current="true"] .dot{background:var(--champagne);border-color:var(--champagne);}
+  /* Dark-glass pills keep the labels legible over the bright lattice legs, not just the dark ones. */
+  .rail li{list-style:none;display:flex;align-items:center;gap:9px;justify-content:flex-end;font:400 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-1);opacity:.66;transition:opacity .3s,color .3s,border-color .3s,background .3s;
+    padding:6px 11px;border-radius:999px;background:rgba(5,7,13,.5);border:1px solid rgba(184,200,224,.09);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);}
+  .rail li .dot{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--ink-1);flex:none;}
+  .rail li[aria-current="true"]{opacity:1;color:var(--champagne);background:rgba(5,7,13,.64);border-color:color-mix(in oklab,var(--champagne) 34%,transparent);} .rail li[aria-current="true"] .dot{background:var(--champagne);border-color:var(--champagne);}
   @media (max-width:860px){ .rail{display:none;} }
 
   /* mobile static hero — fast, no video */
