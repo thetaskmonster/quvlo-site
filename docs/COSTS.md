@@ -38,8 +38,34 @@ Plan allotment: **1,200 credits / cycle**. `nano_banana_pro` = **2 credits / ima
 
 ## Recurring — NOT active (flip on when ready)
 
-- **Stripe** — no monthly fee; standard **~2.9% + 30¢ per transaction**, charged only when a client actually pays. Deposits/Care-Plan checkout stay off until `CARE_PLAN_URL` / `DEPOSIT_URL` are set.
-- **Cloudflare env vars still pending** (needed for the scanner + pricing paths): `QUVLO_ENRICH_WEBHOOK_URL`, `CARE_PLAN_URL`, `DEPOSIT_URL`, and `hello@quvlo.co` email routing.
+- **Stripe** — no monthly fee; standard **~2.9% + 30¢ per transaction**, charged only when a client actually pays. Off until the keys below are set.
+
+---
+
+## Live activation status (verified 2026-09-02)
+
+Checked against the live site, using only honest observables (endpoint probes + code paths).
+The live homepage is `index.html`; its funnel calls three Cloudflare Functions.
+
+| Path | Live state | How it was verified | Owner / action |
+|---|---|---|---:|
+| **Lead capture** (`/api/lead`) | **WORKS today** | `GET` → HTTP 405 (POST-only, deployed). Code has a graceful fallback: if `AIRTABLE_TOKEN` is unset it routes the lead to Formspree (`mzdlnbkj`) — **no lead is ever dropped**. | Nothing required to capture leads. |
+| **Free scan** (`/api/scan`) | **WORKS today** | `GET` → HTTP 405 (POST-only, deployed). Runs and returns scores with no env vars. | Nothing required. |
+| **Prices / catalogue** (`/api/checkout` GET) | **WORKS today** | `GET /api/checkout` → `{ ok:true, live:false, packages:[…] }` — the five real prices render. | Nothing required. |
+| **Stripe checkout** (`/api/checkout` POST) | **OFF** | Same probe returns `"live": false` = `STRIPE_SECRET_KEY` not set in Cloudflare. | **Kyle** — set `STRIPE_SECRET_KEY` (a secret; Cloudflare env var, never in code) + `STRIPE_WEBHOOK_SECRET` and the `QUVLO_EVENTS` KV binding for `functions/api/stripe-webhook.js`. |
+| **Airtable CRM write** (`/api/lead`) | **Unwired** (non-blocking) | Not externally observable; leads currently land in Formspree instead of Airtable. | **Kyle** — set `AIRTABLE_TOKEN` (secret). `AIRTABLE_BASE`/`AIRTABLE_TABLE` default in code. Optional `QUVLO_NOTIFY_URL` overrides the Formspree fallback. |
+| **Scan enrichment webhook** (`/api/scan`) | **Off** (non-blocking) | Fires only if `QUVLO_ENRICH_WEBHOOK_URL` is set; scan works without it. | **Kyle** — set `QUVLO_ENRICH_WEBHOOK_URL` when the enrichment pipeline is ready. |
+| **`hello@quvlo.co` routing** | Not verifiable here | Kyle's mail / Cloudflare Email Routing setting, not observable from this session. | **Kyle** — confirm mail delivery. |
+
+**Read:** the visitor-facing funnel is already working — a visitor can scan, see scores, and hand
+over an email, and that lead is captured (via Formspree today). The one real click-blocker for
+**taking money** is Stripe: set `STRIPE_SECRET_KEY` (+ webhook secret + KV) and checkout goes live.
+Everything else on this list improves back-office routing but does not block a lead or a sale.
+
+> Note: `src/components/Pricing.tsx` / `ui.tsx` carry `CARE_PLAN_URL` / `DEPOSIT_URL` (empty →
+> `PAYMENTS_LIVE=false`). That is an **alternate React build**, not the live-served `index.html`
+> path. If that build is ever the one deployed, those two Stripe Payment Link URLs are a code edit
+> (not a Cloudflare env var) — the URLs are public hosted links, not secrets.
 
 ---
 
