@@ -20,37 +20,42 @@ Follow every rule below on every task in this project without being reminded. If
 
 6. **Assume everything ships public.** Write every line as if a stranger will read the source, because on a live site they can.
 
+7. **Security and SEO are built in, not bolted on at launch.** The SEO bones (one H1 per page, unique title and description, canonical, Open Graph image, alt text, sitemap, robots.txt) go in while the pages are built. The pre-launch checklist then confirms them; it is not where they are first added. Added 2026-10-09 from Kyle's saved reels (see the pre-launch checklist's sources).
+
+8. **If a site ever does get logins, a database or an API** (only when I ask, per rule 1), these are required from the first commit: each user can only ever reach their own data (row-level security on Supabase, checked, not assumed); every input sanitised against SQL injection and XSS; the API answers only our own domain; rate limiting on; usage limits enforced on the server, never in the browser; password-reset links expire within 30 minutes. The full list is section 8 of the pre-launch checklist (`Quvlo/02-DEPARTMENTS/delivery/pre-launch-checklist.md` in the vault).
+
 ---
 
 ## QUALITY RULES
 
-7. **Small, reviewable changes.** Keep each task scoped small enough that I can actually read the diff. Don't expand scope beyond what I asked. If you think something extra is needed, propose it separately.
+9. **Small, reviewable changes.** Keep each task scoped small enough that I can actually read the diff. Don't expand scope beyond what I asked. If you think something extra is needed, propose it separately.
 
-8. **Explain what you're doing.** Before a big change, tell me the plan in plain language. After, tell me what you changed and why. No silent edits.
+10. **Explain what you're doing.** Before a big change, tell me the plan in plain language. After, tell me what you changed and why. No silent edits.
 
-9. **One dependency, one reason.** Every package or library added gets a one-line justification.
+11. **One dependency, one reason.** Every package or library added gets a one-line justification.
 
-10. **Ask before expensive-to-reverse decisions.** Stack choice, hosting, domain, anything hard to undo — pause and confirm. Otherwise make the reasonable call and tell me what you decided.
+12. **Ask before expensive-to-reverse decisions.** Stack choice, hosting, domain, anything hard to undo — pause and confirm. Otherwise make the reasonable call and tell me what you decided.
 
 ---
 
 ## DESIGN RULES
 
-11. **Plan before building.** For any new page, produce the design plan first (subject, palette, type, signature element) and get my approval before writing code. The plan is what separates a $500 site from a $10k one.
+13. **Plan before building.** For any new page, produce the design plan first (subject, palette, type, signature element) and get my approval before writing code. The plan is what separates a $500 site from a $10k one.
 
-12. **No AI-default aesthetics.** Avoid the three tells: cream + terracotta, near-black + acid-green, broadsheet hairlines. Derive palette and type from the specific business, not generic defaults.
+14. **No AI-default aesthetics.** Avoid the three tells: cream + terracotta, near-black + acid-green, broadsheet hairlines. Derive palette and type from the specific business, not generic defaults.
 
-13. **Motion must mean something.** Animation should express the product's logic, never float decoratively.
+15. **Motion must mean something.** Animation should express the product's logic, never float decoratively.
 
 ---
 
 ## COST RULES
 
-14. **Efficient by default.** Prefer the lightest solution that ships: single self-contained files, free static hosting, no framework unless the feature list truly needs one. Cheaper to run and easier to host beats clever.
+16. **Efficient by default.** Prefer the lightest solution that ships: single self-contained files, free static hosting, no framework unless the feature list truly needs one. Cheaper to run and easier to host beats clever.
 
-15. **Flag cost before adding it.** Anything that introduces recurring cost (paid API, paid host, paid service) gets called out before it goes in, with the cheaper alternative if one exists.
+17. **Flag cost before adding it.** Anything that introduces recurring cost (paid API, paid host, paid service) gets called out before it goes in, with the cheaper alternative if one exists.
 
 ---
 
 ## BEFORE ANY SITE GOES LIVE
-Run the full pre-launch checklist (see PRE-LAUNCH-CHECKLIST.md). Nothing ships without passing the security gate. When I say "run the launch checklist," perform every item and report pass/fail with fixes.
+Run the full pre-launch checklist (in the vault: `Quvlo/02-DEPARTMENTS/delivery/pre-launch-checklist.md`). Nothing ships without passing the security gate. When I say "run the launch checklist," perform every item and report pass/fail with fixes.
+
