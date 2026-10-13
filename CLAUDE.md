@@ -22,7 +22,7 @@ Follow every rule below on every task in this project without being reminded. If
 
 7. **Security and SEO are built in, not bolted on at launch.** The SEO bones (one H1 per page, unique title and description, canonical, Open Graph image, alt text, sitemap, robots.txt) go in while the pages are built. The pre-launch checklist then confirms them; it is not where they are first added. Added 2026-10-09 from Kyle's saved reels (see the pre-launch checklist's sources).
 
-8. **If a site ever does get logins, a database or an API** (only when I ask, per rule 1), these are required from the first commit: each user can only ever reach their own data (row-level security on Supabase, checked, not assumed); every input sanitised against SQL injection and XSS; the API answers only our own domain; rate limiting on; usage limits enforced on the server, never in the browser; password-reset links expire within 30 minutes. The full list is section 8 of the pre-launch checklist.
+8. **If a site ever does get logins, a database or an API** (only when I ask, per rule 1), these are required from the first commit: each user can only ever reach their own data (row-level security on Supabase, checked, not assumed); every input sanitised against SQL injection and XSS; the API answers only our own domain; rate limiting on; usage limits enforced on the server, never in the browser; password-reset links expire within 30 minutes. The full list is section 8 of the pre-launch checklist (`Quvlo/02-DEPARTMENTS/delivery/pre-launch-checklist.md` in the vault).
 
 ---
 
@@ -57,5 +57,5 @@ Follow every rule below on every task in this project without being reminded. If
 ---
 
 ## BEFORE ANY SITE GOES LIVE
-Run the full pre-launch checklist (see PRE-LAUNCH-CHECKLIST.md). Nothing ships without passing the security gate. When I say "run the launch checklist," perform every item and report pass/fail with fixes.
+Run the full pre-launch checklist (in the vault: `Quvlo/02-DEPARTMENTS/delivery/pre-launch-checklist.md`). Nothing ships without passing the security gate. When I say "run the launch checklist," perform every item and report pass/fail with fixes.
 
