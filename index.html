@@ -290,6 +290,12 @@
   .qwins-foot a{color:var(--champagne);}
   @media(max-width:560px){ .gf-row .btn{width:100%;} }
 </style>
+<!-- Before the intro engine mounts, the browser can paint the descent in normal
+     page flow, then the mount pins it full screen: a measured 0.60 layout shift
+     on load. html.sc-pre holds the engine's own geometry from first paint. It is
+     set only where the engine will mount (same test as the mount script) and is
+     removed after the mount, or if the engine script fails to load. -->
+<script>if(matchMedia('(min-width:861px) and (pointer:fine)').matches)document.documentElement.classList.add('sc-pre');</script>
 </head>
 <body>
 <style>
@@ -327,6 +333,15 @@
   #cinematic.sc-done [data-sc-world],
   #cinematic.sc-done [data-sc-world-copy],
   #cinematic.sc-done .rail{display:none;} /* release the working site once past the intro */
+  /* Pre-mount: mirror what the engine applies (.sc-world, .sc-world__seg, .sc-world__copy and
+     the spacer height), so mounting moves nothing. 790vh = (6 legs x 1.15 + 1) viewports. */
+  .sc-pre #cinematic [data-sc-world]{position:fixed;inset:0;overflow:clip;z-index:var(--sc-z-stage);background:var(--sc-canvas);}
+  .sc-pre #cinematic [data-sc-segment]{position:absolute;inset:0;}
+  .sc-pre #cinematic [data-sc-segment] > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .sc-pre #cinematic [data-sc-segment]:not(:first-child),
+  .sc-pre #cinematic [data-sc-segment] > video{visibility:hidden;}
+  .sc-pre #cinematic [data-sc-world-copy]{position:fixed;inset:0;z-index:var(--sc-z-copy);pointer-events:none;}
+  .sc-pre #cinematic [data-sc-spacer]{height:790vh;}
   .m-hero{display:none;}
   /* Show the cinematic only where the scroll engine actually mounts: wide AND a fine pointer.
      Any touch device (incl. a landscape iPad ≥861px) gets the light mobile hero instead, so it
@@ -1788,11 +1803,11 @@ var QUVLO_SCAN = null;
 </script>
 
 <!-- ============ cinematic intro engine (desktop only) ============ -->
-<script src="/hero/scrollcraft.js"></script>
+<script src="/hero/scrollcraft.js" onerror="document.documentElement.classList.remove('sc-pre')"></script>
 <script>
 (function(){
   var cine = document.getElementById('cinematic');
-  if(!cine || !window.ScrollCraft) return;
+  if(!cine || !window.ScrollCraft){ document.documentElement.classList.remove('sc-pre'); return; }
   // Mobile / touch / coarse pointer: keep the static hero, never mount the engine,
   // never fetch a clip. The video worldflight is a desktop experience.
   if(!matchMedia('(min-width:861px) and (pointer:fine)').matches) return;
@@ -1808,6 +1823,7 @@ var QUVLO_SCAN = null;
   }catch(e){}
 
   ScrollCraft.mount(document.body);
+  document.documentElement.classList.remove('sc-pre'); // the engine's own classes hold it now
   function relayout(){ dispatchEvent(new Event('resize')); }
   addEventListener('load', relayout);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
@@ -1822,9 +1838,16 @@ var QUVLO_SCAN = null;
   // Release the working site: once scrolled past the intro track, hide the fixed
   // stage/copy/rail so the scanner and the rest show cleanly (the spacer stays,
   // so nothing jumps).
+  // The flight ends as the teardown's top meets the bottom of the screen; the stage
+  // then fades over the next quarter screen rather than vanishing in one frame.
+  var fadeEls = cine.querySelectorAll('[data-sc-world],[data-sc-world-copy],.rail');
   function glue(){
-    var end = cine.offsetTop + cine.offsetHeight - innerHeight * 0.75;
-    cine.classList.toggle('sc-done', scrollY > end);
+    var start = cine.offsetTop + cine.offsetHeight - innerHeight;
+    var end = start + innerHeight * 0.25;
+    var f = Math.min(Math.max((scrollY - start) / (end - start), 0), 1);
+    cine.classList.toggle('sc-done', f >= 1);
+    var o = f > 0 && f < 1 ? (1 - f).toFixed(3) : '';
+    fadeEls.forEach(function(el){ el.style.opacity = o; });
   }
   addEventListener('scroll', glue, {passive:true});
   addEventListener('resize', glue);
