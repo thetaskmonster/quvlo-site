@@ -1,10 +1,10 @@
-# Cinematic Instrument — hero prototype
+# Cinematic Instrument: hero prototype
 
 Concept v0.1 of a redesigned Quvlo homepage hero: the **Instant Teardown**.
 Visitor pastes a URL, watches a cinematic scan, gets an accessibility +
 performance scorecard, and is invited to the free full teardown.
 
-- `cinematic-instrument-hero.html` — self-contained, open it directly in a browser.
+- `cinematic-instrument-hero.html`: self-contained, open it directly in a browser.
 - Design: obsidian + tungsten amber, monospace telemetry, additive scanner
   reticle (augments the system cursor, never hides it).
 - Accessible by design: real label + button, `aria-live` results, visible
@@ -17,12 +17,12 @@ Not wired into the live site. Prototype only.
 
 ---
 
-## Agent Teardown — cinematic 3D hero (concept v0.2)
+## Agent Teardown: cinematic 3D hero (concept v0.2)
 
-`agent-teardown-hero.html` — the committed direction: **Cinematic 3D (Igloo)** art
+`agent-teardown-hero.html`: the committed direction: **Cinematic 3D (Igloo)** art
 direction + the **Agent Teardown** concept.
 
-- Thesis: "Can an AI actually use your website?" By 2027 the customer is often an
+- Thesis: "AI agents can't use most websites." (the live headline since 2026-10-14; it began as the question "Can an AI actually use your website?") By 2027 the customer is often an
   agent booking on someone's behalf. The semantics that make a site usable by a
   screen reader are the same ones that make it usable by an AI agent. So the scan
   sends an agent to attempt a real task (book an appointment) and narrates where it
@@ -37,9 +37,9 @@ direction + the **Agent Teardown** concept.
 
 ---
 
-## Full site — cinematic concept v0.3
+## Full site: cinematic concept v0.3
 
-`agent-teardown-site.html` — the full scrolling site, not just the hero.
+`agent-teardown-site.html`: the full scrolling site, not just the hero.
 Sections: agent-teardown hero, who we are (operator story), services (web +
 compliance lead, automation/AI secondary per Kyle 2026-07-24), concept work
 (labelled Concept), honest thesis ("run the teardown on us", no fabricated
