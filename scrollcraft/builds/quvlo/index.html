@@ -1,20 +1,21 @@
 <!doctype html>
 <!--
-  Quvlo · "The Legibility Descent" — ScrollCraft worldflight SCAFFOLD.
+  Quvlo · "The Legibility Descent": ScrollCraft worldflight SCAFFOLD.
 
-  This is a PARALLEL deliverable. It is not one of vite's five build inputs, so
-  it never deploys. quvlo.co and every live page stay untouched.
+  This is a PARALLEL deliverable. It is not one of vite's five build inputs, but
+  the copyDemo() plugin in vite.config.ts copies this folder into dist/demo/, so
+  it IS published at quvlo.co/demo/: noindex and not linked from the site.
 
   State: full photoreal flight. All six legs mount a kie.ai-generated clip
   (Kling 2.1 Pro), seam-chained end-to-start so the descent is continuous, with
   the poster set to each clip's own first frame. Under reduced motion no clip is
-  fetched and the posters carry the same story through the same seams — a
+  fetched and the posters carry the same story through the same seams: a
   first-class accessible fallback, not a degraded one. SVG placeholders are kept
   in placeholders/ as the design source.
 
   Honesty gate (Quvlo rules + ScrollCraft): zero clients, no testimonials, no
   invented numbers. Every line of copy is true today. The signature panel reads
-  THIS page's own accessibility tree live — it cannot lie, because it is the
+  THIS page's own accessibility tree live. It cannot lie, because it is the
   document, not a picture of one.
 -->
 <html lang="en">
@@ -30,22 +31,22 @@
   /* ---- The whole rebrand: Quvlo's six colours + two faces over the floor. -- */
   @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/bricolage-grotesque-700.woff2) format('woff2');}
   @font-face{font-family:'Space Mono';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/space-mono-400.woff2) format('woff2');}
-  /* ===== Quvlo design system — "two readers, one surface" ================
+  /* ===== Quvlo design system: "two readers, one surface" ================
      Authored in OKLCH so contrast is computable, not asserted: tokens/color.mjs
-     prints every pairing's WCAG ratio (worst body pairing 6.1:1 — all AA).
+     prints every pairing's WCAG ratio (worst body pairing 6.1:1, all AA).
      Warm champagne = the human; a cool twin = the machine. Ground + champagne
      are pinned to brand hex so a later port to the live site shifts nothing. */
   :root{
     /* ground + the two planes */
     --space:   #05070d;              /* surface plane / page ground        */
     --surface: #0b0f1a;              /* structure plane, raised            */
-    /* ink scale — oklch(96.5..66% · 0.006..0.022 · 250..258°) */
+    /* ink scale: oklch(96.5..66% · 0.006..0.022 · 250..258°) */
     --ink-0:   #f0f4f7;
     --ink-1:   #bcc3cd;
     --ink-2:   #8a93a0;
     /* the two readers */
-    --human:   #e6d2a8;              /* warm champagne — the person        */
-    --machine: #a4c9e9;              /* cool twin — the machine / agent     */
+    --human:   #e6d2a8;              /* warm champagne: the person         */
+    --machine: #a4c9e9;              /* cool twin: the machine / agent      */
     /* functional data states, kept distinct from the two brand accents */
     --pass: #76cf8a; --warn: #e5bf6d; --fail: #f3625d;
 
@@ -75,7 +76,7 @@
       transparent 66%);
   }
   @media (max-width:860px){
-    /* copy spans full width on mobile — widen the plate to the whole bottom */
+    /* copy spans full width on mobile, so widen the plate to the whole bottom */
     .sc-world__scrim.sc-scrim--band{
       background: linear-gradient(to top,
         color-mix(in oklab, var(--space) 93%, transparent) 0%,
@@ -94,7 +95,7 @@
   .bar a{pointer-events:auto;}
   .word{display:inline-flex;align-items:center;gap:10px;font:700 19px/1 var(--sc-font-display);
     color:var(--sc-ink);text-decoration:none;letter-spacing:-.01em;}
-  /* fixed chrome sits over footage too — give it the same halo so it never drops out */
+  /* fixed chrome sits over footage too. Give it the same halo so it never drops out */
   .word,.rail li{text-shadow:0 1px 8px color-mix(in oklab,var(--space) 70%,transparent),0 0 3px color-mix(in oklab,var(--space) 82%,transparent);}
   .word .ring{width:14px;height:14px;border-radius:50%;border:2px solid var(--sc-accent);}
   .bar .cta{font:700 13px/1 var(--sc-font-display);color:#05070d;background:var(--sc-accent);
@@ -104,7 +105,7 @@
   /* copy voice */
   .sc-copy h1,.sc-copy h2{font-family:var(--sc-font-display);letter-spacing:-.025em;line-height:1.02;text-wrap:balance;}
   /* Per-glyph dark halo so a bright lattice bar crossing a stroke can never sink
-     legibility — the footage-preserving half of the contrast fix (the scrim plate
+     legibility: the footage-preserving half of the contrast fix (the scrim plate
      is the other half). Subtle; not a drop shadow. */
   .sc-copy :is(h1,h2,.sc-body,.kicker,.cta){
     text-shadow: 0 1px 10px color-mix(in oklab, var(--space) 72%, transparent),
@@ -131,7 +132,7 @@
   .eye dd .ok{color:var(--pass);} .eye dd .warn{color:var(--warn);}
   .eye .foot{margin-top:18px;font:400 12px/1.5 var(--sc-font-mono);color:var(--sc-ink-soft);}
 
-  /* route rail — a depth gauge, built in the page from the two published numbers */
+  /* route rail: a depth gauge, built in the page from the two published numbers */
   .rail{position:fixed;right:clamp(12px,2vw,26px);top:50%;translate:0 -50%;z-index:60;
     display:flex;flex-direction:column;gap:14px;pointer-events:none;}
   .rail li{list-style:none;display:flex;align-items:center;gap:10px;justify-content:flex-end;
@@ -142,7 +143,7 @@
   .rail li[aria-current="true"] .dot{background:var(--sc-accent);border-color:var(--sc-accent);}
   @media (max-width:860px){.rail{display:none;}}
 
-  /* reduced-motion / no-JS static reader — real document flow, full story */
+  /* reduced-motion / no-JS static reader: real document flow, full story */
   .fallback{max-width:720px;margin:0 auto;padding:96px 24px 120px;}
   .fallback h1{font:700 clamp(2rem,5vw,3.2rem)/1.04 var(--sc-font-display);letter-spacing:-.025em;color:var(--sc-ink);}
   .fallback h2{font:700 1.3rem/1.2 var(--sc-font-display);color:var(--sc-ink);margin:40px 0 8px;}
@@ -285,7 +286,7 @@
   /* ---- The Agent's-Eye signature: read THIS page's accessibility tree live.
      It walks the real DOM (skipping its own subtree) and reports what a screen
      reader or agent would find. It is a genuine accessibility feature, not an
-     illustration — which is the entire point of putting it at the peak. ---- */
+     illustration, which is the entire point of putting it at the peak. ---- */
   (function agentEye(){
     var out = document.getElementById('eye-readout');
     if (!out) return;
