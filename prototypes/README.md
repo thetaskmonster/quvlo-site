@@ -22,7 +22,7 @@ Not wired into the live site. Prototype only.
 `agent-teardown-hero.html`: the committed direction: **Cinematic 3D (Igloo)** art
 direction + the **Agent Teardown** concept.
 
-- Thesis: "AI agents can't use most websites." (the live headline since 2026-10-14; it began as the question "Can an AI actually use your website?") By 2027 the customer is often an
+- Thesis: "AI agents can't use most websites." (the live headline since 2026-10-14; before that the live site asked "Can an AI agent actually use your website?") By 2027 the customer is often an
   agent booking on someone's behalf. The semantics that make a site usable by a
   screen reader are the same ones that make it usable by an AI agent. So the scan
   sends an agent to attempt a real task (book an appointment) and narrates where it
