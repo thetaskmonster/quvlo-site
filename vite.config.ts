@@ -24,11 +24,12 @@ function copyDemo(): Plugin {
       await rm(DEST, { recursive: true, force: true })
       await cp(SRC, DEST, {
         recursive: true,
-        // skip local render scratch and dev-only files — not needed to view the demo
+        // skip local render scratch and dev-only files, not needed to view the demo.
+        // system.html is the internal design-system spec sheet: it says NON-DEPLOYED, so it is never published.
         filter: (src) =>
           !/[\\/]out([\\/]|$)/.test(src) &&
           !/[\\/]tokens[\\/]/.test(src) &&
-          !/[\\/](make-posters\.mjs|generate-leg2\.sh|BRIEF\.md)$/.test(src),
+          !/[\\/](make-posters\.mjs|generate-leg2\.sh|BRIEF\.md|system\.html)$/.test(src),
       })
       this.info?.('[copy-demo] published demo -> dist/demo')
     },
