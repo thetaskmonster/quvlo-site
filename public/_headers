@@ -20,3 +20,12 @@
 
 /work/inlay/*
   X-Robots-Tag: noindex
+
+/work/ballast/*
+  X-Robots-Tag: noindex
+
+/work/longhand/*
+  X-Robots-Tag: noindex
+
+/work/neap/*
+  X-Robots-Tag: noindex

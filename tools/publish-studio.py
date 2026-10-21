@@ -9,7 +9,7 @@ import os, re, shutil, sys
 
 SRC = sys.argv[1]
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public', 'work')
-PIECES = {'basalt': 'sweathouse', 'lacquer-room': 'detailer', 'inlay': 'tailor'}
+PIECES = {'basalt': 'sweathouse', 'lacquer-room': 'detailer', 'inlay': 'tailor', 'ballast': 'ballast', 'longhand': 'longhand', 'neap': 'lowtide'}
 REF = re.compile(r'''(?:src|href|srcset)="([^"#:?]+)"|url\(\s*['"]?([^)'"#:]+)['"]?\s*\)''')
 
 def refs(text):
@@ -29,8 +29,9 @@ for slug, name in PIECES.items():
         open(os.path.join(odir, 'site.js'), 'w', encoding='utf-8').write('\n'.join(s.strip() for s in scripts) + '\n')
         html = re.sub(r'<script>.*?</script>', '', html, flags=re.S)
         html = html.replace('</body>', '<script src="site.js"></script>\n</body>', 1)
-    head = (f'<meta name="robots" content="noindex">\n<link rel="canonical" href="https://quvlo.co/work/{slug}/">\n'
-            '<link rel="icon" type="image/svg+xml" href="/favicon.svg">\n')
+    head = ('' if 'name="robots"' in html else '<meta name="robots" content="noindex">\n')
+    head += '' if 'rel="canonical"' in html else f'<link rel="canonical" href="https://quvlo.co/work/{slug}/">\n'
+    head += '' if 'rel="icon"' in html else '<link rel="icon" type="image/svg+xml" href="/favicon.svg">\n'
     html = re.sub(r'(<meta charset="[^"]*">)', r'\1\n' + head, html, count=1)
     open(os.path.join(odir, 'index.html'), 'w', encoding='utf-8').write(html)
     todo, seen = list(refs(html)), set()
