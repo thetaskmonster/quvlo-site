@@ -5,6 +5,9 @@
 @font-face{font-family:'Melodrama';src:url(/fonts/melodrama-400.woff2) format('woff2');font-weight:400;font-display:swap}
 @font-face{font-family:'Panchang';src:url(/fonts/panchang-800.woff2) format('woff2');font-weight:800;font-display:swap}
 @font-face{font-family:'Boska';src:url(/fonts/boska-500.woff2) format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'Tanker';src:url(/fonts/tanker-400.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Cabinet Grotesk';src:url(/fonts/cabinet-800.woff2) format('woff2');font-weight:800;font-display:swap}
+@font-face{font-family:'Gambarino';src:url(/fonts/gambarino-400.woff2) format('woff2');font-weight:400;font-display:swap}
 
 :root{
   --night:#05070d;--graphite:#0d1118;--graphite-2:#141a24;
@@ -121,6 +124,9 @@ h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.035em;line-
 .f-melodrama{font-family:'Melodrama',Georgia,serif;font-weight:400;letter-spacing:-.01em}
 .f-panchang{font-family:'Panchang',system-ui,sans-serif;font-weight:800;letter-spacing:-.02em;font-size:clamp(30px,6.4vw,66px)!important}
 .f-boska{font-family:'Boska',Georgia,serif;font-weight:500}
+.f-tanker{font-family:'Tanker',system-ui,sans-serif;font-weight:400;letter-spacing:.01em}
+.f-cabinet{font-family:'Cabinet Grotesk',system-ui,sans-serif;font-weight:800;letter-spacing:-.02em}
+.f-gambarino{font-family:'Gambarino',Georgia,serif;font-weight:400}
 .note{margin-top:28px;max-width:46ch;color:var(--soft);font-size:15px}
 
 /* ---------- the question and the concierge ---------- */
