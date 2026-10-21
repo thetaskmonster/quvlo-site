@@ -18,6 +18,7 @@
 html{-webkit-text-size-adjust:100%;scroll-padding-top:72px}
 body{background:var(--night);color:var(--bone);font-family:var(--text);font-weight:500;font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
 img,canvas{display:block;max-width:100%}
+[hidden]{display:none!important}
 a{color:inherit}
 h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.035em;line-height:.98}
 :focus-visible{outline:3px solid var(--teal);outline-offset:3px;border-radius:4px}
@@ -60,7 +61,7 @@ h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.035em;line-
 .say.small{font-size:clamp(23px,6vw,48px);line-height:1.08}
 .stops{list-style:none}
 .clock{font-family:var(--display);font-weight:700;font-size:clamp(40px,10vw,132px);letter-spacing:-.035em;line-height:1;display:flex;align-items:baseline;font-variant-numeric:tabular-nums}
-.clock .ap{font-family:var(--text);font-size:.2em;letter-spacing:0;margin-left:.4em}
+.clock .ap{font-family:var(--text);font-size:.3em;letter-spacing:0;margin-left:.35em}
 .rooms{list-style:none}
 .room{display:inline-flex;align-items:center;gap:8px;font-size:15.5px;line-height:1;white-space:nowrap;padding:8px 13px 8px 11px;border-radius:999px;background:rgba(12,13,16,.68);border:1px solid rgba(236,231,220,.12);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .room::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--tungsten);box-shadow:0 0 8px var(--tungsten)}
@@ -78,8 +79,10 @@ h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.035em;line-
 /* with the runtime: the stage pins and everything is placed by home.js */
 .act.live .stage{position:sticky;top:0;height:100svh;min-height:0}
 .act.live .hero-copy{position:absolute;top:0;left:0;right:0}
+.act.live .story{position:absolute;inset:0;pointer-events:none}
 .act.live .story > *, .act.live .stops > *{position:absolute;opacity:0;will-change:opacity,transform}
-.act.live .say{left:var(--gut);right:var(--gut);bottom:max(56px,7svh);max-width:15ch}
+.act.live .story > .stops{inset:0;opacity:1}
+.act.live .say{left:var(--gut);right:var(--gut);bottom:calc(max(56px,7svh) + 52px);max-width:15ch}
 .act.live .say[data-say="roof"]{top:96px;bottom:auto;max-width:13ch}
 .act.live .say.small{max-width:20ch}
 .act.live .clock{left:var(--gut);top:84px}

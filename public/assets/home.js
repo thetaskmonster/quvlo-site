@@ -20,13 +20,13 @@
     clockIn: [2.05, 2.18], stop0: 2.12, rolls: [2.95, 3.8, 4.65], rollLen: .3, turn: 5.5, end: 6.6,
   };
   const STOPS = [4, 342, 557, 835];  // minutes after 6:00 pm: 6:04 pm, 11:42 pm, 3:17 am, 7:55 am
-  const act = $('#door'), stage = $('.stage', act), cv = $('#model'), rain = $('#rain'), tvHost = $('#tv'), glowHost = $('#glows');
+  const act = $('#door'), cv = $('#model'), rain = $('#rain'), tvHost = $('#tv'), glowHost = $('#glows');
   const say = k => $(`[data-say="${k}"]`, act), stopsEls = $$('[data-stop]', act), roomEls = $$('.room', act), clockEl = $('.clock', act);
   let M = null, wide = false, vw = 0, vh = 0, dpr = 1, ctx = null, rctx = null;
   const frames = { pull: [], lift: [] }, stills = {};
   const t0 = performance.now();
 
-  function img(src) { const im = new Image(); im.decoding = 'async'; im.src = src; im.ok = false; im.onload = () => { im.ok = true; need = true; }; return im; }
+  function img(src) { const im = new Image(); im.decoding = 'async'; im.src = src; im.ok = false; im.onload = () => { im.ok = true; lastKey = ''; }; return im; }
   // nearest decoded frame to f (sequences load in the background; never draw a hole)
   function nearest(arr, f) { const n = arr.length; f = clamp(Math.round(f), 0, n - 1); for (let d = 0; d < n; d++) { if (arr[f - d] && arr[f - d].ok) return arr[f - d]; if (arr[f + d] && arr[f + d].ok) return arr[f + d]; } return null; }
   // load a sequence coarse to fine (every 8th, then 4th, 2nd, all) so scrubbing works early
@@ -91,7 +91,7 @@
   function clockText(m) { const total = (18 * 60 + m) % 1440; let h = Math.floor(total / 60); const mi = total % 60, ap = h >= 12 ? 'pm' : 'am'; h %= 12; if (!h) h = 12; return [`${h}:${String(mi).padStart(2, '0')}`, ap]; }
   const show = (el, q, dy = 12) => { el.style.opacity = q.toFixed(3); el.style.transform = `translateY(${((1 - q) * dy).toFixed(1)}px)`; };
 
-  let need = true, uNow = 0, lastKey = '';
+  let uNow = 0, lastKey = '';
   function render(now) {
     const u = uNow, t = (now - t0) / 1000;
     const pPull = smooth(seg(u, ...U.pull)), pLift = .5 * seg(u, ...U.lift) + .5 * smooth(seg(u, ...U.lift)), toN = ease(seg(u, ...U.settle));
@@ -150,7 +150,6 @@
       const g = glowHost.children[i], gs = 640 * c.s; g.style.width = g.style.height = gs + 'px'; g.style.left = (x - gs / 2) + 'px'; g.style.top = (y - gs / 2) + 'px'; g.style.opacity = (Math.max(lit, allOn * .6)).toFixed(3);
     });
     show(say('turn'), out(seg(u, U.turn + .12, U.turn + .32)));
-    need = false;
   }
 
   let actTop = 0;
@@ -158,19 +157,19 @@
     vw = innerWidth; vh = innerHeight; dpr = Math.min(2, devicePixelRatio || 1);
     wide = vw >= 900 && vw / vh >= 4 / 3;
     cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr); rain.width = cv.width; rain.height = cv.height;
-    act.style.height = ((U.end + 1) * vh) + 'px'; actTop = act.offsetTop; lastKey = ''; need = true;
+    act.style.height = ((U.end + 1) * vh) + 'px'; actTop = act.offsetTop; lastKey = '';
   }
   let loadedCount = 0;
   function startDoor(man) {
     M = man; ctx = cv.getContext('2d'); rctx = rain.getContext('2d'); if (!ctx || !rctx) return;
     act.classList.add('live'); measure();
-    const v = wide ? 'd' : 'p', base = '/model/';
+    const v = wide ? 'd' : 'p', base = '';
     // stills first (the picture on screen at each stage), then the footage, coarse to fine
     stills.shop = img(base + M.files.shop[v]); stills.roofOff = img(base + M.files.roofOff[v]); stills.night = img(base + M.files.night[v]); stills.predawn = img(base + M.files.predawn[v]);
     if (wide) stills.hook = img(base + M.files.hook);
-    const seqUrls = (k) => Array.from({ length: M.seq[k].n }, (_, i) => base + M.seq[k].pattern[v].replace('{i}', String(i + 1).padStart(3, '0')));
+    const seqUrls = (k) => Array.from({ length: M.seq[k].n }, (_, i) => M.seq[k].pattern[v].replace('{i}', String(i + 1).padStart(3, '0')));
     const go = () => { if (!wide) loadSeq(seqUrls('pull'), frames.pull); loadSeq(seqUrls('lift'), frames.lift); };
-    ('requestIdleCallback' in window) ? requestIdleCallback(go, { timeout: 1500 }) : setTimeout(go, 600);
+    if ('requestIdleCallback' in window) requestIdleCallback(go, { timeout: 1500 }); else setTimeout(go, 600);
     const countLoads = () => { loadedCount = [...frames.pull, ...frames.lift].filter(f => f && f.ok).length; };
     setInterval(countLoads, 400);
     // TV element and glows
@@ -217,10 +216,80 @@
       const res = await fetch(reach.action, { method: 'POST', body: new FormData(reach), headers: { Accept: 'application/json' } });
       if (!res.ok) throw new Error(String(res.status));
       reach.reset(); reachMsg.textContent = 'Got it. You will get an email to set the time.';
-    } catch (err) { reachMsg.className = 'form-msg err'; reachMsg.textContent = 'That did not send. Please try again in a moment.'; }
+    } catch { reachMsg.className = 'form-msg err'; reachMsg.textContent = 'That did not send. Please try again in a moment.'; }
     btn.disabled = false;
   });
 
   /* ============================ 3. the AI concierge ============================ */
-  window.QuvloConcierge && window.QuvloConcierge();
+  // POST /api/concierge. JSON back = not answered ({ok:false, fallback, reason}). Otherwise Server-Sent Events:
+  // session {sessionId, turnsLeft} | delta {text} | replace {text} | brief {making, because, works_when, updated} | done {turnsLeft} | error {fallback}.
+  // Replies are plain text and only ever written with textContent. One message in flight at a time.
+  {
+    const pick = $('#pick'), chat = $('#chat'), log = $('#log'), compose = $('#compose'), msg = $('#msg');
+    if (pick && chat && log && compose && msg) {
+      const sendBtn = $('button', compose);
+      let sid = null, busy = false, bubble = null, started = false, ended = false, finished = false;
+      const add = (cls, text) => { const p = document.createElement('p'); p.className = cls; p.textContent = text; log.appendChild(p); log.scrollTop = log.scrollHeight; return p; };
+      const settle = () => { if (bubble) { bubble.classList.remove('wait'); if (!bubble.textContent) bubble.remove(); } bubble = null; };
+      const lock = on => { busy = on; sendBtn.disabled = on || ended; msg.disabled = on || ended; if (!on && !ended && started) msg.focus({ preventScroll: true }); };
+      function showBrief(b) {
+        const dl = $('#brief'); if (!dl) return;
+        ['making', 'because', 'works_when'].forEach(k => { $(`[data-k="${k}"]`, dl).textContent = typeof b[k] === 'string' ? b[k] : ''; });
+        dl.hidden = false; $('#brief-fix').hidden = false; $('#close-h').textContent = 'Here’s what I heard.';
+        $('#reach-brief').value = [`Making: ${b.making || ''}`, `Because: ${b.because || ''}`, `Works when: ${b.works_when || ''}`].join('\n').slice(0, 1500);
+      }
+      function fallback() {
+        ended = true; settle();
+        add('ai', 'The concierge can’t take more questions right now. Leave your name and email below and someone from the team will reach out.');
+        compose.hidden = true; lock(false);
+      }
+      function handle(frame) {
+        let ev = 'message', data = '';
+        for (const line of frame.split('\n')) { if (line.startsWith('event:')) ev = line.slice(6).trim(); else if (line.startsWith('data:')) data += line.slice(5).trim(); }
+        let d; try { d = JSON.parse(data || '{}'); } catch { return; }
+        if (ev === 'session') { if (typeof d.sessionId === 'string') sid = d.sessionId; }
+        else if (ev === 'delta' || ev === 'replace') { if (!bubble) bubble = add('ai', ''); bubble.classList.remove('wait'); const t = typeof d.text === 'string' ? d.text : ''; bubble.textContent = ev === 'delta' ? bubble.textContent + t : t; log.scrollTop = log.scrollHeight; }
+        else if (ev === 'brief') { settle(); showBrief(d); add('ai note', 'I’ve written up the brief below, next to the booking form.'); }
+        else if (ev === 'done') { finished = true; settle(); if (d.turnsLeft === 0) { ended = true; compose.hidden = true; } }
+        else if (ev === 'error') { finished = true; fallback(); }
+      }
+      async function send(body) {
+        lock(true); bubble = add('ai wait', '');
+        try {
+          const res = await fetch('/api/concierge', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+          if ((res.headers.get('content-type') || '').startsWith('application/json')) {
+            const j = await res.json().catch(() => ({})); settle();
+            if (j.reason === 'session_not_found') { sid = null; add('ai', 'That chat timed out. Send your last message again and we’ll pick it back up.'); }
+            else if (j.reason === 'message_too_long') add('ai', 'That one is a little long for the chat. Could you say it in fewer words?');
+            else fallback();
+            return;
+          }
+          if (!res.ok || !res.body) throw new Error('no stream');
+          finished = false;
+          const rd = res.body.getReader(), dec = new TextDecoder(); let buf = '';
+          for (;;) {
+            const { value, done } = await rd.read(); if (done) break;
+            buf += dec.decode(value, { stream: true }); let i;
+            while ((i = buf.indexOf('\n\n')) >= 0) { handle(buf.slice(0, i)); buf = buf.slice(i + 2); }
+          }
+          if (!finished) throw new Error('stream ended early');
+          settle();
+        } catch { fallback(); }
+        finally { lock(false); }
+      }
+      pick.addEventListener('change', e => {
+        const r = e.target; if (started || !(r instanceof HTMLInputElement)) return;
+        started = true; chat.hidden = false; $$('input', pick).forEach(i => { i.disabled = i !== r; });
+        send({ choice: r.value });
+        if (matchMedia('(max-width: 899px)').matches) chat.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
+      });
+      compose.addEventListener('submit', e => {
+        e.preventDefault(); const text = msg.value.trim(); if (!text || busy || ended) return;
+        add('me', text); msg.value = ''; msg.style.height = '';
+        send(sid ? { sessionId: sid, message: text } : { message: text });
+      });
+      msg.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); compose.requestSubmit(); } });
+      msg.addEventListener('input', () => { msg.style.height = 'auto'; msg.style.height = Math.min(140, msg.scrollHeight) + 'px'; });
+    }
+  }
 })();
