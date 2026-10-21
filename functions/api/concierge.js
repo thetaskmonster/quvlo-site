@@ -186,7 +186,7 @@ export function parseBody(raw) {
   try { body = JSON.parse(raw); } catch { return { error: reject('bad_request', 400) }; }
   if (!body || typeof body !== 'object' || Array.isArray(body)) return { error: reject('bad_request', 400) };
 
-  const { sessionId, choice, message } = body;
+  const { sessionId, choice, message, turnstile } = body;
   if (sessionId !== undefined && sessionId !== null && (typeof sessionId !== 'string' || !SESSION_ID.test(sessionId))) {
     return { error: reject('bad_request', 400) };
   }
@@ -194,6 +194,9 @@ export function parseBody(raw) {
     return { error: reject('bad_request', 400) };
   }
   if (message !== undefined && message !== null && typeof message !== 'string') {
+    return { error: reject('bad_request', 400) };
+  }
+  if (turnstile !== undefined && turnstile !== null && (typeof turnstile !== 'string' || turnstile.length > 2048)) {
     return { error: reject('bad_request', 400) };
   }
 
@@ -205,7 +208,30 @@ export function parseBody(raw) {
   if (sid && !text) return { error: reject('empty', 400) };
   if (!sid && !choice && !text) return { error: reject('empty', 400) };
 
-  return { sessionId: sid, choice: sid ? null : (choice || null), message: text || null };
+  return { sessionId: sid, choice: sid ? null : (choice || null), message: text || null, turnstile: turnstile || null };
+}
+
+/**
+ * Bot check for new chats: Cloudflare Turnstile, verified on the server. Only enforced once
+ * TURNSTILE_SECRET is set (the page only shows the check once its site key is in index.html).
+ * A visitor solves it once per chat; later messages ride on the session.
+ */
+export async function humanCheckOk(token, request, env) {
+  if (!env.TURNSTILE_SECRET) return true;
+  if (!token) return false;
+  try {
+    const form = new FormData();
+    form.append('secret', env.TURNSTILE_SECRET);
+    form.append('response', token);
+    const ip = request.headers.get('cf-connecting-ip');
+    if (ip) form.append('remoteip', ip);
+    const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', { method: 'POST', body: form });
+    const out = await res.json();
+    return out && out.success === true;
+  } catch (e) {
+    console.error('concierge: turnstile verify failed', e?.message);
+    return false;
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -565,6 +591,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
     }
 
     if (!session) {
+      if (!(await humanCheckOk(parsed.turnstile, request, env))) return fallback('bot_check', 403);
       const chats = await hitWindow(kv, 'c', who, LIMITS.chatsPerWindow, LIMITS.chatWindowSeconds);
       if (!chats.allowed) return fallback('chat_rate_limit', 429);
       session = newSession(parsed.choice);

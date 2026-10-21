@@ -277,10 +277,20 @@
         } catch { fallback(); }
         finally { lock(false); }
       }
-      pick.addEventListener('change', e => {
+      // Bot check (Cloudflare Turnstile), only when a site key is configured. Loaded on first pick, never on page load.
+      const siteKey = ($('meta[name="quvlo-turnstile"]') || {}).content || '';
+      const humanToken = () => new Promise(resolve => {
+        if (!siteKey) { resolve(null); return; }
+        const go = () => window.turnstile.render('#human', { sitekey: siteKey, appearance: 'interaction-only', callback: t => resolve(t), 'error-callback': () => resolve(null), 'expired-callback': () => resolve(null) });
+        if (window.turnstile) { go(); return; }
+        const sc = document.createElement('script'); sc.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'; sc.async = true;
+        sc.onload = go; sc.onerror = () => resolve(null); document.head.appendChild(sc);
+      });
+      pick.addEventListener('change', async e => {
         const r = e.target; if (started || !(r instanceof HTMLInputElement)) return;
         started = true; chat.hidden = false; $$('input', pick).forEach(i => { i.disabled = i !== r; });
-        send({ choice: r.value });
+        const token = await humanToken();
+        send(token ? { choice: r.value, turnstile: token } : { choice: r.value });
         if (matchMedia('(max-width: 899px)').matches) chat.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
       });
       compose.addEventListener('submit', e => {

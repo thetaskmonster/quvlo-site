@@ -272,3 +272,32 @@ Honest caveats:
    `npx` fetches it for that run). Leave out `--kv CONCIERGE` to try the in-memory fallback.
 3. Real messages spend real money against your key. For logic changes, run the free smoke test instead:
    `node tools/concierge-smoke.mjs`.
+
+## Defenses against overload and abuse
+
+What stops someone from flooding the chat, running up the AI bill, or knocking the site over:
+
+| Layer | What it does | Where |
+|---|---|---|
+| Static site on Cloudflare's network | The pages are files on Cloudflare's CDN with its built-in DDoS protection, so flooding the chat cannot take the site down | Hosting |
+| Origin check | Only our own pages can call `/api/concierge`; scripts on other sites get 403 | `originAllowed` |
+| Bot check (Turnstile) | A new chat needs a Cloudflare Turnstile token verified on the server. Invisible for most people; bots fail it | `humanCheckOk`, needs `TURNSTILE_SECRET` + the site key in `index.html` |
+| Per-visitor limits | 3 new chats an hour, 30 messages per 15 minutes, 14 turns per chat, 1,200 characters per message, 8 KB per request | `limits.js` |
+| Spend caps | $5 a day and $50 a month in code, plus the hard monthly limit in the Claude Console | `budgetStatus` |
+| Graceful fallback | When any limit trips, the chat swaps to the call form; nothing breaks and no errors are shown | page + `fallback()` |
+| Edge rate limit (recommended) | A Cloudflare rate-limiting rule blocks one address sending a burst before it reaches the function, so it never costs a Worker request or a KV write | Cloudflare dashboard |
+
+Worst case with many addresses (a botnet): they hit the daily cap and the chat turns into the call form for the rest of that day. The bill cannot pass the caps, and the site itself stays up.
+
+### Turn on the bot check (free)
+1. Cloudflare dashboard → Turnstile → Add widget. Domain `quvlo.co` (add `quvlo.pages.dev` for previews), mode **Managed**.
+2. Put the **site key** (public) in `index.html`: `<meta name="quvlo-turnstile" content="SITE_KEY">`.
+3. Put the **secret key** in Pages → Settings → Environment variables as an encrypted `TURNSTILE_SECRET`.
+Set both together: with only the secret, new chats are refused; with only the site key, the check runs but is not enforced.
+Dependency note: the page loads `https://challenges.cloudflare.com/turnstile/v0/api.js` (Cloudflare's official script) only when a visitor picks an answer, never on page load. The CSP allows that host for scripts and frames.
+
+### Add the edge rate limit (free plan includes one rule)
+Cloudflare dashboard → quvlo.co → Security → WAF → Rate limiting rules → Create rule:
+- If: URI Path equals `/api/concierge` and Request Method equals `POST`
+- Rate: 20 requests per 10 seconds per IP
+- Action: Block for 10 seconds

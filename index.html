@@ -22,6 +22,8 @@
 <link rel="preload" href="/fonts/zodiak-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/author-500.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css">
+<!-- Cloudflare Turnstile site key (public). Empty = no bot check on the page. Set together with TURNSTILE_SECRET in Cloudflare. -->
+<meta name="quvlo-turnstile" content="">
 <!--
   Structured data. Only facts already public on this site. Deliberately absent until true:
   ratings, reviews, prices, street address, phone. Quvlo has no clients to rate yet.
@@ -124,6 +126,7 @@
       <div class="chat" id="chat" hidden>
         <p class="chat-who"><i aria-hidden="true"></i>AI concierge</p>
         <div class="log" id="log" role="log" aria-live="polite" aria-relevant="additions"></div>
+        <div id="human"></div>
         <form class="compose" id="compose">
           <label class="vh" for="msg">Your answer</label>
           <textarea id="msg" name="msg" rows="1" maxlength="1200" placeholder="Type your answer" autocomplete="off"></textarea>

@@ -64,6 +64,10 @@ const reply = (text, stop = 'end_turn') => ({ body: messageEvents([{ type: 'thin
 
 globalThis.fetch = async (input, init = {}) => {
   const url = typeof input === 'string' ? input : input.url;
+  if (url.startsWith('https://challenges.cloudflare.com/turnstile/')) {  // bot check: token 'good' passes
+    const ok = init.body instanceof FormData && init.body.get('response') === 'good' && init.body.get('secret') === 'ts-secret';
+    return new Response(JSON.stringify({ success: ok }), { status: 200, headers: { 'content-type': 'application/json' } });
+  }
   const body = init.body ? JSON.parse(init.body) : null;
   if (url.startsWith('https://api.anthropic.com/')) {
     const headers = new Headers(init.headers);
@@ -406,6 +410,19 @@ await test('no KV binding falls back to in-memory storage, never client history'
   const ev2 = await readEvents((await call({ sessionId: ev[0].data.sessionId, message: 'curious' }, { env: noKv, ip: freshIp() })).res);
   assert.equal(ev2.at(-1).name, 'done');
   assert.ok(logs.some(([, m]) => m.includes('in-memory storage')));
+});
+
+await test('bot check (Turnstile) gates new chats only when its secret is set', async () => {
+  const env = { ...baseEnv(), TURNSTILE_SECRET: 'ts-secret' };
+  let r = await call({ choice: 'website' }, { env, ip: freshIp() });
+  assert.equal(r.res.status, 403);
+  assert.equal((await r.res.json()).reason, 'bot_check');
+  r = await call({ choice: 'website', turnstile: 'forged' }, { env, ip: freshIp() });
+  assert.equal(r.res.status, 403);
+  const ev = await readEvents((await call({ choice: 'website', turnstile: 'good' }, { env, ip: freshIp() })).res);
+  assert.equal(textOf(ev), OPENING_LINES.website);
+  r = await call({ choice: 'website', turnstile: 'x'.repeat(3000) }, { env, ip: freshIp() });
+  assert.equal(r.res.status, 400);
 });
 
 await test('playbook text is free of em dashes and the tool schema is strict', () => {
