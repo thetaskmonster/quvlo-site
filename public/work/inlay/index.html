@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://quvlo.co/work/inlay/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inlay, made-to-measure tailoring in Dallas</title>
+<meta name="description" content="Made-to-measure suits drafted by hand, cut and fitted in Dallas. Fittings by appointment.">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="fonts.css">
+<style>
+:root{
+  --worsted:#0f1522;      /* navy cloth, page ground */
+  --worsted-deep:#0a0f19;
+  --cloth:#232a38;        /* charcoal cloth, surfaces */
+  --chalk:#ece9e1;        /* tailor's chalk, text */
+  --chalk-dim:rgba(236,233,225,.66);
+  --paper:#c3a679;        /* pattern paper */
+  --paper-ink:#1b1f29;
+  --pencil:rgba(27,31,41,.62);
+  --display:'Boska',Georgia,serif;
+  --text:'Switzer',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{background:var(--worsted);color:var(--chalk);font-family:var(--text);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--paper);outline-offset:3px}
+.wrap{width:min(1320px,100% - 40px);margin-inline:auto}
+
+/* basting stitch: the page's only divider, taken from the white thread that holds a baste fitting together */
+.baste{height:2px;background:linear-gradient(90deg,currentColor 0 58%,transparent 58% 100%) 0 0/26px 2px repeat-x;opacity:.55}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:54px;padding:0 26px;border-radius:3px;font-weight:500;font-size:16px;letter-spacing:.005em;transition:background-color .2s,color .2s,transform .2s}
+.btn-paper{background:var(--paper);color:var(--paper-ink)}
+.btn-paper:hover{background:#d4b98c}
+.btn-line{border:1px solid rgba(236,233,225,.38);color:var(--chalk)}
+.btn-line:hover{border-color:var(--chalk)}
+.btn:active{transform:translateY(1px)}
+
+/* header */
+header{position:absolute;inset:0 0 auto;z-index:5}
+.bar{display:flex;align-items:center;height:88px}
+.mark{font-family:var(--display);font-weight:500;font-size:30px;letter-spacing:-.01em}
+nav{margin-left:auto;display:flex;align-items:center;gap:34px;font-size:15.5px}
+nav a.l{color:var(--chalk-dim);transition:color .2s}
+nav a.l:hover{color:var(--chalk)}
+nav .btn{height:44px;padding:0 20px;font-size:15px}
+
+/* hero */
+.hero{position:relative;height:100svh;min-height:640px;overflow:hidden;background:#06080d}
+.hero img,.hero svg.draw{position:absolute;inset:0;width:100%;height:100%}
+.hero img{object-fit:cover;object-position:50% 50%}
+.hero .shade{position:absolute;inset:0;background:
+  linear-gradient(90deg,rgba(10,15,25,.92) 0%,rgba(10,15,25,.7) 30%,rgba(10,15,25,.08) 62%,rgba(10,15,25,0) 100%),
+  linear-gradient(0deg,rgba(10,15,25,.75) 0%,rgba(10,15,25,0) 40%)}
+.hero .copy{position:absolute;left:0;right:0;bottom:clamp(40px,8vh,96px)}
+.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(50px,7.4vw,124px);line-height:.92;letter-spacing:-.025em;max-width:6.6em}
+.hero p{margin-top:28px;max-width:30em;font-size:clamp(16px,1.25vw,19px);color:var(--chalk-dim)}
+.hero .acts{margin-top:34px;display:flex;gap:12px;flex-wrap:wrap}
+.hero .note{position:absolute;right:clamp(20px,3vw,56px);bottom:clamp(40px,8vh,96px);font-family:var(--display);font-style:italic;font-size:20px;color:var(--chalk);opacity:0;text-align:right;line-height:1.25}
+svg.draw path{fill:none;stroke:#f1eee6;stroke-linecap:round;stroke-linejoin:round}
+svg.draw .edge{stroke-width:3.6;stroke-dasharray:420;stroke-dashoffset:420;filter:url(#chalky);opacity:.95}
+svg.draw .tick{stroke-width:2.2;stroke-dasharray:24;stroke-dashoffset:24;filter:url(#chalky)}
+.drawn svg.draw .edge{animation:draw 1.5s cubic-bezier(.65,0,.25,1) .5s forwards}
+.drawn svg.draw .tick{animation:draw .35s ease-out forwards}
+.drawn .hero .note{animation:fade .8s ease 2.2s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fade{to{opacity:.9}}
+
+/* sections */
+section{position:relative}
+.head{font-family:var(--display);font-weight:400;font-size:clamp(38px,4.6vw,76px);line-height:1;letter-spacing:-.02em}
+.lede{font-size:clamp(16px,1.2vw,18.5px);color:var(--chalk-dim);max-width:34em;margin-top:22px}
+
+/* process */
+.process{padding:clamp(88px,12vw,180px) 0}
+.process .grid{display:grid;grid-template-columns:5fr 7fr;gap:clamp(40px,6vw,110px);align-items:start}
+.process figure{position:sticky;top:40px}
+.process figure img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:2px}
+.process figcaption{margin-top:14px;font-size:14px;color:var(--chalk-dim)}
+.steps{margin-top:clamp(40px,5vw,72px);list-style:none}
+.steps li{display:grid;grid-template-columns:72px 1fr;gap:8px 18px;padding:34px 0}
+.steps li .baste{grid-column:1/-1;margin-bottom:30px}
+.steps li:first-child .baste{display:none}
+.steps .n{font-family:var(--display);font-size:44px;line-height:1;color:var(--paper)}
+.steps h3{font-family:var(--display);font-weight:500;font-size:clamp(26px,2.3vw,34px);line-height:1.1;letter-spacing:-.01em}
+.steps p{grid-column:2;color:var(--chalk-dim);max-width:32em}
+
+/* builder: the cutting table, on pattern paper */
+.table{background:var(--paper);color:var(--paper-ink);padding:clamp(80px,10vw,150px) 0;
+  background-image:linear-gradient(rgba(27,31,41,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(27,31,41,.07) 1px,transparent 1px);
+  background-size:28px 28px}
+.table .lede{color:var(--pencil)}
+.table .grid{display:grid;grid-template-columns:7fr 5fr;gap:clamp(36px,5vw,90px);align-items:center;margin-top:clamp(40px,5vw,70px)}
+.draft{position:relative;aspect-ratio:1/1.05;background:rgba(255,255,255,.07);border:1px solid rgba(27,31,41,.18)}
+.draft svg{position:absolute;inset:0;width:100%;height:100%}
+.draft .anno{position:absolute;font-family:var(--display);font-style:italic;font-size:15px;color:var(--pencil)}
+.ctl h3{font-family:var(--display);font-weight:500;font-size:22px;margin-bottom:14px}
+.ctl .g+.g{margin-top:34px}
+.ctl .g>.baste{color:var(--paper-ink);opacity:.35;margin-bottom:28px}
+.opts{display:flex;flex-wrap:wrap;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;padding:8px 16px 8px 8px;border:1px solid rgba(27,31,41,.25);border-radius:3px;font-size:15px;transition:border-color .2s,background-color .2s}
+.opt:hover{border-color:var(--paper-ink)}
+.opt[aria-pressed="true"]{background:var(--paper-ink);color:var(--paper);border-color:var(--paper-ink)}
+.opt .sw{width:34px;height:34px;border-radius:2px;background-size:cover;flex:none}
+.opt.t{padding:0 18px;height:46px}
+.opt .dot{width:20px;height:20px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)}
+.why{margin-top:14px;font-size:15px;color:var(--pencil);min-height:3em}
+.sum{margin-top:40px;font-family:var(--display);font-size:clamp(24px,2.2vw,32px);line-height:1.15}
+.table .btn{margin-top:26px;background:var(--paper-ink);color:var(--paper)}
+.table .btn:hover{background:#2b3140}
+
+/* cloth library */
+.library{padding:clamp(88px,12vw,180px) 0}
+.library .grid{display:grid;grid-template-columns:6fr 6fr;gap:clamp(40px,6vw,110px);align-items:center}
+.library img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:2px}
+.cloths{list-style:none;margin-top:44px}
+.cloths li{padding:22px 0}
+.cloths li .baste{margin-bottom:22px}
+.cloths b{font-family:var(--display);font-weight:500;font-size:24px;display:block}
+.cloths span{color:var(--chalk-dim);font-size:16px}
+
+/* booking */
+.book{background:var(--worsted-deep);padding:clamp(88px,12vw,170px) 0}
+.book .grid{display:grid;grid-template-columns:5fr 7fr;gap:clamp(40px,6vw,110px)}
+form{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+label{display:block;font-size:14px;color:var(--chalk-dim);margin-bottom:8px}
+input,select{width:100%;height:56px;padding:0 16px;background:transparent;border:1px solid rgba(236,233,225,.24);border-radius:3px;color:var(--chalk);font:inherit;font-size:16px}
+select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--chalk) 50%),linear-gradient(135deg,var(--chalk) 50%,transparent 50%);background-position:calc(100% - 22px) 25px,calc(100% - 16px) 25px;background-size:6px 6px;background-repeat:no-repeat}
+select option{background:var(--worsted)}
+input:focus,select:focus{outline:none;border-color:var(--paper)}
+.full{grid-column:1/-1}
+.for{display:flex;flex-wrap:wrap;gap:10px}
+.for .opt{border-color:rgba(236,233,225,.24);height:46px;padding:0 18px}
+.for .opt:hover{border-color:var(--chalk)}
+.for .opt[aria-pressed="true"]{background:var(--chalk);color:var(--worsted);border-color:var(--chalk)}
+.carry{font-family:var(--display);font-style:italic;font-size:18px;color:var(--paper)}
+form .btn{justify-self:start}
+.ok{display:none;font-family:var(--display);font-size:clamp(28px,2.6vw,38px);line-height:1.15}
+.sent form{display:none}.sent .ok{display:block}
+
+footer{padding:56px 0 44px;color:var(--chalk-dim);font-size:14.5px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:16px 40px;align-items:baseline}
+footer .mark{color:var(--chalk);font-size:24px}
+footer .q{margin-left:auto}
+footer .q a{text-decoration:underline;text-underline-offset:3px}
+
+/* phone */
+@media (max-width:820px){
+  nav a.l{display:none}
+  .bar{height:72px}
+  .hero{height:100svh;min-height:700px}
+  .hero .shade{background:linear-gradient(0deg,rgba(10,15,25,.96) 0%,rgba(10,15,25,.82) 38%,rgba(10,15,25,.1) 70%),linear-gradient(180deg,rgba(10,15,25,.6),rgba(10,15,25,0) 22%)}
+  .hero .copy{bottom:28px}
+  .hero h1{font-size:50px;line-height:.95}
+  .hero p{margin-top:18px;font-size:16px}
+  .hero .acts{margin-top:24px}
+  .hero .acts .btn{flex:1;padding:0 14px;white-space:nowrap}
+  .hero svg.draw{-webkit-mask-image:linear-gradient(180deg,#000 40%,transparent 56%);mask-image:linear-gradient(180deg,#000 40%,transparent 56%)}
+  .hero .note{display:none}
+  .process .grid,.table .grid,.library .grid,.book .grid{grid-template-columns:1fr}
+  .process figure{position:relative;top:0}
+  .steps li{grid-template-columns:48px 1fr;padding:26px 0}
+  .steps li .baste{margin-bottom:24px}
+  .steps .n{font-size:34px}
+  form{grid-template-columns:1fr}
+  .library img{aspect-ratio:4/4.4}
+  footer .q{margin-left:0}
+  .draft .anno{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  svg.draw .edge,svg.draw .tick{stroke-dashoffset:0!important;animation:none!important}
+  .hero .note{opacity:.9!important;animation:none!important}
+  .draft svg *{transition:none!important}
+}
+</style>
+</head>
+<body>
+<header><div class="wrap bar">
+  <a class="mark" href="#top">Inlay</a>
+  <nav><a class="l" href="#process">How it works</a><a class="l" href="#cloth">Cloth</a><a class="btn btn-paper" href="#book">Book a fitting</a></nav>
+</div></header>
+
+<main id="top">
+  <section class="hero" aria-label="Introduction">
+    <img src="img/hero-4k.jpg" alt="A tailor draws a chalk line along a paper pattern laid on navy wool, shears and tape measure beside it." fetchpriority="high">
+    <div class="shade"></div>
+    <!-- the chalk edge continues the line the tailor is drawing in the photograph -->
+    <svg class="draw" viewBox="0 0 1344 752" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs><filter id="chalky" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="1.7" numOctaves="2" seed="4" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="2.8" result="d"/>
+        <feTurbulence type="fractalNoise" baseFrequency="2.2" numOctaves="1" seed="11" result="g"/>
+        <feColorMatrix in="g" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -3 2.1" result="ga"/>
+        <feComposite in="d" in2="ga" operator="in"/>
+      </filter></defs>
+      <path class="edge" d="M742 336 C800 410 878 500 948 596 C980 640 1010 690 1040 752"/>
+      <path class="tick" d="M792 400 l-14 10" style="animation-delay:1.05s"/>
+      <path class="tick" d="M850 468 l-14 10" style="animation-delay:1.25s"/>
+      <path class="tick" d="M905 534 l-14 10" style="animation-delay:1.45s"/>
+      <path class="tick" d="M962 616 l-14 9" style="animation-delay:1.65s"/>
+    </svg>
+    <div class="wrap copy">
+      <h1>Every suit starts as a line of chalk.</h1>
+      <p>Made-to-measure suits, drafted by hand, cut and fitted in Dallas. Your pattern is drawn once and kept on file, so the next suit starts where this one finished.</p>
+      <div class="acts"><a class="btn btn-paper" href="#book">Book a fitting</a><a class="btn btn-line" href="#jacket">Draft your jacket</a></div>
+    </div>
+    <div class="note">Your front edge,<br>drawn to you.</div>
+  </section>
+
+  <section class="process" id="process" aria-labelledby="ph">
+    <div class="wrap grid">
+      <figure>
+        <img src="img/fitting.jpg" alt="A half-made navy jacket held together with white basting thread, pinned at the shoulder during a fitting." loading="lazy">
+        <figcaption>A baste fitting. The white thread comes out once the shoulders sit right.</figcaption>
+      </figure>
+      <div>
+        <h2 class="head" id="ph">From the first fitting to the last stitch.</h2>
+        <p class="lede">Four visits, each one closer. Nothing is cut until the pattern is right, and nothing is sewn for good until it fits.</p>
+        <ol class="steps">
+          <li><div class="baste"></div><span class="n">1</span><h3>First fitting</h3><p>We measure, watch how you stand and move, and talk through where you will wear it. Bring the shoes you'd wear with the suit.</p></li>
+          <li><div class="baste"></div><span class="n">2</span><h3>Your pattern</h3><p>Your measurements become a paper pattern drawn by hand. It is yours and stays on file for every suit after this one.</p></li>
+          <li><div class="baste"></div><span class="n">3</span><h3>Baste fitting</h3><p>The jacket is held together with white thread so every seam can still move. This is where it starts to look like you.</p></li>
+          <li><div class="baste"></div><span class="n">4</span><h3>Final fitting</h3><p>Last adjustments, pressed and ready. Every seam keeps an inlay, extra cloth folded inside, so the suit can be let out years from now.</p></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="table" id="jacket" aria-labelledby="jh">
+    <div class="wrap">
+      <h2 class="head" id="jh">Draft your jacket.</h2>
+      <p class="lede">Choose a cloth, a lapel and a lining. We'll have it laid out on the table when you come in.</p>
+      <div class="grid">
+        <div class="draft" aria-live="polite" aria-label="Jacket preview">
+          <svg viewBox="0 0 400 520" role="img" aria-labelledby="sumtxt">
+            <defs>
+              <pattern id="cloth" patternUnits="userSpaceOnUse" width="230" height="230"><image id="clothimg" href="img/cloth-navy.jpg" width="230" height="230" preserveAspectRatio="xMidYMid slice"/></pattern>
+              <linearGradient id="light" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".10"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".28"/></linearGradient>
+              <filter id="chalk2" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="9" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/></filter>
+            </defs>
+            <!-- inlay line: seam allowance drawn outside the side seams -->
+            <g fill="none" stroke="#1b1f29" stroke-opacity=".45" stroke-width="1" stroke-dasharray="5 5">
+              <path d="M10 150 C8 260 8 360 10 470"/><path d="M390 150 C392 260 392 360 390 470"/>
+            </g>
+            <path d="M148 54 L252 54 L200 302 Z" fill="#e8e4da"/><path d="M200 70 L200 300" stroke="#cfcac0" stroke-width="1"/>
+            <path d="M150 56 C175 40 225 40 250 56 L238 66 C220 58 180 58 162 66 Z" fill="url(#cloth)"/>
+            <g id="panels">
+              <path d="M58 92 C38 98 26 118 24 150 C20 250 18 360 20 462 L64 468 C66 380 68 260 66 172 C64 140 62 112 58 92 Z" fill="url(#cloth)"/><path d="M342 92 C362 98 374 118 376 150 C380 250 382 360 380 462 L336 468 C334 380 332 260 334 172 C336 140 338 112 342 92 Z" fill="url(#cloth)"/>
+              <path d="M58 92 C38 98 26 118 24 150 C20 250 18 360 20 462 L64 468 C66 380 68 260 66 172 C64 140 62 112 58 92 Z M342 92 C362 98 374 118 376 150 C380 250 382 360 380 462 L336 468 C334 380 332 260 334 172 C336 140 338 112 342 92 Z" fill="#000" fill-opacity=".22"/>
+              <path d="M150 54 L58 92 C54 110 58 140 62 172 C70 240 74 290 70 330 C66 390 62 440 60 480 C100 494 150 494 176 488 C192 470 200 430 200 300 Z" fill="url(#cloth)"/>
+              <path d="M250 54 L342 92 C346 110 342 140 338 172 C330 240 326 290 330 330 C334 390 338 440 340 480 C300 494 250 494 224 488 C208 470 200 430 200 300 Z" fill="url(#cloth)"/>
+              <path d="M150 54 L58 92 C54 110 58 140 62 172 C70 240 74 290 70 330 C66 390 62 440 60 480 C100 494 150 494 176 488 C192 470 200 430 200 300 Z M250 54 L342 92 C346 110 342 140 338 172 C330 240 326 290 330 330 C334 390 338 440 340 480 C300 494 250 494 224 488 C208 470 200 430 200 300 Z" fill="url(#light)"/>
+            </g>
+            <g id="lapels"></g>
+            <!-- corner turned back to show the lining -->
+            <path id="lining" d="M201 404 C203 440 210 468 224 488 C240 491 256 492 270 492 Z" fill="#5e1f2b"/>
+            <g fill="none" stroke="#ece9e1" stroke-width="1.4" stroke-linecap="round" filter="url(#chalk2)" opacity=".9">
+              <path d="M201 404 L270 492"/>
+              <path d="M84 356 L150 350"/><path d="M250 350 L316 356"/><path d="M28 438 l10 2 M30 450 l10 2" opacity=".8"/><path d="M372 438 l-10 2 M370 450 l-10 2" opacity=".8"/>
+              <path d="M262 168 L318 162"/>
+              <path d="M200 312 m-5 -5 l10 10 m0 -10 l-10 10"/>
+              <path d="M200 372 m-5 -5 l10 10 m0 -10 l-10 10"/>
+              <path d="M150 54 L58 92 C54 110 58 140 62 172 C70 240 74 290 70 330 C66 390 62 440 60 480 C100 494 150 494 176 488 C192 470 200 430 200 300 Z" opacity=".45"/><path d="M250 54 L342 92 C346 110 342 140 338 172 C330 240 326 290 330 330 C334 390 338 440 340 480 C300 494 250 494 224 488 C208 470 200 430 200 300 Z" opacity=".45"/><path d="M58 92 C38 98 26 118 24 150 C20 250 18 360 20 462 L64 468 C66 380 68 260 66 172 C64 140 62 112 58 92 Z" opacity=".35"/><path d="M342 92 C362 98 374 118 376 150 C380 250 382 360 380 462 L336 468 C334 380 332 260 334 172 C336 140 338 112 342 92 Z" opacity=".35"/>
+            </g>
+            <circle cx="200" cy="312" r="6.5" fill="#1a1612"/><circle cx="200" cy="372" r="6.5" fill="#1a1612"/>
+          </svg>
+          <span class="anno" style="left:1.5%;top:22%">inlay</span>
+          <span class="anno" style="right:5%;bottom:5%">lining, turned back</span>
+        </div>
+        <div class="ctl">
+          <div class="g"><h3>Cloth</h3>
+            <div class="opts" id="o-cloth">
+              <button class="opt" data-v="navy" aria-pressed="true"><span class="sw" style="background-image:url(img/cloth-navy.jpg)"></span>Navy worsted</button>
+              <button class="opt" data-v="flannel" aria-pressed="false"><span class="sw" style="background-image:url(img/cloth-flannel.jpg)"></span>Charcoal flannel</button>
+              <button class="opt" data-v="tropical" aria-pressed="false"><span class="sw" style="background-image:url(img/cloth-tropical.jpg)"></span>Grey tropical</button>
+              <button class="opt" data-v="linen" aria-pressed="false"><span class="sw" style="background-image:url(img/cloth-linen.jpg)"></span>Olive linen</button>
+            </div>
+            <p class="why" id="why"></p>
+          </div>
+          <div class="g"><div class="baste"></div><h3>Lapel</h3>
+            <div class="opts" id="o-lapel">
+              <button class="opt t" data-v="notch" aria-pressed="true">Notch</button>
+              <button class="opt t" data-v="peak" aria-pressed="false">Peak</button>
+              <button class="opt t" data-v="shawl" aria-pressed="false">Shawl</button>
+            </div>
+          </div>
+          <div class="g"><div class="baste"></div><h3>Lining</h3>
+            <div class="opts" id="o-lining">
+              <button class="opt t" data-v="claret" aria-pressed="true"><span class="dot" style="background:#5e1f2b"></span>Claret</button>
+              <button class="opt t" data-v="bottle" aria-pressed="false"><span class="dot" style="background:#1f4a39"></span>Bottle green</button>
+              <button class="opt t" data-v="sky" aria-pressed="false"><span class="dot" style="background:#8fb0d3"></span>Sky</button>
+              <button class="opt t" data-v="dove" aria-pressed="false"><span class="dot" style="background:#b9b6ae"></span>Dove grey</button>
+            </div>
+          </div>
+          <p class="sum" id="sumtxt">Navy worsted, notch lapel, claret lining.</p>
+          <a class="btn" href="#book" id="carryBtn">Bring this to your fitting</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="library" id="cloth" aria-labelledby="lh">
+    <div class="wrap grid">
+      <img src="img/library.jpg" alt="Shelves of wool suiting cloth in navy, charcoal, grey, olive and brown, with a paper pattern hanging beside them." loading="lazy">
+      <div>
+        <h2 class="head" id="lh">The cloth library.</h2>
+        <p class="lede">Every bolt is on the shelf, not in a binder. Hold it, drape it over your shoulder, see it in daylight before anything is cut.</p>
+        <ul class="cloths">
+          <li><div class="baste"></div><b>Worsteds</b><span>Smooth and hard-wearing. The suit you will reach for most.</span></li>
+          <li><div class="baste"></div><b>Tropical wools</b><span>Open weave that breathes through a Dallas August.</span></li>
+          <li><div class="baste"></div><b>Flannels</b><span>Soft and warm, for the weeks it actually gets cold.</span></li>
+          <li><div class="baste"></div><b>Linens</b><span>Relaxed, a little rumpled, made for outdoor weddings.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="book" id="book" aria-labelledby="bh">
+    <div class="wrap grid">
+      <div>
+        <h2 class="head" id="bh">Book a fitting.</h2>
+        <p class="lede">The first fitting takes about an hour at the studio. Tell us what the suit is for and the week that suits you, and we'll write back to confirm a time.</p>
+      </div>
+      <div id="formWrap">
+        <form id="f" novalidate>
+          <div><label for="nm">Your name</label><input id="nm" name="name" autocomplete="name" required></div>
+          <div><label for="em">Email</label><input id="em" name="email" type="email" autocomplete="email" required></div>
+          <div class="full"><label id="forl">What it's for</label>
+            <div class="for" role="group" aria-labelledby="forl">
+              <button type="button" class="opt" aria-pressed="false">A wedding</button>
+              <button type="button" class="opt" aria-pressed="false">Work</button>
+              <button type="button" class="opt" aria-pressed="false">An occasion</button>
+              <button type="button" class="opt" aria-pressed="false">Just because</button>
+            </div>
+          </div>
+          <div><label for="wk">Preferred week</label>
+            <select id="wk" name="week"><option>This week</option><option>Next week</option><option>In two weeks</option><option>Later this month</option></select></div>
+          <div class="full carry" id="carry" hidden></div>
+          <button class="btn btn-paper full" type="submit">Request a fitting</button>
+        </form>
+        <p class="ok" role="status">Request received. We'll email you within a day to confirm a time.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap">
+  <span class="mark">Inlay</span>
+  <span>Made-to-measure tailoring. Dallas, Texas. Fittings by appointment.</span>
+  <span class="q">A studio piece by <a href="https://quvlo.co">Quvlo</a></span>
+</div></footer>
+
+
+<script src="site.js"></script>
+</body>
+</html>
