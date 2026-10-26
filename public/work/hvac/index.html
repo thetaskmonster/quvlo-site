@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Norther Comfort Co. | AC Repair and New Systems, Dallas–Fort Worth (Concept)</title>
+<meta name="description" content="A concept website by Quvlo for a fictional Dallas–Fort Worth AC company. Scroll to cool a 104° house by dinner, see the heat on a thermal camera, price a visit and book it.">
+<meta name="theme-color" content="#0b1620">
+<link rel="canonical" href="https://quvlo.co/work/hvac/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Quvlo">
+<meta property="og:title" content="Norther Comfort Co., a concept site by Quvlo">
+<meta property="og:description" content="Scroll to cool a 104° house by dinner.">
+<meta property="og:url" content="https://quvlo.co/work/hvac/">
+<meta property="og:image" content="https://quvlo.co/work/hvac/img/og.jpg">
+<link rel="preload" href="fonts/archivo-wdth.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/plex-mono-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="hvac.css">
+</head>
+<body class="is-loading">
+<a class="skip" href="#price">Skip to pricing</a>
+
+<!-- Loader: counts real frame downloads, then opens like an iris into the film -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader__num"><span id="loadPct">0</span><span class="loader__unit">%</span></div>
+  <p class="loader__line">Loading the afternoon</p>
+</div>
+
+<header class="bar">
+  <a class="brand" href="#top" aria-label="Norther Comfort Co., back to top">Norther<span> Comfort Co.</span></a>
+  <span class="tag">Concept site</span>
+  <nav class="bar__nav" aria-label="Main">
+    <a href="#price" class="hide-s">Pricing</a>
+    <a href="#book" class="btn btn--sm">Book a visit</a>
+  </nav>
+</header>
+
+<main id="top">
+  <!-- The film: scrolling scrubs a six-shot sequence from 3:40 pm to 7:15 pm -->
+  <section class="film" id="film" aria-label="Scroll story: an old AC unit is replaced and a 104 degree house cools to 72 by dinner">
+    <div class="film__stage">
+      <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage of a Dallas street, an old air conditioner, its replacement, a living room cooling down and the house at dusk."></canvas>
+      <svg class="film__lines" id="filmLines" aria-hidden="true"></svg>
+      <div class="film__spots" id="filmSpots"></div>
+
+      <div class="hud" id="hud" aria-live="off">
+        <div class="hud__row"><span class="hud__k">Inside</span><span class="hud__temp"><span id="hudTemp">104</span>°</span></div>
+        <div class="hud__gauge" aria-hidden="true"><svg viewBox="0 0 120 12"><rect class="hud__track" x="0" y="4" width="120" height="4" rx="2"/><rect class="hud__fill" id="hudFill" x="0" y="4" width="120" height="4" rx="2"/></svg></div>
+        <div class="hud__row hud__row--sm"><span class="hud__k">Outside</span><span>104°</span><span class="hud__k hud__k--r">Time</span><span id="hudClock">3:40 pm</span></div>
+      </div>
+
+      <ol class="rail" id="rail" aria-hidden="true">
+        <li>3:40</li><li>4:05</li><li>4:30</li><li>5:20</li><li>6:30</li><li>7:15</li>
+      </ol>
+
+      <div class="caps" id="caps">
+        <div class="cap cap--hero" data-shot="0">
+          <p class="cap__k">AC &amp; heating · Dallas–Fort Worth</p>
+          <h1 class="cap__h heat">Cool by dinner.</h1>
+          <p class="cap__p">Scroll to swap a worn-out AC unit and cool a 104° house before 7:15.</p>
+          <p class="cap__hint" aria-hidden="true">Scroll</p>
+        </div>
+        <div class="cap" data-shot="1">
+          <p class="cap__k">3:52 pm · Called in at lunch</p>
+          <h2 class="cap__h heat">The old unit gave up.</h2>
+          <p class="cap__p">Fifteen Texas summers, crushed fins and a fan that hums but barely turns. Tap the dots to see what we found.</p>
+        </div>
+        <div class="cap" data-shot="2">
+          <p class="cap__k">4:30 pm · Same visit</p>
+          <h2 class="cap__h heat">Out by half past four.</h2>
+          <p class="cap__p">Two techs, one dolly, no scratches on the brick.</p>
+        </div>
+        <div class="cap" data-shot="3">
+          <p class="cap__k">5:20 pm · Charged and tested</p>
+          <h2 class="cap__h heat">In before five thirty.</h2>
+          <p class="cap__p">Variable-speed heat pump, new insulated lines and a level pad. <a href="#unit">Turn it around in 3D</a>.</p>
+        </div>
+        <div class="cap" data-shot="4">
+          <p class="cap__k">6:30 pm · Living room</p>
+          <h2 class="cap__h heat">Watch the room breathe.</h2>
+          <p class="cap__p">The number on the wall is the number up top. Keep scrolling and both fall.</p>
+        </div>
+        <div class="cap cap--end" data-shot="5">
+          <p class="cap__k">7:15 pm · 72° inside</p>
+          <h2 class="cap__h heat">Cool by dinner.</h2>
+        </div>
+      </div>
+
+      <!-- Booking slides in over the final dusk scene -->
+      <div class="book" id="book" tabindex="-1">
+        <p class="book__k">Next openings</p>
+        <h2 class="book__h">Book a visit</h2>
+        <div class="book__days" id="bookDays" role="radiogroup" aria-label="Day"></div>
+        <div class="book__times" id="bookTimes" role="radiogroup" aria-label="Time"></div>
+        <button class="btn btn--full" id="bookGo" type="button">Hold this time</button>
+        <p class="book__note" id="bookNote" role="status">You get the tech's name and photo before they arrive.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="fill" aria-labelledby="fill-h">
+    <h2 id="fill-h" class="sr">What most July calls really are</h2>
+    <p class="fill__p" id="fillP">Most AC calls in July are not a dead system. They are a twelve dollar capacitor, a coil packed with cottonwood, or a unit sized wrong in 2009. We tell you which one it is, with photos, before anyone touches a wrench.</p>
+  </section>
+
+  <section class="thermal" aria-labelledby="thermal-h">
+    <div class="wrap">
+      <p class="kick">Thermal camera</p>
+      <h2 id="thermal-h" class="h2 heat">See the heat leave.</h2>
+      <p class="lede">Same room, same camera. Drag to compare 3:40 pm with 7:15 pm.</p>
+    </div>
+    <div class="ba" id="ba" style="--x:50%">
+      <img class="ba__img" src="img/thermal-after.webp" alt="Thermal camera view of the living room at 7:15 pm: walls, ceiling and floor in cool blues, the sleeping dog glowing warm." width="2560" height="1440" loading="lazy" decoding="async">
+      <div class="ba__top"><img class="ba__img" src="img/thermal-before.webp" alt="Thermal camera view of the same living room at 3:40 pm: walls, window and ceiling glowing hot white, yellow and orange." width="2560" height="1440" loading="lazy" decoding="async"></div>
+      <span class="ba__lab ba__lab--l">3:40 pm · 104°</span>
+      <span class="ba__lab ba__lab--r">7:15 pm · 72°</span>
+      <input class="ba__range" id="baRange" type="range" min="0" max="100" value="50" aria-label="Compare 3:40 pm and 7:15 pm thermal views">
+      <span class="ba__handle" aria-hidden="true"></span>
+    </div>
+  </section>
+
+  <section class="unit" id="unit" aria-labelledby="unit-h">
+    <div class="wrap unit__grid">
+      <div class="unit__copy">
+        <p class="kick">The new unit</p>
+        <h2 id="unit-h" class="h2">Turn it around.</h2>
+        <p class="lede">Drag to spin the heat pump we installed. Pinch or scroll to look closer.</p>
+        <dl class="specs">
+          <div><dt>Compressor</dt><dd>Variable speed</dd></div>
+          <div><dt>Sound</dt><dd data-count="56">56 dB</dd></div>
+          <div><dt>Install</dt><dd>One day</dd></div>
+          <div><dt>Warranty</dt><dd data-count="10">10 years parts</dd></div>
+        </dl>
+        <p class="fine">Concept specs for a fictional company.</p>
+      </div>
+      <div class="unit__view" id="unitView">
+        <img class="unit__poster" src="img/unit-poster.webp" alt="A new white outdoor heat pump unit, three-quarter view." width="1200" height="1200" loading="lazy" decoding="async">
+        <button class="btn btn--ghost unit__load" id="unitLoad" type="button">Load the 3D model</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="price" id="price" aria-labelledby="price-h">
+    <div class="wrap price__grid">
+      <div>
+        <p class="kick">Flat prices</p>
+        <h2 id="price-h" class="h2">Know the price before we knock.</h2>
+        <p class="lede">Pick what you need. The number is what you pay, not a teaser.</p>
+        <form class="est" id="est" aria-label="Price estimator">
+          <fieldset><legend>What do you need?</legend>
+            <label><input type="radio" name="need" value="129" checked><span>Tune-up</span></label>
+            <label><input type="radio" name="need" value="189"><span>Repair visit</span></label>
+            <label><input type="radio" name="need" value="0"><span>New system quote</span></label>
+          </fieldset>
+          <fieldset><legend>Home size</legend>
+            <label><input type="radio" name="size" value="0" checked><span>Under 1,800 sq ft</span></label>
+            <label><input type="radio" name="size" value="40"><span>1,800–3,000</span></label>
+            <label><input type="radio" name="size" value="80"><span>3,000+</span></label>
+          </fieldset>
+          <fieldset><legend>When</legend>
+            <label><input type="radio" name="when" value="0" checked><span>This week</span></label>
+            <label><input type="radio" name="when" value="75"><span>Today</span></label>
+            <label><input type="radio" name="when" value="125"><span>Tonight or weekend</span></label>
+          </fieldset>
+        </form>
+      </div>
+      <aside class="total" aria-live="polite">
+        <p class="total__k">Your visit</p>
+        <p class="total__n">$<span id="estTotal">129</span></p>
+        <p class="total__u" id="estUnit">flat price, parts and labor</p>
+        <a class="btn btn--full" href="#book" id="estBook">Book this visit</a>
+        <p class="fine">Demo pricing for a concept site. A real build uses the business's own prices.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="svc" aria-labelledby="svc-h">
+    <div class="wrap">
+      <p class="kick">Services</p>
+      <h2 id="svc-h" class="h2">Everything that keeps the house at 72.</h2>
+      <ul class="rows" id="rows">
+        <li data-img="img/svc-repair.webp"><span class="rows__n">01</span><span class="rows__t">AC repair</span><span class="rows__d">Capacitors, refrigerant leaks, frozen coils and the noises that start at 2 am.</span></li>
+        <li data-img="img/svc-new.webp"><span class="rows__n">02</span><span class="rows__t">New systems</span><span class="rows__d">Right-sized heat pumps and split systems, installed in a day, rebates handled.</span></li>
+        <li data-img="img/svc-tune.webp"><span class="rows__n">03</span><span class="rows__t">Tune-ups</span><span class="rows__d">Twice-a-year checks that catch the cheap fix before it becomes the expensive one.</span></li>
+        <li data-img="img/svc-air.webp"><span class="rows__n">04</span><span class="rows__t">Ducts and air</span><span class="rows__d">Sealing, cleaning and filtration so cold air reaches the rooms it is meant for.</span></li>
+      </ul>
+    </div>
+    <img class="peek" id="peek" alt="" aria-hidden="true">
+  </section>
+
+  <section class="steps" aria-labelledby="steps-h">
+    <div class="wrap">
+      <p class="kick">How a visit works</p>
+      <h2 id="steps-h" class="h2">Lunch call. Cool by dinner.</h2>
+      <ol class="steps__list">
+        <li><span class="steps__t">12:10</span><h3>Book in a minute</h3><p>Pick a time online. You get the tech's name and photo before they arrive.</p></li>
+        <li><span class="steps__t">3:40</span><h3>Diagnose</h3><p>We test the whole system and show you what we found, with photos.</p></li>
+        <li><span class="steps__t">3:55</span><h3>Approve the price</h3><p>One flat number. Nothing starts until you say yes.</p></li>
+        <li><span class="steps__t">7:15</span><h3>Cool by dinner</h3><p>Most repairs finish the same visit. We clean up before we leave.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="faq" aria-labelledby="faq-h">
+    <div class="wrap wrap--narrow">
+      <h2 id="faq-h" class="h2">Before you book.</h2>
+      <details><summary>Do you charge a trip fee?</summary><p>The visit price covers the trip and the diagnosis. If you go ahead with the repair, it is part of the total.</p></details>
+      <details><summary>Repair or replace?</summary><p>If a system is over about 12 years old and the repair is more than a third of a new one, we will tell you, and show the math.</p></details>
+      <details><summary>Do you work weekends?</summary><p>Yes. Evening and weekend visits are in the estimator with their price.</p></details>
+      <details><summary>Which areas do you cover?</summary><p>This is a concept site for a fictional company. A real build lists the actual service area here.</p></details>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__grid">
+    <div>
+      <p class="foot__h">Too hot to wait?</p>
+      <a class="btn" href="#book">Book a visit</a>
+    </div>
+    <div class="foot__small">
+      <p>Norther Comfort Co. is a fictional business. This is a concept site designed and built by <a href="/">Quvlo</a> to show what is possible.</p>
+      <p>The footage and photos are AI-generated. Prices and specs are samples.</p>
+      <p><a href="/work/">More Quvlo work</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="hvac.js" defer></script>
+</body>
+</html>

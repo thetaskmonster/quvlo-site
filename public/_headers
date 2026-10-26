@@ -29,3 +29,12 @@
 
 /work/neap/*
   X-Robots-Tag: noindex
+
+/work/hvac/*
+  X-Robots-Tag: noindex
+
+/work/hvac/f/*
+  Cache-Control: public, max-age=604800
+
+/work/hvac/fg/*
+  Cache-Control: public, max-age=604800
