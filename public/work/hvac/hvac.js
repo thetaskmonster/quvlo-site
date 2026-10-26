@@ -58,7 +58,7 @@
   }
 
   async function boot() {
-    try { M = await (await fetch('frames.json', { cache: 'force-cache' })).json(); } catch (e) { M = null; }
+    try { M = await (await fetch('frames.json', { cache: 'force-cache' })).json(); } catch { M = null; }
     if (!M) { openLoader(); return; }
     kind = pick(); N = M.count;
     const fgSet = new Set(M.fg || []);
@@ -201,7 +201,7 @@
   }
 
   /* Hotspots with leader lines that draw in */
-  const spotEls = SPOTS.map((S, n) => {
+  const spotEls = SPOTS.map(S => {
     const el = document.createElement('div');
     el.className = 'spot';
     const btn = document.createElement('button');
