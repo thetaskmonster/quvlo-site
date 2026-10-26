@@ -1,6 +1,8 @@
 /* Brightside Home Cleaning (concept by Quvlo). No libraries. */
 (() => {
   'use strict';
+  // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.
+  const FV = '2026102607';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -197,11 +199,11 @@
   const CLOCK = [510, 522, 550, 605, 680, 820, 835];
   let M = null, kind = 'd', N = 0, imgs = [], fw = 0, fh = 0, lastDrawn = -1, dirtyF = true, cur = 0;
   const pick = () => (innerWidth / innerHeight < 0.85 || innerWidth < 760) ? 'm' : 'd';
-  const url = i => `f/${kind}/${String(i + 1).padStart(3, '0')}.webp`;
+  const url = i => `f/${kind}/${String(i + 1).padStart(3, '0')}.webp?v=${FV}`;
   const load = u => new Promise(res => { const im = new Image(); im.decoding = 'async'; im.onload = () => res(im); im.onerror = () => res(null); im.src = u; });
 
   async function bootFilm() {
-    try { M = await (await fetch('frames.json', { cache: 'force-cache' })).json(); } catch { M = null; }
+    try { M = await (await fetch(`frames.json?v=${FV}`, { cache: 'no-cache' })).json(); } catch { M = null; }
     if (!M) return;
     kind = pick(); N = M.count;
     // first frame of every shot first, so a fast scroll never shows a blank

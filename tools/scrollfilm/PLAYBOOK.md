@@ -42,6 +42,11 @@ four sites (HVAC, cleaning, wrap, BBQ), where about a third of the Higgsfield cr
      AI-generated footage and sample prices; no testimonials; no em dashes in visitor copy;
    - Kyle opens the preview on his iPhone. Only then is the site marked done.
 
+## Updating a live site
+- Frames are cached by browsers for a week, so a replaced frame with the same file name keeps showing the
+  old picture. Whenever any frame changes, bump `FV` at the top of the site's JS (frame URLs and
+  `frames.json` carry `?v=FV`). Learned 2026-10-26: Kyle saw the old wrap car mixed with the new 911.
+
 ## Pipeline
 - Stills: `nano_banana_pro` at 4K for new scenes; `gpt_image_2_5` (quality high) for edits of an existing
   still (same room at a different time, objects removed).

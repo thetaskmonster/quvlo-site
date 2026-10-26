@@ -1,6 +1,8 @@
 /* Satin & Shade (concept by Quvlo). No libraries. */
 (() => {
   'use strict';
+  // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.
+  const FV = '2026102607';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -30,7 +32,7 @@
   const imgs = [];
   let target = 0, cur = 0, lastDrawn = -1, lastP = -1, dirty = true, visible = true;
   const pick = () => (innerWidth / innerHeight < 0.85 || innerWidth < 760) ? 'm' : 'd';
-  const url = i => `f/${kind}/${String(i + 1).padStart(3, '0')}.webp`;
+  const url = i => `f/${kind}/${String(i + 1).padStart(3, '0')}.webp?v=${FV}`;
 
   // Loader hexes: a small honeycomb, one cell per slice of the first shot
   const cells = [];
@@ -61,7 +63,7 @@
   }
 
   async function boot() {
-    try { M = await (await fetch('frames.json', { cache: 'force-cache' })).json(); } catch { M = null; }
+    try { M = await (await fetch(`frames.json?v=${FV}`, { cache: 'no-cache' })).json(); } catch { M = null; }
     if (!M) { openLoader(); return; }
     kind = pick(); N = M.count;
     let done = 0;
