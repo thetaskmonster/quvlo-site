@@ -12,10 +12,10 @@
   /* ---------- Colors (the accent of the whole page follows the pick) ---------- */
   const COLORS = [
     { k: 'charcoal', name: 'Satin Charcoal', code: 'SC-2080', fin: 'satin', c: '#3e4146', hi: '#9aa0a8', gl: .12 },
-    { k: 'black', name: 'Satin Black', code: 'SB-1010', fin: 'satin', c: '#17181a', hi: '#8b8f96', gl: .1 },
-    { k: 'purple', name: 'Gloss Midnight Purple', code: 'GP-5540', fin: 'gloss', c: '#3b1f5c', hi: '#b398e0', gl: .35 },
-    { k: 'green', name: 'Satin Racing Green', code: 'SG-3120', fin: 'satin', c: '#1f3b2d', hi: '#8fc2a4', gl: .12 },
-    { k: 'copper', name: 'Gloss Liquid Copper', code: 'GC-7710', fin: 'gloss', c: '#a85a32', hi: '#e6a27c', gl: .35 },
+    { k: 'teal', name: 'Satin Dark Teal', code: 'ST-4060', fin: 'satin', c: '#1d5560', hi: '#7cc0c8', gl: .12 },
+    { k: 'olive', name: 'Matte Olive Drab', code: 'MO-3350', fin: 'matte', c: '#5d5a41', hi: '#b5ae86', gl: 0 },
+    { k: 'matte', name: 'Matte Black', code: 'MB-0010', fin: 'matte', c: '#141415', hi: '#8d9096', gl: 0 },
+    { k: 'shift', name: 'Color-Shift Purple to Teal', code: 'CS-7020', fin: 'shift', c: '#5b2d91', c2: '#178a86', hi: '#b398e0', gl: .35 },
     { k: 'white', name: 'Factory White', code: 'Paint, no film', fin: 'gloss', c: '#e8e7e3', hi: '#efece6', gl: .45 }
   ];
   const setWrap = col => { root.style.setProperty('--wrap', col.c); root.style.setProperty('--wrap-hi', col.hi); };
@@ -147,7 +147,7 @@
     const f = frameAt(cur);
     if (visible && N && (dirty || Math.abs(f - lastDrawn) > 0.001)) { draw(f); lastDrawn = f; dirty = false; }
     if (N && Math.abs(cur - lastP) > 0.00005) { ui(f); lastP = cur; }
-    bar.classList.toggle('is-solid', film.getBoundingClientRect().bottom < 70);
+    bar.classList.toggle('is-solid', film.getBoundingClientRect().bottom < bar.offsetHeight + 48);
     requestAnimationFrame(loop);
   }
   new IntersectionObserver(es => { visible = es[0].isIntersecting; if (visible) dirty = true; }).observe(film);
@@ -170,12 +170,25 @@
   }
   function colorLayer(col) {
     if (!colorImg[col.k]) {
-      const im = img(`img/c/${col.k}-${res}.webp`, 'c', `The sedan wrapped in ${col.name}, under the studio's hexagon lights.`);
-      layers.insertBefore(im, layers.querySelector('.g-clear'));
-      colorImg[col.k] = im;
+      const alt = `The Porsche 911 wrapped in ${col.name}, under the studio's hexagon lights.`;
+      let el;
+      if (col.k === 'shift') {
+        // two stills of the same film from the same angle; crossfading them is the "shift"
+        el = document.createElement('div');
+        el.className = 'c c--shift'; el.setAttribute('role', 'img'); el.setAttribute('aria-label', alt);
+        el.append(img(`img/c/shift-p-${res}.webp`, 'c__a'), img(`img/c/shift-t-${res}.webp`, 'c__b'));
+      } else {
+        el = img(`img/c/${col.k}-${res}.webp`, 'c', alt);
+      }
+      layers.insertBefore(el, layers.querySelector('.g-clear'));
+      colorImg[col.k] = el;
     }
     return colorImg[col.k];
   }
+  const ready = el => {
+    const im = el.tagName === 'IMG' ? el : el.querySelector('img');
+    return im.complete && im.naturalWidth ? Promise.resolve() : new Promise(r => { im.addEventListener('load', r, { once: true }); im.addEventListener('error', r, { once: true }); });
+  };
   layers.append(img(`img/c/glass-clear-${res}.webp`, 'g-clear'), img(`img/c/glass-dark-${res}.webp`, 'g-dark'));
   const first = colorLayer(current); first.classList.add('is-base'); first.style.zIndex = '1';
   const clear = $('.g-clear', layers), dark = $('.g-dark', layers);
@@ -204,7 +217,7 @@
     nameEl.textContent = col.name; codeEl.textContent = col.code;
     setWrap(col);
     syncFinish(col.fin);
-    if (next.complete && next.naturalWidth) go(); else next.addEventListener('load', go, { once: true });
+    ready(next).then(go);
   }
   COLORS.forEach((col, n) => {
     const b = document.createElement('button');
@@ -212,7 +225,8 @@
     b.setAttribute('aria-checked', n === 0 ? 'true' : 'false');
     b.setAttribute('aria-label', col.name);
     b.title = col.name;
-    b.style.setProperty('--c', col.c); b.style.setProperty('--gl', col.gl);
+    b.style.setProperty('--c', col.c); b.style.setProperty('--c2', col.c2 || col.c); b.style.setProperty('--gl', col.gl);
+    if (col.k === 'shift') b.classList.add('sw--shift');
     b.addEventListener('click', () => { $$('.sw', sw).forEach(x => x.setAttribute('aria-checked', 'false')); b.setAttribute('aria-checked', 'true'); apply(col); });
     b.addEventListener('pointerenter', () => colorLayer(col), { once: true });
     sw.append(b);
@@ -222,9 +236,10 @@
   new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { COLORS.forEach(colorLayer); o.disconnect(); } }, { rootMargin: '800px 0px' }).observe(layers);
 
   // Hold to compare with the factory paint
+  const WHITE = COLORS.find(c => c.k === 'white');
   const hold = $('#cfgHold');
   let held = null;
-  const down = () => { if (current.k === 'white') return; held = current; const w = colorLayer(COLORS[5]); w.style.zIndex = '49'; w.style.clipPath = 'inset(0 0 0 0)'; };
+  const down = () => { if (current.k === 'white') return; held = current; const w = colorLayer(WHITE); w.style.zIndex = '49'; w.style.clipPath = 'inset(0 0 0 0)'; };
   const up = () => { if (!held) return; const w = colorImg.white; if (w) { w.style.zIndex = ''; w.style.clipPath = ''; } held = null; };
   hold.addEventListener('pointerdown', down);
   ['pointerup', 'pointerleave', 'pointercancel'].forEach(e => hold.addEventListener(e, up));
