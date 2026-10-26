@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Brightside Home Cleaning | House Cleaning in Dallas, Priced in 30 Seconds (Concept)</title>
+<meta name="description" content="A concept website by Quvlo for a fictional Dallas house cleaning company. Wipe a Monday-morning kitchen clean, watch a whole house get its week back, and price a visit in 30 seconds.">
+<meta name="theme-color" content="#fbfcf7">
+<link rel="canonical" href="https://quvlo.co/work/cleaning/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Quvlo">
+<meta property="og:title" content="Brightside Home Cleaning, a concept site by Quvlo">
+<meta property="og:description" content="Wipe Monday away. Priced in 30 seconds.">
+<meta property="og:url" content="https://quvlo.co/work/cleaning/">
+<meta property="og:image" content="https://quvlo.co/work/cleaning/img/og.jpg">
+<link rel="preload" href="fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="cleaning.css">
+</head>
+<body>
+<a class="skip" href="#price">Skip to pricing</a>
+
+<header class="bar" id="bar">
+  <a class="brand" href="#top" aria-label="Brightside Home Cleaning, back to top"><span class="brand__dot" aria-hidden="true"></span>Brightside</a>
+  <span class="tag">Concept site</span>
+  <nav class="bar__nav" aria-label="Main">
+    <a href="#checklist" class="hide-s">What we clean</a>
+    <a href="#price" class="btn btn--sm">Price<span class="long">&nbsp;my clean</span></a>
+  </nav>
+</header>
+
+<main id="top">
+  <!-- Hero: the visitor cleans the kitchen themselves -->
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="hero__copy">
+      <p class="kick">House cleaning · Dallas</p>
+      <h1 id="hero-h" class="hero__h"><span class="hero__line" id="heroLine">Wipe Monday <em>away.</em></span></h1>
+      <p class="hero__p" id="heroP">Drag across the kitchen. That is what we do on every visit, to every room.</p>
+      <div class="hero__cta">
+        <a href="#price" class="btn">Price my clean in 30 seconds</a>
+        <button class="link" id="wipeReset" type="button" hidden>Make it messy again</button>
+      </div>
+    </div>
+
+    <div class="wipe" id="wipe">
+      <img class="wipe__clean" id="wipeClean" src="img/kitchen-clean.webp" alt="The same kitchen spotless: clear butcher-block counters, an empty sink, a bowl of lemons and eucalyptus in a jar." width="2400" height="1340" decoding="async" fetchpriority="high">
+      <canvas class="wipe__mess" id="wipeCanvas" role="img" aria-label="A messy Monday-morning kitchen. Drag or swipe across it to wipe it clean."></canvas>
+      <div class="meter" aria-live="polite">
+        <svg class="meter__ring" viewBox="0 0 64 64" aria-hidden="true"><circle class="meter__track" cx="32" cy="32" r="27"/><circle class="meter__fill" id="meterFill" cx="32" cy="32" r="27" pathLength="100"/></svg>
+        <span class="meter__n"><span id="meterN">0</span>%</span>
+        <span class="meter__k">clean</span>
+      </div>
+      <p class="wipe__hint" id="wipeHint"><span class="hint--fine">Drag to wipe</span><span class="hint--touch">Swipe sideways to wipe</span></p>
+      <button class="btn btn--ghost wipe__auto" id="wipeAuto" type="button">Do it for me</button>
+    </div>
+  </section>
+
+  <!-- Film: one house, one visit, scrubbed by scroll -->
+  <section class="film" id="film" aria-label="Scroll story: a crew arrives at a Dallas cottage and cleans the kitchen, bathroom and bedroom by early afternoon">
+    <div class="film__stage" id="stage">
+      <div class="film__frame" id="frame">
+        <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage of a cleaning crew arriving at a Tudor cottage, a messy kitchen becoming spotless, hands wiping counters, a bathroom, a bed being made and the clean house in afternoon light."></canvas>
+      </div>
+
+      <aside class="list" id="list" aria-label="Visit checklist">
+        <p class="list__k">Today's visit</p>
+        <ol class="list__items">
+          <li data-at="0.10"><span class="tick" aria-hidden="true"></span>Arrive on time, shoes covered</li>
+          <li data-at="0.33"><span class="tick" aria-hidden="true"></span>Kitchen, top to bottom</li>
+          <li data-at="0.50"><span class="tick" aria-hidden="true"></span>Counters, streak-free</li>
+          <li data-at="0.67"><span class="tick" aria-hidden="true"></span>Bathroom, grout lines too</li>
+          <li data-at="0.83"><span class="tick" aria-hidden="true"></span>Beds made, hotel tight</li>
+          <li data-at="0.97"><span class="tick" aria-hidden="true"></span>Photos sent to your phone</li>
+        </ol>
+        <p class="list__time"><span id="listTime">8:30</span> <span id="listAmPm">am</span></p>
+      </aside>
+
+      <div class="caps" id="caps">
+        <div class="cap" data-shot="0"><p class="cap__k">8:30 am · Lakewood</p><h2 class="cap__h">Two of us. <mark>One caddy each.</mark></h2><p class="cap__p">The same vetted cleaners every visit, so nobody has to explain the house twice.</p></div>
+        <div class="cap" data-shot="1"><p class="cap__k">8:42 am · Kitchen</p><h2 class="cap__h">Breakfast, <mark>undone.</mark></h2><p class="cap__p">Everything back where it lives, then every surface wiped.</p></div>
+        <div class="cap" data-shot="2"><p class="cap__k">9:10 am · Counters</p><h2 class="cap__h">Streak-free, <mark>not just shiny.</mark></h2><p class="cap__p">Plant-based spray on butcher block, a separate cloth for the tile.</p></div>
+        <div class="cap" data-shot="3"><p class="cap__k">10:05 am · Bathroom</p><h2 class="cap__h">The grout <mark>counts.</mark></h2><p class="cap__p">Glass, chrome, tub and the lines between the tiles.</p></div>
+        <div class="cap" data-shot="4"><p class="cap__k">11:20 am · Bedroom</p><h2 class="cap__h">Hotel <mark>tight.</mark></h2><p class="cap__p">Fresh sheets on, corners folded, pillows plumped.</p></div>
+        <div class="cap" data-shot="5"><p class="cap__k">1:40 pm · Done</p><h2 class="cap__h">Like nobody <mark>lives here.</mark></h2><p class="cap__p">Photos of every room are already on your phone.</p></div>
+      </div>
+      <div class="film__bar" aria-hidden="true"><span id="filmBar"></span></div>
+    </div>
+  </section>
+
+  <!-- Estimator with a running 30-second clock -->
+  <section class="price" id="price" aria-labelledby="price-h">
+    <div class="wrap price__grid">
+      <div>
+        <p class="kick">Flat prices</p>
+        <h2 id="price-h" class="h2">Priced in <em>thirty seconds.</em></h2>
+        <p class="lede">Tap your home and the clean. The price is the price, supplies included.</p>
+        <form class="est" id="est" aria-label="Price estimator">
+          <div class="step">
+            <span class="step__k" id="bedsK">Bedrooms</span>
+            <div class="step__ctl" role="group" aria-labelledby="bedsK">
+              <button type="button" class="step__b" data-step="beds" data-d="-1" aria-label="Fewer bedrooms">−</button>
+              <output class="step__n" id="beds" aria-live="polite">3</output>
+              <button type="button" class="step__b" data-step="beds" data-d="1" aria-label="More bedrooms">+</button>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step__k" id="bathsK">Bathrooms</span>
+            <div class="step__ctl" role="group" aria-labelledby="bathsK">
+              <button type="button" class="step__b" data-step="baths" data-d="-1" aria-label="Fewer bathrooms">−</button>
+              <output class="step__n" id="baths" aria-live="polite">2</output>
+              <button type="button" class="step__b" data-step="baths" data-d="1" aria-label="More bathrooms">+</button>
+            </div>
+          </div>
+          <fieldset class="chips"><legend>How often</legend>
+            <label><input type="radio" name="freq" value="0" checked><span>Once</span></label>
+            <label><input type="radio" name="freq" value="0.15"><span>Every 2 weeks <small>−15%</small></span></label>
+            <label><input type="radio" name="freq" value="0.2"><span>Weekly <small>−20%</small></span></label>
+            <label><input type="radio" name="freq" value="-0.35"><span>Move-out deep clean</span></label>
+          </fieldset>
+          <fieldset class="chips"><legend>Extras</legend>
+            <label><input type="checkbox" name="extra" value="35"><span>Inside the oven</span></label>
+            <label><input type="checkbox" name="extra" value="30"><span>Inside the fridge</span></label>
+            <label><input type="checkbox" name="extra" value="40"><span>Interior windows</span></label>
+            <label><input type="checkbox" name="extra" value="25"><span>Laundry, washed and folded</span></label>
+          </fieldset>
+        </form>
+      </div>
+      <aside class="total" aria-live="polite">
+        <div class="total__clock"><span class="total__dot" id="clockDot" aria-hidden="true"></span><span id="clock">0:00</span> <span class="total__clockk" id="clockK">Tap anything to start the clock</span></div>
+        <p class="total__k">Your clean</p>
+        <p class="total__n">$<span id="total">189</span></p>
+        <p class="total__u" id="totalU">per visit, supplies included</p>
+        <a class="btn btn--full btn--ink" href="#book" id="estBook">Book this clean</a>
+        <p class="fine">Demo pricing for a concept site. A real build uses the business's own prices.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- What gets cleaned, room by room -->
+  <section class="check" id="checklist" aria-labelledby="check-h">
+    <div class="wrap">
+      <p class="kick">The checklist</p>
+      <h2 id="check-h" class="h2">The same list, <em>every visit.</em></h2>
+      <p class="lede">Ticked off and photographed, so you can see it was done.</p>
+      <div class="tabs" role="tablist" aria-label="Rooms">
+        <button role="tab" id="t-kitchen" aria-controls="p-kitchen" aria-selected="true" type="button">Kitchen</button>
+        <button role="tab" id="t-bath" aria-controls="p-bath" aria-selected="false" tabindex="-1" type="button">Bathrooms</button>
+        <button role="tab" id="t-bed" aria-controls="p-bed" aria-selected="false" tabindex="-1" type="button">Bedrooms</button>
+        <button role="tab" id="t-living" aria-controls="p-living" aria-selected="false" tabindex="-1" type="button">Living areas</button>
+      </div>
+      <div class="panels">
+        <div class="panel" role="tabpanel" id="p-kitchen" aria-labelledby="t-kitchen">
+          <img src="img/room-kitchen.webp" alt="The clean kitchen with sage tile and butcher-block counters." width="1200" height="900" loading="lazy" decoding="async">
+          <ul class="ticks"><li>Counters, backsplash and cabinet fronts</li><li>Sink scrubbed, faucet polished</li><li>Stovetop and oven door degreased</li><li>Microwave inside and out</li><li>Floors vacuumed and mopped</li><li>Trash out, fresh liner in</li></ul>
+        </div>
+        <div class="panel" role="tabpanel" id="p-bath" aria-labelledby="t-bath" hidden>
+          <img src="img/room-bath.webp" alt="A 1940s bathroom with mint-green and black tile, a clawfoot tub and a glass screen being squeegeed clear." width="1200" height="900" loading="lazy" decoding="async">
+          <ul class="ticks"><li>Shower, tub and glass, no water spots</li><li>Toilet inside, outside and behind</li><li>Mirrors and chrome, streak-free</li><li>Grout lines brushed</li><li>Towels folded or hung</li><li>Floors by hand at the edges</li></ul>
+        </div>
+        <div class="panel" role="tabpanel" id="p-bed" aria-labelledby="t-bed" hidden>
+          <img src="img/room-bed.webp" alt="A cleaner shaking out a white duvet over a walnut bed under a sloped ceiling." width="1200" height="900" loading="lazy" decoding="async">
+          <ul class="ticks"><li>Beds made, sheets changed if left out</li><li>Dusting, top shelf to baseboard</li><li>Mirrors and glass</li><li>Under the bed, where we can reach</li><li>Floors vacuumed</li></ul>
+        </div>
+        <div class="panel" role="tabpanel" id="p-living" aria-labelledby="t-living" hidden>
+          <img src="img/room-living.webp" alt="A tidy living room in golden afternoon light, looking through an arch into the clean kitchen." width="1200" height="900" loading="lazy" decoding="async">
+          <ul class="ticks"><li>Cushions straightened, throws folded</li><li>Dusting, lamps and frames</li><li>Fingerprints off doors and switches</li><li>Floors vacuumed, rugs too</li><li>Everything back where it lives</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="steps" aria-labelledby="steps-h">
+    <div class="wrap">
+      <p class="kick">How it works</p>
+      <h2 id="steps-h" class="h2">Four steps. <em>Zero chores.</em></h2>
+      <ol class="steps__list">
+        <li><span class="steps__n">1</span><h3>Pick a time</h3><p>Book online and pay after the clean, not before.</p></li>
+        <li><span class="steps__n">2</span><h3>Same faces</h3><p>The same vetted cleaners every visit. Tell us their names when you book.</p></li>
+        <li><span class="steps__n">3</span><h3>Photo proof</h3><p>Every room ticked off, with photos sent to your phone.</p></li>
+        <li><span class="steps__n">4</span><h3>Missed a spot?</h3><p>We come back within 24 hours, free.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="faq" aria-labelledby="faq-h">
+    <div class="wrap wrap--narrow">
+      <h2 id="faq-h" class="h2">Before you book.</h2>
+      <details><summary>Do I need to be home?</summary><p>No. Most clients leave a code or a key. We lock up and text when we are done.</p></details>
+      <details><summary>Do you bring supplies?</summary><p>Yes. All supplies and equipment are included, plant-based where it makes sense.</p></details>
+      <details><summary>What about pets?</summary><p>Love them. Tell us their names when you book.</p></details>
+      <details><summary>Which areas do you cover?</summary><p>This is a concept site for a fictional company. A real build lists the service area here.</p></details>
+    </div>
+  </section>
+
+  <section class="book" id="book" aria-labelledby="book-h" tabindex="-1">
+    <div class="wrap book__grid">
+      <div>
+        <p class="kick">Book</p>
+        <h2 id="book-h" class="h2">Want your <em>Saturday back?</em></h2>
+        <p class="lede">Pick a day and a time. You get your cleaners' names before they arrive.</p>
+      </div>
+      <div class="book__card">
+        <div class="book__days" id="bookDays" role="radiogroup" aria-label="Day"></div>
+        <div class="book__times" id="bookTimes" role="radiogroup" aria-label="Time"></div>
+        <button class="btn btn--full btn--ink" id="bookGo" type="button">Hold this time</button>
+        <p class="book__note" id="bookNote" role="status">Nothing is charged until after the clean.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__grid">
+    <p class="foot__brand"><span class="brand__dot" aria-hidden="true"></span>Brightside</p>
+    <div class="foot__small">
+      <p>Brightside Home Cleaning is a fictional business. This is a concept site designed and built by <a href="/">Quvlo</a> to show what is possible.</p>
+      <p>The footage and photos are AI-generated. Prices are samples.</p>
+      <p><a href="/work/">More Quvlo work</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="cleaning.js" defer></script>
+</body>
+</html>

@@ -38,3 +38,9 @@
 
 /work/hvac/fg/*
   Cache-Control: public, max-age=604800
+
+/work/cleaning/*
+  X-Robots-Tag: noindex
+
+/work/cleaning/f/*
+  Cache-Control: public, max-age=604800
