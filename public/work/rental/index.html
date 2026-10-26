@@ -4,274 +4,278 @@
 <meta charset="utf-8">
 <meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Tollway Car Co. | Premium Car Rental Delivered to the Curb at DFW and Love Field (Concept)</title>
-<meta name="description" content="A concept website by Quvlo for a fictional Dallas Fort Worth rental fleet. Your Tahoe, Escalade, BMW i5, Model Y or Bronco meets you at the arrivals curb, tolls included. Check what fits and see the all-in price.">
-<meta name="theme-color" content="#2c3035">
+<title>Keyroom | Premium Car Rental, Delivered Ready (Concept)</title>
+<meta name="description" content="A concept website by Quvlo for a fictional premium car rental garage. Escalade, Tahoe High Country, BMW i5, AMG E 53, Model Y and Bronco, delivered to your door, your hotel or the private terminal, with the full price shown before you book.">
+<meta name="theme-color" content="#0b0f17">
 <link rel="canonical" href="https://quvlo.co/work/rental/">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Quvlo">
-<meta property="og:title" content="Tollway Car Co., a concept site by Quvlo">
-<meta property="og:description" content="Land at DFW. Your car is already on its way. Premium rentals delivered to the curb, tolls included.">
+<meta property="og:title" content="Keyroom, a concept site by Quvlo">
+<meta property="og:description" content="Premium cars, prepared in a private garage and delivered to your door, hotel or private terminal. Every cost shown up front.">
 <meta property="og:url" content="https://quvlo.co/work/rental/">
 <meta property="og:image" content="https://quvlo.co/work/rental/img/og.jpg">
-<link rel="preload" href="fonts/overpass-wght.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/atkinson-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/overpass-mono-wght.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="rental.css">
+<link rel="preload" href="fonts/bodoni-moda-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/saira-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="keyroom.css">
 </head>
 <body class="is-loading">
-<a class="skip" href="#price">Skip to pricing</a>
+<a class="skip" href="#quote">Skip to the quote</a>
 
-<!-- Loader: counts real frame downloads, framed as a flight on approach -->
+<!-- Loader: counts real frame downloads -->
 <div class="loader" id="loader" aria-hidden="true">
-  <p class="loader__k">On approach</p>
+  <p class="loader__k">Opening the garage</p>
   <p class="loader__n"><span id="loadPct">0</span><span class="loader__u">%</span></p>
   <div class="loader__bar"><span id="loadBar"></span></div>
 </div>
 
 <header class="bar">
-  <a class="brand" href="#top" aria-label="Tollway Car Co., back to top"><span class="brand__mark" aria-hidden="true">T</span>Tollway Car Co.</a>
+  <a class="brand" href="#top" aria-label="Keyroom, back to top"><span class="brand__k" aria-hidden="true">K</span>Keyroom</a>
   <span class="tag">Concept site</span>
   <nav class="bar__nav" aria-label="Main">
-    <a href="#fleet" class="hide-s">Fleet</a>
-    <a href="#fit" class="hide-s">Will it fit?</a>
-    <a href="#price" class="btn btn--sm">Price it</a>
+    <a href="#keys" class="hide-s">The fleet</a>
+    <a href="#how" class="hide-s">How it works</a>
+    <a href="#quote" class="btn btn--sm">Get a quote</a>
   </nav>
 </header>
 
 <main id="top">
-  <!-- The film: scroll runs the handover, from touchdown to the open road -->
-  <section class="film" id="film" aria-label="Scroll story: a rental SUV is prepped and delivered to a traveller at the airport curb">
+  <!-- The film: scroll is the engine. The tachometer climbs with it and hits redline as the car leaves. -->
+  <section class="film" id="film" aria-label="Scroll story: a black Cadillac Escalade is uncovered in a private garage and delivered to a traveller at a private jet">
     <div class="film__stage">
-      <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage of a plane touching down at golden hour, a black Chevrolet Tahoe being wiped down and key-tagged in a bright prep bay, the Tahoe driving the tollway toward the Dallas skyline, pulling up to the arrivals curb where a traveller waits, the keys being handed over, then the Tahoe heading down an open Texas road at dusk."></canvas>
+      <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage: lights switch on bay by bay in a private garage of covered cars, a chauffeur pulls the cover off a black Cadillac Escalade, the cabin display and ambient lights glow on, the Escalade drives a wet city street at night, arrives beside a parked private jet at blue hour, and drives away with the traveller aboard."></canvas>
       <div class="shade" aria-hidden="true"></div>
 
       <div class="hero" id="hero">
-        <p class="hero__k">Premium car rental, Dallas Fort Worth</p>
-        <h1 class="hero__h">Land. Your car is already on its way.</h1>
-        <p class="hero__p">Tahoe, Escalade, BMW i5, Model Y or Bronco, delivered to the arrivals curb at DFW and Love Field. Tolls included. No counter, no shuttle.</p>
+        <p class="hero__k">Premium car rental, delivered ready</p>
+        <h1 class="hero__h">The keys are already <em>waiting.</em></h1>
+        <p class="hero__p">Six cars in a private garage. Prepared the night before, delivered to your door, your hotel or the private terminal, and priced in full before you book.</p>
       </div>
 
-      <!-- One caption per step of the handover -->
+      <!-- One caption per chapter. The numbers match the rpm bands on the tachometer. -->
+      <div class="cap" data-shot="0">
+        <p class="cap__k">01 · Idle</p>
+        <h2 class="cap__h">The garage wakes up.</h2>
+        <p class="cap__p">Every car sleeps under a fitted cover in its own bay. When your booking lands, the lights come on.</p>
+      </div>
       <div class="cap" data-shot="1">
-        <p class="cap__k">Step 1 · Prepping</p>
-        <h2 class="cap__h">Prepped while you taxi.</h2>
-        <p class="cap__p">The moment your wheels touch down, your car gets a final wipe-down, a full tank or charge and a key tag with your name on it.</p>
+        <p class="cap__k">02 · Uncovered</p>
+        <h2 class="cap__h">You are the first to touch it.</h2>
+        <p class="cap__p">Detailed the day before, inspected the hour before, and covered until it leaves.</p>
       </div>
       <div class="cap" data-shot="2">
-        <p class="cap__k">Step 2 · On route</p>
-        <h2 class="cap__h">On the tollway. Tolls on us.</h2>
-        <p class="cap__p">Every car carries a toll tag and the tolls are already in your price. No daily toll service fee, ever.</p>
+        <p class="cap__k">03 · Ignition</p>
+        <h2 class="cap__h">Set the way you like it.</h2>
+        <p class="cap__p">Full tank or full charge, cabin at your temperature, your phone ready to pair.</p>
       </div>
       <div class="cap" data-shot="3">
-        <p class="cap__k">Step 3 · At the curb</p>
-        <h2 class="cap__h">At the curb before your bag is.</h2>
-        <p class="cap__p">Your driver texts the door number and waits at arrivals. No rental center, no bus, no line.</p>
+        <p class="cap__k">04 · On its way</p>
+        <h2 class="cap__h">A person drives it to you.</h2>
+        <p class="cap__p">One of our drivers brings it across town. You get a live arrival time, not a two-hour window.</p>
       </div>
-      <div class="cap" data-shot="4">
-        <p class="cap__k">Step 4 · Keys in hand</p>
-        <h2 class="cap__h">Two minutes. Then it's yours.</h2>
-        <p class="cap__p">A quick walk-around, a photo of the fuel or charge level, and you are driving.</p>
+      <div class="cap cap--r" data-shot="4">
+        <p class="cap__k">05 · Arrival</p>
+        <h2 class="cap__h">Waiting where you land.</h2>
+        <p class="cap__p">Front door, hotel valet or the private terminal apron. The driver meets you, not a counter.</p>
       </div>
-      <div class="cap cap--end" data-shot="5">
-        <p class="cap__k">Enjoy Texas</p>
-        <h2 class="cap__h">The rest of Texas is yours.</h2>
-        <p class="cap__p">Hill Country, a wedding in Fort Worth, eighteen holes in Frisco. Drop it back at the curb when you fly home.</p>
-        <p class="cap__cta"><a class="btn" href="#fleet">Pick your car</a> <a class="btn btn--ghost" href="#fit">Will it fit?</a></p>
+      <div class="cap cap--r" data-shot="5">
+        <p class="cap__k">06 · Redline</p>
+        <h2 class="cap__h">Keys in hand. Go.</h2>
+        <p class="cap__p">A two-minute walk-around and it is yours. Hand it back the same way.</p>
+        <p class="cap__cta"><a class="btn" href="#keys">Choose a key</a> <a class="btn btn--ghost" href="#quote">Get a quote</a></p>
       </div>
 
-      <!-- Split-flap status board, driven by the same scroll position as the footage -->
-      <div class="board" id="board" aria-live="polite" aria-atomic="true">
-        <p class="sr" id="boardSr">Status: landed. Your car arrives in 18 minutes.</p>
-        <div class="board__row" aria-hidden="true">
-          <span class="board__l">Car</span>
-          <span class="board__v">TAHOE HIGH COUNTRY</span>
+      <!-- Tachometer: the scroll gauge. Ticks and the needle are drawn by keyroom.js. -->
+      <div class="tach" id="tach" aria-hidden="true">
+        <div class="tach__dial">
+          <svg class="tach__svg" id="tachSvg" viewBox="0 0 400 44" preserveAspectRatio="none"></svg>
         </div>
-        <div class="board__row" aria-hidden="true">
-          <span class="board__l">Status</span>
-          <span class="flaps" id="flapStatus" data-len="12"></span>
+        <div class="tach__read">
+          <span class="tach__rpm"><span id="tachRpm">800</span><span class="tach__u">rpm</span></span>
+          <span class="tach__ch" id="tachCh">01 · Idle</span>
         </div>
-        <div class="board__row" aria-hidden="true">
-          <span class="board__l">Arrives in</span>
-          <span class="flaps flaps--time" id="flapTime" data-len="5"></span>
-        </div>
-        <ol class="board__steps" aria-hidden="true">
-          <li data-shot="1">Prepping</li>
-          <li data-shot="2">On route</li>
-          <li data-shot="3">At the curb</li>
-          <li data-shot="4">Keys in hand</li>
-        </ol>
       </div>
+      <p class="sr" id="tachSr" aria-live="polite"></p>
     </div>
   </section>
 
-  <!-- Fleet -->
-  <section class="sec sec--light" id="fleet" aria-labelledby="fleet-h">
+  <!-- Key wall: tap a key and that car's bay door rolls up -->
+  <section class="keys" id="keys" aria-labelledby="keys-h">
     <div class="wrap">
-      <p class="eyebrow">The fleet</p>
-      <h2 class="sec__h" id="fleet-h">Five cars. All of them nice.</h2>
-      <p class="sec__p">Current models, under two years old, detailed before every trip. Prices are per day and already include tolls, delivery and the toll tag.</p>
-      <ul class="fleet" id="fleetList">
-        <li class="car" data-car="modely">
-          <img src="img/fleet-modely.webp" width="1200" height="670" alt="A pearl white Tesla Model Y on a parking garage rooftop with the Dallas skyline behind at golden hour." loading="lazy" decoding="async">
-          <div class="car__b">
-            <h3 class="car__h">Tesla Model Y</h3>
-            <p class="car__t">Electric crossover</p>
-            <dl class="car__s"><div><dt>Seats</dt><dd>5</dd></div><div><dt>Bags</dt><dd>3 large, 3 carry-on</dd></div><div><dt>Range</dt><dd>~310 mi</dd></div></dl>
-            <p class="car__p"><span class="mono">$119</span> / day</p>
+      <div class="keys__grid">
+        <div class="keys__left">
+        <header class="sec__head">
+          <p class="kicker">The fleet</p>
+          <h2 class="sec__h" id="keys-h">Pick a key. We open the door.</h2>
+          <p class="sec__p">Six cars, all current models, all kept in our own garage. Tap a key to see the car, what it does and what it costs.</p>
+        </header>
+        <figure class="wall">
+          <img src="img/keywall.webp" alt="Six car keys hanging on a cognac leather wall: Cadillac, Chevrolet, BMW, a Tesla key card, Ford and Mercedes-Benz" width="1600" height="896" loading="lazy" decoding="async">
+          <div class="wall__keys" role="group" aria-label="Choose a car by its key">
+            <button class="hot" type="button" data-car="escalade" style="--x:22.4%" aria-pressed="true"><span class="hot__l">Escalade</span></button>
+            <button class="hot" type="button" data-car="tahoe" style="--x:36.1%" aria-pressed="false"><span class="hot__l">Tahoe</span></button>
+            <button class="hot" type="button" data-car="i5" style="--x:49.2%" aria-pressed="false"><span class="hot__l">BMW i5</span></button>
+            <button class="hot" type="button" data-car="modely" style="--x:61.0%" aria-pressed="false"><span class="hot__l">Model Y</span></button>
+            <button class="hot" type="button" data-car="bronco" style="--x:72.4%" aria-pressed="false"><span class="hot__l">Bronco</span></button>
+            <button class="hot" type="button" data-car="e53" style="--x:83.6%" aria-pressed="false"><span class="hot__l">AMG E 53</span></button>
           </div>
-        </li>
-        <li class="car" data-car="i5">
-          <img src="img/fleet-i5.webp" width="1200" height="670" alt="A grey BMW i5 sedan on a parking garage rooftop with the Dallas skyline behind at golden hour." loading="lazy" decoding="async">
-          <div class="car__b">
-            <h3 class="car__h">BMW i5</h3>
-            <p class="car__t">Executive sedan</p>
-            <dl class="car__s"><div><dt>Seats</dt><dd>5</dd></div><div><dt>Bags</dt><dd>2 large, 2 carry-on</dd></div><div><dt>Range</dt><dd>~295 mi</dd></div></dl>
-            <p class="car__p"><span class="mono">$139</span> / day</p>
-          </div>
-        </li>
-        <li class="car" data-car="bronco">
-          <img src="img/fleet-bronco.webp" width="1200" height="670" alt="A cactus grey Ford Bronco four-door with the hard top on, parked on a rooftop with the Dallas skyline behind." loading="lazy" decoding="async">
-          <div class="car__b">
-            <h3 class="car__h">Ford Bronco 4-door</h3>
-            <p class="car__t">Weekend and Hill Country</p>
-            <dl class="car__s"><div><dt>Seats</dt><dd>5</dd></div><div><dt>Bags</dt><dd>4 large, 2 carry-on</dd></div><div><dt>MPG</dt><dd>~20</dd></div></dl>
-            <p class="car__p"><span class="mono">$149</span> / day</p>
-          </div>
-        </li>
-        <li class="car car--hero" data-car="tahoe">
-          <img src="img/fleet-tahoe.webp" width="1200" height="670" alt="A gloss black Chevrolet Tahoe High Country on a parking garage rooftop with the Dallas skyline behind at golden hour." loading="lazy" decoding="async">
-          <div class="car__b">
-            <h3 class="car__h">Chevrolet Tahoe</h3>
-            <p class="car__t">Family trips and golf weekends</p>
-            <dl class="car__s"><div><dt>Seats</dt><dd>8</dd></div><div><dt>Bags</dt><dd>8 large with 5 riding</dd></div><div><dt>MPG</dt><dd>~17</dd></div></dl>
-            <p class="car__p"><span class="mono">$169</span> / day</p>
-          </div>
-        </li>
-        <li class="car" data-car="escalade">
-          <img src="img/fleet-escalade.webp" width="1200" height="670" alt="A midnight blue Cadillac Escalade on a parking garage rooftop with the Dallas skyline behind at golden hour." loading="lazy" decoding="async">
-          <div class="car__b">
-            <h3 class="car__h">Cadillac Escalade</h3>
-            <p class="car__t">Executives and wedding parties</p>
-            <dl class="car__s"><div><dt>Seats</dt><dd>7</dd></div><div><dt>Bags</dt><dd>8 large with 4 riding</dd></div><div><dt>MPG</dt><dd>~16</dd></div></dl>
-            <p class="car__p"><span class="mono">$249</span> / day</p>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </section>
+        </figure>
+        </div>
 
-  <!-- Will it fit? -->
-  <section class="sec sec--dark" id="fit" aria-labelledby="fit-h">
-    <div class="wrap fit">
-      <div class="fit__copy">
-        <p class="eyebrow eyebrow--y">Will it fit?</p>
-        <h2 class="sec__h" id="fit-h">Tell us what you're bringing.</h2>
-        <p class="sec__p">Add your people and your bags. We pack them into the back of each car and pick the smallest one that fits, so you never find out at the curb.</p>
-        <div class="steps" id="fitSteps">
-          <div class="stepper" data-k="people" data-min="1" data-max="8"><span class="stepper__l">People</span><button type="button" class="stepper__b" data-d="-1" aria-label="One fewer person">&minus;</button><output class="stepper__n" aria-live="polite">2</output><button type="button" class="stepper__b" data-d="1" aria-label="One more person">+</button></div>
-          <div class="stepper" data-k="carry" data-min="0" data-max="8"><span class="stepper__l">Carry-ons</span><button type="button" class="stepper__b" data-d="-1" aria-label="One fewer carry-on">&minus;</button><output class="stepper__n" aria-live="polite">2</output><button type="button" class="stepper__b" data-d="1" aria-label="One more carry-on">+</button></div>
-          <div class="stepper" data-k="checked" data-min="0" data-max="8"><span class="stepper__l">Checked bags</span><button type="button" class="stepper__b" data-d="-1" aria-label="One fewer checked bag">&minus;</button><output class="stepper__n" aria-live="polite">2</output><button type="button" class="stepper__b" data-d="1" aria-label="One more checked bag">+</button></div>
-          <div class="stepper" data-k="golf" data-min="0" data-max="4"><span class="stepper__l">Golf bags</span><button type="button" class="stepper__b" data-d="-1" aria-label="One fewer golf bag">&minus;</button><output class="stepper__n" aria-live="polite">0</output><button type="button" class="stepper__b" data-d="1" aria-label="One more golf bag">+</button></div>
-          <div class="stepper" data-k="seat" data-min="0" data-max="3"><span class="stepper__l">Child car seats</span><button type="button" class="stepper__b" data-d="-1" aria-label="One fewer car seat">&minus;</button><output class="stepper__n" aria-live="polite">0</output><button type="button" class="stepper__b" data-d="1" aria-label="One more car seat">+</button></div>
-        </div>
-        <p class="fit__note">Car seats ride in a seat, not the back, and we install them before delivery at no charge.</p>
+        <article class="bay" id="bay" aria-live="polite">
+          <div class="bay__view">
+            <img class="bay__img" id="bayImg" src="img/car-escalade.webp" alt="Black Cadillac Escalade in a lit garage bay" width="1280" height="717" loading="lazy" decoding="async">
+            <div class="door" id="door" aria-hidden="true"><span class="door__handle"></span></div>
+          </div>
+          <div class="bay__body">
+            <p class="bay__k" id="bayKind">Full-size luxury SUV</p>
+            <h3 class="bay__h" id="bayName">Cadillac Escalade</h3>
+            <dl class="specs" id="baySpecs"></dl>
+            <div class="bay__foot">
+              <p class="bay__price"><span id="bayPrice">$289</span><span class="bay__per"> / day, sample price</span></p>
+              <a class="btn" href="#quote" id="bayQuote">Quote this car</a>
+            </div>
+          </div>
+        </article>
       </div>
-      <div class="fit__view">
-        <div class="fit__tabs" role="tablist" aria-label="Vehicle">
-          <button type="button" role="tab" data-car="i5">BMW i5</button>
-          <button type="button" role="tab" data-car="modely">Model Y</button>
-          <button type="button" role="tab" data-car="bronco">Bronco</button>
-          <button type="button" role="tab" data-car="tahoe">Tahoe</button>
-          <button type="button" role="tab" data-car="escalade">Escalade</button>
-        </div>
-        <div class="fit__stage">
-          <svg id="fitSvg" class="fit__svg" viewBox="0 0 400 300" role="img" aria-labelledby="fitSvgT"><title id="fitSvgT">Cargo area with your bags packed in</title></svg>
-        </div>
-        <p class="fit__verdict" id="fitVerdict" aria-live="polite"></p>
-        <p class="fit__rec" id="fitRec" aria-live="polite"></p>
-        <p class="fit__legend"><span class="sw sw--c"></span>Carry-on <span class="sw sw--k"></span>Checked <span class="sw sw--g"></span>Golf bag</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- The price is the price -->
-  <section class="sec sec--light" id="price" aria-labelledby="price-h">
-    <div class="wrap price">
-      <div>
-        <p class="eyebrow">The price is the price</p>
-        <h2 class="sec__h" id="price-h">One number. Tolls, delivery and tax in it.</h2>
-        <p class="sec__p">Most rental counters add a toll service fee of about $5 to $15 a day on top of the tolls themselves, plus airport fees. Ours is one line: the car, the days, the tax. Sample prices.</p>
-        <fieldset class="pick">
-          <legend class="pick__l">Car</legend>
-          <div class="pick__opts" id="priceCars"></div>
-        </fieldset>
-        <div class="days">
-          <label for="days" class="pick__l">Days</label>
-          <input type="range" id="days" min="1" max="14" value="4">
-          <output class="days__n mono" id="daysOut" for="days">4 days</output>
-        </div>
-      </div>
-      <div class="receipt" aria-live="polite">
-        <p class="receipt__k mono">Your total</p>
-        <p class="receipt__total" id="rTotal">$0</p>
-        <dl class="receipt__lines">
-          <div><dt id="rCarL">Car</dt><dd class="mono" id="rCar">$0</dd></div>
-          <div><dt>Curb or hotel delivery and pickup</dt><dd class="mono">Included</dd></div>
-          <div><dt>Toll tag and every toll</dt><dd class="mono">Included</dd></div>
-          <div><dt>Texas motor vehicle rental tax (10%)</dt><dd class="mono" id="rTax">$0</dd></div>
-        </dl>
-        <p class="receipt__vs" id="rVs"></p>
-        <a class="btn btn--y" href="#reserve">Reserve this car</a>
-      </div>
+      <p class="fine">Specs are approximate, based on each maker's published figures for the current model year. Range and economy vary with driving.</p>
     </div>
   </section>
 
   <!-- How it works -->
-  <section class="sec sec--road" id="how" aria-labelledby="how-h">
+  <section class="how" id="how" aria-labelledby="how-h">
     <div class="wrap">
-      <p class="eyebrow eyebrow--y">How it works</p>
-      <h2 class="sec__h" id="how-h">Curb to curb.</h2>
-      <ol class="how">
-        <li><span class="how__n mono">01</span><h3>Book with your flight</h3><p>Pick a car and add your flight number. We watch it, so a delay never costs you anything.</p></li>
-        <li><span class="how__n mono">02</span><h3>Meet it at the curb</h3><p>DFW, Love Field or your hotel anywhere in Dallas, Fort Worth, Frisco, Plano or Arlington. Your driver texts the door number.</p></li>
-        <li><span class="how__n mono">03</span><h3>Drop it the same way</h3><p>Leave it at departures or your hotel valet. Skip the gas station: we refuel or recharge it at cost, with no surcharge.</p></li>
+      <header class="sec__head">
+        <p class="kicker">How it works</p>
+        <h2 class="sec__h" id="how-h">Three steps, no counter.</h2>
+      </header>
+      <ol class="steps">
+        <li><span class="steps__n">01</span><h3>Reserve and hold the deposit</h3><p>Pick the car, the days and where to meet you. We place a refundable hold on your card and confirm by text.</p></li>
+        <li><span class="steps__n">02</span><h3>We bring it to you, ready</h3><p>Washed, fuelled or charged, and set up the night before. A driver hands it over with a short walk-around and photos of its condition.</p></li>
+        <li><span class="steps__n">03</span><h3>Hand it back where you are</h3><p>Text when you are done. We collect from the same kind of place, check the miles and release the hold within three business days.</p></li>
       </ol>
     </div>
   </section>
 
-  <!-- FAQ -->
-  <section class="sec sec--light" id="faq" aria-labelledby="faq-h">
-    <div class="wrap faq">
-      <p class="eyebrow">Questions</p>
-      <h2 class="sec__h" id="faq-h">Before you book.</h2>
-      <details><summary>Is there a deposit?</summary><p>A $500 hold goes on your card at delivery and drops off within a few days of return. The Escalade hold is $1,000. We never take it from a debit card.</p></details>
-      <details><summary>How old do I need to be?</summary><p>25 and up for every car. Drivers 21 to 24 can book the Model Y or the BMW i5 with a $25 a day young driver fee. The Escalade is 25 and up only.</p></details>
-      <details><summary>How do tolls work?</summary><p>Every car has a toll tag and every toll is in the daily price. You will not get a bill in the mail and there is no daily toll service fee.</p></details>
-      <details><summary>Where do you deliver?</summary><p>DFW and Love Field arrivals, plus hotels and homes in Dallas, Fort Worth, Arlington, Irving, Frisco and Plano. Farther out, ask us and we will quote it.</p></details>
-      <details><summary>What if my flight is late?</summary><p>We track the flight number you give us, so your driver adjusts on their own. Late night and early morning arrivals are covered.</p></details>
+  <!-- Honest quote: every number a premium renter asks about, shown before booking -->
+  <section class="quote" id="quote" aria-labelledby="quote-h">
+    <div class="wrap">
+      <header class="sec__head">
+        <p class="kicker">The honest quote</p>
+        <h2 class="sec__h" id="quote-h">Every number, before you book.</h2>
+        <p class="sec__p">Most premium rental sites ask you to call for the deposit, the mileage cap and the insurance. Here they are.</p>
+      </header>
+
+      <div class="quote__grid">
+        <form class="qform" id="qform" novalidate>
+          <label class="field">
+            <span class="field__l">Car</span>
+            <select id="qCar" name="car">
+              <option value="escalade">Cadillac Escalade</option>
+              <option value="tahoe">Chevrolet Tahoe High Country</option>
+              <option value="e53">Mercedes-AMG E 53 Hybrid</option>
+              <option value="i5">BMW i5</option>
+              <option value="bronco">Ford Bronco 4-door</option>
+              <option value="modely">Tesla Model Y</option>
+            </select>
+          </label>
+
+          <div class="field">
+            <label class="field__l" for="qDays">Days</label>
+            <div class="days">
+              <input type="range" id="qDays" name="days" min="1" max="14" step="1" value="3">
+              <output id="qDaysOut" for="qDays">3 days</output>
+            </div>
+          </div>
+
+          <fieldset class="field">
+            <legend class="field__l">Deliver to</legend>
+            <div class="seg">
+              <label><input type="radio" name="where" value="home" checked><span>Home or office</span></label>
+              <label><input type="radio" name="where" value="hotel"><span>Hotel</span></label>
+              <label><input type="radio" name="where" value="fbo"><span>Private terminal</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="field">
+            <legend class="field__l">Insurance</legend>
+            <div class="seg seg--col">
+              <label><input type="radio" name="cover" value="own"><span>Your own policy <small>Proof of full coverage required</small></span></label>
+              <label><input type="radio" name="cover" value="std" checked><span>Keyroom cover <small>$1,000 deductible</small></span></label>
+              <label><input type="radio" name="cover" value="plus"><span>Keyroom cover plus <small>No deductible</small></span></label>
+            </div>
+          </fieldset>
+        </form>
+
+        <div class="receipt" aria-live="polite">
+          <p class="receipt__k">Your quote <span class="receipt__s">Sample prices</span></p>
+          <p class="receipt__total" id="qTotal">$0</p>
+          <p class="receipt__sub">due at booking, estimated tax included</p>
+          <dl class="lines" id="qLines"></dl>
+          <dl class="lines lines--soft" id="qTerms"></dl>
+          <a class="btn btn--full" href="#reserve" id="qReserve">Reserve this car</a>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Reserve (concept: nothing is sent) -->
-  <section class="sec sec--dark" id="reserve" aria-labelledby="res-h">
-    <div class="wrap res">
-      <div>
-        <p class="eyebrow eyebrow--y">Reserve</p>
-        <h2 class="sec__h" id="res-h">Tell us your flight. We'll be there.</h2>
+  <!-- FAQ -->
+  <section class="faq" id="faq" aria-labelledby="faq-h">
+    <div class="wrap wrap--narrow">
+      <header class="sec__head">
+        <p class="kicker">Questions</p>
+        <h2 class="sec__h" id="faq-h">Before you book.</h2>
+      </header>
+      <details>
+        <summary>How does the deposit work?</summary>
+        <p>We place a refundable hold on a credit card when you book. It is not a charge. We release it within three business days of the car coming back, minus any extra miles, fuel or damage, which we show you with photos first.</p>
+      </details>
+      <details>
+        <summary>How old do I need to be?</summary>
+        <p>25 or older, with a full driving licence held for at least two years and a credit card in your name.</p>
+      </details>
+      <details>
+        <summary>How many miles are included?</summary>
+        <p>150 miles a day, added up over the whole booking, so a quiet day covers a long one. Extra miles are charged per mile at the rate shown in your quote.</p>
+      </details>
+      <details>
+        <summary>Where do you deliver?</summary>
+        <p>Anywhere within 30 miles of our garage: homes, offices, hotels and the private aviation terminals. Further out is possible on request.</p>
+      </details>
+      <details>
+        <summary>What if my flight is late?</summary>
+        <p>Add your flight number when you reserve and we track it. The driver waits for you at no charge, however late you land.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- Reserve: checks the details and stops. Nothing is sent. -->
+  <section class="reserve" id="reserve" aria-labelledby="res-h">
+    <div class="wrap wrap--narrow">
+      <header class="sec__head">
+        <p class="kicker">Reserve</p>
+        <h2 class="sec__h" id="res-h">Tell us when and where.</h2>
         <p class="sec__p">This is a concept site, so the form checks your details and stops there. Nothing is sent anywhere.</p>
-      </div>
-      <form class="form" id="resForm" novalidate>
-        <label>Name<input name="name" autocomplete="name" maxlength="80" required></label>
-        <label>Mobile<input name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" required></label>
-        <label>Email<input name="email" type="email" autocomplete="email" maxlength="120" required></label>
-        <label>Car<select name="car" id="resCar" required></select></label>
-        <label>Flight number<input name="flight" maxlength="8" placeholder="e.g. TC 1182" autocapitalize="characters" required></label>
-        <label>Arrival date<input name="date" type="date" required></label>
-        <label class="form__full">Meet me at<select name="where" required><option value="dfw">DFW arrivals curb</option><option value="dal">Love Field arrivals curb</option><option value="hotel">My hotel or home</option></select></label>
-        <button class="btn btn--y form__full" type="submit">Request this car</button>
-        <p class="form__msg form__full" id="resMsg" role="status" aria-live="polite"></p>
+      </header>
+      <form class="rform" id="rform" novalidate>
+        <label class="field"><span class="field__l">Name</span><input type="text" name="name" autocomplete="name" required maxlength="80"></label>
+        <label class="field"><span class="field__l">Mobile</span><input type="tel" name="phone" autocomplete="tel" required maxlength="20" inputmode="tel"></label>
+        <label class="field"><span class="field__l">Email</span><input type="email" name="email" autocomplete="email" required maxlength="120"></label>
+        <label class="field"><span class="field__l">Car</span>
+          <select name="car" id="rCar">
+            <option value="escalade">Cadillac Escalade</option>
+            <option value="tahoe">Chevrolet Tahoe High Country</option>
+            <option value="e53">Mercedes-AMG E 53 Hybrid</option>
+            <option value="i5">BMW i5</option>
+            <option value="bronco">Ford Bronco 4-door</option>
+            <option value="modely">Tesla Model Y</option>
+          </select>
+        </label>
+        <label class="field"><span class="field__l">Start date</span><input type="date" name="date" required></label>
+        <label class="field"><span class="field__l">Flight number <small>optional</small></span><input type="text" name="flight" maxlength="10" placeholder="e.g. N123KR"></label>
+        <label class="field field--wide"><span class="field__l">Where should we meet you?</span><input type="text" name="where" required maxlength="140" placeholder="Hotel, address or terminal"></label>
+        <button class="btn btn--full" type="submit">Request this car</button>
+        <p class="form__msg" id="rMsg" role="status"></p>
       </form>
     </div>
   </section>
@@ -279,14 +283,15 @@
 
 <footer class="foot">
   <div class="wrap">
-    <p class="foot__brand">Tollway Car Co.</p>
-    <p>Premium rentals delivered to the curb across Dallas Fort Worth.</p>
-    <p class="foot__fine">Tollway Car Co. is a fictional business. This is a concept website designed and built by <a href="/">Quvlo</a> to show what is possible. The footage and photos are AI-generated, and prices, fees, specs and policies are samples.</p>
-    <p class="foot__fine">Chevrolet, Tahoe, Cadillac, Escalade, BMW, Tesla, Model Y, Ford and Bronco are trademarks of their respective owners. Tollway Car Co. is a fictional business and is not affiliated with them.</p>
+    <p class="foot__brand">Keyroom</p>
+    <p>Premium cars, kept in a private garage and delivered ready.</p>
+    <!-- Client city line goes here, e.g. "Delivering across [City] and [City]." -->
+    <p class="foot__fine">Keyroom is a fictional business. This is a concept website designed and built by <a href="/">Quvlo</a> to show what is possible. The footage and photos are AI-generated, and all prices, deposits, specs and policies are samples.</p>
+    <p class="foot__fine">Cadillac, Escalade, Chevrolet, Tahoe, BMW, Tesla, Model Y, Ford, Bronco and Mercedes-AMG are trademarks of their respective owners. Keyroom is a fictional business and is not affiliated with them.</p>
     <p class="foot__fine"><a href="/work/">More Quvlo work</a></p>
   </div>
 </footer>
 
-<script src="rental.js" defer></script>
+<script src="keyroom.js" defer></script>
 </body>
 </html>
