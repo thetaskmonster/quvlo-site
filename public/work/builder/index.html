@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Limestone Ridge Homes | Custom Home Builder, North Texas (Concept)</title>
+<meta name="description" content="A concept website by Quvlo for a fictional North Texas custom home builder. Scroll to build one house from survey stakes to front door, pick a floor plan room by room and price your build.">
+<meta name="theme-color" content="#16325e">
+<link rel="canonical" href="https://quvlo.co/work/builder/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Quvlo">
+<meta property="og:title" content="Limestone Ridge Homes, a concept site by Quvlo">
+<meta property="og:description" content="Scroll to build a house, from survey stakes to front door.">
+<meta property="og:url" content="https://quvlo.co/work/builder/">
+<meta property="og:image" content="https://quvlo.co/work/builder/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="fonts/newsreader-opsz.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/public-sans.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/red-hat-mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="builder.css">
+</head>
+<body class="is-loading">
+<a class="skip" href="#plans">Skip to floor plans</a>
+
+<!-- Loader: counts the real frame downloads -->
+<div class="loader" id="loader" aria-hidden="true">
+  <svg class="loader__stake" viewBox="0 0 40 120"><line x1="20" y1="18" x2="20" y2="118"/><path class="loader__flag" d="M20 18 L38 8 L20 2 Z"/></svg>
+  <p class="loader__num"><span id="loadPct">0</span>%</p>
+  <p class="loader__line">Staking the lot</p>
+</div>
+
+<header class="bar">
+  <a class="brand" href="#top" aria-label="Limestone Ridge Homes, back to top"><span class="brand__mark" aria-hidden="true"></span>Limestone Ridge<span class="brand__sub"> Homes</span></a>
+  <span class="tag">Concept site</span>
+  <nav class="bar__nav" aria-label="Main">
+    <a href="#plans" class="hide-s">Plans</a>
+    <a href="#estimate" class="hide-s">Estimate</a>
+    <a href="#walk" class="btn btn--sm"><span class="hide-s">Book a lot walk</span><span class="show-s">Lot walk</span></a>
+  </nav>
+</header>
+
+<main id="top">
+  <!-- The film: scrolling builds one house on one lot, in build order -->
+  <section class="film" id="film" aria-label="Scroll story: a house is built on one lot, from survey stakes to the day the owners get their keys">
+    <div class="film__stage">
+      <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage of a staked lot in North Texas, the slab being poured, the house framed, dried in, the finished interior and the owners at the front door at dusk."></canvas>
+      <svg class="print" id="print" viewBox="0 0 3840 2160" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+
+      <div class="sched" id="sched" aria-hidden="true">
+        <p class="sched__day"><span class="sched__k">Day</span> <span class="sched__n" id="schedDay">001</span><span class="sched__of"> / 270</span></p>
+        <div class="sched__bar"><span class="sched__fill" id="schedFill"></span></div>
+        <ol class="sched__phases" id="schedPhases">
+          <li>Survey</li><li>Slab</li><li>Framing</li><li>Dry-in</li><li>Finishes</li><li>Keys</li>
+        </ol>
+      </div>
+
+      <div class="caps" id="caps">
+        <div class="cap cap--hero" data-shot="0">
+          <p class="cap__k">Custom homes · North Texas</p>
+          <h1 class="cap__h">From stakes to front door.</h1>
+          <p class="cap__p">Scroll to build one house on one lot, in the order we build it, with the schedule running in the corner.</p>
+          <p class="cap__hint" aria-hidden="true">Scroll</p>
+        </div>
+        <div class="cap" data-shot="1">
+          <p class="cap__k">Day 15 · Slab</p>
+          <h2 class="cap__h">Start with the ground.</h2>
+          <p class="cap__p">Survey, soil test and a post-tension slab that suits North Texas clay. The drawing goes down first.</p>
+        </div>
+        <div class="cap" data-shot="2">
+          <p class="cap__k">Day 46 · Framing</p>
+          <h2 class="cap__h">The drawing stands up.</h2>
+          <p class="cap__p">Walls, trusses and sheathing. This is when you walk the rooms for the first time.</p>
+        </div>
+        <div class="cap" data-shot="3">
+          <p class="cap__k">Day 111 · Dry-in</p>
+          <h2 class="cap__h">Dried in, dressed up.</h2>
+          <p class="cap__p">Standing-seam roof, black steel windows, cut limestone and board-and-batten.</p>
+        </div>
+        <div class="cap" data-shot="4">
+          <p class="cap__k">Day 161 · Finishes</p>
+          <h2 class="cap__h">Inside, you choose.</h2>
+          <p class="cap__p">White oak floors, a limestone fireplace and finishes picked with a designer, priced as you go.</p>
+        </div>
+        <div class="cap cap--end" data-shot="5">
+          <p class="cap__k">Day 270 · Keys</p>
+          <h2 class="cap__h">Lights on. Welcome home.</h2>
+          <p class="cap__p">Keys, manuals and a one-year check-in on the calendar.</p>
+          <p class="cap__cta"><a class="btn" href="#plans">Pick a plan</a> <a class="btn btn--ghost" href="#walk">Book a lot walk</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pick your plan -->
+  <section class="sec sec--plans" id="plans" aria-labelledby="plansH">
+    <div class="wrap">
+      <header class="sec__head">
+        <p class="kicker">Sheet A-101 · Floor plans</p>
+        <h2 id="plansH" class="sec__h">Pick a plan, then walk it.</h2>
+        <p class="sec__p">Three plans we build often. Tap a room to see its size, its finishes and what it looks like built. Your plan carries into the estimate below.</p>
+      </header>
+
+      <div class="plans" id="planTabs" role="radiogroup" aria-label="Floor plan">
+        <button type="button" class="plan-tab" role="radio" aria-checked="false" data-plan="pecan"><span class="plan-tab__n">The Pecan</span><span class="plan-tab__s">2,700 sq ft · 3 bed · 1 story</span></button>
+        <button type="button" class="plan-tab" role="radio" aria-checked="false" data-plan="caliche"><span class="plan-tab__n">The Caliche</span><span class="plan-tab__s">3,600 sq ft · 4 bed · 2 story</span></button>
+        <button type="button" class="plan-tab" role="radio" aria-checked="true" data-plan="bluebonnet"><span class="plan-tab__n">The Bluebonnet</span><span class="plan-tab__s">4,800 sq ft · 4 bed · 2 story</span></button>
+      </div>
+
+      <div class="sheet">
+        <figure class="sheet__plan">
+          <svg id="planSvg" class="plan" role="group" aria-label="Ground floor plan"></svg>
+          <figcaption class="sheet__cap"><span id="planCap">The Bluebonnet · ground floor</span><span class="sheet__scale">Scale 1/8" = 1'-0"</span></figcaption>
+        </figure>
+        <aside class="room" id="room" aria-live="polite">
+          <div class="room__ph"><img id="roomImg" src="img/room-great.webp" alt="" width="1200" height="900" decoding="async"></div>
+          <p class="room__k" id="roomK">Room 101</p>
+          <h3 class="room__h" id="roomH">Great room</h3>
+          <p class="room__dim" id="roomDim">32'-0" × 28'-0"</p>
+          <ul class="room__fin" id="roomFin"></ul>
+          <p class="room__note">Photos show Designer finishes.</p>
+        </aside>
+      </div>
+      <p class="plans__up" id="planUp"></p>
+    </div>
+  </section>
+
+  <!-- Estimator -->
+  <section class="sec sec--est" id="estimate" aria-labelledby="estH">
+    <div class="wrap est">
+      <header class="sec__head">
+        <p class="kicker">Sheet E-1 · Estimate</p>
+        <h2 id="estH" class="sec__h">A ballpark in three answers.</h2>
+        <p class="sec__p">Size, finish level and whether you own a lot. The real number comes from your plans, and once plans and selections are final the contract price is fixed.</p>
+      </header>
+      <form class="est__form" id="estForm" novalidate>
+        <div class="field">
+          <label for="estSize">Size <span class="field__v"><output id="estSizeOut" for="estSize">4,800</output> sq ft</span></label>
+          <input type="range" id="estSize" min="1800" max="6400" step="50" value="4800">
+          <p class="field__hint" id="estPlanHint">Starting from The Bluebonnet</p>
+        </div>
+        <fieldset class="field">
+          <legend>Finish level</legend>
+          <div class="seg" id="estFinish">
+            <label><input type="radio" name="finish" value="builder"><span>Builder<small>$205 / sq ft</small></span></label>
+            <label><input type="radio" name="finish" value="designer" checked><span>Designer<small>$245 / sq ft</small></span></label>
+            <label><input type="radio" name="finish" value="custom"><span>Custom<small>$310 / sq ft</small></span></label>
+          </div>
+        </fieldset>
+        <fieldset class="field">
+          <legend>Do you own a lot?</legend>
+          <div class="seg" id="estLot">
+            <label><input type="radio" name="lot" value="own" checked><span>Yes, I own one</span></label>
+            <label><input type="radio" name="lot" value="need"><span>Not yet</span></label>
+          </div>
+        </fieldset>
+      </form>
+      <div class="est__out" aria-live="polite">
+        <p class="est__k">Estimated build cost</p>
+        <p class="est__num"><span id="estLo">$1,190,000</span> <span class="est__to">to</span> <span id="estHi">$1,320,000</span></p>
+        <dl class="est__rows">
+          <div><dt id="estRowA">4,800 sq ft × $245</dt><dd id="estRowAv">$1,176,000</dd></div>
+          <div><dt>Site work: survey, soil test, utilities, drive</dt><dd>$28,000</dd></div>
+          <div><dt>Schedule, slab to keys</dt><dd id="estDays">about 270 days</dd></div>
+        </dl>
+        <p class="est__lot" id="estLotNote">Lot not included.</p>
+        <p class="fine">Sample prices for a fictional builder.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How we build -->
+  <section class="sec sec--how" id="how" aria-labelledby="howH">
+    <div class="wrap">
+      <header class="sec__head">
+        <p class="kicker">Sheet G-2 · Process</p>
+        <h2 id="howH" class="sec__h">How we build.</h2>
+      </header>
+      <ol class="steps">
+        <li class="step"><p class="step__d">Before Day 1</p><h3 class="step__h">Design and engineering</h3><p>Your plans or ours, a structural engineer's stamp and a fixed-price contract before anything is dug.</p></li>
+        <li class="step"><p class="step__d">Day 1 to 255</p><h3 class="step__h">Build</h3><p>Weekly photo updates every Friday and a site walk with your builder every month.</p></li>
+        <li class="step"><p class="step__d">Day 256</p><h3 class="step__h">Walk-through</h3><p>A punch list walk-through, room by room, before you sign off.</p></li>
+        <li class="step"><p class="step__d">Day 270</p><h3 class="step__h">Keys</h3><p>Keys, manuals for every system and a one-year check-in on the calendar.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Warranty -->
+  <section class="sec sec--war" id="warranty" aria-labelledby="warH">
+    <div class="wrap war">
+      <header class="sec__head">
+        <p class="kicker">Sheet G-3 · Warranty</p>
+        <h2 id="warH" class="sec__h">Ten years on the structure.</h2>
+        <p class="sec__p">Foundation, framing and roof structure for ten years. Plumbing, electrical and HVAC for two. Everything else, down to the cabinet hinges, for one.</p>
+      </header>
+      <div class="war__chart" id="warChart">
+        <div class="war__row"><span class="war__l">Everything</span><span class="war__bar" style="--y:1"><span class="war__n">1 yr</span></span></div>
+        <div class="war__row"><span class="war__l">Systems</span><span class="war__bar" style="--y:2"><span class="war__n">2 yr</span></span></div>
+        <div class="war__row"><span class="war__l">Structure</span><span class="war__bar war__bar--k" style="--y:10"><span class="war__n">10 yr</span></span></div>
+        <div class="war__axis" aria-hidden="true"><span>0</span><span>5</span><span>10 years</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec sec--faq" id="faq" aria-labelledby="faqH">
+    <div class="wrap faq">
+      <header class="sec__head">
+        <p class="kicker">Sheet G-4 · Notes</p>
+        <h2 id="faqH" class="sec__h">Questions.</h2>
+      </header>
+      <div class="faq__list">
+        <details><summary>Do I need my own lot?</summary><p>No. We can help you find one, or build on a lot you own. We assess lots before you buy, so you know about the soil, the slope and the utilities first.</p></details>
+        <details><summary>Will the price change during the build?</summary><p>Once plans and selections are final, the contract price is fixed. Changes you ask for later are priced before they are made.</p></details>
+        <details><summary>How long does a build take?</summary><p>Most homes take eight to eleven months from slab to keys. The estimate above gives a schedule for your size.</p></details>
+        <details><summary>Can I bring my own plans?</summary><p>Yes. We review them with our engineer, suggest changes that save money and price them line by line.</p></details>
+        <details><summary>Which areas do you build in?</summary><p>This is a concept site for a fictional builder. A real build lists the counties served here.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Book a lot walk (concept only) -->
+  <section class="sec sec--walk" id="walk" aria-labelledby="walkH">
+    <div class="wrap walk">
+      <header class="sec__head">
+        <p class="kicker">Sheet G-5 · Site visit</p>
+        <h2 id="walkH" class="sec__h">Book a lot walk.</h2>
+        <p class="sec__p">Walk your lot, or one you are looking at, with a builder. We bring a soil probe and the survey and tell you what it will take to build there.</p>
+      </header>
+      <form class="walk__form" id="walkForm" novalidate>
+        <div class="field"><label for="wName">Name</label><input id="wName" name="name" type="text" autocomplete="name" maxlength="80" required></div>
+        <div class="field"><label for="wEmail">Email</label><input id="wEmail" name="email" type="email" autocomplete="email" maxlength="120" required></div>
+        <div class="field"><label for="wWhere">Where is the lot?</label><input id="wWhere" name="where" type="text" maxlength="120" placeholder="Town or nearest cross streets"></div>
+        <fieldset class="field">
+          <legend>Pick a morning</legend>
+          <div class="chips" id="walkDays" role="radiogroup" aria-label="Morning for the lot walk"></div>
+        </fieldset>
+        <button type="submit" class="btn">Request the walk</button>
+        <p class="walk__msg" id="walkMsg" role="status"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__grid">
+    <div>
+      <p class="foot__h">Limestone Ridge Homes</p>
+      <p class="foot__s">Custom homes, from stakes to front door.</p>
+    </div>
+    <div class="foot__small">
+      <p>Limestone Ridge Homes is a fictional business. This is a concept site designed and built by <a href="/">Quvlo</a> to show what is possible.</p>
+      <p>The footage and photos are AI-generated. Plans, prices and schedules are samples.</p>
+      <p><a href="/work/">More Quvlo work</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="builder.js" defer></script>
+</body>
+</html>

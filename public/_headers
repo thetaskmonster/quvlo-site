@@ -56,3 +56,9 @@
 
 /work/bbq/f/*
   Cache-Control: public, max-age=604800
+
+/work/builder/*
+  X-Robots-Tag: noindex
+
+/work/builder/f/*
+  Cache-Control: public, max-age=604800
