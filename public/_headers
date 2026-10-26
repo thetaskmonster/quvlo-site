@@ -68,3 +68,9 @@
 
 /work/landscape/f/*
   Cache-Control: public, max-age=604800
+
+/work/rental/*
+  X-Robots-Tag: noindex
+
+/work/rental/f/*
+  Cache-Control: public, max-age=604800
