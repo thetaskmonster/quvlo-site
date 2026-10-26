@@ -44,3 +44,9 @@
 
 /work/cleaning/f/*
   Cache-Control: public, max-age=604800
+
+/work/wrap/*
+  X-Robots-Tag: noindex
+
+/work/wrap/f/*
+  Cache-Control: public, max-age=604800

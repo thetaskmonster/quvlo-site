@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Satin &amp; Shade Wrap Studio | Wraps, PPF and Tint, Dallas (Concept)</title>
+<meta name="description" content="A concept website by Quvlo for a fictional Dallas wrap studio. Scroll to wrap a white sedan in satin, then pick a color and a tint and watch the car change.">
+<meta name="theme-color" content="#0b0b0c">
+<link rel="canonical" href="https://quvlo.co/work/wrap/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Quvlo">
+<meta property="og:title" content="Satin &amp; Shade, a concept site by Quvlo">
+<meta property="og:description" content="Scroll to wrap a white sedan in satin. Then pick your color.">
+<meta property="og:url" content="https://quvlo.co/work/wrap/">
+<meta property="og:image" content="https://quvlo.co/work/wrap/img/og.jpg">
+<link rel="preload" href="fonts/big-shoulders.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/hanken.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="wrap.css">
+</head>
+<body class="is-loading">
+<a class="skip" href="#colors">Skip to the color picker</a>
+
+<!-- Loader: the studio's hexagon ceiling lights up one cell per batch of frames -->
+<div class="loader" id="loader" aria-hidden="true">
+  <svg class="loader__hex" id="loaderHex" viewBox="0 0 240 210"></svg>
+  <p class="loader__line"><span id="loadPct">0</span>% · Lights on</p>
+</div>
+
+<header class="bar" id="bar">
+  <a class="brand" href="#top" aria-label="Satin and Shade Wrap Studio, back to top">Satin <i>&amp;</i> Shade</a>
+  <span class="tag">Concept site</span>
+  <nav class="bar__nav" aria-label="Main">
+    <a href="#colors" class="hide-s">Colors</a>
+    <a href="#price" class="hide-s">Pricing</a>
+    <a href="#book" class="btn btn--sm">Book a consult</a>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="film" id="film" aria-label="Scroll story: a white sedan is prepped, wrapped in satin charcoal, tinted and revealed">
+    <div class="film__stage">
+      <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage of a white sedan rolling into a hexagon-lit studio, being prepped, wrapped in satin charcoal film by hand, tinted and revealed."></canvas>
+
+      <aside class="job" aria-hidden="true">
+        <p class="job__row"><span>Job</span><span>0417</span></p>
+        <p class="job__row"><span>Film</span><span>Satin Charcoal</span></p>
+        <p class="job__row"><span>Panels</span><span><b id="jobPanels">0</b> / 23</span></p>
+        <p class="job__row"><span>Glass</span><span id="jobTint">Factory</span></p>
+        <div class="job__bar"><i id="jobFill"></i></div>
+      </aside>
+
+      <ol class="stages" id="stages" aria-hidden="true">
+        <li>Arrive</li><li>Prep</li><li>Lay</li><li>Edges</li><li>Tint</li><li>Reveal</li>
+      </ol>
+
+      <div class="caps">
+        <div class="cap cap--hero" data-shot="0">
+          <p class="cap__k">Wraps, PPF &amp; tint · Dallas</p>
+          <h1 class="cap__h">Every panel,<br>a new color.</h1>
+          <p class="cap__p">Scroll to wrap a white sedan in satin, by hand, panel by panel.</p>
+        </div>
+        <div class="cap" data-shot="1">
+          <p class="cap__k">Day 1 · Prep</p>
+          <h2 class="cap__h">Trim off.<br>Panels clean.</h2>
+          <p class="cap__p">Decontaminated and wiped down, so every edge tucks in instead of stopping short.</p>
+        </div>
+        <div class="cap" data-shot="2">
+          <p class="cap__k">Day 2 · Lay</p>
+          <h2 class="cap__h">One sheet<br>per panel.</h2>
+          <p class="cap__p">Laid by two installers and a felt squeegee. No seams where you look.</p>
+        </div>
+        <div class="cap" data-shot="3">
+          <p class="cap__k">Day 3 · Edges</p>
+          <h2 class="cap__h">Heat sets<br>the memory.</h2>
+          <p class="cap__p">Every curve post-heated, so the film stays where it was put.</p>
+        </div>
+        <div class="cap" data-shot="4">
+          <p class="cap__k">Day 3 · Tint</p>
+          <h2 class="cap__h">Ceramic<br>shade.</h2>
+          <p class="cap__p">Cooler cabin, darker glass, inside Texas limits.</p>
+        </div>
+        <div class="cap cap--end" data-shot="5">
+          <p class="cap__k">Day 4 · Reveal</p>
+          <h2 class="cap__h">Same car.<br>New character.</h2>
+          <a class="btn cap__btn" href="#colors">Pick your color</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cfg" id="colors" aria-labelledby="cfg-h">
+    <div class="cfg__stage" id="cfgStage">
+      <div class="cfg__layers" id="cfgLayers"></div>
+      <div class="cfg__sweep" id="cfgSweep" aria-hidden="true"></div>
+    </div>
+    <div class="cfg__ui">
+      <div class="cfg__head">
+        <p class="kick">Try it on</p>
+        <h2 id="cfg-h" class="h2">Pick a color.<br>Pick a shade.</h2>
+        <p class="cfg__now" aria-live="polite"><span class="cfg__dot" id="cfgDot"></span><span id="cfgName">Satin Charcoal</span><span class="cfg__code" id="cfgCode">SC-2080</span></p>
+      </div>
+      <div class="swatches" id="swatches" role="radiogroup" aria-label="Wrap color"></div>
+      <div class="tint">
+        <label class="tint__label" for="tintRange">Window tint <output id="tintOut" for="tintRange">35%</output></label>
+        <input class="tint__range" id="tintRange" type="range" min="0" max="4" step="1" value="2" aria-valuetext="35 percent light through">
+        <ol class="tint__ticks" aria-hidden="true"><li>70%</li><li>50%</li><li>35%</li><li>20%</li><li>5%</li></ol>
+        <p class="tint__note" id="tintNote" aria-live="polite">Legal on every window in Texas.</p>
+      </div>
+      <button class="btn btn--ghost cfg__hold" id="cfgHold" type="button">Hold to see factory white</button>
+    </div>
+  </section>
+
+  <section class="price" id="price" aria-labelledby="price-h">
+    <div class="wrap price__grid">
+      <div>
+        <p class="kick">Sample pricing</p>
+        <h2 id="price-h" class="h2">Price your wrap.</h2>
+        <p class="lede">Choose the coverage, the finish and the extras. Your color pick above sets the finish for you.</p>
+        <form class="est" id="est" aria-label="Wrap price estimator">
+          <fieldset><legend>Coverage</legend>
+            <label><input type="radio" name="cov" value="650"><span>Accents only</span></label>
+            <label><input type="radio" name="cov" value="3900" checked><span>Full color change</span></label>
+            <label><input type="radio" name="cov" value="4800"><span>Full + door jambs</span></label>
+          </fieldset>
+          <fieldset><legend>Finish</legend>
+            <label><input type="radio" name="fin" value="0" data-fin="gloss"><span>Gloss</span></label>
+            <label><input type="radio" name="fin" value="350" data-fin="satin" checked><span>Satin</span></label>
+            <label><input type="radio" name="fin" value="350" data-fin="matte"><span>Matte</span></label>
+            <label><input type="radio" name="fin" value="1200" data-fin="shift"><span>Color-shift</span></label>
+          </fieldset>
+          <fieldset><legend>Add</legend>
+            <label><input type="checkbox" name="add" value="450" checked><span>Ceramic tint</span></label>
+            <label><input type="checkbox" name="add" value="1600"><span>Front PPF</span></label>
+            <label><input type="checkbox" name="add" value="300"><span>Dechrome trim</span></label>
+          </fieldset>
+        </form>
+      </div>
+      <aside class="ticket" aria-live="polite">
+        <p class="ticket__k">Work order</p>
+        <ul class="ticket__lines" id="ticketLines"></ul>
+        <p class="ticket__n">$<span id="estTotal">4,700</span></p>
+        <p class="ticket__u">installed, film and labor</p>
+        <a class="btn btn--full" href="#book">Book a consult</a>
+        <p class="fine">Sample prices for a concept site. A real build uses the studio's own pricing.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="svc" aria-labelledby="svc-h">
+    <div class="wrap">
+      <p class="kick">What we do</p>
+      <h2 id="svc-h" class="h2">Film, tint and protection.</h2>
+      <ul class="svc__grid">
+        <li><span class="svc__n">01</span><h3>Color change</h3><p>Gloss, satin, matte and color-shift films, one continuous sheet per panel.</p></li>
+        <li><span class="svc__n">02</span><h3>Paint protection</h3><p>Self-healing PPF for the front end or the whole car. Rock chips stay in the film.</p></li>
+        <li><span class="svc__n">03</span><h3>Window tint</h3><p>Ceramic film that blocks heat, not your view, cut to stay inside Texas limits.</p></li>
+        <li><span class="svc__n">04</span><h3>Dechrome</h3><p>Trim, window surrounds and wheels in black or color.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="steps" aria-labelledby="steps-h">
+    <div class="wrap">
+      <p class="kick">How a wrap works</p>
+      <h2 id="steps-h" class="h2">Four days, door to door.</h2>
+      <ol class="steps__list">
+        <li><span class="steps__d">Before</span><h3>Consult</h3><p>See the film in person, under the same lights it will be laid under.</p></li>
+        <li><span class="steps__d">Day 1</span><h3>Prep</h3><p>Wash, decontaminate and remove handles, mirrors and badges.</p></li>
+        <li><span class="steps__d">Days 2–3</span><h3>Install</h3><p>Panel by panel, edges post-heated, tint cut and laid.</p></li>
+        <li><span class="steps__d">Day 4</span><h3>Collect</h3><p>Walk-around under our lights, with a care guide for the film.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="book" id="book" aria-labelledby="book-h">
+    <div class="wrap book__grid">
+      <div>
+        <p class="kick">Book a consult</p>
+        <h2 id="book-h" class="h2">Come see the film.</h2>
+        <p class="lede">Thirty minutes in the studio with the swatch wall and your car under the hex lights.</p>
+      </div>
+      <form class="book__form" id="bookForm" novalidate>
+        <div class="book__days" id="bookDays" role="radiogroup" aria-label="Day"></div>
+        <div class="book__times" id="bookTimes" role="radiogroup" aria-label="Time"></div>
+        <button class="btn btn--full" type="submit">Hold this slot</button>
+        <p class="book__note" id="bookNote" role="status">Your color and tint picks come with you.</p>
+      </form>
+    </div>
+  </section>
+
+  <section class="faq" aria-labelledby="faq-h">
+    <div class="wrap wrap--narrow">
+      <h2 id="faq-h" class="h2">Before you book.</h2>
+      <details><summary>Does a wrap damage paint?</summary><p>On factory paint, a quality film removes cleanly when the time comes. Repainted panels are checked first.</p></details>
+      <details><summary>How long does it last?</summary><p>Typically several years with proper care. We go over washing and care at pickup.</p></details>
+      <details><summary>Is the tint legal?</summary><p>In Texas, front side windows must let in at least 25% of light. The slider above shows when a shade is rear glass only.</p></details>
+      <details><summary>Where are you?</summary><p>This is a concept site for a fictional studio. A real build lists the address and hours here.</p></details>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__grid">
+    <p class="foot__h">Pick your color.</p>
+    <div class="foot__small">
+      <p>Satin &amp; Shade Wrap Studio is a fictional business. This is a concept site designed and built by <a href="/">Quvlo</a> to show what is possible.</p>
+      <p>The car, footage and photos are AI-generated. Prices are samples.</p>
+      <p><a href="/work/">More Quvlo work</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="wrap.js" defer></script>
+</body>
+</html>
