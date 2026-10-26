@@ -11,10 +11,14 @@ four sites (HVAC, cleaning, wrap, BBQ), where about a third of the Higgsfield cr
 | A cleaner's vacuum vanished; uniform colours drifted | ~90 | A continuity sheet per site (step 2) |
 | Cloned, identical houses in the opening drone shot | ~40 | Varied, lived-in settings are written into the continuity sheet (step 2) |
 | BBQ knife shot looked fake | ~30 | Risky motion gets a cheap test first (step 5) |
+| Rental Tahoe, Escalade and Model Y were older generations; plane landed in a few feet of runway | ~280 (site redone) | Real products are matched to current official photos, and every shot gets a physics and scale check, at the stills stage (step 3) |
+| Rental concept kept its airport look after Kyle upgraded the fleet to premium | (same) | When the brief changes, re-derive the design from it, and look at Kyle's references before planning (step 1) |
 
 ## Steps, for every site
 1. **Design plan, approved before any credits.** One message to Kyle: look, colours, fonts, signature
    interaction, and the six-shot list. Nothing is generated until he says yes. (CLAUDE.md rule 13.)
+   First find every reference Kyle sent for that kind of site, including in his other sessions, and say
+   what the plan does better than each one.
 2. **Continuity sheet**, written before the first image:
    - People: exact clothing and colours. Faces turned away or natural, never a real person's likeness.
    - Props that must appear in every shot they belong to (the vacuum, the gauges, the tools).
@@ -22,7 +26,11 @@ four sites (HVAC, cleaning, wrap, BBQ), where about a third of the Higgsfield cr
      check every still against them. No badges, logos or recognisable grilles or light signatures.
    - Settings: real, varied and lived-in. No cloned buildings, cars or furniture.
 3. **Stills first.** Generate every keyframe (about 4 credits each), make one contact sheet, check it
-   against the continuity sheet, and send it to Kyle for a quick yes or "change X". Fixing a still costs
+   against the continuity sheet, and send it to Kyle for a quick yes or "change X". Before sending:
+   - any real product (a car model, an appliance) is compared side by side with current official photos
+     of the model year we claim, so no outgoing generation slips through;
+   - every shot passes a realism check: sizes, distances and speeds a viewer would believe;
+   - ask honestly whether the set beats Kyle's reference. If not, say so before he sees it. Fixing a still costs
    4 credits; fixing a 4K shot costs 30, and a hero object across a whole film costs 200 or more.
 4. **Pin both ends of every shot.** Each Kling clip gets a start frame and an end frame from the
    approved stills, so the model cannot invent or drop objects in between.
