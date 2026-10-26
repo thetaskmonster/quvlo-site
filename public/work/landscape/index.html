@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Caliche &amp; Clover Landscapes | Tree Removal, Grading, Sod and Patios, North Texas (Concept)</title>
+<meta name="description" content="A concept website by Quvlo for a fictional North Texas landscaping crew. Scroll through four days of real work on an overgrown half acre, mow the finished lawn yourself, then price your project.">
+<meta name="theme-color" content="#1d3a2a">
+<link rel="canonical" href="https://quvlo.co/work/landscape/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Quvlo">
+<meta property="og:title" content="Caliche &amp; Clover Landscapes, a concept site by Quvlo">
+<meta property="og:description" content="An overgrown half acre, four working days, one live oak saved. Then you mow the stripes.">
+<meta property="og:url" content="https://quvlo.co/work/landscape/">
+<meta property="og:image" content="https://quvlo.co/work/landscape/img/og.jpg">
+<link rel="preload" href="fonts/young-serif.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/onest-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="landscape.css">
+</head>
+<body class="is-loading">
+<a class="skip" href="#price">Skip to pricing</a>
+
+<!-- Loader: counts real frame downloads, framed as clearing the lot -->
+<div class="loader" id="loader" aria-hidden="true">
+  <p class="loader__k">Clearing the lot</p>
+  <p class="loader__n"><span id="loadPct">0</span><span class="loader__u">%</span></p>
+  <div class="loader__bar"><span id="loadBar"></span></div>
+</div>
+
+<header class="bar">
+  <a class="brand" href="#top" aria-label="Caliche and Clover Landscapes, back to top">Caliche <span class="brand__amp">&amp;</span> Clover</a>
+  <span class="tag">Concept site</span>
+  <nav class="bar__nav" aria-label="Main">
+    <a href="#services" class="hide-s">Services</a>
+    <a href="#mow" class="hide-s">Mow it</a>
+    <a href="#price" class="btn btn--sm">Price it</a>
+  </nav>
+</header>
+
+<main id="top">
+  <!-- The film: scroll runs the job, from the overgrown lot to the lights coming on at the end of day 4 -->
+  <section class="film" id="film" aria-label="Scroll story: four days of landscaping work on an overgrown North Texas half acre">
+    <div class="film__stage">
+      <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage of an overgrown backyard seen from a drone, a climber cutting down a dead tree while the crew feeds a chipper, a loader grading the bare clay, compost blown into new planting beds, Bermuda sod and a flagstone patio going in, then the finished yard at dusk with the lights and fire pit on."></canvas>
+      <div class="shade" aria-hidden="true"></div>
+
+      <div class="hero" id="hero">
+        <p class="hero__k">Landscape construction, North Texas</p>
+        <h1 class="hero__h">From wild lot to the best room of the house.</h1>
+        <p class="hero__p">We clear it, grade it, feed it and finish it. Four working days. Scroll to watch the crew.</p>
+      </div>
+
+      <!-- One caption per day. The tallies count up while the work in the footage happens. -->
+      <div class="cap" data-shot="1">
+        <p class="cap__day">Day 1</p>
+        <h2 class="cap__h">Two dead elms come down. The oak stays.</h2>
+        <p class="cap__p">A roped climber takes the dead wood down in pieces, so nothing lands on the fence or the house. Everything goes through the chipper.</p>
+        <p class="cap__tally"><span class="tally" data-from="0" data-to="9">0</span> cu yd of chips hauled off</p>
+      </div>
+      <div class="cap" data-shot="2">
+        <p class="cap__day">Day 2</p>
+        <h2 class="cap__h">Clear, break up, grade.</h2>
+        <p class="cap__p">The old slab gets broken out, the brush gets pulled by the roots, and the whole yard is graded to drain away from the house.</p>
+        <p class="cap__tally"><span class="tally" data-from="0" data-to="11800" data-sep="1">0</span> sq ft graded to a 2% fall</p>
+      </div>
+      <div class="cap" data-shot="3">
+        <p class="cap__day">Day 3</p>
+        <h2 class="cap__h">Feed the soil before anything goes in it.</h2>
+        <p class="cap__p">Blackland clay is hard on roots. We blow two inches of compost into every bed, then plant natives that shrug off August.</p>
+        <p class="cap__tally"><span class="tally" data-from="0" data-to="86">0</span> native plants set</p>
+      </div>
+      <div class="cap" data-shot="4">
+        <p class="cap__day">Day 4</p>
+        <h2 class="cap__h">Sod down, stone set.</h2>
+        <p class="cap__p">Fresh-cut Bermuda goes down in tight, staggered rows. The flagstone is set by hand around a stone fire pit under the oak.</p>
+        <p class="cap__tally"><span class="tally" data-from="0" data-to="7400" data-sep="1">0</span> sq ft of Bermuda laid</p>
+      </div>
+      <div class="cap cap--end" data-shot="5">
+        <p class="cap__day">Day 4, <span id="clock">4:30 pm</span></p>
+        <h2 class="cap__h">First stripes in. Lights on.</h2>
+        <p class="cap__p">We mow the first cut on the diagonal, switch on the lighting and light the fire. Then the yard is yours.</p>
+        <p class="cap__cta"><a class="btn" href="#mow">Now you mow it</a></p>
+      </div>
+
+      <!-- Four-day tracker: a strip of lawn that gets striped as the job moves along -->
+      <nav class="track" id="track" aria-label="Job progress">
+        <div class="track__lawn" aria-hidden="true"><span class="track__cut" id="trackCut"></span></div>
+        <ol class="track__days">
+          <li data-shot="1"><b>Day 1</b> Tree removal</li>
+          <li data-shot="2"><b>Day 2</b> Grading</li>
+          <li data-shot="3"><b>Day 3</b> Compost and planting</li>
+          <li data-shot="4"><b>Day 4</b> Sod and stone</li>
+          <li data-shot="5"><b>Done</b> Finished</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <!-- Signature: mow the finished lawn yourself -->
+  <section class="mow" id="mow" aria-labelledby="mow-h">
+    <div class="wrap mow__head">
+      <p class="eyebrow">Mow it yourself</p>
+      <h2 id="mow-h" class="h2">The crew laid the sod. You cut the stripes.</h2>
+      <p class="lede">Pick a pattern, then drive. Stripes come from which way the blades lay the grass, so up and down passes read light and dark, just like the real thing.</p>
+    </div>
+    <div class="wrap mow__grid">
+      <div class="board" id="board">
+        <canvas id="mowCanvas" class="board__canvas" tabindex="0" role="application" aria-label="Mowing game. Top-down view of the finished lawn. Use the arrow keys or W A S D to drive the mower, or drag on the lawn on a touch screen." aria-describedby="mowHelp"></canvas>
+        <div class="board__start" id="mowStart">
+          <button class="btn" type="button" id="mowGo">Start mowing</button>
+          <p id="mowHelp" class="board__help"><span class="key-only">Arrow keys or W A S D to drive. Esc to stop.</span><span class="touch-only">Drag on the lawn and the mower follows your finger.</span></p>
+        </div>
+        <p class="board__done" id="mowDone" role="status" aria-live="polite"></p>
+      </div>
+      <div class="panel">
+        <fieldset class="pat">
+          <legend>Pattern</legend>
+          <label><input type="radio" name="pat" value="straight"><span>Straight</span></label>
+          <label><input type="radio" name="pat" value="diagonal" checked><span>Diagonal</span></label>
+          <label><input type="radio" name="pat" value="checker"><span>Checkerboard</span></label>
+          <label><input type="radio" name="pat" value="diamond"><span>Diamond</span></label>
+        </fieldset>
+        <dl class="score" aria-live="off">
+          <div><dt>Mowed</dt><dd><span id="sCov">0</span>%</dd></div>
+          <div><dt>Straight lines</dt><dd><span id="sStr">0</span>%</dd></div>
+          <div><dt>Time</dt><dd id="sTime">0:00</dd></div>
+        </dl>
+        <p class="goal">Mow 90% to finish. <span id="crewLine">Beat the crew's time.</span></p>
+        <p class="best" id="best"></p>
+        <div class="panel__btns">
+          <button class="btn btn--ghost" type="button" id="mowShow">Show me</button>
+          <button class="btn btn--ghost" type="button" id="mowReset">Fresh lawn</button>
+        </div>
+        <p class="panel__note">Scores stay on this device. Nothing is sent anywhere.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="services" id="services" aria-labelledby="svc-h">
+    <div class="wrap">
+      <p class="eyebrow">What we do</p>
+      <h2 id="svc-h" class="h2">Heavy work, finished clean.</h2>
+      <ol class="svc">
+        <li><span class="svc__n">01</span><h3>Tree removal</h3><p>Dead and storm-damaged trees taken down in sections by a roped climber, stumps ground below grade, everything chipped and hauled.</p><p class="svc__from">From $850 a tree</p></li>
+        <li><span class="svc__n">02</span><h3>Grading and drainage</h3><p>Laser-checked grading away from the slab, French drains and dry creek beds for the yards that hold water after a storm.</p><p class="svc__from">From $0.45 a sq ft</p></li>
+        <li><span class="svc__n">03</span><h3>Compost and mulch</h3><p>Compost blown in by truck, not spread by the bag. Beds edged in steel and finished with shredded hardwood.</p><p class="svc__from">From $95 a cu yd, installed</p></li>
+        <li><span class="svc__n">04</span><h3>Sod and seed</h3><p>Fresh-cut Bermuda or Zoysia, rolled the same day it is harvested. Seeded lawns for the big acreage.</p><p class="svc__from">From $1.60 a sq ft</p></li>
+        <li><span class="svc__n">05</span><h3>Patios and stone</h3><p>Flagstone, limestone steppers, seat walls and fire pits, set by hand on a compacted base.</p><p class="svc__from">From $28 a sq ft</p></li>
+        <li><span class="svc__n">06</span><h3>Weekly mowing programs</h3><p>Same crew, same day each week, and your choice of stripe pattern. We rotate the direction so the turf stays upright.</p><p class="svc__from">From $55 a visit</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="price" id="price" aria-labelledby="price-h">
+    <div class="wrap price__grid">
+      <div>
+        <p class="eyebrow">Price your project</p>
+        <h2 id="price-h" class="h2">A real number before we ever show up.</h2>
+        <p class="lede">Rough out your yard and the total moves as you tap. After a free walk-through we send a fixed price within the week.</p>
+      </div>
+      <form class="est" id="est" aria-label="Project estimator">
+        <fieldset>
+          <legend>Yard size</legend>
+          <div class="chips">
+            <label><input type="radio" name="size" value="2500"><span>Small<small>2,500 sq ft</small></span></label>
+            <label><input type="radio" name="size" value="5000" checked><span>Typical<small>5,000 sq ft</small></span></label>
+            <label><input type="radio" name="size" value="10000"><span>Large<small>10,000 sq ft</small></span></label>
+            <label><input type="radio" name="size" value="21780"><span>Half acre<small>21,780 sq ft</small></span></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Dead trees to remove</legend>
+          <div class="step">
+            <button type="button" class="step__b" data-step="-1" aria-label="One fewer tree">&minus;</button>
+            <output id="treesOut" for="trees">1</output>
+            <button type="button" class="step__b" data-step="1" aria-label="One more tree">+</button>
+            <input type="hidden" name="trees" id="trees" value="1">
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Grass</legend>
+          <div class="chips">
+            <label><input type="radio" name="sod" value="0"><span>Keep my lawn</span></label>
+            <label><input type="radio" name="sod" value="1.6" checked><span>Bermuda sod</span></label>
+            <label><input type="radio" name="sod" value="2.4"><span>Zoysia sod</span></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Add to the job</legend>
+          <div class="checks">
+            <label><input type="checkbox" name="grade" checked><span>Grading and drainage</span></label>
+            <label><input type="checkbox" name="beds" checked><span>Compost beds with natives</span></label>
+            <label><input type="checkbox" name="patio"><span>Flagstone patio, 300 sq ft</span></label>
+            <label><input type="checkbox" name="pit"><span>Stone fire pit</span></label>
+            <label><input type="checkbox" name="lights"><span>Landscape lighting, 12 fixtures</span></label>
+            <label><input type="checkbox" name="fence"><span>Cedar fence, back line</span></label>
+          </div>
+        </fieldset>
+        <div class="est__total" aria-live="polite">
+          <p class="est__k">Estimated project</p>
+          <p class="est__n">$<span id="total">0</span></p>
+          <p class="est__days" id="days">4 working days</p>
+          <p class="est__mow">Weekly mowing after: <span id="mowRate">$65</span> a visit, <span id="mowPat">diagonal</span> stripes</p>
+        </div>
+        <button class="btn btn--wide" type="button" id="bookBtn">Book a free walk-through</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="how" aria-labelledby="how-h">
+    <div class="wrap">
+      <p class="eyebrow">How it works</p>
+      <h2 id="how-h" class="h2">Four steps, no surprises.</h2>
+      <ol class="how__list">
+        <li><b>Walk-through</b><span>Thirty minutes in your yard. We measure, check the drainage and look up.</span></li>
+        <li><b>Fixed price</b><span>A drawn plan and one number, in writing, within the week.</span></li>
+        <li><b>Four days</b><span>Most yards are cleared, graded, planted and finished in four working days.</span></li>
+        <li><b>First mow</b><span>We cut the first stripes in the pattern you picked and walk you through watering.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="faq" aria-labelledby="faq-h">
+    <div class="wrap faq__grid">
+      <h2 id="faq-h" class="h2">Questions we get</h2>
+      <div class="faq__list">
+        <details><summary>Will new sod survive a Texas August?</summary><p>Bermuda loves heat. We lay it on fresh compost and set your irrigation for deep, early-morning watering for the first three weeks.</p></details>
+        <details><summary>Do you haul everything away?</summary><p>Yes. Chips, brush, broken concrete and old fence all leave on our trailers. You will not find a pile behind the shed.</p></details>
+        <details><summary>What if it rains during the job?</summary><p>Clay does not grade wet. We pause, and your four days become four working days once the ground firms up.</p></details>
+        <details><summary>Can you handle the HOA?</summary><p>We draw the plan your HOA asks for and submit it with you before any work starts.</p></details>
+        <details><summary>Can I choose my mowing pattern?</summary><p>On a weekly program, yes. Straight, diagonal, checkerboard or diamond, rotated through the season so the grass stays healthy.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__grid">
+    <div>
+      <p class="foot__h">Got a wild lot?</p>
+      <a class="btn" href="#price">Price your project</a>
+    </div>
+    <div class="foot__small">
+      <p>Caliche &amp; Clover Landscapes is a fictional business. This is a concept site designed and built by <a href="/">Quvlo</a> to show what is possible.</p>
+      <p>The footage and photos are AI-generated. Prices are samples.</p>
+      <p><a href="/work/">More Quvlo work</a></p>
+    </div>
+  </div>
+</footer>
+
+<dialog class="book" id="book" aria-labelledby="book-h">
+  <form method="dialog">
+    <h2 id="book-h" class="book__h">Book a free walk-through</h2>
+    <p>This is a concept site, so nothing is booked and nothing is sent. On a real build, this button opens the crew's booking calendar.</p>
+    <button class="btn" value="close">Got it</button>
+  </form>
+</dialog>
+
+<script src="landscape.js" defer></script>
+</body>
+</html>

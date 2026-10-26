@@ -62,3 +62,9 @@
 
 /work/builder/f/*
   Cache-Control: public, max-age=604800
+
+/work/landscape/*
+  X-Robots-Tag: noindex
+
+/work/landscape/f/*
+  Cache-Control: public, max-age=604800
