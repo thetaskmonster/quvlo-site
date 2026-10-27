@@ -4,8 +4,8 @@ Written 2026-10-27 after independent frame-by-frame and device audits (reports i
 plan to pick up when Kyle tops up credits ("reup"). Update the Status column as items land.
 
 ## Where things stand
-- **Credits:** about 224 before the Keyroom reshoot. The reshoot (approved, cap 135) is running, so about 90
-  will be left. 1,200 more arrive with the Nov 22 reset.
+- **Credits:** about 93.5 left after the Keyroom reshoot (130.75 of its 135 cap). 1,200 more arrive with the
+  Nov 22 reset.
 - **The problem:** AI video made motion that isn't real on every scroll site: cloth and doors moving by
   themselves, cars sliding on wheels that don't turn, people morphing, gliding or turning into other people,
   objects changing model mid-shot. The page code also showed frames from the wrong scene, blended two frames
@@ -21,8 +21,7 @@ plan to pick up when Kyle tops up credits ("reup"). Update the Status column as 
 | Item | Status |
 |---|---|
 | New film player (`tools/scrollfilm/film-engine.js`) in all 7 scroll sites. No wrong-scene frames, no double images, even speed, correct frames per device and orientation, no reload on rotate, bounded memory, iOS toolbar fix, overlays follow the drawn frame, jump links load first, hidden overlays inert | built; committed locally (20493d7), NOT pushed until the independent check passes |
-| Keyroom reshoot | shots 1, 2, 4 done and checked; drive test failed in its last second; waiting on Kyle: A (4K, start pinned only, 30 cr) or C (clean 80% of the test, free, softer) |
-| Keyroom reshoot: garage lights, light reveal, riverside tracking drive (test first), parked arrival push-in, plus 18 showroom views (stills done) | in progress, cap 135 |
+| Keyroom reshoot | done, 130.75 cr; all four shots plus 18 showroom views staged (scratchpad/keyroom/stage; frame map film/frames.json). Option A failed (garbled plate and badge), so the drive uses option C (test frames 1-73, softer on phones). Open: wheel-vs-road speed couldn't be measured; shot 2 is a fade, not a sweep; phones show only the jet's nose in shot 4. To integrate after the engine fixes pass review, then an independent device review of the whole site |
 | Footage audits: Keyroom, HVAC, cleaning, wrap, BBQ, builder, landscape | done (reports here) |
 | Device audits: Keyroom, builder + landscape, wrap + BBQ, HVAC + cleaning, homepage + /work/ + studio pages | all done (reports here) |
 | Engine requirement from the HVAC audit: the player must report the frame actually drawn, and every overlay (captions, hotspots, thermostat, HUD) must follow that frame, not the scroll position | to check when the engine lands |
@@ -168,7 +167,7 @@ Each one: stills first, Kyle approves, cheap test for any motion, 4K, frame-by-f
 
 | Site | Reshoot | Credits | Status |
 |---|---|---|---|
-| Keyroom | see Phase 0 | 135 | running |
+| Keyroom | see Phase 0 | 130.75 | shot and staged |
 | Builder | shots 2, 3, 4, 6 as a locked time-lapse with no people or vehicles; shot 5 straight push-in | ~190 | |
 | HVAC | shot 2 failed unit with a slow push; shot 3 empty pad with no people; shot 5 one static room where only the light changes; thermal pair from one plate; optional end of shot 1 | ~150 | |
 | BBQ | shot 4 closed-lid night time-lapse; shot 5 wrapped brisket at sunrise, no hands; shot 3 real packer brisket, one shaker | ~140 | |
