@@ -75,7 +75,7 @@
 /work/rental/f/*
   Cache-Control: public, max-age=604800
 
-/work/rental/spin/*
+/work/rental/show/*
   Cache-Control: public, max-age=604800
 
 # Homepage scripts and styles, and the studio pieces' images (added 2026-10-27). The file names don't

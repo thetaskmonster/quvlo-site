@@ -5,7 +5,7 @@
 <meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Keyroom | Premium Car Rental, Delivered Ready (Concept)</title>
-<meta name="description" content="Concept site by Quvlo for a fictional premium car rental: a night-garage film, a 360° showroom and the full price, deposit and miles before you book.">
+<meta name="description" content="Concept site by Quvlo for a fictional premium car rental: a night-garage film, a showroom of six cars and every cost shown up front.">
 <meta name="theme-color" content="#0b0f17">
 <link rel="canonical" href="https://quvlo.co/work/rental/">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -15,6 +15,8 @@
 <meta property="og:description" content="Premium cars from a private garage, delivered ready. Every cost shown up front.">
 <meta property="og:url" content="https://quvlo.co/work/rental/">
 <meta property="og:image" content="https://quvlo.co/work/rental/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="A black Cadillac Escalade in a private garage at night, from the Keyroom concept site">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="fonts/host-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -40,9 +42,9 @@
 
 <main id="top">
   <!-- The film: scroll drives the footage and the rev counter -->
-  <section class="film" id="film" aria-label="Film: a black Cadillac Escalade is uncovered in a private garage and delivered to a traveler at a private jet">
+  <section class="film" id="film" aria-label="Film: the bays of a private garage warm up, a black Cadillac Escalade waits in its bay, is driven along a riverside road at night and is parked beside a private jet">
     <div class="film__stage">
-      <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage: lights switch on in a private garage of covered cars, the cover comes off a black Cadillac Escalade, the cabin display lights up, the Escalade is driven across a wet city street at night and arrives beside a parked private jet at blue hour."></canvas>
+      <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage: the bays of a private garage warm from cool to golden light over a covered car, the Escalade&#8217;s lamps switch on and its bay lights come up, the Escalade drives along a wet riverside road at night, and it waits with its lights on beside a parked private jet."></canvas>
       <div class="shade" aria-hidden="true"></div>
 
       <div class="hero" id="hero">
@@ -50,14 +52,13 @@
         <p class="hero__p">Premium cars from a private garage, delivered to your door, your hotel or the private terminal. Then the keys are yours.</p>
       </div>
 
-      <div class="cap" data-shot="0"><h2 class="cap__h">Your booking wakes the garage</h2><p class="cap__p">Every car sleeps under a fitted cover in its own bay.</p></div>
-      <div class="cap cap--r" data-shot="1"><h2 class="cap__h">Detailed the night before</h2><p class="cap__p">Uncovered only when it is yours.</p></div>
-      <div class="cap" data-shot="2"><h2 class="cap__h">Set up the way you like it</h2><p class="cap__p">Full tank, your temperature, your phone paired.</p></div>
-      <div class="cap" data-shot="3"><h2 class="cap__h">We bring it across town</h2><p class="cap__p">With a live arrival time, not a two-hour window.</p></div>
-      <div class="cap cap--r" data-shot="4"><h2 class="cap__h">Front door, hotel or private terminal</h2><p class="cap__p">We track your flight and time the handover.</p></div>
-      <div class="cap cap--r cap--tm" data-shot="5"><h2 class="cap__h">Choose yours. We handle the rest.</h2><p class="cap__cta"><a class="btn" href="#showroom">See the cars</a></p></div>
+      <!-- One caption per shot, placed where that shot has empty wall, sky or floor (keyroom.css "Captions") -->
+      <div class="cap cap--s0" data-shot="0"><h2 class="cap__h">The garage warms up for you</h2><p class="cap__p">Every car waits under a fitted cover in its own bay.</p></div>
+      <div class="cap cap--s1" data-shot="1"><h2 class="cap__h">Ready the night before</h2><p class="cap__p">Detailed, a full tank, your seats set.</p></div>
+      <div class="cap cap--s2" data-shot="2"><h2 class="cap__h">We bring it across town</h2><p class="cap__p">With a live arrival time, not a two-hour window.</p></div>
+      <div class="cap cap--s3" data-shot="3"><h2 class="cap__h">Waiting when you land</h2><p class="cap__p">We track your flight. A short walk-around, then the keys are yours.</p><p class="cap__cta"><a class="btn" href="#showroom">See the cars</a></p></div>
 
-      <!-- Rev counter: rpm and redline only -->
+      <!-- Rev counter: shows only while the engine runs, and follows the car's measured speed -->
       <div class="tach" aria-hidden="true">
         <span class="tach__rpm"><span id="tachRpm">0</span> rpm</span>
         <span class="tach__line"><span class="tach__red"></span><span class="tach__fill" id="tachFill"></span></span>
@@ -65,41 +66,45 @@
     </div>
   </section>
 
-  <!-- Showroom: the same garage, one bay over. Scroll or drag turns the car on the turntable. -->
+  <!-- Showroom: the same garage, one bay over. Three fixed views of each car, with one spec pinned to each view. -->
   <section class="show" id="showroom" aria-labelledby="show-h">
     <div class="show__stage" id="showStage">
       <h2 class="sr" id="show-h">Showroom</h2>
-      <canvas id="spinCanvas" class="show__canvas" role="img" aria-label="Black Cadillac Escalade turning on a turntable in the garage"></canvas>
-      <div class="show__dim" id="showDim" aria-hidden="true"></div>
-      <div class="callouts" id="callouts" aria-hidden="true"></div>
-
       <div class="show__info">
         <h3 class="show__name" id="carName">Cadillac Escalade</h3>
         <p class="show__line"><span id="carPrice">$289</span> a day <span class="show__sample">sample</span></p>
         <a class="btn" href="#quote" id="carQuote">Price this car</a>
+        <p class="sr" id="carSpecs">Specs: 420 hp, 6.2L V8. 7 seats, three full rows. 22 in wheels.</p>
       </div>
 
-      <div class="show__turn">
-        <button type="button" class="turn" data-d="-1" aria-label="Turn the car left">&#8592;</button>
-        <button type="button" class="turn" data-d="1" aria-label="Turn the car right">&#8594;</button>
+      <div class="show__pic" id="showPic">
+        <img class="show__img" id="showImg" src="show/escalade/front34-1600.webp" srcset="show/escalade/front34-960.webp 960w, show/escalade/front34-1600.webp 1600w, show/escalade/front34-2400.webp 2400w" sizes="100vw" width="2400" height="1340" alt="Cadillac Escalade from the front three-quarter view, in the garage" decoding="async" loading="lazy">
+        <div class="callouts" id="callouts" aria-hidden="true"></div>
       </div>
 
-      <div class="keyrow" role="radiogroup" aria-label="Choose a car">
-        <button type="button" class="kbtn" role="radio" aria-checked="true" data-car="escalade"><img src="img/key-escalade.webp" alt="" width="120" height="200"><span>Escalade</span></button>
-        <button type="button" class="kbtn" role="radio" aria-checked="false" data-car="tahoe"><img src="img/key-tahoe.webp" alt="" width="120" height="200"><span>Tahoe</span></button>
-        <button type="button" class="kbtn" role="radio" aria-checked="false" data-car="e53"><img src="img/key-e53.webp" alt="" width="120" height="200"><span>AMG E 53</span></button>
-        <button type="button" class="kbtn" role="radio" aria-checked="false" data-car="i5"><img src="img/key-i5.webp" alt="" width="120" height="200"><span>BMW i5</span></button>
-        <button type="button" class="kbtn" role="radio" aria-checked="false" data-car="bronco"><img src="img/key-bronco.webp" alt="" width="120" height="200"><span>Bronco</span></button>
-        <button type="button" class="kbtn" role="radio" aria-checked="false" data-car="modely"><img src="img/key-modely.webp" alt="" width="120" height="200"><span>Model Y</span></button>
+      <div class="show__ctl">
+        <div class="views" role="radiogroup" aria-label="Choose a view">
+          <button type="button" class="vbtn" role="radio" aria-checked="true" tabindex="0" data-view="front34">Front</button>
+          <button type="button" class="vbtn" role="radio" aria-checked="false" tabindex="-1" data-view="side">Side</button>
+          <button type="button" class="vbtn" role="radio" aria-checked="false" tabindex="-1" data-view="rear34">Rear</button>
+        </div>
+        <div class="keyrow" role="radiogroup" aria-label="Choose a car">
+        <button type="button" class="kbtn" role="radio" aria-checked="true" tabindex="0" data-car="escalade"><img src="img/key-escalade.webp" alt="" width="120" height="200"><span>Escalade</span></button>
+        <button type="button" class="kbtn" role="radio" aria-checked="false" tabindex="-1" data-car="tahoe"><img src="img/key-tahoe.webp" alt="" width="120" height="200"><span>Tahoe</span></button>
+        <button type="button" class="kbtn" role="radio" aria-checked="false" tabindex="-1" data-car="e53"><img src="img/key-e53.webp" alt="" width="120" height="200"><span>AMG E 53</span></button>
+        <button type="button" class="kbtn" role="radio" aria-checked="false" tabindex="-1" data-car="i5"><img src="img/key-i5.webp" alt="" width="120" height="200"><span>BMW i5</span></button>
+        <button type="button" class="kbtn" role="radio" aria-checked="false" tabindex="-1" data-car="bronco"><img src="img/key-bronco.webp" alt="" width="120" height="200"><span>Bronco</span></button>
+        <button type="button" class="kbtn" role="radio" aria-checked="false" tabindex="-1" data-car="modely"><img src="img/key-modely.webp" alt="" width="120" height="200"><span>Model Y</span></button>
+        </div>
       </div>
       <p class="sr" id="showSr" aria-live="polite"></p>
     </div>
   </section>
 
-  <!-- The quote: every cost before booking, synced to the car on the turntable -->
+  <!-- The quote: every cost before booking, synced to the car in the showroom -->
   <section class="quote" id="quote" aria-labelledby="quote-h">
     <div class="wrap">
-      <h2 class="sec__h" id="quote-h">The whole price, before you book</h2>
+      <h2 class="sec__h" id="quote-h">Every cost, before the keys</h2>
       <p class="sec__p">Rate, delivery, cover and tax in one number. The refundable deposit and the miles you get are shown right under it. No call needed.</p>
 
       <div class="quote__grid">
@@ -141,7 +146,7 @@
         </form>
 
         <div class="receipt" aria-live="polite">
-          <p class="receipt__top"><span>Your quote</span><span class="receipt__s">Sample prices</span></p>
+          <p class="receipt__top"><span>Your key tag</span><span class="receipt__s">Sample prices</span></p>
           <p class="receipt__total" id="qTotal">$0</p>
           <p class="receipt__sub">Due at booking, estimated tax included</p>
           <dl class="lines" id="qLines"></dl>
@@ -156,16 +161,16 @@
     <div class="wrap">
       <h2 class="sec__h" id="how-h">No counter and no shuttle</h2>
       <ul class="steps">
-        <li><h3>Book</h3><p>Pick the car and where to meet you. We hold a refundable deposit.</p></li>
-        <li><h3>We deliver</h3><p>Ready the night before. A short walk-around, photos, keys.</p></li>
-        <li><h3>Hand it back</h3><p>Text us when you are done. We collect it where you are.</p></li>
+        <li><span class="steps__when">Today</span><h3>Book</h3><p>Pick the car and where to meet you. We hold a refundable deposit.</p></li>
+        <li><span class="steps__when">The night before</span><h3>We deliver</h3><p>Ready the night before. A short walk-around, photos, keys.</p></li>
+        <li><span class="steps__when">When you are done</span><h3>Hand it back</h3><p>Text us when you are done. We collect it where you are.</p></li>
       </ul>
     </div>
   </section>
 
   <section class="faq" id="faq" aria-labelledby="faq-h">
     <div class="wrap wrap--narrow">
-      <h2 class="sec__h" id="faq-h">Before you book</h2>
+      <h2 class="sec__h" id="faq-h">Asked at the handover</h2>
       <details><summary>How does the deposit work?</summary><p>A refundable hold on your credit card, not a charge. Released within three business days of return, minus any extra miles and any fuel or charge used, shown to you with photos first.</p></details>
       <details><summary>How old do I need to be?</summary><p>25 or older, with a valid driver&#8217;s license held for at least two years and a credit card in your name.</p></details>
       <details><summary>How many miles are included?</summary><p>150 a day, pooled across the booking. Extra miles are charged at the rate in your quote.</p></details>
@@ -179,9 +184,9 @@
       <h2 class="sec__h" id="res-h">Reserve your car</h2>
       <p class="sec__p">This is a concept site. The form checks your details and stops there. Nothing is sent.</p>
       <form class="rform" id="rform" novalidate>
-        <label class="field"><span class="field__l">Name</span><input type="text" name="name" autocomplete="name" required maxlength="80"></label>
-        <label class="field"><span class="field__l">Mobile</span><input type="tel" name="phone" autocomplete="tel" required maxlength="20" inputmode="tel"></label>
-        <label class="field"><span class="field__l">Email</span><input type="email" name="email" autocomplete="email" required maxlength="120"></label>
+        <div class="field"><label class="field__l" for="r-name">Name</label><input id="r-name" type="text" name="name" autocomplete="name" required maxlength="80" aria-describedby="err-name"><span class="field__err" id="err-name"></span></div>
+        <div class="field"><label class="field__l" for="r-phone">Mobile</label><input id="r-phone" type="tel" name="phone" autocomplete="tel" required maxlength="20" inputmode="tel" aria-describedby="err-phone"><span class="field__err" id="err-phone"></span></div>
+        <div class="field"><label class="field__l" for="r-email">Email</label><input id="r-email" type="email" name="email" autocomplete="email" required maxlength="120" aria-describedby="err-email"><span class="field__err" id="err-email"></span></div>
         <label class="field"><span class="field__l">Car</span>
           <select name="car" id="rCar">
             <option value="escalade">Cadillac Escalade</option>
@@ -192,9 +197,9 @@
             <option value="modely">Tesla Model Y</option>
           </select>
         </label>
-        <label class="field"><span class="field__l">Start date</span><input type="date" name="date" id="rDate" required></label>
+        <div class="field"><label class="field__l" for="rDate">Start date</label><input type="date" name="date" id="rDate" required aria-describedby="err-date"><span class="field__err" id="err-date"></span></div>
         <label class="field"><span class="field__l">Flight or tail number <small>optional</small></span><input type="text" name="flight" maxlength="10" placeholder="AA 1234 or N123KR"></label>
-        <label class="field field--wide"><span class="field__l">Where should we meet you?</span><input type="text" name="meet" required maxlength="140" placeholder="Hotel, address or terminal"></label>
+        <div class="field field--wide"><label class="field__l" for="r-meet">Where should we meet you?</label><input id="r-meet" type="text" name="meet" required maxlength="140" placeholder="Hotel, address or terminal" aria-describedby="err-meet"><span class="field__err" id="err-meet"></span></div>
         <button class="btn btn--full" type="submit">Request this car</button>
         <p class="form__msg" id="rMsg" role="status" aria-live="polite"></p>
       </form>

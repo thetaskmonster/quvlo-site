@@ -51,14 +51,14 @@ h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -.035em; line-height: 
 /* Top bar */
 .bar { position: fixed; z-index: 40; inset: 0 0 auto; display: flex; align-items: center; gap: 14px; padding: 0 var(--pad); height: 60px; transition: background .3s; }
 .bar.is-solid { background: var(--night); border-bottom: 1px solid var(--line); }
-.brand { font: 800 22px/1 var(--f); letter-spacing: -.04em; text-decoration: none; }
+.brand { display: inline-flex; align-items: center; min-height: 44px; font: 800 22px/1 var(--f); letter-spacing: -.04em; text-decoration: none; }
 .tag { border: 1px solid rgba(228,231,235,.35); border-radius: 99px; padding: 4px 10px; font-size: 12px; color: var(--plat-2); }
 .bar__nav { margin-left: auto; display: flex; align-items: center; gap: 26px; }
-.bar__nav a:not(.btn) { font: 500 15px/1 var(--f); text-decoration: none; opacity: .8; }
+.bar__nav a:not(.btn) { display: inline-flex; align-items: center; min-height: 44px; font: 500 15px/1 var(--f); text-decoration: none; opacity: .8; }
 .bar__nav a:not(.btn):hover { opacity: 1; }
 
 /* Film */
-.film { position: relative; height: 700vh; background: var(--night); }
+.film { position: relative; height: 560vh; background: var(--night); } /* 4 shots, about 1.1 screens of scroll each */
 /* Sized to the large viewport so Safari's toolbar never leaves a band; the engine lifts bottom overlays above it */
 .film__stage { position: sticky; top: 0; height: 100vh; height: 100lvh; overflow: hidden; overflow: clip; }
 .film__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; background: var(--night); }
@@ -77,47 +77,63 @@ h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -.035em; line-height: 
 .cap__h { font-size: clamp(40px, 5vw, 76px); }
 .cap__p { margin: 12px 0 0; font-size: 18px; color: rgba(228,231,235,.85); }
 .cap__cta { margin: 22px 0 0; }
-/* Where the action fills the lower frame (the hands on the cover, the car at the jet), the caption sits up top */
-.cap--r { top: clamp(84px, 12vh, 112px); bottom: auto; text-shadow: 0 2px 22px rgba(11,15,23,.6); }
+/* Captions: each shot's caption sits where that shot has empty wall, sky or floor, never on the car */
+.cap { text-shadow: 0 2px 22px rgba(11,15,23,.6); }
+.cap--s0 { bottom: clamp(30px, 6vh, 60px); }                                  /* the garage floor, below the covered cars */
+.cap--s1, .cap--s2, .cap--s3 { top: clamp(78px, 11vh, 104px); bottom: auto; }  /* the bay wall, the night sky */
+.cap--s1 { max-width: min(400px, 25vw); }                                     /* left of the Escalade in its bay */
+.cap--s1 .cap__h, .cap--s2 .cap__h, .cap--s3 .cap__h { font-size: clamp(34px, 3.9vw, 60px); }
+.cap--s2, .cap--s3 { max-width: min(560px, 44vw); }
+/* Reduced motion: shot 0 is one still with the headline, so its caption moves up out of the headline's way and
+   reads as a small caption, not a second headline */
+.is-still .cap--s0 { top: clamp(78px, 11vh, 104px); bottom: auto; max-width: min(420px, 60vw); }
+.is-still .cap--s0 .cap__h { font-size: 20px; font-weight: 600; letter-spacing: -.01em; line-height: 1.2; color: var(--cognac-2); }
+.is-still .cap--s0 .cap__p { margin-top: 4px; font-size: 15px; }
 
 /* Rev counter: a thin line, a red zone, a number */
-.tach { position: absolute; right: var(--pad); bottom: clamp(26px, 5vh, 44px); width: min(300px, 34vw); display: grid; gap: 10px; justify-items: end; }
+.tach { position: absolute; right: var(--pad); bottom: clamp(26px, 5vh, 44px); width: min(300px, 34vw); display: grid; gap: 10px; justify-items: end; opacity: 0; transition: opacity .4s; }
+.tach.is-on { opacity: 1; }
 .tach__rpm { font: 500 15px/1 var(--f); font-variant-numeric: tabular-nums; color: var(--plat); letter-spacing: -.01em; }
 .tach__rpm.is-red { color: var(--red); }
 .tach__line { position: relative; width: 100%; height: 2px; background: rgba(228,231,235,.18); }
 .tach__red { position: absolute; left: 82.86%; right: 0; top: 0; bottom: 0; background: rgba(210,69,47,.55); } /* 5,800 of 7,000 rpm */
-.tach__fill { position: absolute; left: 0; top: 0; bottom: 0; width: 10%; background: var(--plat); }
+.tach__fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--plat); transition: width .3s ease-out; }
 .tach__fill::after { content: ''; position: absolute; right: -1px; top: -5px; width: 2px; height: 12px; background: #fff; }
 
-/* Showroom: pinned bay, the car turns with scroll */
-.show { position: relative; height: 340vh; background: var(--night); }
-.show__stage { position: sticky; top: 0; height: 100vh; height: 100lvh; overflow: hidden; touch-action: pan-y; cursor: grab; }
-.show__stage.is-drag { cursor: grabbing; }
-.show__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; background: #0d0f14; }
-.show__dim { position: absolute; inset: 0; background: #05070b; opacity: 0; pointer-events: none; transition: opacity .28s ease; }
-.show__dim.is-on { opacity: .92; }
-.show__info { position: absolute; left: var(--pad); top: clamp(84px, 13vh, 130px); max-width: 520px; }
-.show__name { font-size: clamp(44px, 5.6vw, 88px); }
-.show__line { margin: 12px 0 22px; font: 500 20px/1 var(--f); color: var(--plat); font-variant-numeric: tabular-nums; }
+/* Showroom: one bay, three fixed views per car. Rows: the car's name, the picture, the controls. */
+.show { position: relative; background: var(--night); border-top: 1px solid var(--line); }
+/* sized to the screen below the top bar, so the whole showroom is in view when the Showroom link lands on it */
+.show__stage { position: relative; height: calc(100vh - 60px); height: calc(100svh - 60px); min-height: 500px; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: clamp(8px, 1.6vh, 18px); padding: clamp(10px, 2vh, 20px) var(--pad) clamp(14px, 3vh, 30px); }
+.show__info { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 22px; }
+.show__name { font-size: clamp(34px, min(4.8vw, 7.2vh), 76px); }
+.show__line { margin: 0; font: 500 19px/1 var(--f); color: var(--plat); font-variant-numeric: tabular-nums; }
 .show__sample { margin-left: 6px; font-size: 13px; color: var(--plat-2); font-weight: 400; }
-.show__turn { position: absolute; right: var(--pad); top: 50%; display: flex; gap: 8px; transform: translateY(-50%); }
-.turn { width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(228,231,235,.35); background: rgba(11,15,23,.4); color: var(--plat); font: 400 18px/1 var(--f); cursor: pointer; transition: background .2s, border-color .2s; }
-.turn:hover { background: rgba(228,231,235,.12); border-color: var(--plat); }
+.show__info .btn { margin-left: auto; align-self: center; }
+.show__pic { position: relative; min-height: 0; margin: 0 calc(-1 * var(--pad)); overflow: hidden; touch-action: pan-y; background: #0d0f14;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 7%, #000 93%, transparent 100%); mask-image: linear-gradient(180deg, transparent 0, #000 7%, #000 93%, transparent 100%); }
+.show__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; max-width: none; user-select: none; -webkit-user-drag: none; }
+.show__ctl { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; }
+.views { display: flex; gap: 4px; padding: 4px; border-radius: 999px; border: 1px solid var(--line); background: rgba(11,15,23,.62); }
+.vbtn { min-width: 72px; min-height: 44px; padding: 0 16px; border: 1px solid transparent; border-radius: 999px; background: transparent; color: var(--plat-2); font: 500 15px/1 var(--f); cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
+.vbtn:hover { color: var(--plat); background: rgba(228,231,235,.06); }
+.vbtn[aria-checked="true"] { color: #fff; background: rgba(184,118,63,.18); border-color: rgba(211,146,86,.6); }
+.show__pic[aria-busy="true"]::after { content: ''; position: absolute; right: 16px; bottom: 16px; width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(228,231,235,.25); border-top-color: var(--cognac-2); animation: busy .8s linear infinite; }
+@keyframes busy { to { transform: rotate(360deg); } }
 
-/* Callouts pinned to parts of the car */
+/* Spec callout: dot on the part, card on the empty wall or floor, a line between */
 .callouts { position: absolute; inset: 0; pointer-events: none; }
 .co { position: absolute; left: 0; top: 0; opacity: 0; transition: opacity .25s; }
 .co.is-on { opacity: 1; }
-.co__dot { position: absolute; left: -4px; top: -4px; width: 8px; height: 8px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 4px rgba(255,255,255,.18); }
-.co__line { position: absolute; left: 0; top: 0; height: 1px; background: rgba(255,255,255,.75); transform-origin: 0 0; }
-.co__card { position: absolute; white-space: nowrap; padding: 8px 12px; border-radius: 10px; background: rgba(11,15,23,.72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--line); }
+.co__dot { position: absolute; left: -5px; top: -5px; width: 10px; height: 10px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 4px rgba(255,255,255,.2), 0 0 0 1px rgba(11,15,23,.5); }
+.co__line { position: absolute; left: 0; top: 0; height: 1px; background: rgba(255,255,255,.8); transform-origin: 0 0; }
+.co__card { position: absolute; left: 0; top: 0; white-space: nowrap; padding: 8px 12px; border-radius: 10px; background: rgba(11,15,23,.78); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--line); }
 .co__v { display: block; font: 700 22px/1.05 var(--f); letter-spacing: -.02em; color: #fff; font-variant-numeric: tabular-nums; }
 .co__k { display: block; margin-top: 3px; font: 400 13px/1.2 var(--f); color: var(--plat-2); }
 
 /* Key row */
-.keyrow { position: absolute; left: 50%; bottom: clamp(18px, 4vh, 36px); transform: translateX(-50%); display: flex; gap: 6px; padding: 6px; border-radius: 18px; background: rgba(11,15,23,.62); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--line); }
-.kbtn { display: grid; justify-items: center; gap: 4px; width: 92px; padding: 8px 4px 8px; border: 1px solid transparent; border-radius: 13px; background: transparent; color: var(--plat-2); font: 500 13px/1 var(--f); cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
-.kbtn img { width: 34px; height: 56px; object-fit: contain; filter: saturate(.9); transition: transform .25s; }
+.keyrow { display: flex; gap: 6px; padding: 6px; border-radius: 18px; background: rgba(11,15,23,.62); border: 1px solid var(--line); }
+.kbtn { display: grid; justify-items: center; gap: 4px; width: 88px; padding: 6px 4px; border: 1px solid transparent; border-radius: 13px; background: transparent; color: var(--plat-2); font: 500 13px/1 var(--f); white-space: nowrap; cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
+.kbtn img { width: 30px; height: 50px; object-fit: contain; filter: saturate(.9); transition: transform .25s; }
 .kbtn:hover { color: var(--plat); background: rgba(228,231,235,.06); }
 .kbtn:hover img { transform: translateY(-2px) rotate(-4deg); }
 .kbtn[aria-checked="true"] { color: #fff; background: rgba(184,118,63,.18); border-color: rgba(211,146,86,.6); }
@@ -137,7 +153,7 @@ h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -.035em; line-height: 
 select, input[type="text"], input[type="tel"], input[type="email"], input[type="date"] { width: 100%; min-height: 50px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(228,231,235,.22); background: var(--night-2); color: #fff; font: 500 16px/1 var(--f); color-scheme: dark; }
 select:focus, input:focus { border-color: var(--cognac-2); outline: none; box-shadow: 0 0 0 3px rgba(211,146,86,.2); }
 .days { display: flex; align-items: center; gap: 16px; }
-.days input { flex: 1; accent-color: var(--cognac); height: 28px; }
+.days input { flex: 1; accent-color: var(--cognac); height: 44px; margin: 0; }
 .days output { min-width: 74px; text-align: right; font: 600 18px/1 var(--f); color: #fff; font-variant-numeric: tabular-nums; }
 .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .seg--col { grid-template-columns: 1fr; }
@@ -147,7 +163,9 @@ select:focus, input:focus { border-color: var(--cognac-2); outline: none; box-sh
 .seg small { color: var(--plat-2); font-size: 13px; font-weight: 400; }
 .seg input:checked + span { border-color: var(--cognac-2); background: rgba(184,118,63,.14); }
 .seg input:focus-visible + span { outline: 2px solid var(--cognac-2); outline-offset: 2px; }
-.receipt { background: var(--paper); color: var(--ink); padding: clamp(22px, 3vw, 34px); border-radius: 20px; box-shadow: 0 30px 70px rgba(0,0,0,.45); position: sticky; top: 84px; }
+.receipt { background: var(--paper); color: var(--ink); padding: clamp(22px, 3vw, 34px); padding-top: 54px; border-radius: 34px 34px 20px 20px; box-shadow: 0 30px 70px rgba(0,0,0,.45); position: sticky; top: 84px; }
+/* the quote is a key tag: a punched hole with a brass ring at the top */
+.receipt::before { content: ''; position: absolute; top: 18px; left: 50%; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; background: var(--night); box-shadow: 0 0 0 3px #c79a63, inset 0 2px 3px rgba(0,0,0,.6); }
 .receipt__top { margin: 0; display: flex; justify-content: space-between; font: 500 14px/1 var(--f); color: var(--ink-2); }
 .receipt__s { color: #8a4d1f; }
 .receipt__total { margin: 14px 0 0; font: 700 clamp(52px, 5.4vw, 72px)/1 var(--f); letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
@@ -163,6 +181,7 @@ select:focus, input:focus { border-color: var(--cognac-2); outline: none; box-sh
 .how { background: var(--night-2); border-top: 1px solid var(--line); }
 .steps { list-style: none; margin: clamp(36px, 5vw, 60px) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 3vw, 44px); }
 .steps h3 { font-size: 30px; margin-bottom: 12px; }
+.steps__when { display: block; margin-bottom: 14px; padding-top: 14px; border-top: 2px solid var(--cognac); width: max-content; font: 500 13px/1 var(--f); letter-spacing: .04em; text-transform: uppercase; color: var(--cognac-2); }
 .steps p { margin: 0; color: var(--plat-2); }
 
 /* FAQ */
@@ -182,6 +201,8 @@ details p { margin: 0 0 24px; max-width: 620px; color: var(--plat-2); }
 .field--wide, .rform .btn, .form__msg { grid-column: 1 / -1; }
 .rform input:invalid.is-touched, .rform select:invalid.is-touched, .rform [aria-invalid="true"] { border-color: #e2705c; }
 .form__msg { margin: 0; min-height: 1.5em; font-size: 15px; }
+.field__err { min-height: 0; font-size: 14px; color: #f08d7a; }
+.field__err:empty { display: none; }
 .form__msg.is-ok { color: var(--cognac-2); }
 .form__msg.is-err { color: #f08d7a; }
 
@@ -189,22 +210,30 @@ details p { margin: 0 0 24px; max-width: 620px; color: var(--plat-2); }
 .foot { background: #07090e; padding: 60px 0 70px; border-top: 1px solid var(--line); font-size: 14px; color: var(--plat-2); }
 .foot__brand { margin: 0 0 10px; font: 800 30px/1 var(--f); letter-spacing: -.04em; color: var(--plat); }
 .foot__fine { max-width: 780px; font-size: 13px; opacity: .85; }
+/* 44 px tall tap area without changing the line spacing */
+.foot__fine a { display: inline-block; padding: 12px 7px; margin: -12px -7px; }
 
 @media (max-width: 980px) {
   .quote__grid { grid-template-columns: 1fr; }
   .steps { grid-template-columns: 1fr; }
-  .receipt { position: static; }
+  .receipt { position: relative; top: auto; }
 }
 @media (max-width: 760px) {
   body { font-size: 16px; }
-  .hide-s { display: none; }
+  .hide-s, .bar__nav a.hide-s { display: none; }
+  html { scroll-padding-top: 54px; }
   .bar { height: 54px; }
   .brand { font-size: 20px; }
   .tag { font-size: 11px; padding: 3px 8px; }
-  .shade { background: linear-gradient(0deg, rgba(11,15,23,.9) 0%, rgba(11,15,23,.5) 22%, rgba(11,15,23,0) 40%), linear-gradient(180deg, rgba(11,15,23,.45) 0%, rgba(11,15,23,0) 14%); }
-  .hero, .cap, .cap--r { left: 16px; right: 16px; top: auto; bottom: 52px; max-width: none; }
-  /* last shot: the car fills the lower frame on phones, so the caption sits in the sky */
-  .cap--tm { top: 76px; bottom: auto; }
+  /* darker at the top too: the reveal and jet captions sit up there, over the bay's ceiling light and the floodlights */
+  .shade { background: linear-gradient(0deg, rgba(11,15,23,.9) 0%, rgba(11,15,23,.5) 22%, rgba(11,15,23,0) 40%), linear-gradient(180deg, rgba(11,15,23,.82) 0%, rgba(11,15,23,.55) 18%, rgba(11,15,23,0) 34%); }
+  .hero, .cap, .cap--s0, .cap--s1, .cap--s2, .cap--s3 { left: 16px; right: 16px; top: auto; bottom: 52px; max-width: none; }
+  /* the car fills the middle of the phone frame in the reveal and at the jet, so those captions sit up top */
+  /* the jet shot's car fills the lower frame, so its caption sits in the sky; the reveal's sits on the floor below the tires */
+  .cap--s3, .is-still .cap--s0 { top: 70px; bottom: auto; }
+  .is-still .cap--s0 .cap__h { font-size: 18px; }
+  .cap--s1 { bottom: 16px; }
+  .cap--s1 .cap__h, .cap--s2 .cap__h, .cap--s3 .cap__h { font-size: 34px; }
   .hero__h { font-size: 46px; }
   .hero__p { font-size: 15px; margin-top: 10px; }
   .cap__h { font-size: 34px; }
@@ -212,22 +241,70 @@ details p { margin: 0 0 24px; max-width: 620px; color: var(--plat-2); }
   .cap__cta { margin-top: 12px; }
   .tach { left: 16px; right: 16px; bottom: 16px; width: auto; grid-template-columns: 1fr auto; align-items: center; justify-items: stretch; }
   .tach__rpm { order: 2; font-size: 13px; }
-  .show__info { left: 16px; right: 16px; top: 70px; }
-  .show__name { font-size: 40px; }
-  .show__line { margin: 8px 0 14px; font-size: 17px; }
-  .show__info .btn { min-height: 42px; padding: 0 18px; font-size: 14px; }
-  .show__turn { display: none; }
-  .keyrow { left: 10px; right: 10px; transform: none; justify-content: space-between; gap: 2px; padding: 4px; bottom: 14px; }
-  .kbtn { width: auto; flex: 1; padding: 6px 2px; font-size: 11px; }
-  .kbtn img { width: 26px; height: 42px; }
-  .co__v { font-size: 17px; }
-  .co__k { font-size: 12px; }
+  .show__stage { padding-top: 12px; }
+  .show__name { font-size: 32px; }
+  .show__line { font-size: 16px; }
+  .show__info .btn { min-height: 44px; padding: 0 16px; font-size: 14px; }
+  .views { width: 100%; justify-content: space-between; }
+  .vbtn { flex: 1; }
+  .keyrow { width: 100%; justify-content: space-between; gap: 2px; padding: 4px; }
+  .kbtn { width: auto; flex: 1; min-width: 0; padding: 6px 2px; font-size: 11px; }
+  .kbtn img { width: 24px; height: 40px; }
+  .co__v { font-size: 16px; }
+  .co__k { font-size: 11px; }
+  .co__card { padding: 6px 9px; }
   .seg { grid-template-columns: 1fr; }
   .rform { grid-template-columns: 1fr; }
   summary { font-size: 19px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
-  .show { height: auto; }
-  .show__stage { position: relative; }
+}
+/* Short phones (SE): the showroom fits under the bar when a link lands on it */
+@media (max-width: 760px) and (max-height: 600px) and (orientation: portrait) {
+  .show__stage { gap: 6px; padding-bottom: 8px; }
+  .kbtn { padding: 4px 2px; gap: 2px; }
+  .kbtn img { width: 20px; height: 32px; }
+}
+/* Portrait tablets: the film is a band from 21% to 71% of the stage (band 0.5, bandY 0.42 in keyroom.js), so the
+   headline, captions and rev counter sit in the space under it, like a caption under a photograph */
+@media (orientation: portrait) and (min-width: 600px) {
+  .hero, .cap, .cap--s0, .cap--s1, .cap--s2, .cap--s3 { top: calc(71% + 28px); bottom: auto; left: var(--pad); right: auto; max-width: min(560px, 62vw); }
+  .hero__h { font-size: clamp(44px, 7vw, 76px); }
+  .cap__h, .cap--s1 .cap__h, .cap--s2 .cap__h, .cap--s3 .cap__h { font-size: clamp(32px, 4.6vw, 48px); }
+  .tach { top: calc(71% + 34px); bottom: auto; right: var(--pad); width: min(240px, 28vw); }
+  .is-still .cap--s0 { top: 76px; }
+}
+/* Portrait screens: the picture keeps the whole car (3:2), the rows stack and the page scrolls */
+@media (orientation: portrait) {
+  .show__stage { height: auto; min-height: 0; grid-template-rows: auto auto auto; }
+  .show__pic { aspect-ratio: 3 / 2; }
+}
+/* Phones on their side: the picture fills the left, the name and controls stack on the right */
+@media (orientation: landscape) and (max-height: 500px) {
+  html { scroll-padding-top: 48px; }
+  .bar { height: 48px; }
+  .hero, .cap, .cap--s0, .cap--s1, .cap--s2, .cap--s3 { left: 16px; right: auto; top: auto; bottom: 18px; max-width: 54vw; }
+  .cap--s1, .cap--s3 { top: 58px; bottom: auto; max-width: 44vw; }
+  .is-still .cap--s0 { left: auto; right: 16px; top: 58px; bottom: auto; max-width: 40vw; isolation: isolate; }
+  /* a soft dark pool behind the still's caption, so the pillar and the lit bay behind it don't run through the words */
+  .is-still .cap--s0::before { content: ''; position: absolute; inset: -16px -20px -18px -24px; z-index: -1; pointer-events: none;
+    background: radial-gradient(closest-side, rgba(11,15,23,.8), rgba(11,15,23,.58) 64%, rgba(11,15,23,0)); }
+  .hero__h { font-size: 34px; }
+  .hero__p { font-size: 14px; margin-top: 6px; max-width: 46vw; }
+  .cap__h, .cap--s1 .cap__h, .cap--s2 .cap__h, .cap--s3 .cap__h { font-size: 24px; }
+  .cap__p { font-size: 14px; margin-top: 4px; }
+  .cap__cta { margin-top: 8px; }
+  .cap__cta .btn { min-height: 44px; }
+  .cap--s3 .cap__p { display: none; } /* keeps the button clear of the car's roof */
+  .tach { left: auto; right: 16px; bottom: 14px; width: 30vw; }
+  .show__stage { height: calc(100vh - 48px); height: calc(100svh - 48px); min-height: 280px; padding: 6px 16px 10px; grid-template-columns: minmax(0, 1fr) 236px; grid-template-rows: auto minmax(0, 1fr); gap: 8px 14px; }
+  .show__pic { grid-column: 1; grid-row: 1 / 3; margin: 0; aspect-ratio: auto; border-radius: 10px; -webkit-mask-image: none; mask-image: none; }
+  .show__info { grid-column: 2; grid-row: 1; display: grid; gap: 6px; }
+  .show__info .btn { margin-left: 0; justify-self: start; }
+  .show__name { font-size: 24px; }
+  .show__ctl { grid-column: 2; grid-row: 2; align-content: end; }
+  .keyrow { display: grid; grid-template-columns: repeat(3, 1fr); width: 100%; }
+  .kbtn { width: auto; min-height: 44px; padding: 0 2px; align-content: center; }
+  .kbtn img { display: none; }
 }

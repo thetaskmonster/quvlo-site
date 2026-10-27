@@ -21,7 +21,7 @@ plan to pick up when Kyle tops up credits ("reup"). Update the Status column as 
 | Item | Status |
 |---|---|
 | New film player (`tools/scrollfilm/film-engine.js`) in all 7 scroll sites. No wrong-scene frames, no double images, even speed, correct frames per device and orientation, no reload on rotate, bounded memory, iOS toolbar fix, overlays follow the drawn frame, jump links load first, hidden overlays inert | done and pushed after three rounds of independent review (round 3: safe to push; 0 wrong-scene frames, 0 double images, worst end-of-scroll freeze 84 ms vs 1.5 s before; reports in scratchpad/verify-engine/). Lighter 1440-wide set (f/l) for phones in landscape. Open Lows: HVAC sky shot peaks at 422 MB decoded on iPad (decode at screen size before older iPhones matter); overlays hittable for ~0.1 s at the start of a fade-in; Keyroom caption 0 hidden under reduced motion |
-| Keyroom reshoot | done, 130.75 cr; all four shots plus 18 showroom views staged (scratchpad/keyroom/stage; frame map film/frames.json). Option A failed (garbled plate and badge), so the drive uses option C (test frames 1-73, softer on phones). Open: wheel-vs-road speed couldn't be measured; shot 2 is a fade, not a sweep; phones show only the jet's nose in shot 4. To integrate after the engine fixes pass review, then an independent device review of the whole site |
+| Keyroom reshoot | done and pushed. 130.75 cr for the reshoot plus 10.5 cr for three showroom fixes (balance about 83). Passed independent footage review (3 rounds) and device review (2 rounds); reports in scratchpad/review-keyroom-footage/ and scratchpad/review-keyroom/. Recorded exceptions: shot 2 has two 6-step still beats around the lamps switching on (deliberate) and a 6.6x lamp-on step. Lows left: rotation stand-in flash (engine, film-engine.js:465), iPad portrait band pan stops abruptly in shot 1, small garbled badges, EU-style plates on i5 and E53, shot 4 is a pure zoom |
 | Footage audits: Keyroom, HVAC, cleaning, wrap, BBQ, builder, landscape | done (reports here) |
 | Device audits: Keyroom, builder + landscape, wrap + BBQ, HVAC + cleaning, homepage + /work/ + studio pages | all done (reports here) |
 | Engine requirement from the HVAC audit: the player must report the frame actually drawn, and every overlay (captions, hotspots, thermostat, HUD) must follow that frame, not the scroll position | done: 0 caption or hotspot mismatches in the reviewer's matrix |
@@ -169,7 +169,7 @@ Each one: stills first, Kyle approves, cheap test for any motion, 4K, frame-by-f
 
 | Site | Reshoot | Credits | Status |
 |---|---|---|---|
-| Keyroom | see Phase 0 | 130.75 | shot and staged |
+| Keyroom | see Phase 0 | 141.25 | done |
 | Builder | shots 2, 3, 4, 6 as a locked time-lapse with no people or vehicles; shot 5 straight push-in | ~190 | |
 | HVAC | shot 2 failed unit with a slow push; shot 3 empty pad with no people; shot 5 one static room where only the light changes; thermal pair from one plate; optional end of shot 1 | ~150 | |
 | BBQ | shot 4 closed-lid night time-lapse; shot 5 wrapped brisket at sunrise, no hands; shot 3 real packer brisket, one shaker | ~140 | |
