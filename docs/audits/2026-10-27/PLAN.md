@@ -23,9 +23,37 @@ plan to pick up when Kyle tops up credits ("reup"). Update the Status column as 
 | New film player (`tools/scrollfilm/film-engine.js`) in all 7 scroll sites. No wrong-scene frames, no double images, even speed, correct frames per device and orientation, no reload on rotate, bounded memory, iOS toolbar fix | in progress (uncommitted) |
 | Keyroom reshoot: garage lights, light reveal, riverside tracking drive (test first), parked arrival push-in, plus 18 showroom views (stills done) | in progress, cap 135 |
 | Footage audits: Keyroom, HVAC, cleaning, wrap, BBQ, builder, landscape | done (reports here) |
-| Device audits: Keyroom, builder + landscape, wrap + BBQ | done (reports here) |
-| Device audits still running: HVAC + cleaning, homepage + /work/ + studio pages | running |
+| Device audits: Keyroom, builder + landscape, wrap + BBQ, homepage + /work/ + studio pages | done (reports here) |
+| Device audit still running: HVAC + cleaning | running |
 | GSC Capital Group site | separate session ("GSC Capital Group site: finish and launch prep") |
+
+## Phase 1a: quvlo.co itself, must be fixed before this PR merges (no credits)
+See studio-home-devices.md.
+1. **Security gate:** retire the legacy endpoints `/api/scan` (an open URL fetcher that can fire a paid
+   enrichment webhook), `/api/lead` and `/api/stripe-webhook` by moving them to archive/.
+2. **Legal:** rewrite Privacy and Terms for the current business; remove /thank-you ("Deposit received");
+   fix the chat footnote.
+3. **Share image and favicon:** still the old Agent Teardown card. Re-render.
+4. **Concierge:**
+   - Kyle sets `ANTHROPIC_API_KEY`, `RATE_SALT` and the `CONCIERGE` KV binding for the Preview environment
+     in Cloudflare;
+   - add an honest offline fallback;
+   - arrow keys must not start the chat;
+   - consider Turnstile so the $5/day cap can't be burned.
+5. **Homepage:**
+   - deep links (#close/#start/#work) land mid-story on Safari: reserve the section height;
+   - hero collision on slow connections and with reduced motion;
+   - iPhone landscape layout;
+   - hero goes black while loading;
+   - seam and headline over the storefront on iPad;
+   - "the team" vs "talk to Kyle".
+6. **Studio pieces:**
+   - Basalt, Inlay, Ballast and Longhand need concept labels, and forms must say "Demo only: nothing was sent";
+   - the fixed pill and bars cover content on iPhone;
+   - Inlay's dead "Cloth" link;
+   - Basalt's slots and dead Book button;
+   - Texas med-spa/IV wording (Basalt) and weekly DXA (Ballast);
+   - Basalt's cream + terracotta "Upstairs" palette.
 
 ## Phase 1: free fixes (code, trims, copy); do these first, no credits
 - **Keyroom:**
