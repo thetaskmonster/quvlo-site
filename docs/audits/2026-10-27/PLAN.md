@@ -22,7 +22,9 @@ plan to pick up when Kyle tops up credits ("reup"). Update the Status column as 
 |---|---|
 | New film player (`tools/scrollfilm/film-engine.js`) in all 7 scroll sites. No wrong-scene frames, no double images, even speed, correct frames per device and orientation, no reload on rotate, bounded memory, iOS toolbar fix | in progress (uncommitted) |
 | Keyroom reshoot: garage lights, light reveal, riverside tracking drive (test first), parked arrival push-in, plus 18 showroom views (stills done) | in progress, cap 135 |
-| Remaining audits: landscape footage; devices for HVAC + cleaning and wrap + BBQ; homepage, /work/ and studio pages | running |
+| Footage audits: Keyroom, HVAC, cleaning, wrap, BBQ, builder, landscape | done (reports here) |
+| Device audits: Keyroom, builder + landscape | done (reports here) |
+| Device audits still running: HVAC + cleaning, wrap + BBQ, homepage + /work/ + studio pages | running |
 | GSC Capital Group site | separate session ("GSC Capital Group site: finish and launch prep") |
 
 ## Phase 1: free fixes (code, trims, copy); do these first, no credits
@@ -78,6 +80,8 @@ plan to pick up when Kyle tops up credits ("reup"). Update the Status column as 
   - warranty bars;
   - accessibility list.
 - **Landscape:**
+  - footage: re-time shot 2 to src 0-26 with no dissolve; constant-step cadence; phone crops (shot 1 pans to
+    the oak, shot 5 centre ~0.75); caption "Sod down, stone set" until shot 5 is reshot;
   - game: the Show-me instant-win bug, the stored best of 0, the clock when paused, the pattern switch,
     a touch stop, the iPhone landscape trap, straightness in the score;
   - hero kicker contrast;
@@ -102,7 +106,7 @@ Each one: stills first, Kyle approves, cheap test for any motion, 4K, frame-by-f
 | BBQ | shot 4 closed-lid night time-lapse; shot 5 wrapped brisket at sunrise, no hands; shot 3 real packer brisket, one shaker | ~140 | |
 | Cleaning | shot 2 before/after with no people; shot 3 one-hand single stroke; shot 1 vacuum that stays the same; hero mess composited onto the clean master | ~130 | |
 | Wrap | shot 1 straight arrival on turning wheels; Lay and Edges as hands-only close-ups | ~130 | |
-| Landscape | pending its footage audit | ~100 (estimate) | |
+| Landscape | shot 3 high locked drone time-lapse of grading (no visible machine turning, no crew); shot 5 slow push over fresh sod and the finished patio, no people; chipper beat as a person-free close-up or dropped | ~115 | |
 | Retake buffer | | ~120 | |
 | **Total** | | **~1,100** | |
 
