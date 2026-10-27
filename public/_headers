@@ -74,3 +74,6 @@
 
 /work/rental/f/*
   Cache-Control: public, max-age=604800
+
+/work/rental/spin/*
+  Cache-Control: public, max-age=604800
