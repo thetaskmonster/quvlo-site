@@ -20,11 +20,11 @@ plan to pick up when Kyle tops up credits ("reup"). Update the Status column as 
 ## Phase 0: running now (no decisions needed)
 | Item | Status |
 |---|---|
-| New film player (`tools/scrollfilm/film-engine.js`) in all 7 scroll sites. No wrong-scene frames, no double images, even speed, correct frames per device and orientation, no reload on rotate, bounded memory, iOS toolbar fix, overlays follow the drawn frame, jump links load first, hidden overlays inert | built; committed locally (20493d7), NOT pushed until the independent check passes |
+| New film player (`tools/scrollfilm/film-engine.js`) in all 7 scroll sites. No wrong-scene frames, no double images, even speed, correct frames per device and orientation, no reload on rotate, bounded memory, iOS toolbar fix, overlays follow the drawn frame, jump links load first, hidden overlays inert | done and pushed after three rounds of independent review (round 3: safe to push; 0 wrong-scene frames, 0 double images, worst end-of-scroll freeze 84 ms vs 1.5 s before; reports in scratchpad/verify-engine/). Lighter 1440-wide set (f/l) for phones in landscape. Open Lows: HVAC sky shot peaks at 422 MB decoded on iPad (decode at screen size before older iPhones matter); overlays hittable for ~0.1 s at the start of a fade-in; Keyroom caption 0 hidden under reduced motion |
 | Keyroom reshoot | done, 130.75 cr; all four shots plus 18 showroom views staged (scratchpad/keyroom/stage; frame map film/frames.json). Option A failed (garbled plate and badge), so the drive uses option C (test frames 1-73, softer on phones). Open: wheel-vs-road speed couldn't be measured; shot 2 is a fade, not a sweep; phones show only the jet's nose in shot 4. To integrate after the engine fixes pass review, then an independent device review of the whole site |
 | Footage audits: Keyroom, HVAC, cleaning, wrap, BBQ, builder, landscape | done (reports here) |
 | Device audits: Keyroom, builder + landscape, wrap + BBQ, HVAC + cleaning, homepage + /work/ + studio pages | all done (reports here) |
-| Engine requirement from the HVAC audit: the player must report the frame actually drawn, and every overlay (captions, hotspots, thermostat, HUD) must follow that frame, not the scroll position | to check when the engine lands |
+| Engine requirement from the HVAC audit: the player must report the frame actually drawn, and every overlay (captions, hotspots, thermostat, HUD) must follow that frame, not the scroll position | done: 0 caption or hotspot mismatches in the reviewer's matrix |
 | GSC Capital Group site | separate session ("GSC Capital Group site: finish and launch prep") |
 
 ## Phase 1a: quvlo.co itself, must be fixed before this PR merges (no credits)

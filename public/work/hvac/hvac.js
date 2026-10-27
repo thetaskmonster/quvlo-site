@@ -122,6 +122,7 @@
   }
 
   /* Hotspots with leader lines that draw in */
+  let engine = null;
   const spotEls = SPOTS.map(S => {
     const el = document.createElement('div');
     el.className = 'spot';
@@ -139,7 +140,8 @@
     path.setAttribute('class', 'lead'); path.setAttribute('pathLength', '1');
     svg.append(path);
     const state = { el, card, path, btn, forced: null };
-    btn.addEventListener('click', () => { state.forced = !(state.el.classList.contains('is-open')); });
+    // the film may be standing still, so ask for a repaint: placement runs with the drawn frame
+    btn.addEventListener('click', () => { state.forced = !(state.el.classList.contains('is-open')); if (engine) engine.redraw(); });
     return state;
   });
 
@@ -221,11 +223,12 @@
     });
   }
 
-  window.FilmEngine.create({
+  engine = window.FilmEngine.create({
     section: film, stage: $('.film__stage'), canvas, FV, range: [0.015, 0.885], rate: 9,
     lift: '.cap, .hud, .rail, .book',
     overlays: { '.cap': 'is-on', '.spot': 'is-on', '.book': 'is-on' },
-    extra: [{ name: 'fg', frames: null, url: (set, i) => `fg/${set}/${String(i + 1).padStart(3, '0')}.webp?v=${FV}` }],
+    // the lighter phone-landscape set (l) shares the 16:9 framing, so it uses the 16:9 cut-outs
+    extra: [{ name: 'fg', frames: null, url: (set, i) => `fg/${set === 'm' ? 'm' : 'd'}/${String(i + 1).padStart(3, '0')}.webp?v=${FV}` }],
     onGate: k => { loadPct.textContent = String(Math.round(k * 100)); },
     onReady: openLoader,
     onDraw,

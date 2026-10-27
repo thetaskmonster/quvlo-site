@@ -216,3 +216,21 @@ img { max-width: 100%; display: block; }
 @media (prefers-reduced-motion: reduce) {
   .cap, .hero, .loader, .track, .board__start { transition: none; }
 }
+
+/* Phones in landscape: the hero and captions sit just under the header, sized for a 340 px tall screen,
+   with the day tracker kept clear at the bottom */
+@media (orientation: landscape) and (max-height: 500px) {
+  .bar { padding-top: 8px; padding-bottom: 8px; }
+  .hero { top: 58px; bottom: auto; max-width: 62vw; }
+  .hero__k { display: none; }
+  .hero__h { margin-bottom: 8px; font-size: clamp(26px, 4.6vw, 38px); }
+  .hero__p { font-size: 13.5px; }
+  .cap { top: 56px; bottom: auto; width: min(380px, 54vw); padding: 12px 14px; }
+  .cap__day { margin-bottom: 4px; font-size: 10.5px; }
+  .cap__h { margin-bottom: 6px; font-size: 19px; }
+  .cap__p { margin-bottom: 8px; font-size: 12.5px; line-height: 1.38; }
+  .cap__tally { padding-top: 6px; font-size: 12px; }
+  .tally { font-size: 20px; }
+  .track { bottom: 10px; }
+  .track__days { margin-top: 6px; }
+}

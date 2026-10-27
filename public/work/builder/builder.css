@@ -304,3 +304,20 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001s !important; animation-delay: 0s !important; transition-duration: .001s !important; }
 }
+
+/* Phones in landscape: captions sit just under the header, sized for a 340 px tall screen, and the
+   schedule moves to the bottom right so it never runs under the caption text */
+@media (orientation: landscape) and (max-height: 500px) {
+  .bar { padding-top: 8px; padding-bottom: 8px; }
+  .cap, .cap--hero, .cap--end { top: 58px; width: min(440px, 58vw); transform: translateY(8px); }
+  .cap.is-on { transform: none; }
+  .cap__k { margin-bottom: 6px; font-size: 10.5px; }
+  .cap__h { font-size: clamp(24px, 4.4vw, 34px); }
+  .cap__p { margin-top: 8px; max-width: 44ch; font-size: 13.5px; line-height: 1.4; }
+  .cap__hint { display: none; }
+  .cap__cta { margin-top: 10px; }
+  .sched { left: auto; right: 16px; bottom: 12px; width: min(300px, 36vw); }
+  .sched__day { margin-bottom: 6px; }
+  .sched__n { font-size: 26px; }
+  .sched__phases { display: none; }
+}
