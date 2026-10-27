@@ -61,7 +61,7 @@ a { color: inherit; }
 
 /* Film */
 .film { position: relative; height: 860vh; }
-.film__stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; background: var(--black); }
+.film__stage { position: sticky; top: 0; height: 100vh; height: 100lvh; overflow: hidden; overflow: clip; background: var(--black); }
 .film__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .film__stage::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(11, 11, 12, .55) 0%, transparent 20%, transparent 52%, rgba(11, 11, 12, .82) 100%); }
 

@@ -63,7 +63,7 @@ img { max-width: 100%; display: block; }
 
 /* ---------- Film ---------- */
 .film { position: relative; height: 820vh; background: var(--oak-d); }
-.film__stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+.film__stage { position: sticky; top: 0; height: 100vh; height: 100lvh; overflow: hidden; overflow: clip; }
 .film__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(10,22,15,.55) 0, rgba(10,22,15,0) 22%), linear-gradient(0deg, rgba(10,22,15,.78) 0, rgba(10,22,15,.2) 38%, rgba(10,22,15,0) 55%); }
 

@@ -4,7 +4,7 @@
 (() => {
   'use strict';
   // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.
-  const FV = '2026102601';
+  const FV = '2026102801';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -15,82 +15,18 @@
 
   /* =========================================================== Film */
   const PER = 40, SHOTS = 6;
-  const film = $('#film'), canvas = $('#filmCanvas'), ctx = canvas.getContext('2d', { alpha: false });
+  const film = $('#film'), canvas = $('#filmCanvas');
   const loader = $('#loader'), loadPct = $('#loadPct'), loadBar = $('#loadBar');
   const bar = $('.bar'), hero = $('#hero'), track = $('#track'), trackCut = $('#trackCut');
   const caps = $$('.cap'), days = $$('.track__days li'), clock = $('#clock');
   const tallies = caps.map(c => $('.tally', c));
 
-  let M = null, kind = 'd', N = 0;
-  const imgs = [];
-  let target = 0, cur = 0, lastF = -1, lastP = -1, dirty = true, filmVisible = true;
-  const pick = () => (innerWidth / innerHeight < 0.85 || innerWidth < 760) ? 'm' : 'd';
-  const frameUrl = i => `f/${kind}/${String(i + 1).padStart(3, '0')}.webp?v=${FV}`;
-
-  function load(url) {
-    return new Promise(res => {
-      const im = new Image();
-      im.decoding = 'async';
-      im.onload = () => { (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(() => res(im)); };
-      im.onerror = () => res(null);
-      im.src = url;
-    });
-  }
-
-  // Phones load every second frame and blend between them: half the data, same motion.
-  let STRIDE = 1;
-  async function boot() {
-    try { M = await (await fetch(`frames.json?v=${FV}`, { cache: 'no-cache' })).json(); } catch { M = null; }
-    if (!M || !Number.isFinite(M.count)) { openLoader(); return; }
-    kind = pick(); N = Math.min(M.count, PER * SHOTS);
-    STRIDE = kind === 'm' ? 2 : 1;
-    // Open as soon as a sketch of the first shot is in, then fill in behind the viewer.
-    const first = [];
-    for (let i = 0; i < PER; i += 4) first.push(i - (i % STRIDE));
-    let done = 0;
-    const tick = () => { done++; const p = Math.min(100, Math.round(done / first.length * 100)); loadPct.textContent = String(p); loadBar.style.width = p + '%'; };
-    await Promise.all(first.map(i => load(frameUrl(i)).then(im => { imgs[i] = im; dirty = true; tick(); })));
-    openLoader();
-    const queue = [];
-    for (let i = 0; i < N; i += STRIDE) if (!first.includes(i)) queue.push(i);
-    let next = 0;
-    const worker = async () => { while (next < queue.length) { const i = queue[next++]; imgs[i] = await load(frameUrl(i)); dirty = true; } };
-    await Promise.all([worker(), worker(), worker(), worker(), worker()]);
-  }
+  let N = 240;
+  let opened = false;
   function openLoader() {
+    if (opened) return; opened = true;
     document.body.classList.remove('is-loading');
     loader.classList.add('is-open');
-  }
-
-  let cw = 0, ch = 0;
-  function size() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const r = canvas.getBoundingClientRect();
-    cw = Math.round(r.width * dpr); ch = Math.round(r.height * dpr);
-    if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
-    if (M && pick() !== kind) location.reload();
-    dirty = true;
-  }
-  function nearestLoaded(i) {
-    if (imgs[i]) return i;
-    for (let d = 1; d < N; d++) { if (imgs[i - d]) return i - d; if (imgs[i + d]) return i + d; }
-    return -1;
-  }
-  const frameFromProgress = p => clamp((p - 0.01) / 0.92) * Math.max(0, N - 1);
-
-  function draw(f) {
-    if (!N) return;
-    const fs = f / STRIDE, i0 = Math.floor(fs) * STRIDE, k = fs - Math.floor(fs);
-    const i1 = Math.min(N - 1 - ((N - 1) % STRIDE), i0 + STRIDE);
-    const a = nearestLoaded(i0);
-    if (a < 0) return;
-    const A = imgs[a];
-    const s = Math.max(cw / A.naturalWidth, ch / A.naturalHeight);
-    const w = A.naturalWidth * s, h = A.naturalHeight * s, x = (cw - w) / 2, y = (ch - h) / 2;
-    ctx.globalAlpha = 1;
-    ctx.drawImage(A, x, y, w, h);
-    // Blend toward the next frame only inside a shot, so cuts stay clean
-    if (k > 0.02 && imgs[i1] && a === i0 && Math.floor(i0 / PER) === Math.floor(i1 / PER)) { ctx.globalAlpha = k; ctx.drawImage(imgs[i1], x, y, w, h); ctx.globalAlpha = 1; }
   }
 
   // Day 4 clock for the last shot: 4:30 pm to 7:10 pm
@@ -123,28 +59,18 @@
     if (shot === SHOTS - 1) clock.textContent = clockText(lerp(16 * 60 + 30, 19 * 60 + 10, local));
   }
 
-  function filmProgress() {
-    const r = film.getBoundingClientRect();
-    return clamp(-r.top / (film.offsetHeight - innerHeight));
-  }
-  let last = performance.now();
-  function loop(now) {
-    const dt = Math.min(0.05, (now - last) / 1000); last = now;
-    target = filmProgress();
-    if (reduce) cur = target;
-    else { cur += (target - cur) * (1 - Math.exp(-dt * 8)); if (Math.abs(target - cur) < 0.00005) cur = target; }
-    const f = frameFromProgress(cur);
-    if (filmVisible && (dirty || Math.abs(f - lastF) > 0.001)) { draw(f); lastF = f; dirty = false; }
-    if (Math.abs(cur - lastP) > 0.00003) { ui(f); lastP = cur; }
-    bar.classList.toggle('is-solid', film.getBoundingClientRect().bottom < 70);
-    requestAnimationFrame(loop);
-  }
-  new IntersectionObserver(es => { filmVisible = es[0].isIntersecting; if (filmVisible) dirty = true; }).observe(film);
-  addEventListener('resize', size);
-  size();
+  window.FilmEngine.create({
+    section: film, stage: $('.film__stage'), canvas, FV, range: [0.01, 0.92], rate: 8, mStride: 2,
+    lift: '.cap, .hero, .track',
+    overlays: { '.cap': 'is-on' },
+    onGate: k => { const p = Math.round(k * 100); loadPct.textContent = String(p); loadBar.style.width = p + '%'; },
+    onReady: openLoader,
+    onFrame: v => { N = v.N; ui(v.f); },
+  });
+  setTimeout(openLoader, 9000); // never trap a visitor behind the loader on a very slow connection
+  const solid = () => bar.classList.toggle('is-solid', film.getBoundingClientRect().bottom < 70);
+  addEventListener('scroll', solid, { passive: true }); solid();
   ui(0);
-  requestAnimationFrame(loop);
-  boot();
 
   /* =========================================================== Mow it yourself */
   const BW = 1920, BH = 1080;          // board image size

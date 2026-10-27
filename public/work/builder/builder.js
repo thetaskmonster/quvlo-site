@@ -20,9 +20,9 @@
   /* ---------- Story data ---------- */
   const PER = 40;
   // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.
-  const FV = '2026102601';
+  const FV = '2026102801';
   // Build day at the first frame of each shot, and at the very end.
-  const DAYS = [1, 15, 46, 111, 161, 256, 270];
+  const DAYS = [1, 15, 46, 111, 161, 270, 270];
   const SRC_W = 3840, SRC_H = 2160;
 
   // Blueprint of the front elevation, traced from the finished house in the locked street shot.
@@ -60,81 +60,20 @@
     { pts: [[0.835, 0.262], [0.835, 0.72]], ticks: true, t: "31'-6\"", at: [0.85, 0.49], left: true }
   ];
 
-  /* ---------- Film ---------- */
-  const film = $('#film'), canvas = $('#filmCanvas'), ctx = canvas.getContext('2d', { alpha: false });
+  /* ---------- Film (shared engine: film-engine.js) ---------- */
+  const film = $('#film'), canvas = $('#filmCanvas');
   const print = $('#print');
   const caps = $$('.cap'), loader = $('#loader'), loadPct = $('#loadPct'), bar = $('.bar');
   const schedDay = $('#schedDay'), schedFill = $('#schedFill'), phases = $$('#schedPhases li');
+  const isPhone = () => innerWidth / innerHeight < 1 && Math.min(innerWidth, innerHeight) < 600;
 
-  let M = null, kind = 'd', N = 0;
-  const imgs = [];
-  let target = 0, cur = 0, lastDrawn = -1, lastP = -1, dirty = true, filmVisible = true;
-
-  const pick = () => (innerWidth / innerHeight < 0.85 || innerWidth < 760) ? 'm' : 'd';
-  const frameUrl = i => `f/${kind}/${String(i + 1).padStart(3, '0')}.webp?v=${FV}`;
-
-  function load(url) {
-    return new Promise(res => {
-      const im = new Image();
-      im.decoding = 'async';
-      im.onload = () => { (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(() => res(im)); };
-      im.onerror = () => res(null);
-      im.src = url;
-    });
-  }
-
-  async function boot() {
-    try { M = await (await fetch(`frames.json?v=${FV}`, { cache: 'no-cache' })).json(); } catch { M = null; }
-    if (!M) { openLoader(); return; }
-    kind = pick(); N = M.count;
-    // The first shot gates the loader so the opening never stutters.
-    let done = 0;
-    const first = Array.from({ length: PER }, (_, i) => i);
-    await Promise.all(first.map(i => load(frameUrl(i)).then(im => {
-      imgs[i] = im; dirty = true; done++;
-      loadPct.textContent = String(Math.round(done / PER * 100));
-    })));
-    openLoader();
-    let next = PER;
-    const worker = async () => { while (next < N) { const i = next++; imgs[i] = await load(frameUrl(i)); dirty = true; } };
-    await Promise.all([worker(), worker(), worker(), worker(), worker()]);
-  }
-
+  let opened = false;
   function openLoader() {
+    if (opened) return; opened = true;
     document.body.classList.remove('is-loading');
     if (reduce) { loader.classList.add('is-gone'); return; }
     loader.classList.add('is-open');
     setTimeout(() => loader.classList.add('is-gone'), 1200);
-  }
-
-  let cw = 0, ch = 0;
-  function size() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const r = canvas.getBoundingClientRect();
-    cw = Math.round(r.width * dpr); ch = Math.round(r.height * dpr);
-    if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
-    if (M && pick() !== kind) location.reload();
-    dirty = true;
-  }
-
-  function nearestLoaded(i) {
-    if (imgs[i]) return i;
-    for (let d = 1; d < N; d++) { if (imgs[i - d]) return i - d; if (imgs[i + d]) return i + d; }
-    return -1;
-  }
-  const frameFromProgress = p => clamp((p - 0.01) / 0.9) * (N - 1);
-
-  function draw(f) {
-    if (!N) return;
-    const i0 = Math.floor(f), i1 = Math.min(N - 1, i0 + 1), k = f - i0;
-    const a = nearestLoaded(i0);
-    if (a < 0) return;
-    const A = imgs[a];
-    const s = Math.max(cw / A.naturalWidth, ch / A.naturalHeight);
-    const w = A.naturalWidth * s, h = A.naturalHeight * s, x = (cw - w) / 2, y = (ch - h) / 2;
-    ctx.globalAlpha = 1; ctx.drawImage(A, x, y, w, h);
-    // Blend toward the next frame so slow scrolling stays smooth.
-    if (k > 0.02 && imgs[i1] && a === i0) { ctx.globalAlpha = k; ctx.drawImage(imgs[i1], x, y, w, h); ctx.globalAlpha = 1; }
   }
 
   /* Blueprint overlay: built once, then drawn by scroll */
@@ -155,7 +94,7 @@
       tx.textContent = d.t;
     });
     // Phones see a narrow crop of the lot, so the label centres on the house there.
-    const lab = kind === 'm' || pick() === 'm'
+    const lab = isPhone()
       ? svgEl('text', { x: 0.553 * SRC_W, y: 0.835 * SRC_H, class: 'lab', 'text-anchor': 'middle' }, dimG)
       : svgEl('text', { x: 0.283 * SRC_W, y: 0.835 * SRC_H, class: 'lab' }, dimG);
     lab.textContent = 'FRONT ELEVATION · THE BLUEBONNET';
@@ -163,9 +102,9 @@
   const dimG = () => print.querySelector('.dimg');
 
   let lastView = '';
-  function placePrint(f) {
+  function placePrint(v) {
     // Draw from the bare lot to the slab, hold, then let the real framing take over.
-    const fi = Math.round(f);
+    const f = v.f;
     const drawP = reduce ? 1 : ease(clamp((f - 30) / 48));
     const fadeIn = clamp((f - 28) / 6);
     const fadeOut = 1 - ease(clamp((f - 98) / 46));
@@ -180,8 +119,9 @@
     });
     const g = dimG();
     if (g) g.style.opacity = clamp((drawP - 0.7) / 0.3).toFixed(3);
-    let view = `0 0 ${SRC_W} ${SRC_H}`;
-    if (kind === 'm' && M) view = `${(M.m.crop[fi] * SRC_W).toFixed(1)} 0 ${(M.m.cropW * SRC_W).toFixed(1)} ${SRC_H}`;
+    // Map the drawing onto the footage exactly as the engine placed it (cover, phone crop or tablet band)
+    const r = v.srcRect(), W = print.clientWidth || 1, H = print.clientHeight || 1, k = SRC_W / r.w;
+    const view = `${(-r.x * k).toFixed(1)} ${(-r.y * k).toFixed(1)} ${(W * k).toFixed(1)} ${(H * k).toFixed(1)}`;
     if (view !== lastView) { print.setAttribute('viewBox', view); lastView = view; }
   }
 
@@ -189,7 +129,8 @@
   function ui(f) {
     const shot = Math.min(5, Math.floor(f / PER));
     const local = (f - shot * PER) / (PER - 1);
-    const day = Math.round(lerp(DAYS[shot], DAYS[shot + 1], clamp(local)));
+    // the counter holds the day in the caption while it is up, then runs on to the next one
+    const day = Math.round(lerp(DAYS[shot], DAYS[shot + 1], clamp((local - 0.9) / 0.1)));
     if (day !== lastDay) { schedDay.textContent = String(day).padStart(3, '0'); lastDay = day; }
     schedFill.style.setProperty('--p', ((day - 1) / 269).toFixed(4));
     if (shot !== lastShot) {
@@ -206,31 +147,21 @@
     });
   }
 
-  function filmProgress() {
-    const r = film.getBoundingClientRect();
-    return clamp(-r.top / (film.offsetHeight - innerHeight));
-  }
-
-  let last = performance.now();
-  function loop(now) {
-    const dt = Math.min(0.05, (now - last) / 1000); last = now;
-    target = filmProgress();
-    if (reduce) cur = target;
-    else { cur += (target - cur) * (1 - Math.exp(-dt * 9)); if (Math.abs(target - cur) < 0.00005) cur = target; }
-    const f = frameFromProgress(cur);
-    if (filmVisible && (dirty || Math.abs(f - lastDrawn) > 0.001)) { draw(f); placePrint(f); lastDrawn = f; dirty = false; }
-    if (Math.abs(cur - lastP) > 0.00005) { ui(f); lastP = cur; }
-    bar.classList.toggle('is-solid', film.getBoundingClientRect().bottom < 90);
-    requestAnimationFrame(loop);
-  }
-
   buildPrint();
-  new IntersectionObserver(es => { filmVisible = es[0].isIntersecting; if (filmVisible) dirty = true; }).observe(film);
-  addEventListener('resize', size);
-  size();
+  print.setAttribute('preserveAspectRatio', 'none');
+  window.FilmEngine.create({
+    section: film, stage: $('.film__stage'), canvas, FV, range: [0.01, 0.9], rate: 9,
+    lift: '.cap, .sched',
+    overlays: { '.cap': 'is-on' },
+    onGate: k => { loadPct.textContent = String(Math.round(k * 100)); },
+    onReady: openLoader,
+    onDraw: (ctx, v) => placePrint(v),
+    onFrame: v => ui(v.f),
+  });
+  setTimeout(openLoader, 9000); // never trap a visitor behind the loader on a very slow connection
+  const solid = () => bar.classList.toggle('is-solid', film.getBoundingClientRect().bottom < 90);
+  addEventListener('scroll', solid, { passive: true }); solid();
   ui(0);
-  requestAnimationFrame(loop);
-  boot();
 
   /* ---------- Plans ---------- */
   // Rooms in feet: [key, name, x, y, w, h]. Rooms with a key can be tapped; the rest are drawn only.

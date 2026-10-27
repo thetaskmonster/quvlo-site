@@ -34,11 +34,11 @@ h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -.035em; line-height: 
 .skip:focus { left: 8px; }
 :focus-visible { outline: 2px solid var(--cognac-2); outline-offset: 3px; }
 .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); }
-.wrap--narrow { max-width: 820px; }
+.wrap--narrow > * { max-width: 820px; }
 
 .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 24px; border-radius: 999px; border: 1px solid var(--cognac); background: var(--cognac); color: var(--cognac-ink); font: 600 15px/1 var(--f); letter-spacing: -.005em; text-decoration: none; cursor: pointer; transition: background .2s, transform .2s; }
 .btn:hover { background: var(--cognac-2); transform: translateY(-1px); }
-.btn--sm { min-height: 38px; padding: 0 16px; font-size: 14px; }
+.btn--sm { min-height: 44px; padding: 0 18px; font-size: 14px; }
 .btn--full { width: 100%; }
 
 /* Loader */
@@ -59,23 +59,25 @@ h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -.035em; line-height: 
 
 /* Film */
 .film { position: relative; height: 700vh; background: var(--night); }
-.film__stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+/* Sized to the large viewport so Safari's toolbar never leaves a band; the engine lifts bottom overlays above it */
+.film__stage { position: sticky; top: 0; height: 100vh; height: 100lvh; overflow: hidden; overflow: clip; }
 .film__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; background: var(--night); }
 .shade { position: absolute; inset: 0; pointer-events: none; background:
   linear-gradient(90deg, rgba(11,15,23,.72) 0%, rgba(11,15,23,.28) 34%, rgba(11,15,23,0) 56%),
   linear-gradient(0deg, rgba(11,15,23,.7) 0%, rgba(11,15,23,0) 24%),
   linear-gradient(180deg, rgba(11,15,23,.5) 0%, rgba(11,15,23,0) 14%); }
-.hero, .cap { position: absolute; left: var(--pad); bottom: clamp(110px, 16vh, 180px); max-width: 640px; }
+.hero, .cap { position: absolute; left: var(--pad); bottom: clamp(110px, 16vh, 180px); max-width: min(640px, 64vw); }
+.hero__h, .cap__h { text-wrap: balance; }
 .hero { transition: opacity .6s, transform .6s; }
 .hero.is-off { opacity: 0; transform: translateY(-16px); pointer-events: none; }
 .hero__h { font-size: clamp(52px, 7.4vw, 116px); }
 .hero__p { margin: 20px 0 0; max-width: 440px; font-size: 18px; color: rgba(228,231,235,.85); }
-.cap { opacity: 0; transform: translateY(12px); transition: opacity .45s, transform .45s; pointer-events: none; max-width: 520px; }
+.cap { opacity: 0; transform: translateY(12px); transition: opacity .45s, transform .45s; pointer-events: none; max-width: min(560px, 60vw); }
 .cap.is-on { opacity: 1; transform: none; pointer-events: auto; }
 .cap__h { font-size: clamp(40px, 5vw, 76px); }
 .cap__p { margin: 12px 0 0; font-size: 18px; color: rgba(228,231,235,.85); }
 .cap__cta { margin: 22px 0 0; }
-/* In the jet shots the car fills the lower left and the jet the right, so these captions sit in the open sky */
+/* Where the action fills the lower frame (the hands on the cover, the car at the jet), the caption sits up top */
 .cap--r { top: clamp(84px, 12vh, 112px); bottom: auto; text-shadow: 0 2px 22px rgba(11,15,23,.6); }
 
 /* Rev counter: a thin line, a red zone, a number */
@@ -83,13 +85,13 @@ h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -.035em; line-height: 
 .tach__rpm { font: 500 15px/1 var(--f); font-variant-numeric: tabular-nums; color: var(--plat); letter-spacing: -.01em; }
 .tach__rpm.is-red { color: var(--red); }
 .tach__line { position: relative; width: 100%; height: 2px; background: rgba(228,231,235,.18); }
-.tach__red { position: absolute; left: 81.25%; right: 0; top: 0; bottom: 0; background: rgba(210,69,47,.55); }
+.tach__red { position: absolute; left: 82.86%; right: 0; top: 0; bottom: 0; background: rgba(210,69,47,.55); } /* 5,800 of 7,000 rpm */
 .tach__fill { position: absolute; left: 0; top: 0; bottom: 0; width: 10%; background: var(--plat); }
 .tach__fill::after { content: ''; position: absolute; right: -1px; top: -5px; width: 2px; height: 12px; background: #fff; }
 
 /* Showroom: pinned bay, the car turns with scroll */
 .show { position: relative; height: 340vh; background: var(--night); }
-.show__stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; touch-action: pan-y; cursor: grab; }
+.show__stage { position: sticky; top: 0; height: 100vh; height: 100lvh; overflow: hidden; touch-action: pan-y; cursor: grab; }
 .show__stage.is-drag { cursor: grabbing; }
 .show__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; background: #0d0f14; }
 .show__dim { position: absolute; inset: 0; background: #05070b; opacity: 0; pointer-events: none; transition: opacity .28s ease; }
@@ -178,7 +180,7 @@ details p { margin: 0 0 24px; max-width: 620px; color: var(--plat-2); }
 .reserve { background: var(--night-2); border-top: 1px solid var(--line); }
 .rform { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: clamp(30px, 4vw, 44px); }
 .field--wide, .rform .btn, .form__msg { grid-column: 1 / -1; }
-.rform input:invalid.is-touched, .rform select:invalid.is-touched { border-color: #e2705c; }
+.rform input:invalid.is-touched, .rform select:invalid.is-touched, .rform [aria-invalid="true"] { border-color: #e2705c; }
 .form__msg { margin: 0; min-height: 1.5em; font-size: 15px; }
 .form__msg.is-ok { color: var(--cognac-2); }
 .form__msg.is-err { color: #f08d7a; }
@@ -201,6 +203,8 @@ details p { margin: 0 0 24px; max-width: 620px; color: var(--plat-2); }
   .tag { font-size: 11px; padding: 3px 8px; }
   .shade { background: linear-gradient(0deg, rgba(11,15,23,.9) 0%, rgba(11,15,23,.5) 22%, rgba(11,15,23,0) 40%), linear-gradient(180deg, rgba(11,15,23,.45) 0%, rgba(11,15,23,0) 14%); }
   .hero, .cap, .cap--r { left: 16px; right: 16px; top: auto; bottom: 52px; max-width: none; }
+  /* last shot: the car fills the lower frame on phones, so the caption sits in the sky */
+  .cap--tm { top: 76px; bottom: auto; }
   .hero__h { font-size: 46px; }
   .hero__p { font-size: 15px; margin-top: 10px; }
   .cap__h { font-size: 34px; }

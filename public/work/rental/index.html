@@ -5,7 +5,7 @@
 <meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Keyroom | Premium Car Rental, Delivered Ready (Concept)</title>
-<meta name="description" content="A concept website by Quvlo for a fictional premium car rental garage. Turn every car on the showroom turntable, then see the full price, deposit and mileage before you book. Delivered to your door, your hotel or the private terminal.">
+<meta name="description" content="Concept site by Quvlo for a fictional premium car rental: a night-garage film, a 360° showroom and the full price, deposit and miles before you book.">
 <meta name="theme-color" content="#0b0f17">
 <link rel="canonical" href="https://quvlo.co/work/rental/">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -15,6 +15,8 @@
 <meta property="og:description" content="Premium cars from a private garage, delivered ready. Every cost shown up front.">
 <meta property="og:url" content="https://quvlo.co/work/rental/">
 <meta property="og:image" content="https://quvlo.co/work/rental/img/og.jpg">
+<meta property="og:image:alt" content="A black Cadillac Escalade in a private garage at night, from the Keyroom concept site">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="fonts/host-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="keyroom.css">
 </head>
@@ -38,26 +40,26 @@
 
 <main id="top">
   <!-- The film: scroll drives the footage and the rev counter -->
-  <section class="film" id="film" aria-label="Film: a black Cadillac Escalade is uncovered in a private garage and delivered to a traveller at a private jet">
+  <section class="film" id="film" aria-label="Film: a black Cadillac Escalade is uncovered in a private garage and delivered to a traveler at a private jet">
     <div class="film__stage">
-      <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage: lights switch on in a private garage of covered cars, a chauffeur pulls the cover off a black Cadillac Escalade, the cabin display lights up, the Escalade drives a wet city street at night, arrives beside a parked private jet at blue hour, and drives away with the traveller aboard."></canvas>
+      <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage: lights switch on in a private garage of covered cars, the cover comes off a black Cadillac Escalade, the cabin display lights up, the Escalade is driven across a wet city street at night and arrives beside a parked private jet at blue hour."></canvas>
       <div class="shade" aria-hidden="true"></div>
 
       <div class="hero" id="hero">
-        <h1 class="hero__h">Ready before you&nbsp;land.</h1>
-        <p class="hero__p">Premium cars from a private garage. Delivered to your door, your hotel or the private terminal.</p>
+        <h1 class="hero__h">The car comes to&nbsp;you</h1>
+        <p class="hero__p">Premium cars from a private garage, delivered to your door, your hotel or the private terminal. Then the keys are yours.</p>
       </div>
 
-      <div class="cap" data-shot="0"><h2 class="cap__h">Lights on.</h2><p class="cap__p">Your booking wakes the garage.</p></div>
-      <div class="cap" data-shot="1"><h2 class="cap__h">Uncovered for you.</h2><p class="cap__p">Detailed the night before.</p></div>
-      <div class="cap" data-shot="2"><h2 class="cap__h">Set your way.</h2><p class="cap__p">Full charge, your temperature, your phone paired.</p></div>
-      <div class="cap" data-shot="3"><h2 class="cap__h">A driver brings it.</h2><p class="cap__p">A live arrival time, not a two-hour window.</p></div>
-      <div class="cap cap--r" data-shot="4"><h2 class="cap__h">Wherever you land.</h2><p class="cap__p">Front door, hotel or private terminal.</p></div>
-      <div class="cap cap--r" data-shot="5"><h2 class="cap__h">Keys in hand.</h2><p class="cap__cta"><a class="btn" href="#showroom">See the cars</a></p></div>
+      <div class="cap" data-shot="0"><h2 class="cap__h">Your booking wakes the garage</h2><p class="cap__p">Every car sleeps under a fitted cover in its own bay.</p></div>
+      <div class="cap cap--r" data-shot="1"><h2 class="cap__h">Detailed the night before</h2><p class="cap__p">Uncovered only when it is yours.</p></div>
+      <div class="cap" data-shot="2"><h2 class="cap__h">Set up the way you like it</h2><p class="cap__p">Full tank, your temperature, your phone paired.</p></div>
+      <div class="cap" data-shot="3"><h2 class="cap__h">We bring it across town</h2><p class="cap__p">With a live arrival time, not a two-hour window.</p></div>
+      <div class="cap cap--r" data-shot="4"><h2 class="cap__h">Front door, hotel or private terminal</h2><p class="cap__p">We track your flight and time the handover.</p></div>
+      <div class="cap cap--r cap--tm" data-shot="5"><h2 class="cap__h">Choose yours. We handle the rest.</h2><p class="cap__cta"><a class="btn" href="#showroom">See the cars</a></p></div>
 
       <!-- Rev counter: rpm and redline only -->
       <div class="tach" aria-hidden="true">
-        <span class="tach__rpm"><span id="tachRpm">800</span> rpm</span>
+        <span class="tach__rpm"><span id="tachRpm">0</span> rpm</span>
         <span class="tach__line"><span class="tach__red"></span><span class="tach__fill" id="tachFill"></span></span>
       </div>
     </div>
@@ -97,8 +99,8 @@
   <!-- The quote: every cost before booking, synced to the car on the turntable -->
   <section class="quote" id="quote" aria-labelledby="quote-h">
     <div class="wrap">
-      <h2 class="sec__h" id="quote-h">The whole price. Up front.</h2>
-      <p class="sec__p">Deposit, miles and insurance included. No call needed.</p>
+      <h2 class="sec__h" id="quote-h">The whole price, before you book</h2>
+      <p class="sec__p">Rate, delivery, cover and tax in one number. The refundable deposit and the miles you get are shown right under it. No call needed.</p>
 
       <div class="quote__grid">
         <form class="qform" id="qform" novalidate>
@@ -152,7 +154,7 @@
 
   <section class="how" id="how" aria-labelledby="how-h">
     <div class="wrap">
-      <h2 class="sec__h" id="how-h">No counter. No shuttle.</h2>
+      <h2 class="sec__h" id="how-h">No counter and no shuttle</h2>
       <ul class="steps">
         <li><h3>Book</h3><p>Pick the car and where to meet you. We hold a refundable deposit.</p></li>
         <li><h3>We deliver</h3><p>Ready the night before. A short walk-around, photos, keys.</p></li>
@@ -163,18 +165,18 @@
 
   <section class="faq" id="faq" aria-labelledby="faq-h">
     <div class="wrap wrap--narrow">
-      <h2 class="sec__h" id="faq-h">Questions.</h2>
-      <details><summary>How does the deposit work?</summary><p>A refundable hold on your credit card, not a charge. Released within three business days of return, minus any extra miles or fuel, shown to you with photos first.</p></details>
-      <details><summary>How old do I need to be?</summary><p>25 or older, with a full licence held for two years and a credit card in your name.</p></details>
+      <h2 class="sec__h" id="faq-h">Before you book</h2>
+      <details><summary>How does the deposit work?</summary><p>A refundable hold on your credit card, not a charge. Released within three business days of return, minus any extra miles and any fuel or charge used, shown to you with photos first.</p></details>
+      <details><summary>How old do I need to be?</summary><p>25 or older, with a valid driver&#8217;s license held for at least two years and a credit card in your name.</p></details>
       <details><summary>How many miles are included?</summary><p>150 a day, pooled across the booking. Extra miles are charged at the rate in your quote.</p></details>
       <details><summary>Where do you deliver?</summary><p>Within 30 miles of our garage: homes, offices, hotels and private aviation terminals. Further on request.</p></details>
-      <details><summary>What if my flight is late?</summary><p>Give us your flight number and we track it. The driver waits, at no charge.</p></details>
+      <details><summary>What if my flight is late?</summary><p>Give us your flight number and we track it. We move the handover to your new arrival time, at no charge.</p></details>
     </div>
   </section>
 
   <section class="reserve" id="reserve" aria-labelledby="res-h">
     <div class="wrap wrap--narrow">
-      <h2 class="sec__h" id="res-h">Reserve.</h2>
+      <h2 class="sec__h" id="res-h">Reserve your car</h2>
       <p class="sec__p">This is a concept site. The form checks your details and stops there. Nothing is sent.</p>
       <form class="rform" id="rform" novalidate>
         <label class="field"><span class="field__l">Name</span><input type="text" name="name" autocomplete="name" required maxlength="80"></label>
@@ -190,11 +192,11 @@
             <option value="modely">Tesla Model Y</option>
           </select>
         </label>
-        <label class="field"><span class="field__l">Start date</span><input type="date" name="date" required></label>
-        <label class="field"><span class="field__l">Flight number <small>optional</small></span><input type="text" name="flight" maxlength="10" placeholder="N123KR"></label>
-        <label class="field field--wide"><span class="field__l">Where should we meet you?</span><input type="text" name="where" required maxlength="140" placeholder="Hotel, address or terminal"></label>
+        <label class="field"><span class="field__l">Start date</span><input type="date" name="date" id="rDate" required></label>
+        <label class="field"><span class="field__l">Flight or tail number <small>optional</small></span><input type="text" name="flight" maxlength="10" placeholder="AA 1234 or N123KR"></label>
+        <label class="field field--wide"><span class="field__l">Where should we meet you?</span><input type="text" name="meet" required maxlength="140" placeholder="Hotel, address or terminal"></label>
         <button class="btn btn--full" type="submit">Request this car</button>
-        <p class="form__msg" id="rMsg" role="status"></p>
+        <p class="form__msg" id="rMsg" role="status" aria-live="polite"></p>
       </form>
     </div>
   </section>
@@ -205,11 +207,12 @@
     <p class="foot__brand">Keyroom</p>
     <!-- Client city line goes here, e.g. "Delivering across [City] and [City]." -->
     <p class="foot__fine">Keyroom is a fictional business. This is a concept website designed and built by <a href="/">Quvlo</a> to show what is possible. The footage and photos are AI-generated, and all prices, deposits, specs and policies are samples.</p>
-    <p class="foot__fine">Cadillac, Escalade, Chevrolet, Tahoe, BMW, Tesla, Model Y, Ford, Bronco and Mercedes-AMG are trademarks of their respective owners. Keyroom is a fictional business and is not affiliated with them.</p>
+    <p class="foot__fine">Cadillac, Escalade, Chevrolet, Tahoe, BMW, Tesla, Model Y, Ford, Bronco and Mercedes-AMG are trademarks of their respective owners. Keyroom is not affiliated with them.</p>
     <p class="foot__fine"><a href="/work/">More Quvlo work</a></p>
   </div>
 </footer>
 
+<script src="film-engine.js" defer></script>
 <script src="keyroom.js" defer></script>
 </body>
 </html>

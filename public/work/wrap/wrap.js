@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.
-  const FV = '2026102608';
+  const FV = '2026102801';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -22,19 +22,14 @@
   ];
   const setWrap = col => { root.style.setProperty('--wrap', col.c); root.style.setProperty('--wrap-hi', col.hi); };
 
-  /* ---------- Film ---------- */
+  /* ---------- Film (shared engine: film-engine.js) ---------- */
   const PER = 40;
-  const film = $('#film'), canvas = $('#filmCanvas'), ctx = canvas.getContext('2d', { alpha: false });
+  const film = $('#film'), canvas = $('#filmCanvas');
   const caps = $$('.cap'), stages = $$('#stages li'), bar = $('#bar');
   const jobPanels = $('#jobPanels'), jobTint = $('#jobTint'), job = $('.job');
   const loader = $('#loader'), loadPct = $('#loadPct'), hexSvg = $('#loaderHex');
-  let M = null, kind = 'd', N = 0;
-  const imgs = [];
-  let target = 0, cur = 0, lastDrawn = -1, lastP = -1, dirty = true, visible = true;
-  const pick = () => (innerWidth / innerHeight < 0.85 || innerWidth < 760) ? 'm' : 'd';
-  const url = i => `f/${kind}/${String(i + 1).padStart(3, '0')}.webp?v=${FV}`;
 
-  // Loader hexes: a small honeycomb, one cell per slice of the first shot
+  // Loader hexes: a small honeycomb, one cell per slice of the coarse first pass
   const cells = [];
   (() => {
     const r = 22, w = Math.sqrt(3) * r, rows = [3, 4, 5, 4, 3];
@@ -52,63 +47,11 @@
     for (let i = cells.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [cells[i], cells[j]] = [cells[j], cells[i]]; }
   })();
 
-  function load(src) {
-    return new Promise(res => {
-      const im = new Image();
-      im.decoding = 'async';
-      im.onload = () => { (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(() => res(im)); };
-      im.onerror = () => res(null);
-      im.src = src;
-    });
-  }
-
-  async function boot() {
-    try { M = await (await fetch(`frames.json?v=${FV}`, { cache: 'no-cache' })).json(); } catch { M = null; }
-    if (!M) { openLoader(); return; }
-    kind = pick(); N = M.count;
-    let done = 0;
-    await Promise.all(Array.from({ length: PER }, (_, i) => load(url(i)).then(im => {
-      imgs[i] = im; dirty = true; done++;
-      loadPct.textContent = String(Math.round(done / PER * 100));
-      const on = Math.round(done / PER * cells.length);
-      cells.forEach((c, n) => c.classList.toggle('is-on', n < on));
-    })));
-    openLoader();
-    let next = PER;
-    const worker = async () => { while (next < N) { const i = next++; imgs[i] = await load(url(i)); dirty = true; } };
-    await Promise.all([worker(), worker(), worker(), worker(), worker()]);
-  }
+  let opened = false;
   function openLoader() {
+    if (opened) return; opened = true;
     document.body.classList.remove('is-loading');
     setTimeout(() => loader.classList.add('is-gone'), reduce ? 0 : 350);
-  }
-
-  let cw = 0, ch = 0;
-  function size() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const r = canvas.getBoundingClientRect();
-    cw = Math.round(r.width * dpr); ch = Math.round(r.height * dpr);
-    if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
-    if (M && pick() !== kind) location.reload();
-    dirty = true;
-  }
-  function nearest(i) {
-    if (imgs[i]) return i;
-    for (let d = 1; d < N; d++) { if (imgs[i - d]) return i - d; if (imgs[i + d]) return i + d; }
-    return -1;
-  }
-  function draw(f) {
-    if (!N) return;
-    const i0 = Math.floor(f), i1 = Math.min(N - 1, i0 + 1), k = f - i0;
-    const a = nearest(i0);
-    if (a < 0) return;
-    const A = imgs[a];
-    const s = Math.max(cw / A.naturalWidth, ch / A.naturalHeight);
-    const w = A.naturalWidth * s, h = A.naturalHeight * s, x = (cw - w) / 2, y = (ch - h) / 2;
-    ctx.globalAlpha = 1; ctx.drawImage(A, x, y, w, h);
-    // shot boundaries cut cleanly, inside a shot neighbouring frames blend
-    const sameShot = Math.floor(i0 / PER) === Math.floor(i1 / PER);
-    if (k > 0.02 && sameShot && imgs[i1] && a === i0) { ctx.globalAlpha = k; ctx.drawImage(imgs[i1], x, y, w, h); ctx.globalAlpha = 1; }
   }
 
   // Story beats: panels wrapped during the lay and edge shots, glass during the tint shot
@@ -134,29 +77,21 @@
       c.classList.toggle('is-on', on);
     });
   }
-  function progress() {
-    const r = film.getBoundingClientRect();
-    return clamp(-r.top / (film.offsetHeight - innerHeight));
-  }
-  const frameAt = p => clamp((p - 0.01) / 0.93) * (N - 1);
-
-  let last = performance.now();
-  function loop(now) {
-    const dt = Math.min(0.05, (now - last) / 1000); last = now;
-    target = progress();
-    if (reduce) cur = target;
-    else { cur += (target - cur) * (1 - Math.exp(-dt * 10)); if (Math.abs(target - cur) < 0.00005) cur = target; }
-    const f = frameAt(cur);
-    if (visible && N && (dirty || Math.abs(f - lastDrawn) > 0.001)) { draw(f); lastDrawn = f; dirty = false; }
-    if (N && Math.abs(cur - lastP) > 0.00005) { ui(f); lastP = cur; }
-    bar.classList.toggle('is-solid', film.getBoundingClientRect().bottom < bar.offsetHeight + 48);
-    requestAnimationFrame(loop);
-  }
-  new IntersectionObserver(es => { visible = es[0].isIntersecting; if (visible) dirty = true; }).observe(film);
-  addEventListener('resize', size);
-  size();
-  requestAnimationFrame(loop);
-  boot();
+  window.FilmEngine.create({
+    section: film, stage: $('.film__stage'), canvas, FV, range: [0.01, 0.93], rate: 10,
+    lift: '.cap, .job, .stages',
+    overlays: { '.cap': 'is-on' },
+    onGate: k => {
+      loadPct.textContent = String(Math.round(k * 100));
+      const on = Math.round(k * cells.length);
+      cells.forEach((c, n) => c.classList.toggle('is-on', n < on));
+    },
+    onReady: openLoader,
+    onFrame: v => ui(v.f),
+  });
+  setTimeout(openLoader, 9000); // never trap a visitor behind the loader on a very slow connection
+  const solid = () => bar.classList.toggle('is-solid', film.getBoundingClientRect().bottom < bar.offsetHeight + 48);
+  addEventListener('scroll', solid, { passive: true }); solid();
 
   /* ---------- Configurator: new color is laid across the car like film ---------- */
   const layers = $('#cfgLayers'), sweep = $('#cfgSweep'), sw = $('#swatches');

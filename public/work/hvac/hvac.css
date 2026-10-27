@@ -69,7 +69,7 @@ a { color: inherit; }
 
 /* Film */
 .film { position: relative; height: 900vh; background: var(--navy); }
-.film__stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; color: #fff; }
+.film__stage { position: sticky; top: 0; height: 100vh; height: 100lvh; overflow: hidden; overflow: clip; color: #fff; }
 .film__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .film__stage::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(5,10,15,.55) 0%, rgba(5,10,15,0) 22%, rgba(5,10,15,0) 55%, rgba(5,10,15,.62) 100%), linear-gradient(90deg, rgba(5,10,15,.42) 0%, rgba(5,10,15,0) 58%); }
 .film__lines { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; overflow: visible; }

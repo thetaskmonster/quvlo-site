@@ -4,7 +4,7 @@
 (() => {
   'use strict';
   // Bump when any film or spin frame changes, so browsers fetch the new frames instead of cached ones.
-  const FV = '2026102701';
+  const FV = '2026102801';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -32,110 +32,83 @@
   };
   const SHORT = { escalade: 'Cadillac Escalade', tahoe: 'Tahoe High Country', e53: 'AMG E 53 Hybrid', i5: 'BMW i5', bronco: 'Ford Bronco', modely: 'Tesla Model Y' };
 
-  /* =========================================================== Film */
+  /* =========================================================== Film (shared engine: film-engine.js) */
   const PER = 40, SHOTS = 6;
-  const film = $('#film'), canvas = $('#filmCanvas'), ctx = canvas.getContext('2d', { alpha: false });
+  const film = $('#film'), canvas = $('#filmCanvas');
   const loader = $('#loader'), loadPct = $('#loadPct'), loadBar = $('#loadBar');
   const bar = $('.bar'), hero = $('#hero'), caps = $$('.cap');
-  let M = null, kind = 'd', N = 0, STRIDE = 1;
-  const imgs = [];
-  let target = 0, cur = 0, lastF = -1, lastP = -1, dirty = true, filmVisible = true;
-  const pick = () => (innerWidth / innerHeight < 0.85 || innerWidth < 760) ? 'm' : 'd';
-  const frameUrl = i => `f/${kind}/${String(i + 1).padStart(3, '0')}.webp?v=${FV}`;
+  let opened = false;
+  function openLoader() { if (opened) return; opened = true; document.body.classList.remove('is-loading'); loader.classList.add('is-open'); }
 
-  async function boot() {
-    try { M = await (await fetch(`frames.json?v=${FV}`, { cache: 'no-cache' })).json(); } catch { M = null; }
-    if (!M || !Number.isFinite(M.count)) { openLoader(); return; }
-    kind = pick(); N = Math.min(M.count, PER * SHOTS);
-    STRIDE = kind === 'm' ? (M.m && M.m.stride) || 2 : 1;
-    const first = [];
-    for (let i = 0; i < PER; i += 4) first.push(i - (i % STRIDE));
-    let done = 0;
-    const tick = () => { done++; const p = Math.min(100, Math.round(done / first.length * 100)); loadPct.textContent = String(p); loadBar.style.width = p + '%'; };
-    await Promise.all(first.map(i => load(frameUrl(i)).then(im => { imgs[i] = im; dirty = true; tick(); })));
-    openLoader();
-    spin.prime('escalade'); // the first showroom car loads early, behind the film
-    const queue = [];
-    for (let i = 0; i < N; i += STRIDE) if (!first.includes(i)) queue.push(i);
-    let next = 0;
-    const worker = async () => { while (next < queue.length) { const i = queue[next++]; imgs[i] = await load(frameUrl(i)); dirty = true; } };
-    await Promise.all([worker(), worker(), worker(), worker()]);
+  /* Rev counter: follows the car in the footage. Off under the cover, idles near 700 once started,
+     rises only while it moves, and stays well under the 6.2 V8's redline (about 5,800). */
+  const tachRpm = $('#tachRpm'), tachFill = $('#tachFill'), RED = 5800, MAX = 7000;
+  const RPM = [[0, 0], [82, 0], [85, 1250], [92, 720], [120, 700], [124, 1700], [138, 2150], [150, 2300], [159, 1900],
+    [165, 1500], [180, 1100], [188, 720], [227, 700], [232, 1700], [239, 2600]];
+  function rpmAt(f) {
+    for (let k = 1; k < RPM.length; k++) {
+      if (f <= RPM[k][0]) { const [a, ra] = RPM[k - 1], [b, rb] = RPM[k]; return ra + (rb - ra) * clamp((f - a) / Math.max(1, b - a)); }
+    }
+    return RPM[RPM.length - 1][1];
   }
-  function openLoader() { document.body.classList.remove('is-loading'); loader.classList.add('is-open'); }
-
-  let cw = 0, ch = 0;
-  function size() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const r = canvas.getBoundingClientRect();
-    cw = Math.round(r.width * dpr); ch = Math.round(r.height * dpr);
-    if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
-    if (M && pick() !== kind) location.reload();
-    dirty = true;
-    spin.resize();
-  }
-  function nearestLoaded(arr, i, n) {
-    if (arr[i]) return i;
-    for (let d = 1; d < n; d++) { if (arr[i - d]) return i - d; if (arr[i + d]) return i + d; }
-    return -1;
-  }
-  // Cover-fit an image into a canvas; returns the drawn rect so overlays can follow it
-  function cover(c, W, H, im, alpha = 1) {
-    const s = Math.max(W / im.naturalWidth, H / im.naturalHeight);
-    const w = im.naturalWidth * s, h = im.naturalHeight * s, x = (W - w) / 2, y = (H - h) / 2;
-    c.globalAlpha = alpha; c.drawImage(im, x, y, w, h); c.globalAlpha = 1;
-    return { x, y, w, h };
-  }
-  const frameFromProgress = p => clamp((p - 0.01) / 0.94) * Math.max(0, N - 1);
-  function draw(f) {
-    if (!N) return;
-    const fs = f / STRIDE, i0 = Math.floor(fs) * STRIDE, k = fs - Math.floor(fs);
-    const i1 = Math.min(N - 1 - ((N - 1) % STRIDE), i0 + STRIDE);
-    const a = nearestLoaded(imgs, i0, N);
-    if (a < 0) return;
-    cover(ctx, cw, ch, imgs[a]);
-    if (k > 0.02 && imgs[i1] && a === i0 && Math.floor(i0 / PER) === Math.floor(i1 / PER)) cover(ctx, cw, ch, imgs[i1], k);
-  }
-
-  /* Rev counter: idle at the top, redline as the car leaves */
-  const tachRpm = $('#tachRpm'), tachFill = $('#tachFill'), RED = 6500, MAX = 8000;
-  let lastShot = -1, lastRpm = -1;
-  function ui(f) {
-    const shot = Math.min(SHOTS - 1, Math.floor(f / PER)), local = clamp((f - shot * PER) / (PER - 1));
+  let lastRpm = -1;
+  function ui(v) {
+    const f = v.f, shot = v.shot, local = v.local;
     hero.classList.toggle('is-off', f > 14);
     caps.forEach(cap => {
       const s = +cap.dataset.shot;
       const on = s === SHOTS - 1 ? f >= (SHOTS - 1) * PER + 6 : (s === 0 ? f > 18 && f < PER - 2 : shot === s && local > 0.06 && local < 0.94);
       cap.classList.toggle('is-on', on);
     });
-    const t = clamp(f / (N > 1 ? N - 1 : 1)), rpm = Math.round((800 + (7600 - 800) * t * t) / 10) * 10;
+    const raw = rpmAt(f), rpm = raw < 50 ? 0 : Math.round(raw / 10) * 10;
     if (rpm !== lastRpm) {
       lastRpm = rpm;
-      tachRpm.textContent = rpm.toLocaleString('en-US');
+      tachRpm.textContent = rpm ? rpm.toLocaleString('en-US') : '0';
       tachRpm.parentElement.classList.toggle('is-red', rpm >= RED);
       tachFill.style.width = (rpm / MAX * 100).toFixed(2) + '%';
     }
-    lastShot = shot;
   }
-  const filmProgress = () => { const r = film.getBoundingClientRect(); return clamp(-r.top / (film.offsetHeight - innerHeight)); };
+  window.FilmEngine.create({
+    section: film, stage: $('.film__stage'), canvas, FV, range: [0.01, 0.94], rate: 8, mStride: 2,
+    lift: '.cap, .hero, .tach',
+    overlays: { '.cap': 'is-on' },
+    onGate: k => { const p = Math.round(k * 100); loadPct.textContent = String(p); loadBar.style.width = p + '%'; },
+    onReady: () => { openLoader(); spin.prime('escalade'); },
+    onFrame: ui,
+  });
+  setTimeout(openLoader, 9000); // never trap a visitor behind the loader on a very slow connection
+
+  // Cover-fit an image into a canvas; returns the drawn rect so overlays can follow it
+  function cover(c, W, H, im) {
+    const s = Math.max(W / im.naturalWidth, H / im.naturalHeight);
+    const w = im.naturalWidth * s, h = im.naturalHeight * s, x = (W - w) / 2, y = (H - h) / 2;
+    c.drawImage(im, x, y, w, h);
+    return { x, y, w, h };
+  }
+  function nearestLoaded(arr, i, n) {
+    if (arr[i]) return i;
+    for (let d = 1; d < n; d++) { if (arr[i - d]) return i - d; if (arr[i + d]) return i + d; }
+    return -1;
+  }
 
   /* =========================================================== Showroom turntable */
   const show = $('#showroom'), stage = $('#showStage'), sc = $('#spinCanvas'), sctx = sc.getContext('2d', { alpha: false });
   const dim = $('#showDim'), coWrap = $('#callouts'), carName = $('#carName'), carPrice = $('#carPrice'), showSr = $('#showSr');
   const spin = (() => {
     let S = null; const sets = {}; let car = 'escalade', sw = 0, sh = 0, rect = null, kindS = 'd';
-    let angle = 0, scrollAngle = 0, dragOff = 0, vel = 0, drawn = -1, needs = true, coEls = [], hidden = false;
+    let angle = 0, scrollAngle = 0, dragOff = 0, vel = 0, nudgeLeft = 0, drawn = -1, needs = true, coEls = [], hidden = false, selSeq = 0;
     const N72 = 72;
     const url = (id, i) => `spin/${id}/${kindS}/${String(i).padStart(2, '0')}.webp?v=${FV}`;
     async function meta() { if (!S) { try { S = await (await fetch(`spin/spin.json?v=${FV}`, { cache: 'no-cache' })).json(); } catch { S = {}; } } return S; }
     function prime(id) {
       if (sets[id]) return sets[id].ready;
       kindS = innerWidth < 760 ? 'm' : 'd';
-      const set = { imgs: [], ready: null };
+      const set = { imgs: [], ready: null, full: null };
       sets[id] = set;
-      // Every 4th view first so the car can turn coarsely at once, then fill the gaps
+      // Every 4th view first so the car can turn coarsely at once (the swap waits only for these), then fill the gaps
       const order = []; for (let i = 0; i < N72; i += 4) order.push(i); for (let i = 0; i < N72; i++) if (i % 4) order.push(i);
-      set.ready = Promise.all(order.slice(0, 18).map(i => load(url(id, i)).then(im => { set.imgs[i] = im; needs = true; })))
-        .then(async () => { let n = 18; const w = async () => { while (n < order.length) { const i = order[n++]; set.imgs[i] = await load(url(id, i)); needs = true; } }; await Promise.all([w(), w(), w()]); });
+      set.ready = Promise.all(order.slice(0, 18).map(i => load(url(id, i)).then(im => { set.imgs[i] = im; needs = true; })));
+      set.full = set.ready.then(async () => { let n = 18; const w = async () => { while (n < order.length) { const i = order[n++]; set.imgs[i] = await load(url(id, i)); needs = true; } }; await Promise.all([w(), w(), w()]); });
       return set.ready;
     }
     function resize() {
@@ -166,6 +139,7 @@
         if (!on) return;
         const ad = c.a.d, mc = S._m || { x0: 0.15, w: 0.7 };
         const a = kindS === 'm' ? [(ad[0] - mc.x0) / mc.w, ad[1]] : ad;
+        if (a[0] < 0 || a[0] > 1) { root.classList.remove('is-on'); return; }
         const x = (rect.x + a[0] * rect.w) / dpr, y = (rect.y + a[1] * rect.h) / dpr;
         // Leader goes up and out, away from the car's centre; on phones it points back in so the card stays on screen,
         // and it flips downward rather than run into the car name
@@ -188,10 +162,10 @@
       const i = nearestLoaded(set.imgs, v, N72); if (i < 0) return;
       if (i === drawn && !needs) return;
       const im = set.imgs[i];
-      if (kindS === 'm') {
-        // Phones: the whole car across the width, set a little above centre, the bay fading into night
+      if (kindS === 'm' || sw / sh < 1) {
+        // Phones and portrait tablets: the whole car across the width, set a little above centre, the bay fading into night
         sctx.fillStyle = '#0b0f17'; sctx.fillRect(0, 0, sw, sh);
-        const w = Math.round(sw * 1.16), h = im.naturalHeight * (w / im.naturalWidth), x = Math.round((sw - w) / 2), y = Math.round(sh * 0.53 - h / 2);
+        const w = Math.round(sw * (kindS === 'm' ? 1.16 : 1)), h = im.naturalHeight * (w / im.naturalWidth), x = Math.round((sw - w) / 2), y = Math.round(sh * 0.53 - h / 2);
         sctx.drawImage(im, x, y, w, h);
         const fade = (y0, y1) => { const g = sctx.createLinearGradient(0, y0, 0, y1); g.addColorStop(0, 'rgba(11,15,23,1)'); g.addColorStop(1, 'rgba(11,15,23,0)'); return g; };
         sctx.fillStyle = fade(y, y + h * 0.22); sctx.fillRect(0, y, w, h * 0.22);
@@ -204,6 +178,7 @@
     function frame(dt, inView) {
       if (!inView) return;
       if (!dragging) { dragOff += vel * dt; vel *= Math.exp(-dt * 3.2); if (Math.abs(vel) < 2) vel = 0; }
+      if (nudgeLeft) { const step = Math.abs(nudgeLeft) < 0.2 ? nudgeLeft : nudgeLeft * (1 - Math.exp(-dt * 10)); dragOff += step; nudgeLeft -= step; }
       const next = scrollAngle + dragOff;
       if (next !== angle) angle = next;
       render();
@@ -221,19 +196,25 @@
       dragOff -= dx * k; vel = -dx * k / Math.max(0.008, (now - lastT) / 1000);
       lastX = e.clientX; lastT = now;
     });
-    const end = () => { dragging = false; stage.classList.remove('is-drag'); };
+    // A finger that stopped before lifting does not fling the car
+    const end = () => { if (performance.now() - lastT > 80) vel = 0; dragging = false; stage.classList.remove('is-drag'); };
     stage.addEventListener('pointerup', end); stage.addEventListener('pointercancel', end);
-    function nudge(d) { dragOff += d * (reduce ? 45 : 30); if (reduce) render(); }
-    async function select(id) {
-      if (id === car || !CARS[id]) return;
+    function nudge(d) { if (reduce) { dragOff += d * 45; render(); } else nudgeLeft += d * 30; }
+    // Race-safe: only the latest tap swaps the car; the name and price change with the picture, not before it
+    async function select(id, onSwap) {
+      if (!CARS[id]) return;
+      const token = ++selSeq;
+      if (id === car) { if (onSwap) onSwap(); return; }
       await meta();
-      const go = () => { car = id; drawn = -1; needs = true; buildCallouts(); render(); };
+      if (token !== selSeq) return;
+      const go = () => { car = id; drawn = -1; needs = true; buildCallouts(); render(); if (onSwap) onSwap(); };
       prime(id);
-      if (reduce) { await sets[id].ready; go(); return; }
+      if (reduce) { await sets[id].ready; if (token === selSeq) go(); return; }
       dim.classList.add('is-on'); hidden = true; coEls.forEach(e => e.root.classList.remove('is-on'));
-      await Promise.all([sets[id].ready, new Promise(r => setTimeout(r, 300))]);
+      await Promise.all([sets[id].ready, new Promise(r => setTimeout(r, 280))]);
+      if (token !== selSeq) return;
       go();
-      requestAnimationFrame(() => { dim.classList.remove('is-on'); setTimeout(() => { hidden = false; needs = true; render(); }, 280); });
+      requestAnimationFrame(() => { dim.classList.remove('is-on'); setTimeout(() => { if (token === selSeq) { hidden = false; needs = true; render(); } }, 280); });
     }
     return {
       prime, resize, frame, nudge, select,
@@ -243,7 +224,7 @@
     };
   })();
 
-  function showProgress() { const r = show.getBoundingClientRect(); return clamp(-r.top / Math.max(1, show.offsetHeight - innerHeight)); }
+  function showProgress() { const r = show.getBoundingClientRect(); return clamp(-r.top / Math.max(1, show.offsetHeight - stage.offsetHeight)); }
   function showInView() { const r = show.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; }
 
   $$('.turn').forEach(b => b.addEventListener('click', () => spin.nudge(+b.dataset.d)));
@@ -257,10 +238,11 @@
   const kbtns = $$('.kbtn');
   function chooseCar(id, focus) {
     kbtns.forEach(b => { const on = b.dataset.car === id; b.setAttribute('aria-checked', String(on)); b.tabIndex = on ? 0 : -1; if (on && focus) b.focus(); });
-    spin.select(id);
-    carName.textContent = SHORT[id]; carPrice.textContent = money(CARS[id].rate);
-    showSr.textContent = `${CARS[id].name}, ${money(CARS[id].rate)} a day.`;
-    $('#spinCanvas').setAttribute('aria-label', `${CARS[id].name} turning on a turntable in the garage`);
+    spin.select(id, () => {
+      carName.textContent = SHORT[id]; carPrice.textContent = money(CARS[id].rate);
+      showSr.textContent = `${CARS[id].name}, ${money(CARS[id].rate)} a day.`;
+      $('#spinCanvas').setAttribute('aria-label', `${CARS[id].name} turning on a turntable in the garage`);
+    });
     qCar.value = id; $('#rCar').value = id; quote();
   }
   kbtns.forEach((b, i) => {
@@ -275,24 +257,16 @@
     chooseCar(n.dataset.car, true);
   });
 
-  /* =========================================================== Main loop */
+  /* =========================================================== Main loop (the film runs in the engine) */
   let last = performance.now();
   function loop(now) {
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
-    target = filmProgress();
-    if (reduce) cur = target;
-    else { cur += (target - cur) * (1 - Math.exp(-dt * 8)); if (Math.abs(target - cur) < 0.00005) cur = target; }
-    // While scrolling, blend between frames; once scrolling stops, settle on a whole frame so nothing looks doubled
-    const fRaw = frameFromProgress(cur), f = cur === target ? Math.round(fRaw / STRIDE) * STRIDE : fRaw;
-    if (filmVisible && (dirty || Math.abs(f - lastF) > 0.001)) { draw(f); lastF = f; dirty = false; }
-    if (Math.abs(cur - lastP) > 0.00003 || lastShot < 0) { ui(f); lastP = cur; }
     if (!reduce) spin.setScroll(showProgress());
     spin.frame(dt, showInView());
     bar.classList.toggle('is-solid', film.getBoundingClientRect().bottom < 90);
     requestAnimationFrame(loop);
   }
-  new IntersectionObserver(es => { filmVisible = es[0].isIntersecting; if (filmVisible) dirty = true; }).observe(film);
-  addEventListener('resize', size);
+  addEventListener('resize', () => spin.resize());
 
   /* =========================================================== Quote */
   const qCar = $('#qCar'), qDays = $('#qDays'), qDaysOut = $('#qDaysOut'), qTotal = $('#qTotal'), qLines = $('#qLines'), qTerms = $('#qTerms');
@@ -310,8 +284,8 @@
     qLines.replaceChildren(
       row(`${c.name}, ${days} × ${money(c.rate)}`, money(rent)),
       row(where[0], money(where[1])),
-      row(cover[0] + (cover[1] ? `, ${days} × ${money(cover[1])}` : ''), cover[1] ? money(ins) : 'Included'),
-      row('Estimated tax and fees (10%)', money(tax)),
+      row(cover[0] + (cover[1] ? `, ${days} × ${money(cover[1])}` : ''), cover[1] ? money(ins) : '$0, your policy'),
+      row('Estimated tax (10%)', money(tax)),
     );
     qTerms.replaceChildren(
       row('Security deposit, refundable hold', money(c.deposit)),
@@ -328,28 +302,42 @@
   $('#carQuote').addEventListener('click', () => { qCar.value = spin.car; quote(); });
 
   /* =========================================================== Reserve: validate, send nothing */
-  const rform = $('#rform'), rMsg = $('#rMsg');
-  rform.querySelectorAll('input, select').forEach(f => f.addEventListener('blur', () => f.classList.add('is-touched')));
+  const rform = $('#rform'), rMsg = $('#rMsg'), rDate = $('#rDate');
+  const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  rDate.min = iso(new Date());
+  // Each rule is set on its own field, so the red outline, the screen reader and the message all agree
+  const RULES = {
+    name: [v => v.length >= 2, 'your name'],
+    phone: [v => v.replace(/\D/g, '').length >= 7, 'a mobile number'],
+    email: [v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), 'a valid email'],
+    date: [v => { if (!v) return false; const t = new Date(); t.setHours(0, 0, 0, 0); return new Date(v + 'T00:00') >= t; }, 'a start date from today on'],
+    meet: [v => v.length >= 3, 'where to meet you'],
+  };
+  const listOf = a => a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
+  function check(field) {
+    const r = RULES[field.name]; if (!r) return true;
+    const ok = r[0](String(field.value || '').trim());
+    field.setCustomValidity(ok ? '' : `Please add ${r[1]}.`);
+    field.setAttribute('aria-invalid', String(!ok));
+    return ok;
+  }
+  rform.querySelectorAll('input, select').forEach(f => {
+    f.setAttribute('aria-describedby', 'rMsg');
+    f.addEventListener('blur', () => { f.classList.add('is-touched'); check(f); });
+    f.addEventListener('input', () => { if (f.classList.contains('is-touched')) check(f); });
+  });
   rform.addEventListener('submit', e => {
     e.preventDefault();
-    const fd = new FormData(rform), v = k => String(fd.get(k) || '').trim();
-    rform.querySelectorAll('input, select').forEach(f => f.classList.add('is-touched'));
-    const errs = [];
-    if (v('name').length < 2) errs.push('your name');
-    if (v('phone').replace(/\D/g, '').length < 7) errs.push('a mobile number');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('email'))) errs.push('a valid email');
-    const d = v('date'), today = new Date(); today.setHours(0, 0, 0, 0);
-    if (!d || new Date(d + 'T00:00') < today) errs.push('a start date from today on');
-    if (v('where').length < 3) errs.push('where to meet you');
-    rMsg.classList.toggle('is-err', errs.length > 0); rMsg.classList.toggle('is-ok', errs.length === 0);
-    if (errs.length) { rMsg.textContent = 'Please add ' + errs.join(', ') + '.'; return; }
-    const car = CARS[v('car')] ? CARS[v('car')].name : 'your car';
-    rMsg.textContent = `Looks good. On a real site, the ${car} would now be held for you and a driver would text to confirm. This is a concept, so nothing was sent.`;
+    const bad = [];
+    rform.querySelectorAll('input, select').forEach(f => { f.classList.add('is-touched'); if (!check(f)) bad.push(f); });
+    rMsg.classList.toggle('is-err', bad.length > 0); rMsg.classList.toggle('is-ok', bad.length === 0);
+    if (bad.length) { rMsg.textContent = 'Please check ' + listOf(bad.map(f => RULES[f.name][1])) + '.'; bad[0].focus(); return; }
+    const id = rform.elements.car.value, car = CARS[id] ? CARS[id].name : 'your car';
+    rMsg.textContent = `Looks good. On a real site, the ${car} would now be held for you and we would text to confirm the handover. This is a concept, so nothing was sent.`;
   });
 
   quote();
   spin.init();
-  size();
+  spin.resize();
   requestAnimationFrame(loop);
-  boot();
 })();

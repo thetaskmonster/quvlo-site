@@ -4,7 +4,7 @@
 (() => {
   'use strict';
   // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.
-  const FV = '2026102607';
+  const FV = '2026102801';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -46,9 +46,9 @@
     return `${h12}:${String(mm).padStart(2, '0')} ${h < 12 ? 'am' : 'pm'}`;
   };
 
-  /* ---------- Film ---------- */
+  /* ---------- Film (shared engine: film-engine.js) ---------- */
   const PER = 40;
-  const film = $('#film'), canvas = $('#filmCanvas'), ctx = canvas.getContext('2d', { alpha: false });
+  const film = $('#film'), canvas = $('#filmCanvas');
   const fx = $('#fxCanvas'), fctx = fx.getContext('2d');
   const stage = $('.film__stage');
   const caps = $$('.cap'), logItems = $$('#log li');
@@ -56,83 +56,23 @@
   const bar = $('.bar');
   const gTemp = $('#gTemp'), gState = $('#gState'), gPit = $('#gPit'), gClock = $('#gClock');
   const gNeedle = $('#gNeedle'), gFill = $('#gFill');
+  let filmVisible = true;
 
-  let M = null, kind = 'd', N = 0;
-  const imgs = [];
-  let target = 0, cur = 0, lastF = -1, lastP = -1, dirty = true, filmVisible = true;
-  const pick = () => (innerWidth / innerHeight < 0.85 || innerWidth < 760) ? 'm' : 'd';
-  const frameUrl = i => `f/${kind}/${String(i + 1).padStart(3, '0')}.webp?v=${FV}`;
-
-  function load(url) {
-    return new Promise(res => {
-      const im = new Image();
-      im.decoding = 'async';
-      im.onload = () => { (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(() => res(im)); };
-      im.onerror = () => res(null);
-      im.src = url;
-    });
-  }
-
-  async function boot() {
-    try { M = await (await fetch(`frames.json?v=${FV}`, { cache: 'no-cache' })).json(); } catch { M = null; }
-    if (!M) { openLoader(); return; }
-    kind = pick(); N = M.count;
-    let done = 0;
-    const tick = () => { done++; const p = Math.min(100, Math.round(done / PER * 100)); loadPct.textContent = String(p); loadBar.style.width = p + '%'; };
-    await Promise.all(Array.from({ length: PER }, (_, i) => load(frameUrl(i)).then(im => { imgs[i] = im; dirty = true; tick(); })));
-    openLoader();
-    let next = PER;
-    const worker = async () => { while (next < N) { const i = next++; imgs[i] = await load(frameUrl(i)); dirty = true; } };
-    await Promise.all([worker(), worker(), worker(), worker(), worker()]);
-  }
+  let opened = false;
   function openLoader() {
+    if (opened) return; opened = true;
     document.body.classList.remove('is-loading');
     loader.classList.add('is-open');
   }
-
-  let cw = 0, ch = 0, dpr = 1;
   function size() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
     const r = canvas.getBoundingClientRect();
-    cw = Math.round(r.width * dpr); ch = Math.round(r.height * dpr);
-    if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
     fx.width = Math.round(r.width); fx.height = Math.round(r.height);
-    if (M && pick() !== kind) location.reload();
-    dirty = true;
   }
-  function fit(fw, fh) {
-    const s = Math.max(cw / fw, ch / fh);
-    return { s, x: (cw - fw * s) / 2, y: (ch - fh * s) / 2, fw, fh };
-  }
-  function toScreen(u, v, i, F) {
-    let x = u;
-    if (kind === 'm') x = (u - M.m.crop[i]) / M.m.cropW;
-    return [(F.x + x * F.fw * F.s) / dpr, (F.y + v * F.fh * F.s) / dpr];
-  }
-  function nearestLoaded(i) {
-    if (imgs[i]) return i;
-    for (let d = 1; d < N; d++) { if (imgs[i - d]) return i - d; if (imgs[i + d]) return i + d; }
-    return -1;
-  }
-  const frameFromProgress = p => clamp((p - 0.01) / 0.9) * (N - 1);
   // Time of the cook at a (fractional) frame
   function timeAt(f) {
     const shot = Math.min(5, Math.floor(f / PER));
     const k = clamp((f - shot * PER) / (PER - 1));
     return lerp(SHOT_T[shot], SHOT_T[shot + 1], k);
-  }
-
-  let F = null;
-  function draw(f) {
-    if (!N) return;
-    const i0 = Math.floor(f), i1 = Math.min(N - 1, i0 + 1), k = f - i0;
-    const a = nearestLoaded(i0);
-    if (a < 0) return;
-    const A = imgs[a];
-    F = fit(A.naturalWidth, A.naturalHeight);
-    ctx.globalAlpha = 1;
-    ctx.drawImage(A, F.x, F.y, F.fw * F.s, F.fh * F.s);
-    if (k > 0.02 && imgs[i1] && a === i0) { ctx.globalAlpha = k; ctx.drawImage(imgs[i1], F.x, F.y, F.fw * F.s, F.fh * F.s); ctx.globalAlpha = 1; }
   }
 
   /* ---------- Gauge ---------- */
@@ -197,10 +137,10 @@
     pin.addEventListener('click', () => { st.forced = !el.classList.contains('is-open'); });
     return st;
   });
-  function notes(f) {
-    if (!F) return;
-    const shot = Math.min(5, Math.floor(f / PER)), local = (f - shot * PER) / (PER - 1), i = Math.round(f);
-    const small = kind === 'm';
+  function notes(v) {
+    if (!v) return;
+    const f = v.f, shot = v.shot, local = (f - shot * PER) / (PER - 1);
+    const small = v.set === 'm';
     let capTop = innerHeight;
     const capOn = caps.find(c => c.classList.contains('is-on'));
     if (capOn) capTop = capOn.getBoundingClientRect().top;
@@ -209,7 +149,7 @@
       const s = noteEls[j];
       const on = n.shot === shot && local > (n.from || 0.04) && local < 0.985;
       const k = ease(clamp(local));
-      const [X, Y] = toScreen(lerp(n.a[0], n.b[0], k), lerp(n.a[1], n.b[1], k), i, F);
+      const [X, Y] = v.toScreen(lerp(n.a[0], n.b[0], k), lerp(n.a[1], n.b[1], k));
       const topMin = small ? 240 : 70;
       const vis = on && X > 10 && X < innerWidth - 10 && Y > topMin && Y < capTop - 10;
       s.el.classList.toggle('is-on', vis);
@@ -322,29 +262,26 @@
     vel = p - lastScrollP; lastScrollP = p;
   }
 
-  function filmProgress() {
-    const r = film.getBoundingClientRect();
-    return clamp(-r.top / (film.offsetHeight - innerHeight));
-  }
-  let last = performance.now();
-  function loop(now) {
-    const dt = Math.min(0.05, (now - last) / 1000); last = now;
-    target = filmProgress();
-    if (reduce) cur = target;
-    else { cur += (target - cur) * (1 - Math.exp(-dt * 8)); if (Math.abs(target - cur) < 0.00005) cur = target; }
-    const f = frameFromProgress(cur);
-    if (filmVisible && (dirty || Math.abs(f - lastF) > 0.001)) { draw(f); lastF = f; dirty = false; }
-    if (Math.abs(cur - lastP) > 0.00003) { ui(f, cur); lastP = cur; } else vel *= 0.9;
-    if (filmVisible) { notes(f); particles(dt, timeAt(f)); }
-    bar.classList.toggle('is-solid', film.getBoundingClientRect().bottom < 70);
-    requestAnimationFrame(loop);
-  }
-  new IntersectionObserver(es => { filmVisible = es[0].isIntersecting; if (filmVisible) dirty = true; }).observe(film);
+  // Notes, embers and smoke run every frame; the gauge, log and captions follow the picture on screen.
+  let lastF = 0;
+  new IntersectionObserver(es => { filmVisible = es[0].isIntersecting; }).observe(film);
+  window.FilmEngine.create({
+    section: film, stage, canvas, FV, range: [0.01, 0.9], rate: 8,
+    lift: '.cap, .log, .gauge, .letter--b',
+    overlays: { '.cap': 'is-on', '.note': 'is-on' },
+    onGate: k => { const p = Math.round(k * 100); loadPct.textContent = String(p); loadBar.style.width = p + '%'; },
+    onReady: openLoader,
+    onFrame: v => { lastF = v.f; ui(v.f, v.p); },
+    onTick: (v, dt) => {
+      if (filmVisible) { notes(v); particles(dt, timeAt(v ? v.f : lastF)); }
+      vel *= 0.9;
+      bar.classList.toggle('is-solid', film.getBoundingClientRect().bottom < 70);
+    },
+  });
+  setTimeout(openLoader, 9000); // never trap a visitor behind the loader on a very slow connection
   addEventListener('resize', size);
   size();
   ui(0, 0);
-  requestAnimationFrame(loop);
-  boot();
 
   /* ---------- The cook chart ---------- */
   const svg = $('#chartSvg'), tip = $('#chartTip'), range = $('#chartRange'), chartBox = $('#chart');

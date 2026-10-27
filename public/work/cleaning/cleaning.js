@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.
-  const FV = '2026102607';
+  const FV = '2026102801';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -190,93 +190,46 @@
   mess.src = 'img/kitchen-mess.webp';
   addEventListener('resize', sizeWipe);
 
-  /* ---------- Film: one visit, scrubbed by scroll ---------- */
-  const PER = 40;
-  const film = $('#film'), fc = $('#filmCanvas'), fctx = fc.getContext('2d', { alpha: false });
+  /* ---------- Film: one visit, scrubbed by scroll (shared engine: film-engine.js) ---------- */
+  const film = $('#film'), fc = $('#filmCanvas');
   const frame = $('#frame'), caps = $$('.cap'), list = $('#list'), items = $$('#list li');
   const listTime = $('#listTime'), listAmPm = $('#listAmPm'), filmBar = $('#filmBar');
   // Clock (minutes after midnight) at the start of each shot and at the end
-  const CLOCK = [510, 522, 550, 605, 680, 820, 835];
-  let M = null, kind = 'd', N = 0, imgs = [], fw = 0, fh = 0, lastDrawn = -1, dirtyF = true, cur = 0;
-  const pick = () => (innerWidth / innerHeight < 0.85 || innerWidth < 760) ? 'm' : 'd';
-  const url = i => `f/${kind}/${String(i + 1).padStart(3, '0')}.webp?v=${FV}`;
-  const load = u => new Promise(res => { const im = new Image(); im.decoding = 'async'; im.onload = () => res(im); im.onerror = () => res(null); im.src = u; });
-
-  async function bootFilm() {
-    try { M = await (await fetch(`frames.json?v=${FV}`, { cache: 'no-cache' })).json(); } catch { M = null; }
-    if (!M) return;
-    kind = pick(); N = M.count;
-    // first frame of every shot first, so a fast scroll never shows a blank
-    const order = [];
-    for (let s = 0; s < M.shots; s++) order.push(s * PER);
-    for (let i = 0; i < N; i++) if (i % PER) order.push(i);
-    let next = 0;
-    const worker = async () => { while (next < order.length) { const i = order[next++]; imgs[i] = await load(url(i)); dirtyF = true; } };
-    await Promise.all([worker(), worker(), worker(), worker()]);
-  }
-  function sizeFilm() {
-    const d = Math.min(devicePixelRatio || 1, 2), b = fc.getBoundingClientRect();
-    const w = Math.round(b.width * d), h = Math.round(b.height * d);
-    if (w !== fw || h !== fh) { fw = w; fh = h; fc.width = w; fc.height = h; dirtyF = true; }
-    if (M && pick() !== kind) location.reload();
-  }
-  function nearest(i) {
-    if (imgs[i]) return i;
-    for (let d = 1; d < N; d++) { if (imgs[i - d]) return i - d; if (imgs[i + d]) return i + d; }
-    return -1;
-  }
-  function drawFilm(f) {
-    const i0 = Math.floor(f), k = f - i0, a = nearest(i0);
-    if (a < 0) return;
-    const A = imgs[a], s = Math.max(fw / A.naturalWidth, fh / A.naturalHeight);
-    const w = A.naturalWidth * s, h = A.naturalHeight * s, x = (fw - w) / 2, y = (fh - h) / 2;
-    fctx.globalAlpha = 1; fctx.drawImage(A, x, y, w, h);
-    const B = imgs[i0 + 1];
-    if (k > 0.02 && B && a === i0) { fctx.globalAlpha = k; fctx.drawImage(B, x, y, w, h); fctx.globalAlpha = 1; }
-  }
+  const CLOCK = [510, 522, 550, 605, 680, 820, 820];
+  let N = 240;
   const fmt = m => { const h = Math.floor(m / 60), mm = Math.round(m % 60); return [`${h > 12 ? h - 12 : h}:${String(mm).padStart(2, '0')}`, h >= 12 ? 'pm' : 'am']; };
-  function filmUi(p, f) {
+  function filmUi(p, f, shot, local) {
+    const r = film.getBoundingClientRect();
+    if (r.bottom < -50 || r.top > innerHeight + 50) return;
     // the frame opens from a card to full screen as the section arrives
     const open = ease(clamp(p / 0.06));
     frame.style.setProperty('--inset', `${lerp(9, 0, open)}%`);
     frame.style.setProperty('--inset-x', `${lerp(6, 0, open)}%`);
     frame.style.setProperty('--r', `${lerp(28, 0, open)}px`);
-    const shot = Math.min(5, Math.floor(f / PER)), local = (f - shot * PER) / PER;
     caps.forEach(c => { const s = +c.dataset.shot; c.classList.toggle('is-on', open > 0.9 && s === shot && local > 0.08 && local < 0.92); });
     list.classList.toggle('is-on', open > 0.9);
     const q = f / Math.max(1, N - 1);
-    let currentSet = false;
-    for (let n = items.length - 1; n >= 0; n--) {
-      const li = items[n], isDone = q >= +li.dataset.at;
-      li.classList.toggle('is-done', isDone);
-      const isCur = !currentSet && (isDone || n === 0);
-      li.classList.toggle('is-current', isCur);
-      if (isCur) currentSet = true;
-    }
-    const [t, ap] = fmt(lerp(CLOCK[shot], CLOCK[shot + 1], clamp(local)));
+    // one checklist line per scene: the line for the scene on screen is current, earlier ones are done
+    items.forEach((li, n) => {
+      li.classList.toggle('is-done', n < shot || (n === shot && local > 0.85));
+      li.classList.toggle('is-current', n === shot);
+    });
+    // the clock holds the time in the caption while it is up, then runs on to the next one
+    const [t, ap] = fmt(lerp(CLOCK[shot], CLOCK[shot + 1], clamp((local - 0.92) / 0.08)));
     if (listTime.textContent !== t) listTime.textContent = t;
     if (listAmPm.textContent !== ap) listAmPm.textContent = ap;
     filmBar.parentElement.style.setProperty('--p', q.toFixed(3));
   }
-  function filmProgress() {
-    const r = film.getBoundingClientRect(), span = film.offsetHeight - innerHeight;
-    return clamp(-r.top / span);
-  }
-  let lastT = performance.now(), filmVisible = false;
-  new IntersectionObserver(es => { filmVisible = es[0].isIntersecting; if (filmVisible) dirtyF = true; }).observe(film);
-  function loop(now) {
-    const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
-    if (filmVisible && N) {
-      const target = filmProgress();
-      cur = reduce ? target : cur + (target - cur) * (1 - Math.exp(-dt * 10));
-      const f = clamp((cur - 0.05) / 0.92) * (N - 1);
-      if (dirtyF || Math.abs(f - lastDrawn) > 0.001) { drawFilm(f); lastDrawn = f; dirtyF = false; }
-      filmUi(cur, f);
-    }
-    requestAnimationFrame(loop);
-  }
-  addEventListener('resize', sizeFilm);
-  sizeFilm(); requestAnimationFrame(loop); bootFilm();
+  // The card opens with scroll every frame; captions, checklist and clock follow the picture on screen.
+  let lastF = null;
+  window.FilmEngine.create({
+    section: film, stage: $('.film__stage'), canvas: fc, FV, range: [0.05, 0.92], rate: 10, bg: getComputedStyle($('#frame')).backgroundColor,
+    lift: '.cap, .list, .film__bar',
+    overlays: { '.cap': 'is-on', '.list': 'is-on' },
+    onFrame: v => { N = v.N; lastF = v; },
+    // p (scroll) only opens the card frame; everything over the picture reads the drawn frame
+    onTick: (v, dt, p) => { const d = v || lastF; if (d) filmUi(p, d.f, d.shot, d.local); else filmUi(p, 0, 0, 0); },
+  });
 
   /* ---------- Estimator with a 30-second clock ---------- */
   const est = $('#est'), totalEl = $('#total'), totalU = $('#totalU');

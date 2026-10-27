@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.
-  const FV = '2026102607';
+  const FV = '2026102801';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -32,133 +32,51 @@
   const HEAT2 = [255, 193, 94], COOL2 = [159, 219, 255];
   const mix = (a, b, k) => `rgb(${a.map((v, i) => Math.round(lerp(v, b[i], k))).join(',')})`;
 
-  /* ---------- Film ---------- */
-  const film = $('#film'), canvas = $('#filmCanvas'), ctx = canvas.getContext('2d', { alpha: false });
+  /* ---------- Film (shared engine: film-engine.js) ---------- */
+  const film = $('#film'), canvas = $('#filmCanvas');
   const svg = $('#filmLines'), spotsEl = $('#filmSpots');
   const hudTemp = $('#hudTemp'), hudClock = $('#hudClock'), hudFill = $('#hudFill');
   const rail = $('#rail'), railItems = $$('li', rail);
   const caps = $$('.cap'), book = $('#book'), loader = $('#loader'), loadPct = $('#loadPct');
   const bar = $('.bar');
+  let N = 240, dpr = 1;
 
-  let M = null, kind = 'd', N = 0;
-  const imgs = [], fgs = {};
-  let target = 0, cur = 0, lastDrawn = -1, lastP = -1, dirty = true, filmVisible = true;
-
-  const pick = () => (innerWidth / innerHeight < 0.85 || innerWidth < 760) ? 'm' : 'd';
-
-  function frameUrl(i) { return `f/${kind}/${String(i + 1).padStart(3, '0')}.webp?v=${FV}`; }
-  function fgUrl(i) { return `fg/${kind}/${String(i + 1).padStart(3, '0')}.webp?v=${FV}`; }
-
-  function load(url) {
-    return new Promise(res => {
-      const im = new Image();
-      im.decoding = 'async';
-      im.onload = () => { (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(() => res(im)); };
-      im.onerror = () => res(null);
-      im.src = url;
-    });
-  }
-
-  async function boot() {
-    try { M = await (await fetch(`frames.json?v=${FV}`, { cache: 'no-cache' })).json(); } catch { M = null; }
-    if (!M) { openLoader(); return; }
-    kind = pick(); N = M.count;
-    const fgSet = new Set(M.fg || []);
-    // First shot plus its sky cut-outs gate the loader, so the opening never stutters.
-    const first = [];
-    for (let i = 0; i < PER; i++) first.push(i);
-    const gate = first.length + fgSet.size;
-    let done = 0;
-    const tick = () => { done++; loadPct.textContent = String(Math.min(100, Math.round(done / gate * 100))); };
-    await Promise.all([
-      ...first.map(i => load(frameUrl(i)).then(im => { imgs[i] = im; dirty = true; tick(); })),
-      ...[...fgSet].map(n => load(fgUrl(n - 1)).then(im => { fgs[n - 1] = im; tick(); }))
-    ]);
-    openLoader();
-    // Then the rest, in story order, a few at a time.
-    let next = PER;
-    const worker = async () => { while (next < N) { const i = next++; imgs[i] = await load(frameUrl(i)); dirty = true; } };
-    await Promise.all([worker(), worker(), worker(), worker(), worker()]);
-  }
-
+  let opened = false;
   function openLoader() {
+    if (opened) return; opened = true;
     document.body.classList.remove('is-loading');
     if (reduce) { loader.classList.add('is-gone'); return; }
     loader.classList.add('is-open');
     setTimeout(() => loader.classList.add('is-gone'), 1300);
   }
 
-  /* Canvas sizing and the source-to-screen transform */
-  let cw = 0, ch = 0, dpr = 1;
-  function size() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const r = canvas.getBoundingClientRect();
-    cw = Math.round(r.width * dpr); ch = Math.round(r.height * dpr);
-    if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
-    if (M && pick() !== kind) location.reload();
-    dirty = true;
-  }
-
-  // Where a frame sits on the canvas (cover fit).
-  function fit(fw, fh) {
-    const s = Math.max(cw / fw, ch / fh);
-    return { s, x: (cw - fw * s) / 2, y: (ch - fh * s) / 2, fw, fh };
-  }
-  // Source fraction (u, v) to canvas pixels, for frame i.
-  function toCanvas(u, v, i, F) {
-    let x = u;
-    if (kind === 'm') x = (u - M.m.crop[i]) / M.m.cropW;
-    return [F.x + x * F.fw * F.s, F.y + v * F.fh * F.s];
-  }
-
-  function nearestLoaded(i) {
-    if (imgs[i]) return i;
-    for (let d = 1; d < N; d++) { if (imgs[i - d]) return i - d; if (imgs[i + d]) return i + d; }
-    return -1;
-  }
-
-  function frameFromProgress(p) { return clamp((p - 0.015) / 0.885) * (N - 1); }
-
-  function draw(f) {
-    if (!N) return;
-    const i0 = Math.floor(f), i1 = Math.min(N - 1, i0 + 1), k = f - i0;
-    const a = nearestLoaded(i0);
-    if (a < 0) return;
-    const A = imgs[a];
-    const F = fit(A.naturalWidth, A.naturalHeight);
-    const useFg = fgs[Math.round(f)];
-    if (useFg) {
-      const j = Math.round(f), J = imgs[j] || A;
-      ctx.globalAlpha = 1; ctx.drawImage(J, F.x, F.y, F.fw * F.s, F.fh * F.s);
-      drawBigTemp(j, F);
-      ctx.drawImage(useFg, F.x, F.y, F.fw * F.s, F.fh * F.s);
-    } else {
-      ctx.globalAlpha = 1; ctx.drawImage(A, F.x, F.y, F.fw * F.s, F.fh * F.s);
-      if (k > 0.02 && imgs[i1] && a === i0) { ctx.globalAlpha = k; ctx.drawImage(imgs[i1], F.x, F.y, F.fw * F.s, F.fh * F.s); ctx.globalAlpha = 1; }
-    }
-    const shot = Math.min(5, Math.floor(f / PER));
-    if (shot === THERMO.shot) drawThermostat(f, Math.round(f), F);
-    placeSpots(f, F);
+  // Everything drawn over the footage reads the frame that is actually on screen (v).
+  function onDraw(ctx, v) {
+    dpr = v.dpr; N = v.N;
+    const fg = v.extra('fg');
+    if (fg) { drawBigTemp(ctx, v); ctx.drawImage(fg, v.rect.x, v.rect.y, v.rect.w, v.rect.h); }
+    if (v.shot === THERMO.shot) drawThermostat(ctx, v);
+    placeSpots(v);
   }
 
   // "104°" set behind the roofline at the end of the drone shot.
-  function drawBigTemp(j, F) {
-    const fg = M.fg || [];
+  function drawBigTemp(ctx, v) {
+    const fg = (v.meta && v.meta.fg) || [];
     const first = fg[0] - 1;
-    const k = ease(clamp((j - first) / 4));
+    const k = ease(clamp((v.i - first) / 4));
     if (k <= 0) return;
-    const [, top] = toCanvas(0.5, 0.08, j, F);
-    const [, base] = toCanvas(0.5, 0.40, j, F);
-    const [, roof] = toCanvas(0.5, 0.27, j, F);
+    const [, top] = v.toCanvas(0.5, 0.08);
+    const [, base] = v.toCanvas(0.5, 0.40);
+    const [, roof] = v.toCanvas(0.5, 0.27);
     const h = base - top;
-    const [cx] = toCanvas(0.5, 0, j, F);
+    const [cx] = v.toCanvas(0.5, 0);
     ctx.save();
     ctx.globalAlpha = k;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'alphabetic';
     ctx.font = `900 ${Math.round(h)}px Archivo`;
     if ('fontStretch' in ctx) ctx.fontStretch = 'ultra-expanded';
-    const maxW = cw * 0.84;
+    const maxW = v.cw * 0.84;
     const w = ctx.measureText('104°').width;
     const s = Math.min(1, maxW / w);
     const capH = h * 0.72 * s;
@@ -173,8 +91,9 @@
   }
 
   // The live number drawn onto the thermostat in the footage.
-  function drawThermostat(f, i, F) {
-    const P = (uv) => toCanvas(uv[0], uv[1], i, F);
+  function drawThermostat(ctx, v) {
+    const f = v.f;
+    const P = uv => v.toCanvas(uv[0], uv[1]);
     const tl = P(THERMO.tl), tr = P(THERMO.tr), bl = P(THERMO.bl);
     const w = Math.hypot(tr[0] - tl[0], tr[1] - tl[1]), h = Math.hypot(bl[0] - tl[0], bl[1] - tl[1]);
     if (w < 4) return;
@@ -225,19 +144,19 @@
   });
 
   let capRect = null;
-  function placeSpots(f, F) {
+  function placeSpots(v) {
+    const f = v.f;
     const placed = [];
     const capOn = caps.find(c => c.classList.contains('is-on'));
     capRect = capOn ? capOn.getBoundingClientRect() : null;
     const shot = Math.min(5, Math.floor(f / PER));
     const local = (f - shot * PER) / (PER - 1);
-    const i = Math.round(f);
-    const small = kind === 'm';
+    const small = v.set === 'm';
     SPOTS.forEach((S, n) => {
       const s = spotEls[n];
       const on = S.shot === shot && local > 0.03 && local < 0.97;
       const k = ease(clamp(local));
-      const [x, y] = toCanvas(lerp(S.a[0], S.b[0], k), lerp(S.a[1], S.b[1], k), i, F);
+      const [x, y] = v.toCanvas(lerp(S.a[0], S.b[0], k), lerp(S.a[1], S.b[1], k));
       const X = x / dpr, Y = y / dpr;
       const vis = on && X > 8 && X < innerWidth - 8 && Y > 60 && Y < innerHeight - 40;
       s.el.classList.toggle('is-on', vis);
@@ -276,7 +195,7 @@
   /* HUD, rail, captions, colour temperature */
   const fmtClock = m => { const h = Math.floor(m / 60), mm = Math.round(m % 60); return `${h > 12 ? h - 12 : h}:${String(mm).padStart(2, '0')} pm`; };
   let lastTemp = null, lastClock = null;
-  function ui(f, p) {
+  function ui(f) {
     const shot = Math.min(5, Math.floor(f / PER));
     const local = (f - shot * PER) / PER;
     const temp = tempAt(f);
@@ -286,7 +205,8 @@
     const tr = Math.round(temp);
     if (tr !== lastTemp) { hudTemp.textContent = String(tr); lastTemp = tr; }
     hudFill.setAttribute('width', String(Math.max(4, 120 * (temp - 60) / 44)));
-    const m = lerp(CLOCK[shot], CLOCK[shot + 1], clamp(local));
+    // the clock holds the time in the caption while it is up, then runs on to the next one
+    const m = lerp(CLOCK[shot], CLOCK[shot + 1], clamp((local - 0.9) / 0.1));
     const c = fmtClock(m);
     if (c !== lastClock) { hudClock.textContent = c; lastClock = c; }
     rail.style.setProperty('--p', (f / (N - 1)).toFixed(4));
@@ -299,41 +219,24 @@
       else on = shot === s && local > 0.06 && local < 0.9;
       cap.classList.toggle('is-on', on);
     });
-    book.classList.toggle('is-on', p > 0.9);
   }
 
-  function filmProgress() {
-    const r = film.getBoundingClientRect();
-    const span = film.offsetHeight - innerHeight;
-    return clamp(-r.top / span);
-  }
+  window.FilmEngine.create({
+    section: film, stage: $('.film__stage'), canvas, FV, range: [0.015, 0.885], rate: 9,
+    lift: '.cap, .hud, .rail, .book',
+    overlays: { '.cap': 'is-on', '.spot': 'is-on', '.book': 'is-on' },
+    extra: [{ name: 'fg', frames: null, url: (set, i) => `fg/${set}/${String(i + 1).padStart(3, '0')}.webp?v=${FV}` }],
+    onGate: k => { loadPct.textContent = String(Math.round(k * 100)); },
+    onReady: openLoader,
+    onDraw,
+    // booking opens over the last frame only once that frame is the one on screen
+    onFrame: v => { ui(v.f); book.classList.toggle('is-on', v.p > 0.9 && v.i >= v.N - 5); },
+  });
+  setTimeout(openLoader, 9000); // never trap a visitor behind the loader on a very slow connection
+  addEventListener('scroll', () => bar.classList.toggle('is-solid', film.getBoundingClientRect().bottom < 70), { passive: true });
 
-  let last = performance.now();
-  function loop(now) {
-    const dt = Math.min(0.05, (now - last) / 1000); last = now;
-    target = filmProgress();
-    if (reduce) cur = target;
-    else { cur += (target - cur) * (1 - Math.exp(-dt * 9)); if (Math.abs(target - cur) < 0.00005) cur = target; }
-    const f = frameFromProgress(cur);
-    if (filmVisible && (dirty || Math.abs(f - lastDrawn) > 0.001)) { draw(f); lastDrawn = f; dirty = false; }
-    if (Math.abs(cur - lastP) > 0.00005) { ui(f, cur); lastP = cur; }
-    bar.classList.toggle('is-solid', film.getBoundingClientRect().bottom < 70);
-    requestAnimationFrame(loop);
-  }
-
-  new IntersectionObserver(es => { filmVisible = es[0].isIntersecting; if (filmVisible) dirty = true; }).observe(film);
-  addEventListener('resize', size);
-  size();
-  requestAnimationFrame(loop);
-  boot();
-
-  // "Book" links jump to the end of the film, where booking sits over the dusk scene.
-  $$('a[href="#book"]').forEach(a => a.addEventListener('click', e => {
-    e.preventDefault();
-    const top = film.offsetTop + (film.offsetHeight - innerHeight) * 0.96;
-    scrollTo({ top, behavior: 'auto' });
-    setTimeout(() => book.focus({ preventScroll: true }), 700);
-  }));
+  // "Book" links land on the dusk scene at the end of the film (data-film-at on #book). The engine loads
+  // that frame before it jumps, so booking never opens over the wrong scene.
 
   /* ---------- Booking (concept: nothing is sent anywhere) ---------- */
   const days = $('#bookDays'), times = $('#bookTimes'), note = $('#bookNote');
@@ -432,7 +335,7 @@
     });
   }
 
-  /* ---------- 3D unit: model-viewer loads only when this section is near ---------- */
+  /* ---------- 3D unit: model-viewer (4.6 MB with the model) loads only when the visitor asks for it ---------- */
   const view = $('#unitView'), loadBtn = $('#unitLoad');
   let mvLoaded = false;
   function load3d() {
@@ -461,7 +364,6 @@
   }
   if (view && loadBtn) {
     loadBtn.addEventListener('click', load3d);
-    new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { load3d(); o.disconnect(); } }, { rootMargin: '600px 0px' }).observe(view);
   }
 
   /* ---------- Spec count-ups ---------- */
