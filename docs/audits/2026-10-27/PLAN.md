@@ -23,8 +23,8 @@ plan to pick up when Kyle tops up credits ("reup"). Update the Status column as 
 | New film player (`tools/scrollfilm/film-engine.js`) in all 7 scroll sites. No wrong-scene frames, no double images, even speed, correct frames per device and orientation, no reload on rotate, bounded memory, iOS toolbar fix | in progress (uncommitted) |
 | Keyroom reshoot: garage lights, light reveal, riverside tracking drive (test first), parked arrival push-in, plus 18 showroom views (stills done) | in progress, cap 135 |
 | Footage audits: Keyroom, HVAC, cleaning, wrap, BBQ, builder, landscape | done (reports here) |
-| Device audits: Keyroom, builder + landscape, wrap + BBQ, homepage + /work/ + studio pages | done (reports here) |
-| Device audit still running: HVAC + cleaning | running |
+| Device audits: Keyroom, builder + landscape, wrap + BBQ, HVAC + cleaning, homepage + /work/ + studio pages | all done (reports here) |
+| Engine requirement from the HVAC audit: the player must report the frame actually drawn, and every overlay (captions, hotspots, thermostat, HUD) must follow that frame, not the scroll position | to check when the engine lands |
 | GSC Capital Group site | separate session ("GSC Capital Group site: finish and launch prep") |
 
 ## Phase 1a: quvlo.co itself, must be fixed before this PR merges (no credits)
@@ -65,7 +65,28 @@ See studio-home-devices.md.
   - US spelling;
   - form errors tied to their fields;
   - race-safe car swap.
-- **HVAC:**
+- **HVAC (devices, see hvac-cleaning-devices.md):**
+  - overlays from the drawn frame, and booking as its own section after Pricing;
+  - hotspot cards in a bottom sheet on phones;
+  - hidden 3D link catches taps;
+  - times that agree with the clock;
+  - "104°" on iPhone;
+  - phone crops keep the capacitor and thermostat;
+  - booking slots;
+  - copy: $189 vs FAQ, "$0", the 104 -> 72° claim, heating;
+  - 3D loads on tap with no wheel-zoom;
+  - button contrast;
+  - mouse-only service photos.
+- **Cleaning (devices):**
+  - the iPad checklist card covers the action;
+  - times and "four hours";
+  - the iPhone pill lags;
+  - the wipe photos don't register, and the wipe is hard to finish on iPhone;
+  - step 2 copy;
+  - the 2-second "thirty seconds";
+  - contrast;
+  - Fraunces and the italic-tail heading formula read as AI-default.
+- **HVAC (footage):**
   - drop "one dolly";
   - clock times that match the DFW sky;
   - rethink the "Coil" hotspot;
