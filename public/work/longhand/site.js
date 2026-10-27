@@ -46,8 +46,7 @@
   const status = document.getElementById('status'), fu = sec.querySelector('.fu');
   const play = document.getElementById('play'), playLabel = play.querySelector('span');
   const STATUS = ['Waiting for your check-in', 'Noor is reading', 'Ready Monday, 7 am'];
-  let stage = 0, pinned = false, heroIn = true;
-  const pill = document.querySelector('.quvlo');
+  let stage = 0;
 
   function render(p, live) {
     noteInk(cl(p / .32));
@@ -75,12 +74,10 @@
     }
     const lbl = p > .985 ? 'Play it again' : 'Play it through';
     if (playLabel.textContent !== lbl) { playLabel.textContent = lbl; play.setAttribute('aria-label', lbl); }
-    pinned = live;
-    pill.style.opacity = pinned || heroIn ? 0 : 1;
   }
   // progress starts while the card rises into view, and finishes as the pinned stage lets go
   const lead = () => innerHeight * .5;
-  function progress() { const r = pin.getBoundingClientRect(); return cl((lead() - r.top) / (r.height - innerHeight + lead())); }
+  function progress() { const r = pin.getBoundingClientRect(); return cl((lead() - r.top) / Math.max(1, r.height - innerHeight + lead())); }
 
   if (calm) { stage = -1; render(1, false); }
   else {
@@ -104,9 +101,6 @@
       auto = requestAnimationFrame(step);
     });
   }
-
-  // ---- Studio Work pill appears once the hero has scrolled away
-  new IntersectionObserver(([e]) => { heroIn = e.isIntersecting; pill.style.opacity = heroIn || pinned ? 0 : 1; }).observe(document.querySelector('.hero'));
 
   // ---- intro call form: validates, shows a success state, sends nothing
   const f = document.getElementById('f'), err = document.getElementById('err');

@@ -6,12 +6,12 @@
   const SWELL = [1, .52, .24, .06];        // wave height
   const CHOP = [1, .6, .28, .04];          // short choppy ripples on top of the swell
   const PACE = [1.2, .8, .5, .26];         // how fast the water moves
-  const WORD = ['Restless', 'Easing', 'Settling', 'Still'];
+  const WORD = ['Choppy', 'Rippling', 'Settling', 'Still'];   // the water's state, never the visitor's
   const gauge = document.getElementById('gauge'), svg = document.getElementById('sea');
   const staff = [...document.querySelectorAll('#staff span')];
   const stateWord = document.getElementById('stateWord'), stateCount = document.getElementById('stateCount');
   const NS = 'http://www.w3.org/2000/svg';
-  if (calm) { gauge.classList.add('calm'); gauge.querySelector('.state .k').textContent = 'Your answers so far'; }
+  if (calm) { gauge.classList.add('calm'); gauge.querySelector('.state .k').textContent = 'The water, after your answers'; }
   const el = (n, a) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); return e; };
   svg.innerHTML = '<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cbd2cd"/><stop offset=".55" stop-color="#aab5b0"/><stop offset="1" stop-color="#919e9a"/></linearGradient>' +
     '<radialGradient id="fogband" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#e8ece7" stop-opacity=".42"/><stop offset=".45" stop-color="#e8ece7" stop-opacity=".2"/><stop offset="1" stop-color="#e8ece7" stop-opacity="0"/></radialGradient>' +
@@ -93,7 +93,7 @@
   const result = document.getElementById('result');
   const PEOPLE = {
     listen: { name: 'Iris', how: 'Iris listens closely and says back what she hears, so you can hear it too. Sessions follow your lead rather than a plan, and she is comfortable letting a thought take its time.' },
-    practical: { name: 'Theo', how: 'Theo is clear and structured. Most sessions end with one small thing to try before the next, and he draws on cognitive behavioural approaches when they help.' },
+    practical: { name: 'Theo', how: 'Theo is clear and structured. Most sessions end with one small thing to try before the next, and he draws on cognitive behavioral approaches when they help.' },
     direct: { name: 'Mara', how: 'Mara is warm and plain-spoken. She will gently name the thing you keep circling, then stay with you while you look at it.' },
     gentle: { name: 'Wren', how: 'Wren is unhurried and at ease with silence. Nothing is pushed before you are ready, including in the first session.' }
   };
@@ -119,10 +119,10 @@
       document.getElementById('r-focus').textContent = FOCUS[val('bring')];
       document.getElementById('r-hours').textContent = HOURS[val('when')];
       const first = result.hidden; result.hidden = false;
-      if (fromUser && first) live.textContent = `Still. All three answered. We'd suggest a therapist like ${p.name}; the suggestion is below the questions.`;
+      if (fromUser && first) live.textContent = `The water is still. All three answered. We'd suggest a therapist like ${p.name}; the suggestion is below the questions.`;
     } else {
       result.hidden = true;
-      if (fromUser && n !== prev) live.textContent = `${WORD[n]}. ${n} of 3 answered.`;
+      if (fromUser && n !== prev) live.textContent = `The water: ${WORD[n].toLowerCase()}. ${n} of 3 answered.`;
     }
   }
   qs.addEventListener('change', () => update(true));
@@ -162,9 +162,6 @@
     req.reset();
   });
 
-  // ---- studio pill appears once the hero has scrolled away
-  const pill = document.querySelector('.quvlo');
-  new IntersectionObserver(([e]) => { pill.style.opacity = e.isIntersecting ? 0 : 1; }).observe(document.querySelector('.hero'));
 
   update(false); size();
 })();

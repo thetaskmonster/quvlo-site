@@ -39,12 +39,10 @@
     beads.style.transform = `scale(${(1.14 - .14 * bq).toFixed(4)})`;
   }
   if (!calm) { addEventListener('scroll', fx, { passive: true }); addEventListener('resize', fx); fx(); window.__fx = fx; }
-  const pill = document.querySelector('.quvlo'), hero = document.querySelector('.hero');
-  new IntersectionObserver(([e]) => { pill.style.opacity = e.isIntersecting ? 0 : 1; }).observe(hero);
   const f = document.getElementById('f'), done = document.getElementById('done');
   f.addEventListener('submit', e => {
     e.preventDefault();
     if (!f.checkValidity()) { f.reportValidity(); return; }
-    f.style.display = 'none'; done.style.display = 'block';
+    f.style.display = 'none'; done.style.display = 'block'; done.focus();
   });
 })();

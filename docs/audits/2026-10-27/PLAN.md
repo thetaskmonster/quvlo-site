@@ -29,6 +29,8 @@ plan to pick up when Kyle tops up credits ("reup"). Update the Status column as 
 
 ## Phase 1a: quvlo.co itself, must be fixed before this PR merges (no credits)
 See studio-home-devices.md.
+
+**Status (2026-10-28):** done and pushed after three rounds of independent review (reports in scratchpad/review-quvlo1a/). Still for Kyle: set ANTHROPIC_API_KEY, RATE_SALT and the CONCIERGE KV binding on Preview and Production, then test the live concierge; the Turnstile yes/no; legal facts (business name, address) and a lawyer's read of Privacy and Terms; a real iPad and iPhone pass. Left for the Phase 4 upgrades: the shared skeleton across the pieces, Basalt's cream Upstairs section and slashed zeros.
 1. **Security gate:** retire the legacy endpoints `/api/scan` (an open URL fetcher that can fire a paid
    enrichment webhook), `/api/lead` and `/api/stripe-webhook` by moving them to archive/.
 2. **Legal:** rewrite Privacy and Terms for the current business; remove /thank-you ("Deposit received");

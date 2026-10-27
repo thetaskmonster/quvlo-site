@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'node:path'
 
-// The site is hand-written static HTML: the One Roof homepage plus the legal and utility
+// The site is hand-written static HTML: the One Roof homepage plus the legal and 404
 // pages. public/ is copied as-is (fonts, the model's image sequences under /model/, the
 // Studio Work pieces under /work/, and the homepage's CSS and JS under /assets/).
+// /thank-you (the old "deposit received" page) was retired on 2026-10-27; it is in archive/old-site/.
 // The previous site (the Agent Teardown homepage, its /demo and the package checkout) lives
 // on the backup/agent-teardown-site branch and in archive/old-site/; none of it is built.
 export default defineConfig({
@@ -15,7 +16,6 @@ export default defineConfig({
         privacy: resolve(__dirname, 'privacy.html'),
         terms: resolve(__dirname, 'terms.html'),
         notfound: resolve(__dirname, '404.html'),
-        thankyou: resolve(__dirname, 'thank-you.html'),
       },
     },
   },

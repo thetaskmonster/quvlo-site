@@ -6,8 +6,19 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Neap, talk therapy in Dallas and by video</title>
-<meta name="description" content="Neap is a small talk therapy practice in Dallas. Answer three quiet questions, see the kind of therapist who tends to fit, and request a first session privately.">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>Neap, talk therapy in Dallas and by video (Concept)</title>
+<meta name="description" content="A concept site by Quvlo for a made-up Dallas therapy practice: answer three quiet questions, see the kind of therapist who tends to fit, and request a first session privately.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Quvlo">
+<meta property="og:title" content="Neap, a concept site by Quvlo">
+<meta property="og:description" content="A made-up therapy practice, designed and built by Quvlo to show what's possible.">
+<meta property="og:url" content="https://quvlo.co/work/neap/">
+<meta property="og:image" content="https://quvlo.co/work/neap/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A wide beach at low tide under an overcast sky. Neap, a concept site by Quvlo.">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex">
 <style>
 @font-face{font-family:'Gambarino';src:url(fonts/gambarino-400-normal.woff2) format('woff2');font-weight:400;font-display:swap}
@@ -66,7 +77,7 @@ h2{font-family:var(--display);font-weight:400;font-size:clamp(40px,5.4vw,84px);l
 .nav .btn{min-height:44px;padding:0 20px;font-size:15px}
 
 /* ---------- hero ---------- */
-.hero{position:relative;height:100svh;min-height:660px;overflow:hidden;background:var(--deep)}
+.hero{position:relative;height:calc(100svh - 44px);min-height:560px;overflow:hidden;background:var(--deep)}
 .hero picture,.hero img{position:absolute;inset:0;width:100%;height:100%}
 .hero img{object-fit:cover;object-position:50% 50%;transform:scale(1.045);animation:settle 3.4s cubic-bezier(.22,.61,.2,1) .1s forwards}
 @keyframes settle{to{transform:scale(1)}}
@@ -223,15 +234,19 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:14px 40px;align-items:baseline}
 footer .mark{color:var(--fog);font-size:30px}
 footer .r{margin-left:auto}
 footer a{text-underline-offset:3px}
-.quvlo{opacity:0;transition:opacity .3s;position:fixed;left:16px;bottom:16px;z-index:20;font-size:13px;padding:8px 13px;border-radius:999px;background:rgba(19,27,26,.8);color:#e9ecea;text-decoration:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12)}
+.cbar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:0 20px;background:#101716;color:rgba(226,230,225,.9);font-size:13px;line-height:1.3}
+.cbar a{display:inline-flex;align-items:center;min-height:44px;white-space:nowrap;color:inherit;text-underline-offset:4px}
+/* 44 px tap targets for the header links, logo and hero text links */
+a.mark,.nav nav a.l{display:inline-flex;align-items:center;min-height:44px}
+header.nav{top:44px}
 
 /* ---------- phone ---------- */
 @media (max-width:860px){
   .nav nav a.l{display:none}
   .nav .wrap{height:76px}
   .mark{font-size:28px}
-  .nav .btn{min-height:40px;padding:0 16px;font-size:14px}
-  .hero{min-height:700px}
+  .nav .btn{min-height:44px;padding:0 16px;font-size:14px}
+  .hero{height:calc(100svh - 44px);min-height:520px}
   .hero img{object-position:50% 50%}
   .hero .shade{background:linear-gradient(180deg,rgba(27,38,36,.55) 0%,rgba(27,38,36,0) 18%,rgba(27,38,36,0) 34%,rgba(27,38,36,.8) 58%,rgba(27,38,36,.97) 100%)}
   .hero .copy{grid-template-columns:1fr;bottom:30px;gap:0}
@@ -269,6 +284,7 @@ footer a{text-underline-offset:3px}
 </head>
 <body>
 <a class="skip" href="#match">Skip to the three questions</a>
+<div class="cbar"><span>Concept site by Quvlo. Neap and its therapists are made up.</span><a href="/work/">Studio Work</a></div>
 
 <header class="nav">
   <div class="wrap">
@@ -292,7 +308,7 @@ footer a{text-underline-offset:3px}
     <div class="wrap copy">
       <div>
         <h1><span>Room for things</span><span>to settle.</span></h1>
-        <p class="lede">Neap is a small talk therapy practice in Dallas, in person or by video. Answer three quiet questions and we'll suggest a therapist whose way of working fits yours.</p>
+        <p class="lede">Neap is a small practice for talk therapy in Dallas, in person or by video. Answer three quiet questions and we'll suggest a therapist whose way of working fits yours.</p>
         <div class="acts"><a class="btn btn-fog" href="#match">Find a fit</a><a class="btn btn-line" href="#request">Request a first session</a></div>
       </div>
       <p class="def"><svg viewBox="0 0 250 64" aria-hidden="true"><path d="M0 32 C15.6 4 31.2 4 46.9 32 S78.1 60 93.8 32 S125 4 140.6 32 S171.9 60 187.5 32 S218.8 4 250 32" fill="none" stroke="#e2e6e1" stroke-opacity=".32" stroke-width="1.2" stroke-dasharray="2 4"/><path d="M0 32 C15.6 25 31.2 25 46.9 32 S78.1 39 93.8 32 S125 25 140.6 32 S171.9 39 187.5 32 S218.8 25 250 32" fill="none" stroke="#e2e6e1" stroke-width="1.6"/><text x="0" y="6" fill="#a9b6b1">spring tide</text><text x="0" y="62" fill="#e2e6e1">neap tide</text></svg><b>neap</b><i>noun.</i> The gentlest tide of the month, when the sea barely rises or falls.</p>
@@ -308,7 +324,7 @@ footer a{text-underline-offset:3px}
         <p class="body">We start by listening, and we let the work go at the speed you can actually live with.</p>
       </div>
       <figure>
-        <img src="img/mug.jpg" alt="Two hands in a grey-green knitted sweater hold a stoneware mug of tea on a windowsill, rain on the glass and misty pines outside." loading="lazy">
+        <img src="img/mug.jpg" alt="Two hands in a gray-green knit sweater hold a stoneware mug of tea on a windowsill, rain on the glass and misty pines outside." loading="lazy">
         <figcaption>No need to arrive with the right words.</figcaption>
       </figure>
     </div>
@@ -326,14 +342,14 @@ footer a{text-underline-offset:3px}
       <div class="gauge" id="gauge" aria-hidden="true">
         <svg id="sea" focusable="false"></svg>
         <div class="grain"></div>
-        <span class="start-mark">Where you started</span>
+        <span class="start-mark">Where the water started</span>
         <div class="staff" id="staff">
-          <span style="--y:30%" class="on">Restless</span>
-          <span style="--y:44%">Easing</span>
+          <span style="--y:30%" class="on">Choppy</span>
+          <span style="--y:44%">Rippling</span>
           <span style="--y:57%">Settling</span>
           <span style="--y:69%">Still</span>
         </div>
-        <div class="state"><span class="k">The water now</span><b id="stateWord">Restless</b><span class="c" id="stateCount">0 of 3 answered</span></div>
+        <div class="state"><span class="k">The water now</span><b id="stateWord">Choppy</b><span class="c" id="stateCount">0 of 3 answered</span></div>
       </div>
 
       <div class="m-body">
@@ -401,7 +417,7 @@ footer a{text-underline-offset:3px}
   <section class="first" id="first" aria-labelledby="first-h">
     <div class="wrap grid">
       <figure>
-        <img src="img/room.jpg" alt="A quiet therapy room in grey daylight: two grey-green armchairs angled toward each other, a small wooden table with tissues and a glass of water, a plant and a sheer curtain at the window." loading="lazy">
+        <img src="img/room.jpg" alt="A quiet therapy room in gray daylight: two gray-green armchairs angled toward each other, a small wooden table with tissues and a glass of water, a plant and a sheer curtain at the window." loading="lazy">
         <figcaption>Two chairs, a window, and nowhere you need to be for fifty minutes.</figcaption>
       </figure>
       <div>
@@ -531,10 +547,9 @@ footer a{text-underline-offset:3px}
     <span class="mark">Neap</span>
     <span>Talk therapy in Dallas, in person and by video.</span>
     <span>If you are in crisis, call or text <a href="tel:988">988</a> in the US.</span>
-    <span class="r">A studio piece. Neap and its therapists are made up.</span>
+    <span class="r">A concept site by <a href="/work/">Quvlo</a>. Neap and its therapists are made up, the photos are AI-generated, and nothing on this page is sent anywhere.</span>
   </div>
 </footer>
-<a class="quvlo" href="/work/">Studio Work by Quvlo</a>
 
 
 <script src="site.js"></script>

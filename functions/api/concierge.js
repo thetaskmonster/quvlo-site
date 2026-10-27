@@ -3,7 +3,7 @@
  *
  * The AI concierge on quvlo.co. A visitor picks a door ("I need a website",
  * "an app", ...), gets a fixed opening line, then has a short scoping chat with
- * Claude Opus 5.5 that ends in a three line brief and the booking button.
+ * Claude Opus 5.5 that ends in a three line brief and the Request a call form.
  *
  * The model key never reaches the browser. The chat history never comes from
  * the browser either: the server issues a random session id and keeps the
@@ -32,10 +32,13 @@
  *   - Continue a chat:     { "sessionId": "<from the session event>", "message": "..." }
  *   message: up to 1,200 characters. Never send history; it is ignored.
  *
+ * Also: GET /api/concierge returns { "ok": true, "available": boolean }, whether the key and
+ * salt are set. The page checks it once so an unconfigured site never sends a doomed POST.
+ *
  * Response, case 1: Content-Type application/json. The request was not
  * answered. Shape:
  *   { "ok": false, "fallback": boolean, "reason": string }
- *   fallback: true  -> show the short contact form and the booking button
+ *   fallback: true  -> say the concierge can't answer and point to the call form
  *                      instead of the chat. reasons: unavailable,
  *                      chat_rate_limit, message_rate_limit, chat_turn_limit,
  *                      daily_cap, monthly_cap, declined
@@ -68,13 +71,13 @@
  *            Show the "Here's what I heard" card (You're making / Because /
  *            It works when). If updated is true, replace the card already on
  *            screen. Any delta after a brief starts a NEW message bubble
- *            below the card. Show the booking button with the card.
+ *            below the card. Point to the call request form with the card.
  *   done     { "turnsLeft": n, "briefSaved": boolean }
  *            The reply is complete. Re-enable the input. turnsLeft 0 means the
- *            chat is full: show the booking button and short form.
+ *            chat is full: point to the call request form.
  *   error    { "fallback": true, "reason": "upstream_error" | "busy" | "unavailable" }
- *            The reply failed part way. Show the short form and booking
- *            button. Terminal, no done follows.
+ *            The reply failed part way. Point to the call request form.
+ *            Terminal, no done follows.
  *
  * Exactly one terminal event (done or error) ends every stream. Send one
  * message at a time and keep the input disabled until it arrives.
@@ -84,7 +87,8 @@
  * -------------------------------------------------------------------------
  *   ANTHROPIC_API_KEY          required. Without it every request returns
  *                              { ok:false, fallback:true, reason:"unavailable" }
- *   RATE_SALT                  random string, salts the IP hash
+ *   RATE_SALT                  required. Random string, salts the IP hash.
+ *                              Without it the concierge answers "unavailable".
  *   CONCIERGE_DAILY_CAP_USD    default 5
  *   CONCIERGE_MONTHLY_CAP_USD  default 50
  *   AIRTABLE_TOKEN             personal access token, data.records:write
@@ -139,7 +143,7 @@ const json = (obj, status = 200) =>
     headers: { ...BASE_HEADERS, 'content-type': 'application/json; charset=utf-8' },
   });
 
-/** The page should switch to the short form and the booking button. */
+/** The page should say the concierge can't answer and point to the call request form. */
 const fallback = (reason, status) => json({ ok: false, fallback: true, reason }, status);
 /** A problem with the request itself; the chat can carry on. */
 const reject = (reason, status, extra = {}) => json({ ok: false, fallback: false, reason, ...extra }, status);
@@ -307,9 +311,9 @@ function transcriptText(session) {
 }
 
 /**
- * Save to Airtable, or email the team through Formspree if Airtable is not
+ * Save to Airtable, or email Kyle through Formspree if Airtable is not
  * configured or refuses. A corrected brief updates the same Airtable record.
- * Returns true if the brief reached the team by either route.
+ * Returns true if the brief reached Kyle by either route.
  */
 async function deliverBrief(env, session, brief, isUpdate) {
   const token = env.AIRTABLE_TOKEN;
@@ -542,8 +546,8 @@ async function runModel(env, session, send) {
         type: 'tool_result',
         tool_use_id: call.id,
         content: delivered
-          ? 'Saved and sent to the team. The visitor can now see the summary card. Reply in one or two sentences: if this is the first version, ask whether anything is wrong and say they can fix it and you will update the brief; if they have already confirmed it, point them to the booking button on the page.'
-          : 'The visitor can see the summary card, but it could not be sent to the team automatically. Ask whether anything is wrong with it, and ask them to use the booking button on the page so nothing gets lost.',
+          ? 'Saved and sent to Kyle. The visitor can now see the summary card. Reply in one or two sentences: if this is the first version, ask whether anything is wrong and say they can fix it and you will update the brief; if they have already confirmed it, point them to the Request a call form on the page, where Kyle picks it up and emails them to set a time.'
+          : 'The visitor can see the summary card, but it could not be sent to Kyle automatically. Ask whether anything is wrong with it, and ask them to send it with the Request a call form on the page so nothing gets lost.',
       });
     }
     session.messages.push({ role: 'user', content: results });
@@ -569,8 +573,9 @@ export async function onRequestPost({ request, env, waitUntil }) {
   const parsed = parseBody(raw);
   if (parsed.error) return parsed.error;
 
-  // 3. No key, no chat. The page shows the short form instead.
-  if (!env.ANTHROPIC_API_KEY) return fallback('unavailable', 503);
+  // 3. No key or no secret salt, no chat: the page says the concierge is offline and points to the
+  // call form. (A built-in salt would be public in this repository, so it is never used.)
+  if (!env.ANTHROPIC_API_KEY || !env.RATE_SALT) return fallback('unavailable', 503);
 
   const { kv } = storeFor(env);
   let session;
@@ -685,4 +690,9 @@ function openChat(session) {
   return session;
 }
 
-export const onRequestGet = () => json({ ok: false, fallback: false, reason: 'bad_request' }, 405);
+/**
+ * GET /api/concierge: is the concierge set up at all? { "ok": true, "available": boolean }
+ * The page asks once before the first chat, so an unconfigured site shows its offline note
+ * without a failed request. It says nothing about budgets or limits; POST still decides those.
+ */
+export const onRequestGet = ({ env }) => json({ ok: true, available: Boolean(env.ANTHROPIC_API_KEY && env.RATE_SALT) });

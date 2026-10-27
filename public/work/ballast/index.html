@@ -6,8 +6,19 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ballast | Body recomposition gym, Dallas Fort Worth</title>
-<meta name="description" content="A strength gym built around body scans. Get scanned, coached on the floor and rescanned, so you can see fat come off and muscle go on. Dallas Fort Worth.">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>Ballast | Body recomposition gym, Dallas Fort Worth (Concept)</title>
+<meta name="description" content="A concept site by Quvlo for a made-up Dallas Fort Worth strength gym built around body scans, so members see fat come off and muscle go on.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Quvlo">
+<meta property="og:title" content="Ballast, a concept site by Quvlo">
+<meta property="og:description" content="A made-up body recomposition gym, designed and built by Quvlo to show what's possible.">
+<meta property="og:url" content="https://quvlo.co/work/ballast/">
+<meta property="og:image" content="https://quvlo.co/work/ballast/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A concrete strength gym at dawn with rows of power racks. Ballast, a concept site by Quvlo.">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex">
 <style>
 @font-face{font-family:'Tanker';src:url(fonts/tanker-400-normal.woff2) format('woff2');font-weight:400;font-display:swap}
@@ -60,26 +71,26 @@ h2.disp{font-size:clamp(44px,6.6vw,108px)}
 .nav{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;gap:32px;padding:24px var(--gut)}
 .mark{font-family:var(--display);font-size:30px;line-height:1;text-transform:uppercase;text-decoration:none;letter-spacing:.02em}
 .nav nav{margin-left:auto;display:flex;align-items:center;gap:30px;font-size:15px}
-.nav nav a{text-decoration:none;color:var(--chalk-dim);transition:color .2s}
+.nav nav a{text-decoration:none;color:var(--chalk);transition:color .2s;text-shadow:0 1px 10px rgba(0,0,0,.6)}
 .nav nav a:hover{color:var(--chalk)}
 .nav nav .btn{color:var(--ink);height:44px;padding:0 18px;font-size:15px}
-@media (max-width:820px){.nav{padding:18px var(--gut)}.nav nav a:not(.btn){display:none}.mark{font-size:26px}.nav nav .btn{height:40px;padding:0 14px;font-size:14px}}
+@media (max-width:820px){.nav{padding:18px var(--gut)}.nav nav a:not(.btn){display:none}.mark{font-size:26px}.nav nav .btn{height:44px;padding:0 14px;font-size:14px}}
 
 /* hero */
-.hero{position:relative;height:100svh;min-height:660px;max-height:1100px;overflow:hidden;background:#070707}
+.hero{position:relative;height:calc(100svh - 44px);min-height:560px;max-height:1100px;overflow:hidden;background:#070707}
 .hero picture,.hero img{position:absolute;inset:0;width:100%;height:100%}
 .hero img{object-fit:cover;object-position:62% 50%}
 .hero::after{content:"";position:absolute;inset:0;background:
   linear-gradient(90deg,rgba(8,8,8,.9) 0%,rgba(8,8,8,.62) 32%,rgba(8,8,8,0) 60%),
   linear-gradient(0deg,rgba(8,8,8,.85) 0%,rgba(8,8,8,0) 38%),
-  linear-gradient(180deg,rgba(8,8,8,.55) 0%,rgba(8,8,8,0) 18%)}
+  linear-gradient(180deg,rgba(8,8,8,.8) 0%,rgba(8,8,8,0) 26%)}
 .hero-copy{position:absolute;z-index:2;left:var(--gut);right:var(--gut);bottom:clamp(44px,9vh,110px)}
 .hero h1{font-size:clamp(58px,8.6vw,156px);max-width:8.4em}
 .hero h1 .y{color:var(--hivis);display:block}
 .hero p{margin-top:26px;max-width:31em;font-size:clamp(16.5px,1.3vw,19px);color:#cfceca}
 .acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
 @media (max-width:820px){
-  .hero{height:100svh;min-height:720px}
+  .hero{height:calc(100svh - 44px);min-height:440px}
   .hero img{object-position:50% 50%}
   .hero::after{background:linear-gradient(0deg,rgba(8,8,8,.97) 0%,rgba(8,8,8,.86) 36%,rgba(8,8,8,0) 66%),linear-gradient(180deg,rgba(8,8,8,.6) 0%,rgba(8,8,8,0) 20%)}
   .hero-copy{bottom:26px}
@@ -180,7 +191,7 @@ h2.disp{font-size:clamp(44px,6.6vw,108px)}
 .how{background:var(--iron-2);padding:clamp(84px,11vw,170px) var(--gut)}
 .how .grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(40px,6vw,110px);align-items:start}
 .how figure{position:sticky;top:40px}
-.how figure img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:3px}
+.how figure img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:50% 0;border-radius:3px}
 .how figcaption{margin-top:12px;font-size:14.5px;color:var(--chalk-dim)}
 .how h2{margin-top:22px}
 .steps{list-style:none;margin-top:clamp(36px,5vw,64px);counter-reset:s}
@@ -284,18 +295,25 @@ fieldset{border:0}
 
 footer{background:var(--iron);padding:44px var(--gut) 96px;display:flex;flex-wrap:wrap;gap:14px 40px;align-items:baseline;font-size:15px;color:var(--chalk-dim)}
 footer .mark{color:var(--chalk);font-size:28px}
-.quvlo{opacity:0;transition:opacity .3s;position:fixed;left:16px;bottom:16px;z-index:20;font-size:13px;padding:8px 13px;border-radius:999px;background:rgba(10,10,10,.8);color:#e9eaea;text-decoration:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.14)}
+.cbar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:0 var(--gut);background:#050505;color:rgba(232,231,226,.86);font-size:13px;line-height:1.3}
+.cbar a{display:inline-flex;align-items:center;min-height:44px;white-space:nowrap;color:inherit;text-underline-offset:4px}
+/* 44 px tap targets for the header links, logo and hero text links */
+a.mark,.nav nav a{display:inline-flex;align-items:center;min-height:44px}
+.skip{position:absolute;left:12px;top:-80px;z-index:40;background:var(--chalk);color:var(--ink);padding:12px 16px;border-radius:3px}
+.skip:focus{top:52px}
 
 @media (prefers-reduced-motion:reduce){
   .pin{height:auto}
   .stick{position:relative;height:auto;min-height:0;padding-top:20px;padding-bottom:80px}
   .scan{height:min(76vh,700px)}
-  .btn,.chips span,.quvlo{transition:none}
+  .btn,.chips span{transition:none}
 }
 @media (prefers-reduced-motion:reduce) and (max-width:820px){.scan{height:auto}}
 </style>
 </head>
 <body>
+<a class="skip" href="#weeks">Skip to the twelve weeks</a>
+<div class="cbar"><span>Concept site by Quvlo. Ballast is a made-up business.</span><a href="/work/">Studio Work</a></div>
 
 <header class="hero">
   <div class="nav">
@@ -326,7 +344,7 @@ footer .mark{color:var(--chalk);font-size:28px}
       </div>
       <figure>
         <img src="img/scan-room.jpg" alt="A body composition scanner table in a quiet concrete room, a thin line of yellow light along the wall behind it" loading="lazy" width="896" height="1120">
-        <figcaption>The scan room. Lie still, breathe normally, done.</figcaption>
+        <figcaption>The DXA room. A few minutes lying still, ordered and overseen by our medical director. Weekly check-ins use an InBody scale on the floor.</figcaption>
       </figure>
     </div>
   </section>
@@ -334,10 +352,10 @@ footer .mark{color:var(--chalk);font-size:28px}
   <section class="weeks grain" id="weeks" aria-labelledby="weeks-h">
     <div class="weeks-head">
       <div>
-        <p class="eyebrow">Twelve weeks on the scanner</p>
+        <p class="eyebrow">Twelve weeks, measured</p>
         <h2 class="disp" id="weeks-h">Watch one body change.</h2>
       </div>
-      <p class="lede">Drag the bar, use the arrow keys or just keep scrolling. Every week is a scan of the same made-up member: what came off, what went on, and what the scale saw.</p>
+      <p class="lede">Drag the bar, use the arrow keys or just keep scrolling. Each week is the same made-up member: a quick InBody reading every Monday, with full DXA scans at week 0 and week 12. What came off, what went on, and what the scale saw.</p>
     </div>
     <div class="pin"><div class="stick">
       <div class="notes">
@@ -347,7 +365,7 @@ footer .mark{color:var(--chalk);font-size:28px}
       </div>
       <div class="scan">
         <svg viewBox="0 -28 300 668" role="img" aria-labelledby="scan-t">
-          <title id="scan-t">Scan-style front silhouette of the example member. The yellow outer layer is fat, the white inner form is lean mass. Figure exaggerated for clarity.</title>
+          <title id="scan-t">Body composition silhouette of the example member, drawn from that week's numbers: a DXA scan at weeks 0 and 12, an InBody reading in between. The yellow outer layer is fat, the white inner form is lean mass. Figure exaggerated for clarity.</title>
           <defs>
             <pattern id="lines" width="6" height="4" patternUnits="userSpaceOnUse"><rect width="6" height="1.5" fill="#e8e7e2" fill-opacity=".5"/></pattern>
             <path id="fH"/><path id="fB"/><path id="fL"/><path id="fR"/>
@@ -360,11 +378,11 @@ footer .mark{color:var(--chalk);font-size:28px}
           <g fill="url(#lines)"><use href="#lH"/><use href="#lB"/><use href="#lL"/><use href="#lR"/></g>
           <g id="wline" stroke="#efb30f" stroke-width="1.6"><line id="wl" x1="90" y1="238" x2="210" y2="238" stroke-dasharray="3 3"/><line id="wt1" x1="90" y1="231" x2="90" y2="245"/><line id="wt2" x1="210" y1="231" x2="210" y2="245"/></g>
         </svg>
-        <span class="tag" aria-hidden="true">Front scan</span>
+        <span class="tag" id="stag" aria-hidden="true">DXA scan</span>
         <span class="wk" aria-hidden="true">Week <span id="swk">0</span></span>
         <div class="legend" aria-hidden="true"><span class="l"><i></i>Lean</span><span class="f"><i></i>Fat</span></div>
       </div>
-      <ul class="reads" aria-label="Scan readouts">
+      <ul class="reads" aria-label="This week's readings">
         <li><span class="k">Lean mass</span><span class="v"><span id="rl">138.0</span><small>lb</small></span><span class="d" id="dl">Baseline</span></li>
         <li><span class="k">Body fat</span><span class="v"><span id="rf">31.0</span><small>%</small></span><span class="d" id="df">Baseline</span></li>
         <li><span class="k">Waist</span><span class="v"><span id="rw">37.0</span><small>in</small></span><span class="d" id="dw">Baseline</span></li>
@@ -389,9 +407,9 @@ footer .mark{color:var(--chalk);font-size:28px}
         <p class="eyebrow">How it works</p>
         <h2 class="disp" id="how-h">Scan. Coach. Scan again.</h2>
         <ol class="steps">
-          <li><span class="n" aria-hidden="true">01</span><h3>First scan</h3><p>A few quiet minutes on the scanner, then a sit-down with your coach to read it together. You leave knowing your lean mass, your fat and where each one sits.</p></li>
+          <li><span class="n" aria-hidden="true">01</span><h3>First scan</h3><p>A DXA scan, a few quiet minutes ordered and overseen by our medical director, then a sit-down with your coach to read it together. You leave knowing your lean mass, your fat and where each one sits.</p></li>
           <li><span class="n" aria-hidden="true">02</span><h3>Train the plan</h3><p>Your coach writes three or four sessions a week and runs them with you on the floor, plus simple targets for eating around them. No crash diets, no punishment cardio.</p></li>
-          <li><span class="n" aria-hidden="true">03</span><h3>Rescan and adjust</h3><p>A quick scan every Monday shows the trend. Every fourth week your coach rebuilds the plan around what the scans actually say.</p></li>
+          <li><span class="n" aria-hidden="true">03</span><h3>Rescan and adjust</h3><p>A quick InBody check every Monday shows the trend, and a second DXA scan at week twelve shows what really changed. Every fourth week your coach rebuilds the plan around what the numbers say.</p></li>
         </ol>
       </div>
     </div>
@@ -405,13 +423,13 @@ footer .mark{color:var(--chalk);font-size:28px}
         <ul class="feats">
           <li><b>Your next session</b><span>Time, coach and the lifts, so you walk in knowing the work.</span></li>
           <li><b>This week's plan</b><span>Training days, rest days and what you've already done.</span></li>
-          <li><b>Every scan, side by side</b><span>Lean mass and fat over time, the same view your coach reads.</span></li>
+          <li><b>Every check-in, side by side</b><span>Weekly InBody readings and your two DXA scans, lean mass and fat over time, the same view your coach reads.</span></li>
           <li><b>Message your coach</b><span>Ask about a lift, a missed day or a long weekend away.</span></li>
         </ul>
       </div>
       <div class="stage">
         <img src="img/grip.jpg" alt="" loading="lazy" width="1024" height="688">
-        <div class="phone" role="img" aria-label="The Ballast member app showing the next session, this week's plan and the latest scan for the example member">
+        <div class="phone" role="img" aria-label="The Ballast member app showing the next session, this week's plan and the latest reading for the example member">
           <div class="scr" aria-hidden="true">
             <div class="island"></div>
             <div class="sb"><span>6:02</span><span>5G</span></div>
@@ -428,7 +446,7 @@ footer .mark{color:var(--chalk);font-size:28px}
                 <div class="done">M<i>&#10003;</i></div><div class="nx">T<i>B</i></div><div>W<i>Walk</i></div><div>T<i>A</i></div><div>F<i>Rest</i></div><div>S<i>Cond</i></div><div>S<i>Rest</i></div>
               </div>
               <ul class="plan">
-                <li><span>Mon: scan and upper A</span><span>Done</span></li>
+                <li><span>Mon: InBody and upper A</span><span>Done</span></li>
                 <li><span>Tue: lower B</span><span>Next</span></li>
               </ul>
             </div>
@@ -443,7 +461,7 @@ footer .mark{color:var(--chalk);font-size:28px}
             <div class="tabs">
               <span class="on"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/></svg>Today</span>
               <span><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Plan</span>
-              <span><svg viewBox="0 0 24 24"><circle cx="12" cy="6" r="2.5"/><path d="M8 21l1-8-3-3 6-1 6 1-3 3 1 8"/></svg>Scans</span>
+              <span><svg viewBox="0 0 24 24"><circle cx="12" cy="6" r="2.5"/><path d="M8 21l1-8-3-3 6-1 6 1-3 3 1 8"/></svg>Readings</span>
               <span><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>Coach</span>
             </div>
           </div>
@@ -460,7 +478,7 @@ footer .mark{color:var(--chalk);font-size:28px}
         <h2 class="disp" id="book-h">Book a first scan.</h2>
         <p class="lede">Your first visit is a scan, a walk around the floor and a straight conversation with a coach about what you want to change. Nothing to sign on the day.</p>
         <ul class="incl">
-          <li>A full body scan, read with a coach</li>
+          <li>A DXA body scan under our medical director, read with a coach</li>
           <li>A look at the floor and the equipment</li>
           <li>A first plan, whether you join or not</li>
         </ul>
@@ -481,11 +499,11 @@ footer .mark{color:var(--chalk);font-size:28px}
           <div><label for="wk">When to start</label><select id="wk" name="week"><option>This week</option><option>Next week</option><option>In two weeks or later</option></select></div>
           <div class="full"><label for="msg">Anything your coach should know <span class="opt-l">(optional)</span></label><textarea id="msg" name="message" maxlength="400" rows="3"></textarea></div>
           <p class="err" id="err" role="alert"></p>
-          <div class="full foot"><button class="btn" type="submit">Request a first scan</button><small>We'll email you to confirm a time.</small></div>
+          <div class="full foot"><button class="btn" type="submit">Request a first scan</button><small>Demo only: this form doesn't send anything.</small></div>
         </form>
         <div class="ok" role="status" tabindex="-1" id="ok">
-          <p class="disp">You're on the list.</p>
-          <p>We'll email you to confirm a time for your first scan. Wear something you can move in, and skip the big breakfast.</p>
+          <p class="disp">Demo only.</p>
+          <p>Nothing was sent. A real Ballast would now email you to confirm a time for your first scan.</p>
         </div>
       </div>
     </div>
@@ -495,8 +513,8 @@ footer .mark{color:var(--chalk);font-size:28px}
 <footer>
   <span class="mark">Ballast</span>
   <span>Body recomposition gym. Scans by appointment, Dallas Fort Worth.</span>
+  <span>A concept site by <a href="/work/">Quvlo</a>. Ballast, its member and its numbers are made up, the images are AI-generated, and nothing on this page is sent anywhere.</span>
 </footer>
-<a class="quvlo" href="/work/">Studio Work by Quvlo</a>
 
 
 <script src="site.js"></script>

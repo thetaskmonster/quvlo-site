@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#05070d">
 <link rel="canonical" href="https://quvlo.co/">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="apple-touch-icon" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Quvlo">
 <meta property="og:title" content="Quvlo: your business, still working at 3 am">
@@ -17,11 +17,12 @@
 <meta property="og:image" content="https://quvlo.co/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="A photoreal scale model of a small business at night, its rooms lit.">
+<meta property="og:image:alt" content="Quvlo. Your business, still working at 3 am. Websites, booking and the follow-ups behind them, by one studio in Dallas Fort Worth.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/fonts/zodiak-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/author-500.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/boot.js?v=20261027g"></script>
+<link rel="stylesheet" href="/assets/site.css?v=20261027g">
 <!-- Cloudflare Turnstile site key (public). Empty = no bot check on the page. Set together with TURNSTILE_SECRET in Cloudflare. -->
 <meta name="quvlo-turnstile" content="">
 <!--
@@ -51,7 +52,7 @@
 
 <header class="top" id="top">
   <a class="mark" href="/" aria-label="Quvlo, home">Quvlo</a>
-  <nav aria-label="Main"><a href="#work" class="hide-s">Studio Work</a><a href="#close" class="book-link">Book 15 minutes</a></nav>
+  <nav aria-label="Main"><a href="#work" class="hide-s">Studio Work</a><a href="#close" class="book-link">Request a call</a></nav>
 </header>
 
 <main>
@@ -60,7 +61,7 @@
   <section class="act" id="door" aria-labelledby="h1">
     <div class="stage">
       <div class="scene" aria-hidden="true">
-        <picture><source media="(min-width:900px) and (min-aspect-ratio:4/3)" srcset="/model/hook/d-crop.webp"><img class="poster" src="/model/stills/shop-p.webp" alt="" fetchpriority="high" decoding="async"></picture>
+        <picture><source media="(min-width:900px) and (min-aspect-ratio:4/3), (max-height:500px) and (min-aspect-ratio:8/5)" srcset="/model/hook/d-poster.webp"><img class="poster" src="/model/stills/shop-p.webp" alt="" fetchpriority="high" decoding="async"></picture>
         <canvas id="model"></canvas>
         <div id="tv"></div>
         <div id="glows"></div>
@@ -115,17 +116,16 @@
   <section class="start" id="start" aria-labelledby="start-h">
     <div class="start-in">
       <h2 id="start-h">What are we making together?</h2>
-      <form class="pick" id="pick" aria-describedby="pick-note">
-        <fieldset>
-          <legend class="vh">Choose one</legend>
-          <label><input type="radio" name="choice" value="website"><span>A website</span></label>
-          <label><input type="radio" name="choice" value="app"><span>An app</span></label>
-          <label><input type="radio" name="choice" value="crm"><span>A CRM</span></label>
-          <label><input type="radio" name="choice" value="automation"><span>An automation</span></label>
-          <label><input type="radio" name="choice" value="unsure"><span>Not sure yet</span></label>
-        </fieldset>
-        <p class="pick-note" id="pick-note">Pick one and our AI concierge asks a few questions, then writes up a short brief for the call. <a href="#close">Skip it and just pick a time</a>.</p>
-      </form>
+      <div class="pick" id="pick">
+        <div class="opts" role="group" aria-labelledby="start-h" aria-describedby="pick-note">
+          <button type="button" class="opt" data-choice="website" aria-pressed="false">A website</button>
+          <button type="button" class="opt" data-choice="app" aria-pressed="false">An app</button>
+          <button type="button" class="opt" data-choice="crm" aria-pressed="false">A CRM</button>
+          <button type="button" class="opt" data-choice="automation" aria-pressed="false">An automation</button>
+          <button type="button" class="opt" data-choice="unsure" aria-pressed="false">Not sure yet</button>
+        </div>
+        <p class="pick-note" id="pick-note">Pick one and the AI concierge asks a few questions, then writes up a short brief for the call. <a href="#close">Skip it and request a call</a>.</p>
+      </div>
 
       <div class="chat" id="chat" hidden>
         <p class="chat-who"><i aria-hidden="true"></i>AI concierge</p>
@@ -136,7 +136,8 @@
           <textarea id="msg" name="msg" rows="1" maxlength="1200" placeholder="Type your answer" autocomplete="off"></textarea>
           <button type="submit" aria-label="Send">&#8593;</button>
         </form>
-        <p class="chat-foot"><a href="#close">Skip, just pick a time</a><span>Answers go to the team at Quvlo and nowhere else. <a href="/privacy">Privacy</a></span></p>
+        <p class="compose-hint" id="compose-hint" role="status"></p>
+        <p class="chat-foot"><a href="#close">Skip, request a call</a><span>Replies are written by Claude, an AI made by Anthropic. Chats are deleted after 90 days, but a brief you save is kept with a copy of its chat so Kyle has it for your call. <a href="/privacy">Privacy</a></span></p>
       </div>
     </div>
   </section>
@@ -155,15 +156,15 @@
       </div>
       <div class="book-col">
         <form class="reach" id="reach" action="https://formspree.io/f/mzdlnbkj" method="POST">
-          <input type="hidden" name="_subject" value="Quvlo: 15-minute call request">
+          <input type="hidden" name="_subject" value="Quvlo: call request">
           <input type="hidden" name="brief" id="reach-brief" value="">
           <div class="row"><label for="r-name">Name</label><input id="r-name" name="name" type="text" autocomplete="name" maxlength="80" required></div>
           <div class="row"><label for="r-email">Email</label><input id="r-email" name="email" type="email" autocomplete="email" maxlength="120" required></div>
           <div class="row"><label for="r-when">When suits you for 15 minutes?</label><input id="r-when" name="when" type="text" maxlength="120" placeholder="For example, weekday mornings"></div>
-          <button class="btn" type="submit">Book 15 minutes</button>
+          <button class="btn" type="submit">Request a call</button>
           <p class="form-msg" id="reach-msg" role="status"></p>
         </form>
-        <p class="price">Most projects start with a 15-minute call and a fixed quote.</p>
+        <p class="price">Kyle emails you to set the time. Most projects start with that 15-minute call and a fixed quote. <a href="/privacy">Privacy</a></p>
       </div>
     </div>
   </section>
@@ -177,6 +178,6 @@
   <nav aria-label="Legal"><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav>
 </footer>
 
-<script src="/assets/home.js" defer></script>
+<script src="/assets/home.js?v=20261027g" defer></script>
 </body>
 </html>

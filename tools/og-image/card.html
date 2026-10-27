@@ -1,80 +1,31 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
+<!-- The share card for quvlo.co (1200x630). Same look as the homepage's opening screen: the night storefront,
+     the Zodiak headline, the tungsten lamp colour. Render with: node tools/og-image/render.mjs (see that file). -->
 <style>
-  @font-face{font-family:'Bricolage Grotesque';font-weight:700;src:url(bricolage-grotesque-700.woff2) format('woff2');}
-  @font-face{font-family:'Space Mono';font-weight:400;src:url(space-mono-400.woff2) format('woff2');}
+  @font-face{font-family:'Zodiak';font-weight:700;src:url(../../public/fonts/zodiak-700.woff2) format('woff2');}
+  @font-face{font-family:'Author';font-weight:500;src:url(../../public/fonts/author-500.woff2) format('woff2');}
   *{margin:0;padding:0;box-sizing:border-box;}
   html,body{width:1200px;height:630px;}
-  body{background:#05070d;overflow:hidden;position:relative;
-       font-family:'Bricolage Grotesque',system-ui,sans-serif;}
-
-  /* Same grid and champagne glow the site uses, so a shared link looks like
-     the page it opens rather than a separate piece of marketing. */
-  .grid{position:absolute;inset:0;
-    background-image:linear-gradient(rgba(184,200,224,.055) 1px,transparent 1px),
-                     linear-gradient(90deg,rgba(184,200,224,.055) 1px,transparent 1px);
-    background-size:60px 60px;}
-  .glow{position:absolute;width:900px;height:900px;right:-230px;top:-330px;border-radius:50%;
-    background:radial-gradient(circle,rgba(230,210,168,.30) 0%,rgba(230,210,168,.10) 40%,transparent 70%);}
-  .vign{position:absolute;inset:0;
-    background:linear-gradient(102deg,#05070d 22%,rgba(5,7,13,.80) 46%,rgba(5,7,13,.34) 70%,transparent 92%);}
-
-  .wrap{position:relative;height:100%;padding:64px 72px;display:flex;flex-direction:column;}
-
-  .mark{font-size:40px;font-weight:700;color:#f2f5fa;letter-spacing:-.03em;line-height:1;}
-  .mark i{color:#e6d2a8;font-style:normal;}
-  .kicker{margin-top:12px;font-family:'Space Mono',monospace;font-size:15px;color:#8b96a8;
-    letter-spacing:.26em;text-transform:uppercase;}
-
-  h1{margin-top:auto;font-size:78px;font-weight:700;line-height:1.02;letter-spacing:-.035em;
-     color:#f2f5fa;max-width:735px;}
-  h1 b{color:#e6d2a8;font-weight:700;}
-  .sub{margin-top:24px;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-    font-size:22px;line-height:1.45;color:#c3ccd9;max-width:660px;}
-
-  .foot{margin-top:auto;padding-top:34px;display:flex;align-items:flex-end;justify-content:space-between;}
-  .url{font-family:'Space Mono',monospace;font-size:21px;color:#e6d2a8;letter-spacing:.04em;}
-  .free{font-family:'Space Mono',monospace;font-size:15px;color:#c3ccd9;letter-spacing:.13em;
-    text-transform:uppercase;}
-
-  /* The two scores are what the product actually outputs. Deliberately
-     unnumbered: a specific score would read as a real client result, and
-     there are none. */
-  .gauges{position:absolute;right:72px;top:238px;width:296px;
-    display:flex;flex-direction:column;gap:36px;}
-  .g .lab{display:flex;justify-content:space-between;align-items:baseline;
-    font-family:'Space Mono',monospace;font-size:14px;letter-spacing:.2em;text-transform:uppercase;}
-  .g .lab span:first-child{color:#c3ccd9;}
-  .g .lab span:last-child{color:#5f6a7c;font-size:12px;letter-spacing:.1em;}
-  .g .bar{margin-top:13px;height:9px;border-radius:99px;background:rgba(184,200,224,.11);overflow:hidden;}
-  .g .bar i{display:block;height:100%;border-radius:99px;}
-  .g.h .bar i{width:74%;background:linear-gradient(90deg,#7ee0a8,#a8ecc6);}
-  .g.a .bar i{width:39%;background:linear-gradient(90deg,#ff9b9b,#ffc2a8);}
-  .rule{height:1px;background:rgba(184,200,224,.13);margin:4px 0 0;}
-  .note{margin-top:16px;font-family:'Space Mono',monospace;font-size:12.5px;line-height:1.6;color:#5f6a7c;}
+  body{background:#05070d;overflow:hidden;position:relative;color:#ece7dc;font-family:'Author',system-ui,sans-serif;font-weight:500;-webkit-font-smoothing:antialiased;}
+  .pic{position:absolute;top:-40px;right:-150px;width:860px;height:815px;background:url(../../public/model/hook/d-crop.webp) center/cover no-repeat;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 34%);mask-image:linear-gradient(90deg,transparent 0,#000 34%);}
+  /* the TV in the window carries AI lettering that doesn't read as words: dim it, as if the screen were off */
+  .tv{position:absolute;left:747px;top:253px;width:87px;height:65px;background:radial-gradient(ellipse at 50% 50%,rgba(10,10,12,.9) 55%,rgba(10,10,12,.55) 80%,rgba(10,10,12,0) 100%);filter:blur(1.2px);border-radius:3px;}
+  .shade{position:absolute;inset:0;background:linear-gradient(90deg,#05070d 0,#05070d 30%,rgba(5,7,13,.86) 44%,rgba(5,7,13,.25) 66%,rgba(5,7,13,0) 80%),linear-gradient(180deg,rgba(5,7,13,.5),rgba(5,7,13,0) 25%,rgba(5,7,13,0) 75%,rgba(5,7,13,.6));}
+  .wrap{position:relative;height:100%;padding:58px 68px 54px;display:flex;flex-direction:column;}
+  .mark{font-family:'Zodiak',Georgia,serif;font-weight:700;font-size:38px;letter-spacing:-.02em;line-height:1;}
+  h1{margin-top:auto;font-family:'Zodiak',Georgia,serif;font-weight:700;font-size:80px;line-height:.98;letter-spacing:-.035em;max-width:600px;}
+  .sub{margin-top:24px;font-size:24px;line-height:1.35;color:#d4d0c7;max-width:520px;}
+  .foot{margin-top:34px;display:flex;align-items:center;gap:14px;font-size:21px;color:#f1b877;}
+  .foot i{width:9px;height:9px;border-radius:50%;background:#f1b877;box-shadow:0 0 12px #f1b877;}
 </style></head>
 <body>
-  <div class="grid"></div><div class="glow"></div><div class="vign"></div>
-
-  <div class="gauges">
-    <div class="g h"><div class="lab"><span>Human</span><span>Screen readers</span></div>
-      <div class="bar"><i></i></div></div>
-    <div class="g a"><div class="lab"><span>Agent</span><span>Booking bots</span></div>
-      <div class="bar"><i></i></div></div>
-  </div>
-
+  <div class="pic"></div><div class="tv"></div><div class="shade"></div>
   <div class="wrap">
-    <div>
-      <div class="mark">Quvlo<i>.</i></div>
-      <div class="kicker">Precision web studio &middot; Dallas Fort Worth</div>
-    </div>
-
-    <h1><b>AI agents</b> can&rsquo;t use most websites.</h1>
-    <p class="sub">Custom sites built so a screen reader and an AI agent can both finish a booking. ADA and EAA compliance by default.</p>
-
-    <div class="foot">
-      <div class="url">quvlo.co</div>
-      <div class="free">Free teardown of your site</div>
-    </div>
+    <div class="mark">Quvlo</div>
+    <h1>Your business, still working at 3&nbsp;am.</h1>
+    <p class="sub">Websites, booking and the follow-ups behind them, by one studio in Dallas Fort&nbsp;Worth.</p>
+    <div class="foot"><i></i>quvlo.co</div>
   </div>
 </body></html>

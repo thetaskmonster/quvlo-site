@@ -10,19 +10,19 @@
     [142.1, 54.6, 34.9], [142.5, 53.5, 34.7], [142.8, 52.6, 34.5]
   ];
   const NOTES = [
-    'First scan. Baseline set. Three lifting sessions a week and a protein target. Nothing extreme.',
+    'First DXA scan. Baseline set. Three lifting sessions a week and a protein target. Nothing extreme.',
     'Form week. Squat, hinge and press, with a coach on every set.',
     'Loads going up. Sleep is the next thing to fix.',
     'Waist is down a little. The scale has barely moved. That is the point.',
     'Plan rebuilt. A fourth session added: a short conditioning block.',
-    'A flat week. Travel and a cold. Scans dip and come back, and the trend is what counts.',
+    'A flat week. Travel and a cold. Readings dip and come back, and the trend is what counts.',
     'Still flat. No changes. Hold the plan.',
     'Back on the line. Lean mass is moving again.',
     'Plan rebuilt. Heavier lower body, calories nudged down.',
     'Top sets heavier than at any point so far.',
     'The old belt needs a new notch.',
     'Deload week. Lighter loads so the next block lands.',
-    'Twelve-week scan. The next block gets planned around what this one showed.'
+    'Twelve-week DXA scan. The next block gets planned around what this one showed.'
   ];
   const at = w => { const i = Math.min(11, Math.floor(w)), t = w - i, a = DATA[i], b = DATA[i + 1]; return a.map((v, k) => v + (b[k] - v) * t); };
 
@@ -59,9 +59,10 @@
   const P = {}; ['fH','fB','fL','fR','lH','lB','lL','lR'].forEach(k => P[k] = $(k));
   const wl = $('wl'), wt1 = $('wt1'), wt2 = $('wt2');
 
-  const fmt = v => v.toFixed(1), sgn = v => (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(1);
+  // signed change, rounded first so it never reads "−0.0"
+  const fmt = v => v.toFixed(1), sgn = v => { const r = Math.round(v * 10) / 10; return r === 0 ? '±0.0' : (r > 0 ? '+' : '−') + Math.abs(r).toFixed(1); };
   const base = DATA[0], baseBF = base[1] / (base[0] + base[1]) * 100, baseW = base[0] + base[1];
-  const range = $('wkr'), track = document.querySelector('.track');
+  const range = $('wkr');
   let cur = 0, lastWk = -1;
 
   // phone sparklines: both lines rise when things improve (fat is drawn inverted)
@@ -83,7 +84,7 @@
     wt1.setAttribute('x1', x1); wt1.setAttribute('x2', x1); wt2.setAttribute('x1', x2); wt2.setAttribute('x2', x2);
     const bf = fat / (lean + fat) * 100, sc = lean + fat;
     $('rl').textContent = fmt(lean); $('rf').textContent = fmt(bf); $('rw').textContent = fmt(waist); $('rs').textContent = fmt(sc);
-    const z = w < .05;
+    const z = wk === 0; // same rule as the week label, so "Week 0" always reads "Baseline"
     $('dl').textContent = z ? 'Baseline' : `${sgn(lean - base[0])} lb since week 0`;
     $('df').textContent = z ? 'Baseline' : `${sgn(bf - baseBF)} points since week 0`;
     $('dw').textContent = z ? 'Baseline' : `${sgn(waist - base[2])} in since week 0`;
@@ -92,6 +93,7 @@
     if (wk !== lastWk) {
       lastWk = wk;
       $('nwk').textContent = wk; $('swk').textContent = wk; $('awk').textContent = wk;
+      $('stag').textContent = wk === 0 || wk === 12 ? 'DXA scan' : 'InBody check';
       $('notetxt').textContent = NOTES[wk]; $('pwk').textContent = wk;
       const r = DATA[wk];
       $('al').textContent = wk ? `${sgn(r[0] - base[0])} lb` : 'Baseline'; $('af').textContent = wk ? `${sgn(r[1] - base[1])} lb` : 'Baseline';
@@ -105,19 +107,23 @@
   for (let i = 0; i <= 12; i++) { const s = document.createElement('span'); s.style.left = (i / 12 * 100) + '%'; s.textContent = i % 4 ? String(i) : 'Wk ' + i; if (i % 4 === 0) s.className = 'r'; ticks.appendChild(s); }
 
   // moving between weeks: the body eases from one scan to the next
-  let anim = 0;
+  let anim = 0, aim = null; // aim: the week an animation is heading to, so key presses count from it, not from mid-move
   function go(target) {
-    target = cl(target, 0, 12); cancelAnimationFrame(anim);
+    target = cl(target, 0, 12); cancelAnimationFrame(anim); aim = target;
     range.value = target;
     if (calm) { cur = target; render(cur); return; }
     const from = cur, t0 = performance.now(), dur = 260 + Math.abs(target - from) * 70;
-    const step = now => { const q = cl((now - t0) / dur), e = 1 - Math.pow(1 - q, 3); cur = from + (target - from) * e; render(cur); if (q < 1) anim = requestAnimationFrame(step); };
+    const step = now => { const q = cl((now - t0) / dur), e = 1 - Math.pow(1 - q, 3); cur = from + (target - from) * e; render(cur); if (q < 1) anim = requestAnimationFrame(step); else aim = null; };
     anim = requestAnimationFrame(step);
   }
-  range.addEventListener('input', () => { cancelAnimationFrame(anim); cur = +range.value; render(cur); });
+  // After a drag or a key press, scrolling only takes over again once the page has really moved,
+  // so a small scroll doesn't snap the bar back to where the scroll position says.
+  let manualY = null;
+  range.addEventListener('input', () => { manualY = scrollY; cancelAnimationFrame(anim); aim = null; cur = +range.value; render(cur); });
   range.addEventListener('change', () => go(Math.round(+range.value)));
   range.addEventListener('keydown', e => {
-    const k = e.key, w = Math.round(cur);
+    manualY = scrollY;
+    const k = e.key, w = aim !== null ? aim : Math.round(cur);
     const t = k === 'ArrowRight' || k === 'ArrowUp' ? w + 1 : k === 'ArrowLeft' || k === 'ArrowDown' ? w - 1 : k === 'PageUp' ? w + 4 : k === 'PageDown' ? w - 4 : k === 'Home' ? 0 : k === 'End' ? 12 : null;
     if (t === null) return; e.preventDefault(); go(t);
   });
@@ -130,16 +136,11 @@
     const y = scrollY; if (y === lastY) return; lastY = y;
     const b = pin.getBoundingClientRect(), span = b.height - innerHeight;
     if (span <= 0 || b.top > innerHeight * .2 || b.bottom < innerHeight * .8) return;
+    if (manualY !== null) { if (Math.abs(y - manualY) < Math.max(200, innerHeight * .3)) return; manualY = null; }
     const w = cl(-b.top / span) * 12;
-    cancelAnimationFrame(anim); cur = w; range.value = w; render(w);
+    cancelAnimationFrame(anim); aim = null; cur = w; range.value = w; render(w);
   }
   if (!calm) { addEventListener('scroll', onScroll, { passive: true }); }
-
-  // the studio pill appears once the hero is gone
-  const pill = document.querySelector('.quvlo');
-  const heroEl = document.querySelector('.hero');
-  const pillState = () => { const h = heroEl.getBoundingClientRect(), b = pin.getBoundingClientRect(); const hide = h.bottom > innerHeight * .2 || (b.top < innerHeight * .5 && b.bottom > innerHeight * .5); pill.style.opacity = hide ? 0 : 1; pill.style.pointerEvents = hide ? 'none' : ''; };
-  addEventListener('scroll', pillState, { passive: true }); addEventListener('resize', pillState); pillState();
 
   // booking: checked in the browser, then a success state. Nothing is sent anywhere.
   const f = $('f'), err = $('err');

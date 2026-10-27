@@ -186,7 +186,7 @@ export function originAllowed(origin, env) {
  * ever comes from server storage.
  */
 const memory = new Map();
-const warned = { kv: false, salt: false }; // log each warning once per isolate
+const warned = { kv: false }; // log each warning once per isolate
 const memoryStore = {
   async get(key) {
     const hit = memory.get(key);
@@ -224,8 +224,10 @@ const ttl = (seconds) => Math.max(60, Math.ceil(seconds));
  */
 export async function visitorKey(request, env) {
   const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-real-ip') || 'unknown';
-  const salt = env.RATE_SALT || 'quvlo-concierge-default-salt';
-  if (!env.RATE_SALT && !warned.salt) { warned.salt = true; console.warn('concierge: RATE_SALT is not set, using the built-in default salt'); }
+  // Never fall back to a built-in salt: it would be public in this repository. The concierge refuses
+  // requests before this point when RATE_SALT is missing; this is the second line of defence.
+  if (!env.RATE_SALT) throw new Error('RATE_SALT is not set');
+  const salt = env.RATE_SALT;
   const data = new TextEncoder().encode(`${salt}|${ip}`);
   const digest = await crypto.subtle.digest('SHA-256', data);
   return [...new Uint8Array(digest)].slice(0, 16).map((b) => b.toString(16).padStart(2, '0')).join('');

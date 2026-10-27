@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="canonical" href="https://quvlo.co/work/lacquer-room/">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lacquer Room | Paint correction and ceramic coating, Dallas Fort Worth</title>
-<meta name="description" content="Paint correction, ceramic coating, paint protection film and interior restoration. By appointment in Dallas Fort Worth.">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>Lacquer Room | Paint correction and ceramic coating, Dallas Fort Worth (Concept)</title>
+<meta name="description" content="A concept site by Quvlo for a made-up Dallas Fort Worth detailing studio: paint correction, ceramic coating, paint protection film and interior restoration.">
 <meta name="robots" content="noindex">
 <style>
 @font-face{font-family:'Panchang';src:url(fonts/panchang-600-normal.woff2) format('woff2');font-weight:600;font-display:swap}
@@ -46,7 +46,7 @@ a{color:inherit}
 @media (max-width:720px){.nav nav a:not(.pill){display:none}.nav .pill{padding:9px 14px;font-size:14px}}
 
 /* hero */
-.hero{position:relative;height:100svh;min-height:640px;overflow:hidden;background:#000}
+.hero{position:relative;height:calc(100svh - 44px);min-height:560px;overflow:hidden;background:#000}
 .hero picture,.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .hero img{object-position:50% 38%}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,transparent 20%,transparent 40%,rgba(0,0,0,.86) 72%,#000 100%)}
@@ -145,7 +145,10 @@ input::placeholder{color:#5c6064}
 footer{background:var(--concrete-2);color:var(--ink);padding:36px var(--gut) 90px;display:flex;flex-wrap:wrap;gap:12px 40px;align-items:baseline;font-size:15px}
 footer .mark{font-size:17px}
 footer span{color:#46433f}
-.quvlo{opacity:0;transition:opacity .3s;position:fixed;left:16px;bottom:16px;z-index:20;font-size:13px;padding:8px 13px;border-radius:999px;background:rgba(10,10,10,.78);color:#e9eaea;text-decoration:none;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12)}
+.cbar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:0 var(--gut);background:#050505;color:rgba(233,234,234,.88);font-size:13px;line-height:1.3}
+.cbar a{display:inline-flex;align-items:center;min-height:44px;white-space:nowrap;color:inherit;text-underline-offset:4px}
+/* 44 px tap targets for the header links, logo and hero text links */
+a.mark,.nav nav a,.link{display:inline-flex;align-items:center;min-height:44px}
 
 /* scroll story: every effect is driven by scroll position and says what the work does */
 .hero img{transform-origin:50% 60%;will-change:transform}
@@ -170,6 +173,7 @@ footer span{color:#46433f}
 </style>
 </head>
 <body>
+<div class="cbar"><span>Concept site by Quvlo. Lacquer Room is a made-up business.</span><a href="/work/">Studio Work</a></div>
 
 <header class="hero">
   <div class="nav">
@@ -255,9 +259,9 @@ footer span{color:#46433f}
           <div><label for="nm">Name</label><input id="nm" name="name" type="text" autocomplete="name" maxlength="60" required></div>
           <div><label for="em">Email</label><input id="em" name="email" type="email" autocomplete="email" maxlength="120" required></div>
         </div>
-        <div class="form-foot"><button class="btn" type="submit">Request an inspection</button><small>By appointment only. Dallas Fort Worth.</small></div>
+        <div class="form-foot"><button class="btn" type="submit">Request an inspection</button><small>Demo only: this form doesn't send anything.</small></div>
       </form>
-      <p class="done" id="done" role="status">Request received. We'll email you to confirm a time.</p>
+      <p class="done" id="done" role="status" tabindex="-1">Demo only: nothing was sent. A real Lacquer Room would email you to confirm a time.</p>
     </div>
   </section>
 </main>
@@ -265,8 +269,8 @@ footer span{color:#46433f}
 <footer>
   <span class="mark">Lacquer Room</span>
   <span>Paint correction, coating and film. By appointment, Dallas Fort Worth.</span>
+  <span>A concept site by <a href="/work/">Quvlo</a>. Lacquer Room is a made-up business, the images are AI-generated, and nothing on this page is sent anywhere.</span>
 </footer>
-<a class="quvlo" href="/work/">Studio Work by Quvlo</a>
 
 
 <script src="site.js"></script>
