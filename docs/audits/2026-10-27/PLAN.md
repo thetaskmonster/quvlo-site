@@ -23,8 +23,8 @@ plan to pick up when Kyle tops up credits ("reup"). Update the Status column as 
 | New film player (`tools/scrollfilm/film-engine.js`) in all 7 scroll sites. No wrong-scene frames, no double images, even speed, correct frames per device and orientation, no reload on rotate, bounded memory, iOS toolbar fix | in progress (uncommitted) |
 | Keyroom reshoot: garage lights, light reveal, riverside tracking drive (test first), parked arrival push-in, plus 18 showroom views (stills done) | in progress, cap 135 |
 | Footage audits: Keyroom, HVAC, cleaning, wrap, BBQ, builder, landscape | done (reports here) |
-| Device audits: Keyroom, builder + landscape | done (reports here) |
-| Device audits still running: HVAC + cleaning, wrap + BBQ, homepage + /work/ + studio pages | running |
+| Device audits: Keyroom, builder + landscape, wrap + BBQ | done (reports here) |
+| Device audits still running: HVAC + cleaning, homepage + /work/ + studio pages | running |
 | GSC Capital Group site | separate session ("GSC Capital Group site: finish and launch prep") |
 
 ## Phase 1: free fixes (code, trims, copy); do these first, no credits
@@ -53,7 +53,21 @@ plan to pick up when Kyle tops up credits ("reup"). Update the Status column as 
   - retouch the grimy towel;
   - fix the clock times;
   - phone crops for shots 2, 3 and 5.
-- **Wrap:**
+- **Wrap (devices, see wrap-bbq-devices.md):**
+  - the work order keeps the old colour; Factory White charged $3,900;
+  - "Legal on every window in Texas" is false (windshield only above the AS-1 line / top 5 in);
+  - the tint slider only darkens the front door glass (add rear-glass masks; split front and rear);
+  - configurator covers the car on iPad, car not sticky on iPhone;
+  - tint and Hold die after ~50 colour swaps (z-index);
+  - caption contrast on the white car;
+  - booking details (am/pm, month).
+- **BBQ (devices):**
+  - caption, cook log and gauge collide on iPad, and the caption covers the bark on phones;
+  - the chart can't be dragged on iOS;
+  - receipt rounding and "Hold a date";
+  - "Fourteen hours" vs the log's 10 h 45;
+  - re-encode the heavy desktop frames to ~100 KB each.
+- **Wrap (footage):**
   - trim shot 1 to src 36-57, shot 4 to src 0-45, and shot 5 to src 12-36 with the phone crop re-centred and
     the light bar patched;
   - grade shots 3-5 to match shot 6;
@@ -90,7 +104,11 @@ plan to pick up when Kyle tops up credits ("reup"). Update the Status column as 
   - "Concept site" pill on phones;
   - accessibility list.
 - **Everywhere:**
+  - **The sites share one skeleton again.** Loader, 6-shot film, HUD, perforated receipt, 4 numbered steps,
+    "Before you book/order", giant footer line, fragment headlines. Kyle's very first complaint was that the
+    sites looked the same, so each site gets its own layout logic in the fixes, not just new colours;
   - stop reusing "Lights on" and the clipped-fragment heading formula;
+  - safe-area insets for the iPhone landscape notch;
   - US spelling;
   - 44 px tap targets;
   - og:image:alt.
