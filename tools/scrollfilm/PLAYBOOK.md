@@ -16,6 +16,10 @@ four sites (HVAC, cleaning, wrap, BBQ), where about a third of the Higgsfield cr
 | Keyroom: cover moved by itself, car glided and jumped, showroom spin uneven, all found by Kyle on his iPad | ~115 to redo | Frame-by-frame physics and smoothness checks (step 6) and an independent multi-device review (step 8) |
 
 ## Steps, for every site
+Every step below follows tools/scrollfilm/CHECKS.md: the checks go into each build instruction, and an
+independent reviewer verifies the result (templates in tools/scrollfilm/review/) before anything reaches the
+preview or Kyle.
+
 1. **Design plan, approved before any credits.** One message to Kyle: look, colours, fonts, signature
    interaction, and the six-shot list. Nothing is generated until he says yes. (CLAUDE.md rule 13.)
    First find every reference Kyle sent for that kind of site, including in his other sessions, and say
