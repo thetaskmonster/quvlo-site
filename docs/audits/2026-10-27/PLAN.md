@@ -20,7 +20,8 @@ plan to pick up when Kyle tops up credits ("reup"). Update the Status column as 
 ## Phase 0: running now (no decisions needed)
 | Item | Status |
 |---|---|
-| New film player (`tools/scrollfilm/film-engine.js`) in all 7 scroll sites. No wrong-scene frames, no double images, even speed, correct frames per device and orientation, no reload on rotate, bounded memory, iOS toolbar fix | in progress (uncommitted) |
+| New film player (`tools/scrollfilm/film-engine.js`) in all 7 scroll sites. No wrong-scene frames, no double images, even speed, correct frames per device and orientation, no reload on rotate, bounded memory, iOS toolbar fix, overlays follow the drawn frame, jump links load first, hidden overlays inert | built; committed locally (20493d7), NOT pushed until the independent check passes |
+| Keyroom reshoot | shots 1, 2, 4 done and checked; drive test failed in its last second; waiting on Kyle: A (4K, start pinned only, 30 cr) or C (clean 80% of the test, free, softer) |
 | Keyroom reshoot: garage lights, light reveal, riverside tracking drive (test first), parked arrival push-in, plus 18 showroom views (stills done) | in progress, cap 135 |
 | Footage audits: Keyroom, HVAC, cleaning, wrap, BBQ, builder, landscape | done (reports here) |
 | Device audits: Keyroom, builder + landscape, wrap + BBQ, HVAC + cleaning, homepage + /work/ + studio pages | all done (reports here) |
