@@ -4,17 +4,20 @@
   const $ = id => document.getElementById(id);
 
   // ---- one made-up member, weeks 0 to 12: [lean mass lb, fat lb, waist in]. Illustrative only.
+  // Week 0 is a DXA scan and a first InBody reading, weeks 1 to 11 are Monday InBody readings
+  // (compared only with the first InBody), week 12 is the second DXA (compared only with the first DXA).
+  // Modest on purpose: about +3 lb lean and -8 lb fat in twelve weeks, with a real dip at week 5.
   const DATA = [
-    [138.0, 62.0, 37.0], [138.6, 61.4, 36.9], [139.1, 60.5, 36.7], [139.5, 59.9, 36.4], [140.0, 59.0, 36.2],
-    [140.2, 58.6, 36.1], [140.3, 58.4, 36.0], [140.9, 57.4, 35.7], [141.4, 56.5, 35.4], [141.7, 55.6, 35.2],
-    [142.1, 54.6, 34.9], [142.5, 53.5, 34.7], [142.8, 52.6, 34.5]
+    [138.0, 62.0, 37.0], [138.4, 61.5, 36.9], [138.7, 60.8, 36.7], [138.9, 60.3, 36.5], [139.2, 59.5, 36.3],
+    [139.0, 59.8, 36.3], [139.2, 59.4, 36.2], [139.6, 58.3, 36.0], [139.9, 57.4, 35.8], [140.2, 56.6, 35.6],
+    [140.5, 55.7, 35.4], [140.8, 54.8, 35.2], [141.0, 54.0, 35.0]
   ];
   const NOTES = [
-    'First DXA scan. Baseline set. Three lifting sessions a week and a protein target. Nothing extreme.',
+    'First DXA scan and first InBody reading, taken the same morning. Baseline set. Three lifting sessions a week and a protein target. Nothing extreme.',
     'Form week. Squat, hinge and press, with a coach on every set.',
     'Loads going up. Sleep is the next thing to fix.',
     'Waist is down a little. The scale has barely moved. That is the point.',
-    'Plan rebuilt. A fourth session added: a short conditioning block.',
+    'Plan rebuilt. A fourth session added: a short Saturday conditioning block in place of the walk.',
     'A flat week. Travel and a cold. Readings dip and come back, and the trend is what counts.',
     'Still flat. No changes. Hold the plan.',
     'Back on the line. Lean mass is moving again.',
@@ -22,7 +25,7 @@
     'Top sets heavier than at any point so far.',
     'The old belt needs a new notch.',
     'Deload week. Lighter loads so the next block lands.',
-    'Twelve-week DXA scan. The next block gets planned around what this one showed.'
+    'Twelve-week DXA scan, read against the first DXA only. The next block gets planned around what this one showed.'
   ];
   const at = w => { const i = Math.min(11, Math.floor(w)), t = w - i, a = DATA[i], b = DATA[i + 1]; return a.map((v, k) => v + (b[k] - v) * t); };
 
@@ -85,15 +88,18 @@
     const bf = fat / (lean + fat) * 100, sc = lean + fat;
     $('rl').textContent = fmt(lean); $('rf').textContent = fmt(bf); $('rw').textContent = fmt(waist); $('rs').textContent = fmt(sc);
     const z = wk === 0; // same rule as the week label, so "Week 0" always reads "Baseline"
-    $('dl').textContent = z ? 'Baseline' : `${sgn(lean - base[0])} lb since week 0`;
-    $('df').textContent = z ? 'Baseline' : `${sgn(bf - baseBF)} points since week 0`;
+    const since = wk === 12 ? 'since your first DXA' : 'since your first InBody';
+    $('dl').textContent = z ? 'Baseline' : `${sgn(lean - base[0])} lb ${since}`;
+    $('df').textContent = z ? 'Baseline' : `${sgn(bf - baseBF)} points ${since}`;
     $('dw').textContent = z ? 'Baseline' : `${sgn(waist - base[2])} in since week 0`;
     $('ds').textContent = z ? 'Baseline' : `Only ${Math.abs(sc - baseW).toFixed(1)} lb lighter`;
     rail.style.width = (w / 12 * 100).toFixed(2) + '%';
     if (wk !== lastWk) {
       lastWk = wk;
       $('nwk').textContent = wk; $('swk').textContent = wk; $('awk').textContent = wk;
-      $('stag').textContent = wk === 0 || wk === 12 ? 'DXA scan' : 'InBody check';
+      $('stag').textContent = wk === 0 ? 'DXA and InBody' : wk === 12 ? 'DXA scan' : 'InBody check';
+      $('since').textContent = wk === 12 ? 'Since your first DXA' : 'Since your first InBody';
+      $('sat').textContent = wk >= 4 ? 'Cond' : 'Walk';
       $('notetxt').textContent = NOTES[wk]; $('pwk').textContent = wk;
       const r = DATA[wk];
       $('al').textContent = wk ? `${sgn(r[0] - base[0])} lb` : 'Baseline'; $('af').textContent = wk ? `${sgn(r[1] - base[1])} lb` : 'Baseline';
