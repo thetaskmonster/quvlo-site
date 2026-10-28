@@ -45,7 +45,7 @@
   const stages = [...document.querySelectorAll('#stages li')];
   const status = document.getElementById('status'), fu = sec.querySelector('.fu');
   const play = document.getElementById('play'), playLabel = play.querySelector('span');
-  const STATUS = ['Waiting for your check-in', 'Noor is reading', 'Ready Monday, 7 am'];
+  const STATUS = ['Waiting for your check-in', 'Noor is reading', 'Ready Monday by noon'];
   let stage = 0;
 
   function render(p, live) {

@@ -91,13 +91,14 @@
   // ---- the questions
   const qs = document.getElementById('qs'), live = document.getElementById('live');
   const result = document.getElementById('result');
+  // Sample profiles: made-up people. Texas ads must show the license type; the numbers are placeholders, marked as samples.
   const PEOPLE = {
-    listen: { name: 'Iris', how: 'Iris listens closely and says back what she hears, so you can hear it too. Sessions follow your lead rather than a plan, and she is comfortable letting a thought take its time.' },
-    practical: { name: 'Theo', how: 'Theo is clear and structured. Most sessions end with one small thing to try before the next, and he draws on cognitive behavioral approaches when they help.' },
-    direct: { name: 'Mara', how: 'Mara is warm and plain-spoken. She will gently name the thing you keep circling, then stay with you while you look at it.' },
-    gentle: { name: 'Wren', how: 'Wren is unhurried and at ease with silence. Nothing is pushed before you are ready, including in the first session.' }
+    listen: { name: 'Iris', full: 'Iris Penhallow, LPC', role: 'Licensed Professional Counselor (LPC). Texas license 00000, sample', how: 'Iris listens closely and says back what she hears, so you can hear it too. Sessions follow your lead rather than a plan, and she is comfortable letting a thought take its time.' },
+    practical: { name: 'Theo', full: 'Theo Varga, PhD', role: 'Licensed Psychologist. Texas license 00000, sample', how: 'Theo is clear and structured. Most sessions end with one small thing to try before the next, and he draws on cognitive behavioral approaches when they help.' },
+    direct: { name: 'Mara', full: 'Mara Quill, LMFT', role: 'Licensed Marriage and Family Therapist (LMFT). Texas license 00000, sample', how: 'Mara is warm and plain-spoken. She will gently name the thing you keep circling, then stay with you while you look at it.' },
+    gentle: { name: 'Wren', full: 'Wren Ashdown, LCSW', role: 'Licensed Clinical Social Worker (LCSW). Texas license 00000, sample', how: 'Wren is unhurried and at ease with silence. Nothing is pushed before you are ready, including in the first session.' }
   };
-  const FOCUS = { worry: 'Anxiety and overthinking', grief: 'Grief and loss', rel: 'Relationships, together or on your own', work: 'Burnout and work stress', change: 'Big life changes', unsure: 'People still working out what they need' };
+  const FOCUS = { worry: 'Anxiety and overthinking', grief: 'Grief and loss', rel: 'Relationships, on your own. For couples sessions we\'ll pair you with Mara Quill, our LMFT.', work: 'Burnout and work stress', change: 'Big life changes', unsure: 'People still working out what they need' };
   const HOURS = { morning: 'Weekday mornings', afternoon: 'Weekday afternoons', evening: 'Weekday evenings', saturday: 'Saturday mornings' };
   const val = name => { const c = qs.querySelector(`input[name="${name}"]:checked`); return c ? c.value : null; };
 
@@ -113,10 +114,12 @@
     stateCount.textContent = n === 3 ? 'All three answered' : `${n} of 3 answered`;
     if (n === 3) {
       const p = PEOPLE[val('talk')];
-      document.getElementById('r-name').textContent = p.name;
+      document.getElementById('r-name').textContent = p.full;
+      document.getElementById('r-role').textContent = p.role;
       document.getElementById('r-mono').textContent = p.name[0];
       document.getElementById('r-how').textContent = p.how;
-      document.getElementById('r-focus').textContent = FOCUS[val('bring')];
+      // Mara is the LMFT, so on her own card the couples line says she sees couples herself
+      document.getElementById('r-focus').textContent = val('bring') === 'rel' && p.name === 'Mara' ? 'Relationships, on your own or as a couple.' : FOCUS[val('bring')];
       document.getElementById('r-hours').textContent = HOURS[val('when')];
       const first = result.hidden; result.hidden = false;
       if (fromUser && first) live.textContent = `The water is still. All three answered. We'd suggest a therapist like ${p.name}; the suggestion is below the questions.`;
