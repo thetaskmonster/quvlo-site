@@ -53,8 +53,8 @@
       </div>
 
       <!-- One caption per shot, placed where that shot has empty wall, sky or floor (keyroom.css "Captions") -->
-      <div class="cap cap--s0" data-shot="0"><h2 class="cap__h">The garage warms up for you</h2><p class="cap__p">Every car waits under a fitted cover in its own bay.</p></div>
-      <div class="cap cap--s1" data-shot="1"><h2 class="cap__h">Ready the night before</h2><p class="cap__p">Detailed, a full tank, your seats set.</p></div>
+      <div class="cap cap--s0" data-shot="0"><h2 class="cap__h">The garage warms up for you</h2><p class="cap__p">Every car has its own bay, charged and checked.</p></div>
+      <div class="cap cap--s1" data-shot="1"><h2 class="cap__h">Ready the night before</h2><p class="cap__p">Detailed, full tank or charged to 80%, tires checked.</p></div>
       <div class="cap cap--s2" data-shot="2"><h2 class="cap__h">We bring it across town</h2><p class="cap__p">With a live arrival time, not a two-hour window.</p></div>
       <div class="cap cap--s3" data-shot="3"><h2 class="cap__h">Waiting when you land</h2><p class="cap__p">We track your flight. A short walk-around, then the keys are yours.</p><p class="cap__cta"><a class="btn" href="#showroom">See the cars</a></p></div>
 
@@ -72,7 +72,7 @@
       <h2 class="sr" id="show-h">Showroom</h2>
       <div class="show__info">
         <h3 class="show__name" id="carName">Cadillac Escalade</h3>
-        <p class="show__line"><span id="carPrice">$289</span> a day <span class="show__sample">sample</span></p>
+        <p class="show__line"><span id="carPrice">$499</span> a day <span class="show__sample">sample</span></p>
         <a class="btn" href="#quote" id="carQuote">Price this car</a>
         <p class="sr" id="carSpecs">Specs: 420 hp, 6.2L V8. 7 seats, three full rows. 22 in wheels.</p>
       </div>
@@ -105,7 +105,7 @@
   <section class="quote" id="quote" aria-labelledby="quote-h">
     <div class="wrap">
       <h2 class="sec__h" id="quote-h">Every cost, before the keys</h2>
-      <p class="sec__p">Rate, delivery, cover and tax in one number. The refundable deposit and the miles you get are shown right under it. No call needed.</p>
+      <p class="sec__p">Rate, delivery, damage waiver and tax in one number. The refundable deposit and the miles you get are shown right under it. No call needed.</p>
 
       <div class="quote__grid">
         <form class="qform" id="qform" novalidate>
@@ -115,7 +115,7 @@
               <option value="escalade">Cadillac Escalade</option>
               <option value="tahoe">Chevrolet Tahoe High Country</option>
               <option value="e53">Mercedes-AMG E 53 Hybrid</option>
-              <option value="i5">BMW i5</option>
+              <option value="i5">BMW i5 eDrive40</option>
               <option value="bronco">Ford Bronco 4-door</option>
               <option value="modely">Tesla Model Y</option>
             </select>
@@ -136,11 +136,11 @@
             </div>
           </fieldset>
           <fieldset class="field">
-            <legend class="field__l">Insurance</legend>
+            <legend class="field__l">Coverage</legend>
             <div class="seg seg--col">
               <label><input type="radio" name="cover" value="own"><span>Your own policy <small>Proof of full coverage</small></span></label>
-              <label><input type="radio" name="cover" value="std" checked><span>Keyroom cover <small>$1,000 deductible</small></span></label>
-              <label><input type="radio" name="cover" value="plus"><span>Keyroom cover plus <small>No deductible</small></span></label>
+              <label><input type="radio" name="cover" value="std" checked><span>Damage waiver <small>You pay up to $1,000</small></span></label>
+              <label><input type="radio" name="cover" value="plus"><span>Full damage waiver <small>You pay $0</small></span></label>
             </div>
           </fieldset>
         </form>
@@ -150,6 +150,7 @@
           <p class="receipt__total" id="qTotal">$0</p>
           <p class="receipt__sub">Due at booking, estimated tax included</p>
           <dl class="lines" id="qLines"></dl>
+          <p class="receipt__sub">Some cities add a local rental tax.</p>
           <dl class="lines lines--soft" id="qTerms"></dl>
           <a class="btn btn--full" href="#reserve" id="qReserve">Reserve this car</a>
         </div>
@@ -162,7 +163,7 @@
       <h2 class="sec__h" id="how-h">No counter and no shuttle</h2>
       <ul class="steps">
         <li><span class="steps__when">Today</span><h3>Book</h3><p>Pick the car and where to meet you. We hold a refundable deposit.</p></li>
-        <li><span class="steps__when">The night before</span><h3>We deliver</h3><p>Ready the night before. A short walk-around, photos, keys.</p></li>
+        <li><span class="steps__when">When you need it</span><h3>We deliver</h3><p>Prepped the night before. At your door on time, a short walk-around with photos, then the keys.</p></li>
         <li><span class="steps__when">When you are done</span><h3>Hand it back</h3><p>Text us when you are done. We collect it where you are.</p></li>
       </ul>
     </div>
@@ -171,11 +172,14 @@
   <section class="faq" id="faq" aria-labelledby="faq-h">
     <div class="wrap wrap--narrow">
       <h2 class="sec__h" id="faq-h">Asked at the handover</h2>
-      <details><summary>How does the deposit work?</summary><p>A refundable hold on your credit card, not a charge. Released within three business days of return, minus any extra miles and any fuel or charge used, shown to you with photos first.</p></details>
+      <details><summary>How does the deposit work?</summary><p>A refundable hold on your credit card, not a charge. Released within three business days of return. Extra miles, fuel, charging and tolls are charged separately to your card, with photos first.</p></details>
       <details><summary>How old do I need to be?</summary><p>25 or older, with a valid driver&#8217;s license held for at least two years and a credit card in your name.</p></details>
-      <details><summary>How many miles are included?</summary><p>150 a day, pooled across the booking. Extra miles are charged at the rate in your quote.</p></details>
-      <details><summary>Where do you deliver?</summary><p>Within 30 miles of our garage: homes, offices, hotels and private aviation terminals. Further on request.</p></details>
+      <details><summary>How many miles are included?</summary><p>100 a day, pooled across the booking. Extra miles are charged at the rate in your quote, from $1.50 to $4 a mile depending on the car.</p></details>
+      <details><summary>Where do you deliver?</summary><p>Within 30 miles of our garage: homes, offices, hotels and private aviation terminals, where we meet you ramp-side. For airline flights at DFW and Love Field, we meet you in the airport&#8217;s approved garage or lot, never at the curb, and any airport access fee is passed through at cost and shown before you book. Further on request.</p></details>
       <details><summary>What if my flight is late?</summary><p>Give us your flight number and we track it. We move the handover to your new arrival time, at no charge.</p></details>
+      <details><summary>What about tolls?</summary><p>Every car has a TollTag. Local tolls are passed through at cost on your final receipt, with no admin fee.</p></details>
+      <details><summary>Fuel and charging?</summary><p>Gas cars go out full; bring them back full or we refill at the pump price plus $25. Electric cars go out at 80% or more; bring them back at 70% or more, or we charge a flat $35.</p></details>
+      <details><summary>Smoking and pets?</summary><p>No smoking or vaping. Pets in a carrier are fine. A cleaning fee of $250 applies if the car needs more than a normal detail.</p></details>
     </div>
   </section>
 
@@ -192,7 +196,7 @@
             <option value="escalade">Cadillac Escalade</option>
             <option value="tahoe">Chevrolet Tahoe High Country</option>
             <option value="e53">Mercedes-AMG E 53 Hybrid</option>
-            <option value="i5">BMW i5</option>
+            <option value="i5">BMW i5 eDrive40</option>
             <option value="bronco">Ford Bronco 4-door</option>
             <option value="modely">Tesla Model Y</option>
           </select>
