@@ -150,6 +150,9 @@ a { color: inherit; }
 [data-layout="tall"] .gauge__row { align-self: center; justify-self: end; flex-direction: column; align-items: flex-end; margin: 0; gap: 4px; font-size: 11.5px; }
 [data-layout="tall"] .log { margin-top: 7px; padding-top: 6px; font-size: 12px; }
 [data-layout="tall"] .log li { grid-template-columns: 12px 50px 1fr; }
+/* the log keeps room for a two-line entry on phones, before the first entry too, so a long one ("Brisket on, fat side
+   up, point to the fire") never grows the card under a caption that was placed above it */
+[data-layout="tall"] .log { min-height: calc(2.6em + 7px); }
 [data-layout="tall"] .cap { width: auto; right: 12px; padding: 14px 16px 15px; }
 [data-layout="tall"] .cap__h, [data-layout="tall"] .cap--hero .cap__h { font-size: clamp(23px, 6.6vw, 28px); }
 [data-layout="tall"] .cap__p { margin-top: 8px; font-size: 14.5px; line-height: 1.4; }

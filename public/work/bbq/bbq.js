@@ -4,7 +4,7 @@
 (() => {
   'use strict';
   // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.
-  const FV = '2026102811';
+  const FV = '2026102901';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -137,13 +137,16 @@
   const SUBJ = [
     [[1, [0.20, 0.26, 0.82, 0.89], [0.15, 0.22, 0.87, 0.95]], [0.3, [0.23, 0, 0.31, 0.26], [0.21, 0, 0.30, 0.22]]],
     [[1, [0.37, 0.36, 0.63, 0.99], [0.37, 0.36, 0.63, 0.99]], [0.3, [0.62, 0.36, 0.82, 0.99], [0.62, 0.36, 0.82, 0.99]], [0.2, [0, 0, 0.37, 0.55], [0, 0, 0.02, 0.1]]],
-    [[1, [0.26, 0.55, 0.80, 0.98], [0.26, 0.55, 0.80, 0.98]], [1, [0.30, 0.48, 1, 0.84], [0.40, 0.48, 1, 0.82]], [1, [0.32, 0.18, 0.46, 0.60], [0.32, 0.18, 0.45, 0.60]], [0.35, [0.45, 0, 1, 0.48], [0.50, 0, 1, 0.48]]],
-    [[1, [0.33, 0.46, 0.76, 0.67], [0.33, 0.46, 0.76, 0.67]], [0.2, [0.52, 0, 0.64, 0.14], [0.52, 0, 0.64, 0.14]]],
-    [[1, [0.07, 0.48, 0.70, 0.86], [0.40, 0.28, 0.86, 0.86]], [0.3, [0, 0, 0.35, 0.55], [0.25, 0, 0.60, 0.40]]],
-    [[1, [0.20, 0.42, 0.74, 0.82], [0, 0.30, 0.82, 0.95]], [0.4, [0.50, 0.35, 0.80, 0.70], [0.70, 0.12, 1, 0.95]]],
+    [[1, [0.30, 0.55, 0.85, 0.83], [0.30, 0.56, 0.85, 0.84]], [1, [0.05, 0, 0.56, 0.62], [0, 0.35, 0.76, 0.75]], [0.3, [0.30, 0, 1, 0.50], [0.30, 0, 1, 0.50]]],
+    [[1, [0.15, 0.20, 0.75, 0.68], [0.15, 0.20, 0.75, 0.68]], [0.4, [0.73, 0.48, 0.92, 0.75], [0.73, 0.48, 0.92, 0.75]], [0.2, [0.13, 0, 0.40, 0.20], [0.13, 0, 0.40, 0.20]]],
+    // shot 5 is three held stills with hard cuts, so its boxes cover the hands and the meat in all three
+    [[1, [0.13, 0.50, 0.77, 0.86], [0.13, 0.50, 0.77, 0.86]], [0.3, [0.30, 0, 0.88, 0.50], [0.30, 0, 0.88, 0.50]]],
+    [[1, [0.12, 0.42, 0.78, 0.74], [0.12, 0.42, 0.78, 0.74]], [0.6, [0.38, 0.15, 0.72, 0.75], [0.38, 0.15, 0.72, 0.75]], [1, [0.52, 0.50, 0.80, 0.80], [0.52, 0.50, 0.80, 0.80]]],
   ];
   // When each caption shows, as progress through its shot
-  const WIN = [[0, 0.7], [0.08, 0.92], [0.08, 0.92], [0.08, 0.92], [0.08, 0.92], [0.2, 1]];
+  // shot 4 (overnight): the caption shows only while the lid is shut (local 0.17-0.88), so it never covers the
+  // open chamber and the brisket at 10 pm or before dawn, whatever the screen
+  const WIN = [[0, 0.7], [0.08, 0.92], [0.08, 0.92], [0.17, 0.88], [0.08, 0.92], [0.2, 1]];
   let layout = '', placeKey = '';
   function insets() {
     const cs = getComputedStyle(safe);
@@ -195,7 +198,8 @@
   }
   function placeCaps(v) {
     const W = stage.clientWidth, H = stage.clientHeight;
-    const key = [layout, W, H, v.set, v.fit, Math.round(v.rect.w), Math.round(v.rect.h), stage.classList.contains('is-fulllog')].join(':');
+    // the pit card's height is in the key too: if it ever changes, the captions are placed again around it
+    const key = [layout, W, H, v.set, v.fit, Math.round(v.rect.w), Math.round(v.rect.h), stage.classList.contains('is-fulllog'), hud.offsetHeight].join(':');
     if (key === placeKey) return;
     placeKey = key;
     const ins = insets(), gut = layout === 'tall' ? 12 : Math.max(16, Math.min(56, W * 0.04));
@@ -205,6 +209,9 @@
     const fixed = box(hud), hw = hud.offsetWidth, hh = hud.offsetHeight;
     HUDS = [0, 1, 2, 3, 4, 5].map(s => {
       if (layout !== 'wide' && layout !== 'short') return null;
+      // short screens (phones on their side): during the rub the meat fills the lower band, so the card goes top left
+      // (over the shed) and the caption top right, and the brisket stays clear
+      if (layout === 'short' && s === 2) return { corner: 'tl', l: Math.round(gut + ins.l), t: Math.round(top + 4), low: false, score: 0 };
       const rects = subjects(v, s, 0, 1), tY = top + 4, bY = H - 16 - ins.b - hh;
       const opts = [['tr', W - gut - ins.r - hw, tY], ['tl', gut + ins.l, tY], ['br', W - gut - ins.r - hw, bY], ['bl', gut + ins.l, bY]];
       let best = null;
@@ -237,6 +244,7 @@
         if (!best || score < best.score) best = { x, y, score };
       }));
       if (!best) best = { x: xs[0], y: Math.max(top, bottom - ch), score: 99 };
+      if (layout === 'short' && s === 2) best = { x: Rr, y: top, score: 0 };
       cap.style.left = Math.round(best.x) + 'px';
       cap.style.top = Math.round(best.y) + 'px';
       // captions in the lower half rise with Safari's toolbar (the engine sets --film-hide on the stage)
@@ -247,19 +255,21 @@
   }
 
   /* ---------- Notes pinned to the meat ---------- */
-  // Anchor points tracked through each distinct frame of shots 3 and 6, with whether the point is clear of
-  // the hands on that frame (scratchpad bbq/phase1/track_notes2.py)
+  // Anchor points tracked through each distinct frame of shots 3 and 6 (phase B reshoot frames), with whether the
+  // point is clear of the hands on that frame (scratchpad realism/reshoot/bbq/track_pins.py)
   const TRACK = {
-    salt: [[0.39,0.52,1],[0.3899,0.5198,1],[0.3897,0.5195,1],[0.3895,0.5191,1],[0.3892,0.5183,1],[0.389,0.5177,1],[0.3887,0.5173,1],[0.3885,0.5167,1],[0.3885,0.516,1],[0.3884,0.5151,1],[0.3882,0.5142,1],[0.388,0.5135,1],[0.3878,0.5126,1],[0.3876,0.5116,1],[0.3874,0.5107,1],[0.3872,0.5097,1],[0.3869,0.5091,1],[0.3866,0.5082,1],[0.3865,0.5072,1],[0.3864,0.5062,1],[0.3863,0.5052,1],[0.3861,0.5044,1],[0.3858,0.5038,1],[0.3855,0.5032,1],[0.3853,0.5027,1],[0.385,0.502,1],[0.3848,0.5014,1],[0.3846,0.5009,1],[0.3844,0.5004,1],[0.3844,0.4996,1],[0.3845,0.4987,1],[0.3846,0.4982,1],[0.3848,0.498,1],[0.3848,0.4977,1]],
-    prime: [[0.64,0.845,1],[0.6399,0.8448,1],[0.6397,0.8445,1],[0.6395,0.8441,1],[0.6392,0.8433,1],[0.639,0.8427,1],[0.6387,0.8423,1],[0.6385,0.8417,1],[0.6385,0.841,1],[0.6384,0.8401,1],[0.6382,0.8392,1],[0.638,0.8385,1],[0.6378,0.8376,1],[0.6376,0.8366,1],[0.6374,0.8357,1],[0.6372,0.8347,1],[0.6369,0.8341,1],[0.6366,0.8332,1],[0.6365,0.8322,1],[0.6364,0.8312,1],[0.6363,0.8302,1],[0.6361,0.8294,1],[0.6358,0.8288,1],[0.6355,0.8282,1],[0.6353,0.8277,1],[0.635,0.827,1],[0.6348,0.8264,1],[0.6346,0.8259,1],[0.6344,0.8254,1],[0.6344,0.8246,1],[0.6345,0.8237,1],[0.6346,0.8232,1],[0.6348,0.823,1],[0.6348,0.8227,1]],
-    ring: [[0.4702,0.5703,1],[0.4703,0.5703,1],[0.4704,0.5704,1],[0.4704,0.5704,1],[0.4706,0.5704,1],[0.4707,0.5705,1],[0.4709,0.5706,1],[0.471,0.5706,1],[0.4712,0.5706,1],[0.4713,0.5706,1],[0.4715,0.5706,1],[0.4716,0.5707,1],[0.4718,0.5707,1],[0.472,0.5708,1],[0.4722,0.571,1],[0.4725,0.5711,1],[0.4727,0.5711,1],[0.473,0.5713,1],[0.4733,0.5715,1],[0.4735,0.5717,1],[0.4738,0.5717,1],[0.4741,0.5719,1],[0.4744,0.5722,1],[0.4747,0.5724,1],[0.475,0.5724,1],[0.4753,0.5725,1],[0.4756,0.5727,1],[0.4759,0.5727,1],[0.4762,0.5727,1],[0.4765,0.5728,1],[0.4768,0.573,1],[0.4771,0.5732,1],[0.4774,0.5732,1],[0.4777,0.5734,1],[0.478,0.5737,1],[0.4784,0.5739,1],[0.4787,0.574,1],[0.4789,0.5741,1],[0.4791,0.5742,1],[0.4793,0.5745,1]],
-    bark: [[0.5575,0.6419,1],[0.5584,0.6425,1],[0.5593,0.6432,1],[0.5602,0.6437,1],[0.562,0.6449,1],[0.5638,0.6461,1],[0.5655,0.6473,1],[0.5671,0.6483,1],[0.5688,0.6493,1],[0.5704,0.6504,1],[0.572,0.6515,1],[0.5737,0.6525,1],[0.5754,0.6535,1],[0.5772,0.6547,1],[0.579,0.6559,1],[0.5809,0.6572,1],[0.5829,0.6583,1],[0.585,0.6597,1],[0.5871,0.6611,1],[0.5893,0.6626,1],[0.5916,0.6639,1],[0.5941,0.6655,1],[0.5965,0.6673,1],[0.5991,0.6689,1],[0.6017,0.6704,1],[0.6045,0.6724,1],[0.6074,0.6745,1],[0.6103,0.6764,1],[0.6134,0.6783,1],[0.6166,0.6805,1],[0.62,0.683,1],[0.6235,0.6855,1],[0.6271,0.6877,1],[0.631,0.6905,1],[0.635,0.6935,1],[0.6392,0.6967,1],[0.6437,0.6997,1],[0.6459,0.7012,1],[0.6482,0.7029,1],[0.6505,0.7049,1]],
+    salt: [[0.53,0.635,1],[0.5299,0.635,1],[0.5299,0.635,1],[0.5299,0.635,1],[0.5299,0.635,1],[0.5299,0.635,1],[0.5299,0.6349,1],[0.5299,0.635,1],[0.5299,0.6349,1],[0.5299,0.6349,1],[0.5298,0.6349,1],[0.5298,0.6349,1],[0.5298,0.6349,1],[0.5299,0.6349,1],[0.5299,0.6349,1],[0.5299,0.6349,1],[0.5299,0.6349,1],[0.5299,0.6349,1],[0.5316,0.6241,1],[0.5316,0.6242,1],[0.5316,0.6242,1],[0.5315,0.6243,1],[0.5315,0.6244,1],[0.5315,0.6244,1],[0.5315,0.6244,1],[0.5315,0.6244,1],[0.5315,0.6244,1],[0.5315,0.6244,1],[0.5315,0.6244,1],[0.5315,0.6244,1],[0.5315,0.6244,1],[0.5315,0.6244,1],[0.5315,0.6244,1],[0.5315,0.6244,1],[0.5315,0.6244,0],[0.5315,0.6243,0],[0.5315,0.6241,0],[0.5314,0.625,0],[0.5314,0.6244,0],[0.5314,0.6245,0]],
+    cap: [[0.46,0.68,1],[0.4599,0.68,1],[0.4599,0.68,1],[0.4599,0.68,1],[0.4599,0.68,1],[0.4599,0.68,1],[0.4599,0.6799,1],[0.4599,0.68,1],[0.4599,0.6799,1],[0.4599,0.6799,1],[0.4598,0.6799,1],[0.4598,0.6799,1],[0.4598,0.6799,1],[0.4599,0.6799,1],[0.4599,0.6799,1],[0.4599,0.6799,1],[0.4599,0.6799,1],[0.4599,0.6799,1],[0.4616,0.6691,1],[0.4616,0.6692,1],[0.4616,0.6692,1],[0.4615,0.6693,1],[0.4615,0.6694,1],[0.4615,0.6694,1],[0.4615,0.6694,1],[0.4615,0.6694,1],[0.4615,0.6694,1],[0.4615,0.6694,1],[0.4615,0.6694,1],[0.4615,0.6694,1],[0.4615,0.6694,1],[0.4615,0.6694,1],[0.4615,0.6694,1],[0.4615,0.6694,1],[0.4615,0.6694,0],[0.4615,0.6693,0],[0.4615,0.6691,0],[0.4614,0.67,0],[0.4614,0.6694,0],[0.4614,0.6695,0]],
+    ring: [[0.665,0.6,1],[0.665,0.6001,1],[0.6649,0.6007,1],[0.665,0.5999,1],[0.6652,0.5979,1],[0.665,0.5993,1],[0.6649,0.5997,1],[0.6649,0.6006,1],[0.665,0.6,1],[0.665,0.5991,1],[0.6649,0.5993,1],[0.6649,0.5995,1],[0.6649,0.5999,1],[0.6649,0.5996,1],[0.665,0.5984,1],[0.665,0.5991,1],[0.6649,0.5997,1],[0.6649,0.6002,1],[0.6649,0.6001,1],[0.665,0.5986,1],[0.665,0.5992,1],[0.6649,0.5995,1],[0.6649,0.5999,1],[0.6649,0.5999,1],[0.6649,0.5999,1],[0.6649,0.5991,1],[0.6649,0.5995,1],[0.665,0.5998,1],[0.6651,0.5962,1],[0.665,0.5971,1],[0.665,0.5972,1],[0.665,0.5972,1],[0.665,0.5976,1],[0.665,0.598,1],[0.665,0.5972,1],[0.665,0.5966,1],[0.665,0.5975,1],[0.665,0.5978,1],[0.6649,0.598,1],[0.665,0.597,1]],
+    bark: [[0.41,0.56,1],[0.41,0.5601,1],[0.4099,0.5607,1],[0.41,0.5599,1],[0.4102,0.5579,1],[0.41,0.5593,1],[0.4099,0.5597,1],[0.4099,0.5606,1],[0.41,0.56,1],[0.41,0.5591,1],[0.4099,0.5593,1],[0.4099,0.5595,1],[0.4099,0.5599,1],[0.4099,0.5596,1],[0.41,0.5584,1],[0.41,0.5591,1],[0.4099,0.5597,1],[0.4099,0.5602,1],[0.4099,0.5601,1],[0.41,0.5586,1],[0.41,0.5592,1],[0.4099,0.5595,1],[0.4099,0.5599,1],[0.4099,0.5599,1],[0.4099,0.5599,1],[0.4099,0.5591,1],[0.4099,0.5595,1],[0.41,0.5598,1],[0.4101,0.5562,1],[0.41,0.5571,1],[0.41,0.5572,1],[0.41,0.5572,1],[0.41,0.5576,1],[0.41,0.558,1],[0.41,0.5572,1],[0.41,0.5566,1],[0.41,0.5575,1],[0.41,0.5578,1],[0.4099,0.558,1],[0.41,0.557,1]],
   };
   const NOTES = [
     { shot: 2, key: 'salt', win: [0.04, 0.98], at: 0.12, t: 'Salt and pepper, 1:1', d: 'Kosher salt and 16-mesh black pepper, half and half. Nothing else.', rot: -2 },
-    { shot: 2, key: 'prime', win: [0.08, 0.98], at: 0.40, t: 'Prime grade', d: 'Heavy marbling keeps it moist through a long cook.', rot: 1.5 },
-    { shot: 5, key: 'ring', win: [0.25, 1], at: 0.35, t: 'Smoke ring', d: 'The pink band under the bark, from a clean post oak fire.', rot: 1.5 },
-    { shot: 5, key: 'bark', win: [0.3, 1], at: 0.55, t: 'Bark', d: 'Pepper, salt, smoke and rendered fat. Nothing else.', rot: -2 },
+    { shot: 2, key: 'cap', win: [0.08, 0.98], at: 0.40, t: 'Trimmed, fat side up', d: 'About a quarter inch of fat cap stays on top and renders down overnight.', rot: 1.5 },
+    // the slices exist only after the cut at slot 29 of shot 6 (local 0.718); the pin sits on the far slices, so its
+    // card has room beside them instead of over the knife
+    { shot: 5, key: 'ring', win: [0.73, 1], at: 0.76, side: 'right', t: 'Smoke ring', d: 'The pink band under the bark, from a clean post oak fire.', rot: 1.5 },
+    { shot: 5, key: 'bark', win: [0.3, 1], at: 0.55, side: 'left', t: 'Bark', d: 'Pepper, salt, smoke and rendered fat. Nothing else.', rot: -2 },
   ];
   const notesEl = $('#filmSpots'), tapHint = $('.cap__tap');
   const noteEls = NOTES.map(n => {
@@ -276,7 +286,7 @@
     pin.addEventListener('click', () => {
       const opening = !el.classList.contains('is-open');
       // on a phone one card at a time: opening a pin closes the others, and the tapped card is placed first
-      if (opening && stage.clientWidth < 600) noteEls.forEach(o => { if (o !== st) o.forced = false; });
+      if (opening && (stage.clientWidth < 600 || layout === 'short')) noteEls.forEach(o => { if (o !== st) o.forced = false; });
       st.forced = opening; if (opening) lastTap = st;
     });
     return st;
@@ -285,7 +295,8 @@
   const inflate = (r, k) => ({ l: r.l - k, t: r.t - k, r: r.r + k, b: r.b + k });
   function notes(v) {
     if (!v || !v.rect) return;
-    const W = stage.clientWidth, H = stage.clientHeight, small = W < 600;
+    // phones, upright or on their side: a card opens only when its pin is tapped, so no card covers the meat
+    const W = stage.clientWidth, H = stage.clientHeight, small = W < 600 || layout === 'short';
     const { shot, local, len } = at(v.f);
     const hide = parseFloat(stage.style.getPropertyValue('--film-hide')) || 0;
     const obst = [{ l: 0, t: 0, r: W, b: bar.offsetHeight + 6 }, inflate(box(hud), 8)];
@@ -318,10 +329,14 @@
       if (vis) {
         s.el.style.transform = `translate3d(${X.toFixed(1)}px, ${Y.toFixed(1)}px, 0)`;
         const w = s.card.offsetWidth || 200, h = s.card.offsetHeight || 60, gap = small ? 26 : 48;
-        const tries = [[gap, -h - gap], [-gap - w, -h - gap], [-gap - w, -h / 2], [gap, -h / 2], [gap, gap], [-gap - w, gap], [-w / 2, -h - gap], [-w / 2, gap]];
+        let tries = [[gap, -h - gap], [-gap - w, -h - gap], [-gap - w, -h / 2], [gap, -h / 2], [gap, gap], [-gap - w, gap], [-w / 2, -h - gap], [-w / 2, gap]];
+        // a note with a side keeps its card on that side of its pin when it can, so on the slicing shot neither card
+        // covers the knife between the bark (card left) and the slices (card right)
+        const pref = n.side === 'right' ? [[gap, -h / 2], [gap, gap], [gap, -h - gap]] : n.side === 'left' ? [[-gap - w, -h - gap], [-gap - w, -h / 2], [-gap - w, gap]] : [];
+        if (pref.length) tries = pref.concat(tries.filter(t => !pref.some(q => q[0] === t[0] && q[1] === t[1])));
         const rect = ([dx, dy]) => ({ l: X + dx, t: Y + dy, r: X + dx + w, b: Y + dy + h });
         const inside = r => r.l >= 8 && r.r <= W - 8 && r.t >= 8 && r.b <= limB;
-        let pick = open ? (tries.find(t => clear(rect(t))) || tries.find(t => ok(rect(t)))) : null;
+        let pick = open ? (pref.length ? pref.find(t => ok(rect(t))) : null) || (tries.find(t => clear(rect(t))) || tries.find(t => ok(rect(t)))) : null;
         // a card someone tapped always opens: if nothing is free, take the first spot that fits on screen
         if (open && !pick && s.forced) pick = tries.find(t => inside(rect(t))) || [clamp(-w / 2, 8 - X, W - 8 - w - X), clamp(-h - gap, 8 - Y, limB - h - Y)];
         if (open && !pick) open = false;
