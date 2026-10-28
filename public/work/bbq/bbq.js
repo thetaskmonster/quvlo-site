@@ -52,7 +52,7 @@
     if (t < 230) return ['Taking smoke', false];
     if (t < 410) return ['Bark setting', false];
     if (t < 580) return ['The stall. Hold steady.', true];
-    if (t < 740) return ['Wrapped, pushing to 203°', false];
+    if (t < 740) return ['Wrapped. Off when probe-tender.', false];
     if (t < 855) return ['Off the pit, resting', false];
     return ['Rested. Slice.', false];
   }
@@ -521,10 +521,13 @@
   const est = $('#est'), guests = $('#guests'), gOut = $('#guestsOut');
   const totalEl = $('#estTotal'), linesEl = $('#estLines'), note = $('#estNote');
   const svcPit = $('#svcPit'), svcNote = $('#svcNote'), evDate = $('#evDate'), dateErr = $('#dateErr');
-  // Menu prices: meats by the pound (sausage: $6 links of about a quarter pound), sides by the quart
-  const MEAT = { brisket: ['Brisket', 32], ribs: ['Pork ribs', 24], sausage: ['Sausage', 24], turkey: ['Turkey', 26] };
-  const QUART = 9, PER_QUART = 8; // a quart of each side feeds about eight guests (a 4 oz scoop each)
+  // Menu prices: meats by the pound (sausage: $7 links of about a quarter pound), sides by the quart
+  const MEAT = { brisket: ['Brisket', 36], ribs: ['Pork ribs', 28], sausage: ['Sausage', 28], turkey: ['Turkey', 28] };
+  const QUART = 18, PER_QUART = 8; // a quart of each side feeds about eight guests (a 4 oz scoop each)
   const PIT_MIN = 75;
+  // Delivery: a flat fee on at least $500 of food. Pit on site: a base plus a per-guest rate.
+  const DELIVERY = 50, DELIVERY_MIN = 500, PIT_BASE = 650, PIT_PER = 4;
+  const PIT_INCL = 'with a pitmaster to slice, serving tables, chafing pans and two hours of service';
   const NOTE0 = note ? note.textContent : '';
   let shownTotal = 0, raf = 0, total = 0, held = false;
   const money = n => '$' + n.toLocaleString('en-US', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
@@ -541,7 +544,13 @@
     const sides = +($('input[name="sides"]:checked', est) || { value: 2 }).value, qt = Math.ceil(g / PER_QUART);
     lines.push([`${sides} sides, ${qt} qt each`, `${sides * qt} qt`, `$${QUART}/qt`, sides * qt * QUART]);
     const pit = !svcPit.disabled && svcPit.checked;
-    lines.push(pit ? ['Pit and pitmaster', '', `$450 + $2/guest`, 450 + 2 * g] : ['Drop-off, Fort Worth', '', '', 75]);
+    if (pit) lines.push(['Pit and pitmaster', '', `$${PIT_BASE} + $${PIT_PER}/guest`, PIT_BASE + PIT_PER * g]);
+    else {
+      // below the delivery minimum the food is brought up to it
+      const food = lines.reduce((s, l) => s + l[3], 0);
+      if (food < DELIVERY_MIN) lines.push(['Delivery minimum', '', `$${DELIVERY_MIN} food`, DELIVERY_MIN - food]);
+      lines.push(['Delivery, Fort Worth', '', '', DELIVERY]);
+    }
     return { g, lines, total: lines.reduce((s, l) => s + l[3], 0) };
   }
   // The date field's problem, if any, for this many guests
@@ -564,7 +573,7 @@
     const pitOk = g >= PIT_MIN;
     if (!pitOk && svcPit.checked) { svcPit.checked = false; $('input[name="svc"][value="drop"]', est).checked = true; }
     svcPit.disabled = !pitOk;
-    svcNote.textContent = pitOk ? `The pit comes out for ${PIT_MIN} guests or more.` : `The pit comes out for ${PIT_MIN} guests or more, so this order is drop-off.`;
+    svcNote.textContent = `Delivery minimum $${DELIVERY_MIN} before tax. ` + (pitOk ? `The pit comes out for ${PIT_MIN} guests or more, ${PIT_INCL}.` : `The pit comes out for ${PIT_MIN} guests or more, so this order is drop-off.`);
     evDate.min = iso(earliest(g)); evDate.max = iso(latest());
     // a change after a hold makes the held note stale: drop it, and re-check the date for the new order
     if (held) { held = false; note.textContent = 'The order changed, so nothing is held now. Hold the date again to keep it.'; }

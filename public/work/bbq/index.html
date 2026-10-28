@@ -46,7 +46,7 @@
   <!-- The film: scroll runs one cook. Fire at 9:00 pm, brisket on at 10:00 pm, sliced at 11:00 am. -->
   <section class="film" id="film" aria-label="Scroll story: one brisket smoked overnight on post oak, from the fire at dusk to slicing at eleven the next morning">
     <div class="film__stage" data-layout="wide">
-      <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage of a smoker at dusk, its firebox burning post oak at night, a brisket rubbed with salt and pepper, the brisket smoking overnight as its bark darkens, wrapped in pink butcher paper at sunrise, then sliced to show the smoke ring."></canvas>
+      <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage of a smoker at dusk, its firebox burning post oak at night, a brisket rubbed with salt and pepper, the brisket smoking overnight as its bark darkens, being wrapped in pink butcher paper at sunrise, then sliced to show the smoke ring."></canvas>
       <canvas id="fxCanvas" class="film__fx" aria-hidden="true"></canvas>
       <div class="film__safe" aria-hidden="true"></div>
       <div class="film__spots" id="filmSpots"></div>
@@ -79,11 +79,11 @@
         <ol class="log" id="log" aria-label="Cook log">
           <li data-t="20"><span>9:00p</span> Fire lit, post oak only</li>
           <li data-t="70"><span>9:50p</span> Pit holding 275°</li>
-          <li data-t="80"><span>10:00p</span> Brisket on, fat side up</li>
+          <li data-t="80"><span>10:00p</span> Brisket on, 38° from the cooler</li>
           <li data-t="350"><span>2:30a</span> 150°, bark setting</li>
           <li data-t="410"><span>3:30a</span> 160°, the stall starts</li>
           <li data-t="580"><span>6:20a</span> Wrapped in pink paper</li>
-          <li data-t="740"><span>9:00a</span> 203°, off the pit to rest</li>
+          <li data-t="740"><span>9:00a</span> Probe-tender at 203°. Off to rest.</li>
           <li data-t="860"><span>11:00a</span> Rested two hours. Slice.</li>
         </ol>
       </div>
@@ -97,7 +97,7 @@
         <div class="cap" data-shot="1">
           <p class="cap__k">9:00 to 9:45 pm</p>
           <h2 class="cap__h">We burn post oak and nothing else</h2>
-          <p class="cap__p">Seasoned a year, split the night of. A big, hot fire with plenty of air burns clean, and a clean fire sends thin blue smoke out of the stack.</p>
+          <p class="cap__p">Split and stacked to season for a year, so it burns clean. Once the startup smoke clears, a hot fire with plenty of air sends thin blue smoke out of the stack.</p>
         </div>
         <div class="cap" data-shot="2">
           <p class="cap__k">9:45 to 10:00 pm</p>
@@ -111,8 +111,8 @@
         </div>
         <div class="cap" data-shot="4">
           <p class="cap__k">6:20 am, sunrise</p>
-          <h2 class="cap__h">Wrapped in pink paper at first light</h2>
-          <p class="cap__p">Butcher paper breathes, so the bark stays crisp while the brisket pushes on to 203°.</p>
+          <h2 class="cap__h">Wrapping in pink paper at first light</h2>
+          <p class="cap__p">Butcher paper breathes, so the bark holds its crust instead of steaming soft like it would in foil. Off when a probe slides in like butter, around 203°.</p>
         </div>
         <div class="cap cap--end" data-shot="5">
           <p class="cap__k">11:00 am</p>
@@ -132,12 +132,12 @@
         <p class="lede lede--ink">Doors at eleven. When the board is empty, we close. Catering uses the same prices.</p>
       </div>
       <ul class="board">
-        <li><span class="board__n">Prime brisket</span><span class="board__d">Lean or moist, smoked overnight on post oak</span><span class="board__p">$32/lb</span></li>
-        <li><span class="board__n">Pork spare ribs</span><span class="board__d">St. Louis cut, light glaze, bite-through tender</span><span class="board__p">$24/lb</span></li>
-        <li><span class="board__n">Jalapeño cheddar link</span><span class="board__d">House-made, about a quarter pound, proper snap</span><span class="board__p">$6 ea</span></li>
-        <li><span class="board__n">Turkey breast</span><span class="board__d">Butter-basted, black pepper crust</span><span class="board__p">$26/lb</span></li>
-        <li><span class="board__n">Beef rib</span><span class="board__d">Saturdays only, about a pound and a half each</span><span class="board__p">$38/lb</span></li>
-        <li><span class="board__n">Sides</span><span class="board__d">Pintos, slaw, potato salad, mac. Pint or quart.</span><span class="board__p">$5 / $9</span></li>
+        <li><span class="board__n">Prime brisket</span><span class="board__d">Lean or moist, smoked overnight on post oak</span><span class="board__p">$36/lb</span></li>
+        <li><span class="board__n">Pork spare ribs</span><span class="board__d">St. Louis cut, light glaze, bite-through tender</span><span class="board__p">$28/lb</span></li>
+        <li><span class="board__n">Jalapeño cheddar link</span><span class="board__d">House-made, about a quarter pound, proper snap</span><span class="board__p">$7 ea</span></li>
+        <li><span class="board__n">Turkey breast</span><span class="board__d">Butter-basted, black pepper crust</span><span class="board__p">$28/lb</span></li>
+        <li><span class="board__n">Beef rib</span><span class="board__d">Saturdays only, about a pound and a half each</span><span class="board__p">$44/lb</span></li>
+        <li><span class="board__n">Sides</span><span class="board__d">Pintos, slaw, potato salad, mac. Cup, pint or quart.</span><span class="board__p">$5 / $10 / $18</span></li>
       </ul>
     </div>
   </section>
@@ -181,7 +181,7 @@
           <fieldset aria-describedby="svcNote"><legend class="est__l">Service</legend>
             <label><input type="radio" name="svc" value="drop" checked><span>Drop-off</span></label>
             <label><input type="radio" name="svc" value="pit" id="svcPit"><span>Pit on site, with a pitmaster</span></label>
-            <p class="est__hint" id="svcNote">The pit comes out for 75 guests or more.</p>
+            <p class="est__hint" id="svcNote">Delivery minimum $500 before tax. The pit comes out for 75 guests or more, with a pitmaster to slice, serving tables, chafing pans and two hours of service.</p>
           </fieldset>
           <div class="est__date">
             <label for="evDate" class="est__l">Event date</label>
@@ -199,6 +199,7 @@
           <tbody id="estLines"></tbody>
           <tfoot><tr><th scope="row" colspan="3">Total before tax</th><td class="num" id="estTotal">$0</td></tr></tfoot>
         </table>
+        <p class="ticket__note">Every order comes with white bread, pickles, onions and sauce, plates and cutlery. A 50% deposit, taken when we call to confirm, locks in the date.</p>
         <button class="btn btn--full" id="estHold" type="button">Hold this date</button>
         <p class="ticket__note" id="estNote" role="status">Sample prices for a concept site. A real build uses the restaurant's own menu.</p>
         <h3 class="ticket__h">After you hold a date</h3>
