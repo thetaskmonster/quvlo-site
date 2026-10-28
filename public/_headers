@@ -4,7 +4,102 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), camera=(), microphone=(), usb=(), payment=()
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data:; media-src 'self' blob:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data:; media-src 'self' blob:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io; upgrade-insecure-requests
 
-/hero/*
+/model/*
+  Cache-Control: public, max-age=86400
+
+/fonts/*
   Cache-Control: public, max-age=31536000, immutable
+
+/work/basalt/*
+  X-Robots-Tag: noindex
+
+/work/lacquer-room/*
+  X-Robots-Tag: noindex
+
+/work/inlay/*
+  X-Robots-Tag: noindex
+
+/work/ballast/*
+  X-Robots-Tag: noindex
+
+/work/longhand/*
+  X-Robots-Tag: noindex
+
+/work/neap/*
+  X-Robots-Tag: noindex
+
+/work/hvac/*
+  X-Robots-Tag: noindex
+
+/work/hvac/f/*
+  Cache-Control: public, max-age=604800
+
+/work/hvac/fg/*
+  Cache-Control: public, max-age=604800
+
+/work/cleaning/*
+  X-Robots-Tag: noindex
+
+/work/cleaning/f/*
+  Cache-Control: public, max-age=604800
+
+/work/wrap/*
+  X-Robots-Tag: noindex
+
+/work/wrap/f/*
+  Cache-Control: public, max-age=604800
+
+/work/bbq/*
+  X-Robots-Tag: noindex
+
+/work/bbq/f/*
+  Cache-Control: public, max-age=604800
+
+/work/builder/*
+  X-Robots-Tag: noindex
+
+/work/builder/f/*
+  Cache-Control: public, max-age=604800
+
+/work/landscape/*
+  X-Robots-Tag: noindex
+
+/work/landscape/f/*
+  Cache-Control: public, max-age=604800
+
+/work/rental/*
+  X-Robots-Tag: noindex
+
+/work/rental/f/*
+  Cache-Control: public, max-age=604800
+
+/work/rental/show/*
+  Cache-Control: public, max-age=604800
+
+# Homepage scripts and styles, and the studio pieces' images (added 2026-10-27). The file names don't
+# change when the files do, so the cache is kept short enough for an update to show within the day.
+/assets/*
+  Cache-Control: public, max-age=3600
+
+/apple-touch-icon.png
+  Cache-Control: public, max-age=86400
+
+/work/basalt/img/*
+  Cache-Control: public, max-age=86400
+
+/work/inlay/img/*
+  Cache-Control: public, max-age=86400
+
+/work/ballast/img/*
+  Cache-Control: public, max-age=86400
+
+/work/longhand/img/*
+  Cache-Control: public, max-age=86400
+
+/work/neap/img/*
+  Cache-Control: public, max-age=86400
+
+/work/lacquer-room/img/*
+  Cache-Control: public, max-age=86400

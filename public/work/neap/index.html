@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="canonical" href="https://quvlo.co/work/neap/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>Neap, talk therapy in Dallas and by video (Concept)</title>
+<meta name="description" content="A concept site by Quvlo for a made-up Dallas therapy practice: answer three quiet questions, see the kind of therapist who tends to fit, and request a first session privately.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Quvlo">
+<meta property="og:title" content="Neap, a concept site by Quvlo">
+<meta property="og:description" content="A made-up therapy practice, designed and built by Quvlo to show what's possible.">
+<meta property="og:url" content="https://quvlo.co/work/neap/">
+<meta property="og:image" content="https://quvlo.co/work/neap/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A wide beach at low tide under an overcast sky. Neap, a concept site by Quvlo.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="noindex">
+<style>
+@font-face{font-family:'Gambarino';src:url(fonts/gambarino-400-normal.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Switzer';src:url(fonts/switzer-300-normal.woff2) format('woff2');font-weight:300;font-display:swap}
+@font-face{font-family:'Switzer';src:url(fonts/switzer-400-normal.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Switzer';src:url(fonts/switzer-500-normal.woff2) format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'Switzer';src:url(fonts/switzer-600-normal.woff2) format('woff2');font-weight:600;font-display:swap}
+
+:root{
+  --deep:#1b2624;     /* deep sea grey-green, the page ground */
+  --deep-2:#223030;   /* raised surfaces on deep */
+  --deep-3:#131b1a;   /* footer, the bottom of the water */
+  --swell:#3c4e49;    /* mid water */
+  --sea:#5d6e69;      /* headland in the mist */
+  --mist:#a9b6b1;     /* quiet text on deep */
+  --fog:#e2e6e1;      /* fog, light ground and text on deep */
+  --fog-2:#d3dad4;    /* thicker fog */
+  --ink:#17201e;      /* text on fog */
+  --ink-2:#4a5853;    /* secondary text on fog */
+  --sand:#c6b894;     /* wet sand: the tide mark, focus, small accents only */
+  --display:'Gambarino',Georgia,serif;
+  --text:'Switzer',system-ui,sans-serif;
+  --gut:clamp(20px,4.6vw,72px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--deep);color:var(--fog);font-family:var(--text);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+img{display:block;max-width:100%}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--sand);outline-offset:3px}
+[hidden]{display:none!important}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:12px;top:-60px;z-index:30;background:var(--fog);color:var(--ink);padding:10px 16px;border-radius:999px;font-size:15px;text-decoration:none}
+.skip:focus{top:12px}
+.wrap{width:min(1320px,100% - var(--gut)*2);margin-inline:auto}
+h2{font-family:var(--display);font-weight:400;font-size:clamp(40px,5.4vw,84px);line-height:1;letter-spacing:-.01em}
+.kicker{font-size:14px;font-weight:500;letter-spacing:.02em;color:var(--mist);margin-bottom:18px}
+.lede{margin-top:22px;max-width:36em;font-size:clamp(16.5px,1.25vw,19px);color:var(--mist)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 26px;border-radius:999px;border:0;font-family:var(--text);font-weight:500;font-size:16px;text-decoration:none;transition:background-color .25s,color .25s,border-color .25s}
+.btn-fog{background:var(--fog);color:var(--ink)}
+.btn-fog:hover{background:#f2f4f1}
+.btn-line{border:1px solid rgba(226,230,225,.42);color:var(--fog);background:transparent}
+.btn-line:hover{border-color:var(--fog)}
+.btn-deep{background:var(--deep);color:var(--fog)}
+.btn-deep:hover{background:var(--swell)}
+
+/* ---------- nav ---------- */
+.nav{position:absolute;inset:0 0 auto;z-index:5}
+.nav .wrap{display:flex;align-items:center;gap:34px;height:92px}
+.mark{font-family:var(--display);font-size:32px;line-height:1;text-decoration:none;letter-spacing:.005em}
+.nav nav{margin-left:auto;display:flex;align-items:center;gap:30px;font-size:15.5px}
+.nav nav a.l{text-decoration:none;color:rgba(226,230,225,.8);transition:color .2s}
+.nav nav a.l:hover{color:var(--fog)}
+.nav .btn{min-height:44px;padding:0 20px;font-size:15px}
+
+/* ---------- hero ---------- */
+.hero{position:relative;height:calc(100svh - 44px);min-height:560px;overflow:hidden;background:var(--deep)}
+.hero picture,.hero img{position:absolute;inset:0;width:100%;height:100%}
+.hero img{object-fit:cover;object-position:50% 50%;transform:scale(1.045);animation:settle 3.4s cubic-bezier(.22,.61,.2,1) .1s forwards}
+@keyframes settle{to{transform:scale(1)}}
+.hero .shade{position:absolute;inset:0;background:
+  linear-gradient(180deg,rgba(27,38,36,.5) 0%,rgba(27,38,36,0) 20%,rgba(27,38,36,0) 46%,rgba(27,38,36,.72) 74%,rgba(27,38,36,.96) 100%),
+  linear-gradient(90deg,rgba(27,38,36,.42) 0%,rgba(27,38,36,0) 55%)}
+.hero .copy{position:absolute;left:0;right:0;bottom:clamp(44px,9vh,104px);display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:40px}
+.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(54px,8.2vw,138px);line-height:.94;letter-spacing:-.015em}
+.hero h1 span{display:block}
+.hero .lede{color:rgba(226,230,225,.84);max-width:31em;margin-top:26px}
+.hero .acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.def{max-width:250px;padding-bottom:6px;font-size:14px;line-height:1.5;color:rgba(226,230,225,.78)}
+.def b{display:block;font-family:var(--display);font-weight:400;font-size:26px;color:var(--fog);line-height:1.1;margin-bottom:6px}
+.def i{font-style:normal;color:var(--mist)}
+.def svg{display:block;width:100%;height:auto;margin-bottom:14px;overflow:visible}
+.def svg text{font-family:var(--text);font-size:10.5px;letter-spacing:.03em}
+
+/* ---------- the name ---------- */
+.name{background:var(--fog);color:var(--ink);padding:clamp(88px,12vw,180px) 0}
+.name .grid{display:grid;grid-template-columns:7fr 5fr;gap:clamp(40px,7vw,120px);align-items:center}
+.name blockquote{font-family:var(--display);font-size:clamp(34px,4.3vw,66px);line-height:1.08;letter-spacing:-.01em;max-width:15em}
+.name p.body{margin-top:34px;max-width:34em;font-size:clamp(16.5px,1.2vw,18.5px);color:var(--ink-2)}
+.name p.body+p.body{margin-top:16px}
+.name figure img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:6px}
+.name figcaption{margin-top:14px;font-size:14px;color:var(--ink-2)}
+
+/* ---------- matching: the signature ---------- */
+.match{padding:clamp(88px,11vw,170px) 0 clamp(88px,11vw,160px);background:var(--deep)}
+.match-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);grid-template-areas:"gauge head" "gauge body";column-gap:clamp(40px,6vw,110px);align-items:start}
+.m-head{grid-area:head}
+.m-body{grid-area:body}
+.gauge{grid-area:gauge;position:sticky;top:max(5vh,28px);height:min(86vh,780px);min-height:520px;border-radius:10px;overflow:hidden;background:#9eaaa6;isolation:isolate}
+.gauge svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.5;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E")}
+.staff{position:absolute;right:76px;top:0;bottom:0;width:0;pointer-events:none}
+.staff span{position:absolute;right:12px;top:var(--y);transform:translateY(-50%);white-space:nowrap;font-size:12.5px;font-weight:500;letter-spacing:.02em;padding:4px 10px;border-radius:999px;color:rgba(226,230,225,.42);transition:color .6s,background-color .6s}
+.staff span.past{color:rgba(23,32,30,.5)}
+.staff span.on{color:var(--fog);background:rgba(19,27,26,.72)}
+.start-mark{position:absolute;left:20px;top:30%;transform:translateY(-135%);font-size:12px;font-weight:500;letter-spacing:.02em;color:rgba(23,32,30,.6);opacity:0;transition:opacity .8s}
+.started .start-mark{opacity:1}
+.gauge.calm .staff,.gauge.calm .start-mark{display:none}
+.state{position:absolute;left:24px;bottom:22px;right:24px;display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 14px}
+.state .k{width:100%;font-size:13px;color:var(--mist)}
+.state b{font-family:var(--display);font-weight:400;font-size:clamp(40px,4vw,60px);line-height:1;color:var(--fog)}
+.state .c{font-size:14px;color:var(--mist)}
+
+.m-head h2{max-width:9em}
+.m-head .note{margin-top:16px;font-size:14.5px;color:var(--mist);display:flex;align-items:center;gap:10px}
+.m-head .note::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sand);flex:none}
+.qs{margin-top:clamp(40px,5vw,64px);display:grid;gap:clamp(34px,4vw,52px)}
+.q{border:0;min-width:0}
+.q legend{display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:clamp(26px,2.3vw,34px);line-height:1.15;padding:0;margin-bottom:6px}
+.q legend .n{font-family:var(--text);font-size:13.5px;font-weight:500;color:var(--mist);min-width:46px;letter-spacing:.02em;transform:translateY(-.25em)}
+.q .hint{font-size:15px;color:var(--mist);margin:0 0 16px 60px}
+.opts{display:flex;flex-wrap:wrap;gap:10px;margin-left:60px}
+.opts label{position:relative;cursor:pointer}
+.opts input{position:absolute;opacity:0;width:1px;height:1px}
+.opts span{display:inline-flex;align-items:center;gap:10px;min-height:46px;padding:10px 18px;border-radius:999px;background:var(--deep-2);border:1px solid rgba(226,230,225,.12);font-size:15.5px;line-height:1.3;color:rgba(226,230,225,.9);transition:background-color .3s,border-color .3s,color .3s}
+.opts span::before{content:"";width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(226,230,225,.45);flex:none;transition:background-color .3s,border-color .3s}
+.opts label:hover span{border-color:rgba(226,230,225,.4)}
+.opts input:checked+span{background:var(--fog);color:var(--ink);border-color:var(--fog)}
+.opts input:checked+span::before{background:var(--deep);border-color:var(--deep)}
+.opts input:focus-visible+span{outline:2px solid var(--sand);outline-offset:3px}
+
+.result{margin-top:clamp(44px,5vw,64px);background:var(--fog);color:var(--ink);border-radius:10px;padding:clamp(26px,3vw,44px)}
+.result:focus{outline:none}
+.result .top{display:flex;align-items:center;gap:18px}
+.mono{width:64px;height:64px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--swell);color:var(--fog);font-family:var(--display);font-size:30px;line-height:1}
+.result .k{font-size:13.5px;font-weight:500;color:var(--ink-2)}
+.result h3{font-family:var(--display);font-weight:400;font-size:clamp(30px,2.8vw,42px);line-height:1.05}
+.result .role{font-size:15px;color:var(--ink-2)}
+.result .how{margin-top:22px;font-size:clamp(17px,1.3vw,19.5px);line-height:1.55;max-width:34em}
+.facts{margin-top:22px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.facts div{background:var(--fog-2);border-radius:8px;padding:14px 16px}
+.facts dt{font-size:12.5px;font-weight:500;color:var(--ink-2);letter-spacing:.02em}
+.facts dd{margin-top:4px;font-size:15px;line-height:1.4}
+.result .fine{margin-top:20px;font-size:14.5px;color:var(--ink-2);max-width:40em}
+.result .acts{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin-top:24px}
+.textbtn{background:none;border:0;font-size:15px;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;color:var(--ink-2);padding:8px 2px}
+.textbtn:hover{color:var(--ink)}
+.sample{display:inline-block;margin-left:8px;padding:3px 9px;border-radius:999px;background:var(--fog-2);font-family:var(--text);font-size:12px;font-weight:500;color:var(--ink-2);vertical-align:middle;letter-spacing:.01em}
+
+/* ---------- first session ---------- */
+.first{background:var(--fog);color:var(--ink);padding:clamp(88px,12vw,170px) 0}
+.first .grid{display:grid;grid-template-columns:5fr 6fr;gap:clamp(40px,7vw,120px);align-items:start}
+.first figure{position:sticky;top:40px}
+.first figure img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:6px}
+.first figcaption{margin-top:14px;font-size:14px;color:var(--ink-2)}
+.first .lede,.privacy .lede{color:var(--ink-2)}
+.steps{list-style:none;margin-top:clamp(40px,5vw,64px);display:grid;gap:clamp(34px,4vw,50px)}
+.steps li{display:grid;grid-template-columns:76px 1fr;gap:6px 22px}
+.steps svg{grid-row:1/3;width:76px;height:30px;margin-top:6px;overflow:visible}
+.steps svg path{fill:none;stroke:var(--swell);stroke-width:1.6;stroke-linecap:round}
+.steps h3{font-family:var(--display);font-weight:400;font-size:clamp(26px,2.2vw,32px);line-height:1.1}
+.steps p{color:var(--ink-2);max-width:34em}
+
+/* ---------- privacy ---------- */
+.privacy{background:var(--fog-2);color:var(--ink);padding:clamp(88px,12vw,170px) 0}
+.privacy h2{max-width:11em}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2vw,28px);margin-top:clamp(44px,5vw,70px)}
+.col{border-radius:10px;padding:clamp(26px,3vw,40px)}
+.col.ask{background:var(--fog)}
+.col.not{background:transparent;box-shadow:inset 0 0 0 1px rgba(23,32,30,.16)}
+.col h3{font-family:var(--display);font-weight:400;font-size:clamp(26px,2.2vw,32px);line-height:1.1}
+.col ul{list-style:none;margin-top:22px;display:grid;gap:14px}
+.col li{display:grid;grid-template-columns:20px 1fr;gap:12px;font-size:16.5px;line-height:1.5}
+.col li::before{content:"";width:9px;height:9px;border-radius:50%;margin-top:.55em;background:var(--swell)}
+.col.not li::before{background:transparent;box-shadow:inset 0 0 0 1.5px var(--sea)}
+.col.not li{color:var(--ink-2)}
+.col .after{margin-top:22px;font-size:15px;color:var(--ink-2)}
+.demo{margin-top:clamp(16px,2vw,28px);display:flex;gap:18px;align-items:flex-start;background:var(--deep);color:var(--fog);border-radius:10px;padding:clamp(22px,2.6vw,32px) clamp(26px,3vw,40px)}
+.demo svg{flex:none;width:26px;height:26px;margin-top:2px}
+.demo b{font-weight:500}
+.demo p{max-width:60em;color:rgba(226,230,225,.86)}
+
+/* ---------- request ---------- */
+.request{padding:clamp(88px,12vw,170px) 0;background:var(--deep)}
+.request .grid{display:grid;grid-template-columns:5fr 6fr;gap:clamp(40px,7vw,120px);align-items:start}
+.crisis{margin-top:34px;display:flex;gap:14px;align-items:flex-start;padding:18px 20px;border-radius:10px;background:var(--deep-2);font-size:15.5px;color:var(--fog);max-width:30em}
+.crisis svg{flex:none;width:20px;height:20px;margin-top:3px}
+.crisis a{font-weight:600;text-underline-offset:3px}
+form#req{display:grid;grid-template-columns:1fr 1fr;gap:24px 18px}
+.full{grid-column:1/-1}
+.fl{display:block;font-size:14.5px;color:var(--mist);margin-bottom:8px}
+.fl small{font-size:13.5px;opacity:.85}
+input[type=text],input[type=email],select{width:100%;height:56px;padding:0 18px;background:var(--deep-2);border:1px solid rgba(226,230,225,.16);border-radius:10px;color:var(--fog);font:inherit;font-size:16px;transition:border-color .2s}
+input[type=text]:focus,input[type=email]:focus,select:focus{outline:none;border-color:var(--sand)}
+input[aria-invalid=true]{border-color:#d9a99a}
+select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--mist) 50%),linear-gradient(135deg,var(--mist) 50%,transparent 50%);background-position:calc(100% - 24px) 25px,calc(100% - 18px) 25px;background-size:6px 6px;background-repeat:no-repeat}
+select option{background:var(--deep)}
+.err{font-size:14px;color:#e6c1b6;margin-top:8px}
+.err:empty{display:none}
+fieldset.plain{border:0;min-width:0}
+fieldset.plain legend{padding:0}
+.form-opts{margin-left:0}
+.consent{display:grid;grid-template-columns:24px 1fr;gap:12px;align-items:start;font-size:15px;color:var(--mist);cursor:pointer}
+.consent input{appearance:none;-webkit-appearance:none;width:22px;height:22px;margin:1px 0 0;border-radius:6px;border:1.5px solid rgba(226,230,225,.45);background:var(--deep-2);display:grid;place-items:center;cursor:pointer;transition:background-color .2s,border-color .2s}
+.consent input:checked{background:var(--fog);border-color:var(--fog)}
+.consent input:checked::after{content:"";width:6px;height:11px;border:solid var(--deep);border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg)}
+.consent input:focus-visible{outline:2px solid var(--sand);outline-offset:3px}
+.consent input[aria-invalid=true]{border-color:#d9a99a}
+.carry{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 18px;border-radius:10px;background:var(--deep-2);font-size:15.5px}
+.carry b{font-family:var(--display);font-weight:400;font-size:21px}
+.carry .textbtn{color:var(--mist);margin-left:auto;font-size:14px}
+.form-foot{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px}
+.form-foot small{font-size:14px;color:var(--mist);max-width:28em}
+.ok{background:var(--fog);color:var(--ink);border-radius:10px;padding:clamp(28px,3vw,44px)}
+.ok:focus{outline:none}
+.ok h3{font-family:var(--display);font-weight:400;font-size:clamp(30px,2.8vw,42px);line-height:1.08}
+.ok p{margin-top:16px;color:var(--ink-2);max-width:34em}
+
+footer{background:var(--deep-3);padding:56px 0 100px;font-size:14.5px;color:var(--mist)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:14px 40px;align-items:baseline}
+footer .mark{color:var(--fog);font-size:30px}
+footer .r{margin-left:auto}
+footer a{text-underline-offset:3px}
+.cbar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:0 20px;background:#101716;color:rgba(226,230,225,.9);font-size:13px;line-height:1.3}
+.cbar a{display:inline-flex;align-items:center;min-height:44px;white-space:nowrap;color:inherit;text-underline-offset:4px}
+/* 44 px tap targets for the header links, logo and hero text links */
+a.mark,.nav nav a.l{display:inline-flex;align-items:center;min-height:44px}
+header.nav{top:44px}
+
+/* ---------- phone ---------- */
+@media (max-width:860px){
+  .nav nav a.l{display:none}
+  .nav .wrap{height:76px}
+  .mark{font-size:28px}
+  .nav .btn{min-height:44px;padding:0 16px;font-size:14px}
+  .hero{height:calc(100svh - 44px);min-height:520px}
+  .hero img{object-position:50% 50%}
+  .hero .shade{background:linear-gradient(180deg,rgba(27,38,36,.55) 0%,rgba(27,38,36,0) 18%,rgba(27,38,36,0) 34%,rgba(27,38,36,.8) 58%,rgba(27,38,36,.97) 100%)}
+  .hero .copy{grid-template-columns:1fr;bottom:30px;gap:0}
+  .hero h1{font-size:clamp(40px,11.4vw,54px);line-height:.98}
+  .hero .lede{margin-top:18px;font-size:16px}
+  .hero .acts{margin-top:24px}
+  .hero .acts .btn{flex:1 1 auto}
+  .def{display:none}
+  .name .grid,.first .grid,.request .grid{grid-template-columns:1fr}
+  .first figure{position:relative;top:0}
+  .match{padding-top:80px}
+  .match-grid{grid-template-columns:1fr;grid-template-areas:"head" "gauge" "body"}
+  .gauge{top:0;height:184px;min-height:0;margin:34px calc(var(--gut)*-1) 0;border-radius:0;z-index:3;box-shadow:0 14px 30px rgba(10,16,15,.35)}
+  .staff span{display:none}
+  .start-mark{left:auto;right:62px}
+  .state{left:var(--gut);right:var(--gut);bottom:14px}
+  .state .k{display:none}
+  .state b{font-size:36px}
+  .qs{margin-top:40px}
+  .q legend{gap:10px}
+  .q legend .n{min-width:0}
+  .q .hint,.opts{margin-left:0}
+  .facts{grid-template-columns:1fr}
+  .steps li{grid-template-columns:1fr}
+  .steps svg{grid-row:auto;width:64px;margin:0 0 6px}
+  .cols{grid-template-columns:1fr}
+  form#req{grid-template-columns:1fr}
+  footer .r{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero img{animation:none;transform:none}
+  *,*::before,*::after{transition:none!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#match">Skip to the three questions</a>
+<div class="cbar"><span>Concept site by Quvlo. Neap and its therapists are made up.</span><a href="/work/">Studio Work</a></div>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="mark" href="#top">Neap</a>
+    <nav aria-label="Main">
+      <a class="l" href="#match">Find a fit</a>
+      <a class="l" href="#first">First session</a>
+      <a class="l" href="#privacy">Privacy</a>
+      <a class="btn btn-fog" href="#request">Request a first session</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" aria-label="Introduction">
+    <picture>
+      <source media="(max-width:860px)" srcset="img/hero-phone.jpg">
+      <img src="img/hero.jpg" alt="A wide beach at low tide under an overcast sky. A thin sheet of still water on the sand mirrors the fog, and a misty headland sits on the horizon." fetchpriority="high">
+    </picture>
+    <div class="shade"></div>
+    <div class="wrap copy">
+      <div>
+        <h1><span>Room for things</span><span>to settle.</span></h1>
+        <p class="lede">Neap is a small practice for talk therapy in Dallas, in person or by video. Answer three quiet questions and we'll suggest a therapist whose way of working fits yours.</p>
+        <div class="acts"><a class="btn btn-fog" href="#match">Find a fit</a><a class="btn btn-line" href="#request">Request a first session</a></div>
+      </div>
+      <p class="def"><svg viewBox="0 0 250 64" aria-hidden="true"><path d="M0 32 C15.6 4 31.2 4 46.9 32 S78.1 60 93.8 32 S125 4 140.6 32 S171.9 60 187.5 32 S218.8 4 250 32" fill="none" stroke="#e2e6e1" stroke-opacity=".32" stroke-width="1.2" stroke-dasharray="2 4"/><path d="M0 32 C15.6 25 31.2 25 46.9 32 S78.1 39 93.8 32 S125 25 140.6 32 S171.9 39 187.5 32 S218.8 25 250 32" fill="none" stroke="#e2e6e1" stroke-width="1.6"/><text x="0" y="6" fill="#a9b6b1">spring tide</text><text x="0" y="62" fill="#e2e6e1">neap tide</text></svg><b>neap</b><i>noun.</i> The gentlest tide of the month, when the sea barely rises or falls.</p>
+    </div>
+  </section>
+
+  <section class="name" aria-labelledby="name-h">
+    <div class="wrap grid">
+      <div>
+        <h2 class="vh" id="name-h">Why Neap</h2>
+        <blockquote>Twice a month the sun and moon pull at right angles, and the sea hardly moves. That's the pace we keep.</blockquote>
+        <p class="body">Therapy at Neap is unhurried and steady. The same therapist, the same hour each week, fifty minutes at a time. You don't need to arrive with the right words, or know exactly what's wrong. Most people don't.</p>
+        <p class="body">We start by listening, and we let the work go at the speed you can actually live with.</p>
+      </div>
+      <figure>
+        <img src="img/mug.jpg" alt="Two hands in a gray-green knit sweater hold a stoneware mug of tea on a windowsill, rain on the glass and misty pines outside." loading="lazy">
+        <figcaption>No need to arrive with the right words.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="match" id="match" aria-labelledby="match-h">
+    <div class="wrap match-grid">
+      <div class="m-head">
+        <p class="kicker">Find a fit</p>
+        <h2 id="match-h">Three quiet questions.</h2>
+        <p class="lede">Answer as loosely as you like. With each answer the water settles a little, because that's roughly how a first conversation feels. At the end we'll suggest the kind of therapist who tends to fit.</p>
+        <p class="note">Nothing you choose here is saved or sent.</p>
+      </div>
+
+      <div class="gauge" id="gauge" aria-hidden="true">
+        <svg id="sea" focusable="false"></svg>
+        <div class="grain"></div>
+        <span class="start-mark">Where the water started</span>
+        <div class="staff" id="staff">
+          <span style="--y:30%" class="on">Choppy</span>
+          <span style="--y:44%">Rippling</span>
+          <span style="--y:57%">Settling</span>
+          <span style="--y:69%">Still</span>
+        </div>
+        <div class="state"><span class="k">The water now</span><b id="stateWord">Choppy</b><span class="c" id="stateCount">0 of 3 answered</span></div>
+      </div>
+
+      <div class="m-body">
+        <p class="vh" id="live" aria-live="polite"></p>
+        <form class="qs" id="qs" novalidate>
+          <fieldset class="q">
+            <legend><span class="n">1 of 3</span>What brings you here?</legend>
+            <p class="hint">The closest is fine. You can say more in your own time.</p>
+            <div class="opts">
+              <label><input type="radio" name="bring" value="worry"><span>Worry that won't switch off</span></label>
+              <label><input type="radio" name="bring" value="grief"><span>Grief or a loss</span></label>
+              <label><input type="radio" name="bring" value="rel"><span>Something in a relationship</span></label>
+              <label><input type="radio" name="bring" value="work"><span>Work, burnout, or both</span></label>
+              <label><input type="radio" name="bring" value="change"><span>A change I'm in the middle of</span></label>
+              <label><input type="radio" name="bring" value="unsure"><span>I'm not sure yet</span></label>
+            </div>
+          </fieldset>
+          <fieldset class="q">
+            <legend><span class="n">2 of 3</span>How do you like to talk?</legend>
+            <p class="hint">Think of the people you find easiest to open up to.</p>
+            <div class="opts">
+              <label><input type="radio" name="talk" value="listen"><span>Let me talk, help me find the thread</span></label>
+              <label><input type="radio" name="talk" value="practical"><span>Give me something practical to try</span></label>
+              <label><input type="radio" name="talk" value="direct"><span>Be direct with me</span></label>
+              <label><input type="radio" name="talk" value="gentle"><span>Go gently, I need time to warm up</span></label>
+            </div>
+          </fieldset>
+          <fieldset class="q">
+            <legend><span class="n">3 of 3</span>When can you meet?</legend>
+            <p class="hint">Pick the one you could keep most weeks.</p>
+            <div class="opts">
+              <label><input type="radio" name="when" value="morning"><span>Weekday mornings</span></label>
+              <label><input type="radio" name="when" value="afternoon"><span>Weekday afternoons</span></label>
+              <label><input type="radio" name="when" value="evening"><span>Weekday evenings</span></label>
+              <label><input type="radio" name="when" value="saturday"><span>Saturday mornings</span></label>
+            </div>
+          </fieldset>
+        </form>
+
+        <div class="result" id="result" tabindex="-1" hidden aria-labelledby="r-name">
+          <div class="top">
+            <span class="mono" id="r-mono" aria-hidden="true">I</span>
+            <div>
+              <p class="k">A therapist like</p>
+              <h3 id="r-name">Iris</h3>
+              <p class="role"><span id="r-role">Licensed therapist</span><span class="sample">Sample profile</span></p>
+            </div>
+          </div>
+          <p class="how" id="r-how"></p>
+          <dl class="facts">
+            <div><dt>Often works with</dt><dd id="r-focus"></dd></div>
+            <div><dt>Keeps hours</dt><dd id="r-hours"></dd></div>
+            <div><dt>Sessions</dt><dd>Fifty minutes, in person in Dallas or by video</dd></div>
+          </dl>
+          <p class="fine">A suggestion, not a verdict. If it doesn't feel right after a session or two, say so and we'll suggest someone else. No explanation needed. The therapists on this page are made up for this demo.</p>
+          <div class="acts">
+            <button class="btn btn-deep" type="button" id="carryBtn">Take this to a private request</button>
+            <button class="textbtn" type="button" id="resetBtn">Start over</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="first" id="first" aria-labelledby="first-h">
+    <div class="wrap grid">
+      <figure>
+        <img src="img/room.jpg" alt="A quiet therapy room in gray daylight: two gray-green armchairs angled toward each other, a small wooden table with tissues and a glass of water, a plant and a sheer curtain at the window." loading="lazy">
+        <figcaption>Two chairs, a window, and nowhere you need to be for fifty minutes.</figcaption>
+      </figure>
+      <div>
+        <p class="kicker" style="color:var(--ink-2)">First session</p>
+        <h2 id="first-h">What happens after you ask.</h2>
+        <p class="lede">No phone tag, no long forms, and no pressure to commit before you've met anyone.</p>
+        <ol class="steps">
+          <li>
+            <svg viewBox="0 0 76 30" aria-hidden="true"><path d="M2 15 C9 3 15 3 21 15 S33 27 40 15 S52 3 59 15 S69 25 74 15"/></svg>
+            <h3>A short reply</h3>
+            <p>Someone from the practice emails you to offer a few times that match what you picked. You choose one, or ask for others.</p>
+          </li>
+          <li>
+            <svg viewBox="0 0 76 30" aria-hidden="true"><path d="M2 15 C9 9 15 9 21 15 S33 21 40 15 S52 9 59 15 S69 20 74 15"/></svg>
+            <h3>Fifty minutes</h3>
+            <p>In the room or by video. You talk about whatever you choose to bring. Your therapist asks a few questions and explains how they like to work.</p>
+          </li>
+          <li>
+            <svg viewBox="0 0 76 30" aria-hidden="true"><path d="M2 15 C9 13 15 13 21 15 S33 17 40 15 S52 13 59 15 S69 16 74 15"/></svg>
+            <h3>Decide together</h3>
+            <p>At the end you both say whether it feels like a fit. If it does, you keep the same hour each week. If it doesn't, we'll suggest someone else.</p>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="privacy" id="privacy" aria-labelledby="privacy-h">
+    <div class="wrap">
+      <p class="kicker" style="color:var(--ink-2)">Privacy</p>
+      <h2 id="privacy-h">What intake asks, and what it doesn't.</h2>
+      <p class="lede">A first request should take a minute and give away very little. The rest belongs in the room, with your therapist, when you're ready to say it.</p>
+      <div class="cols">
+        <div class="col ask">
+          <h3>We ask</h3>
+          <ul>
+            <li>What you'd like to be called. A first name or a nickname is fine.</li>
+            <li>One way to reach you: an email address.</li>
+            <li>Your three answers above, only if you choose to bring them.</li>
+            <li>Whether you'd rather meet in person or by video.</li>
+            <li>The time of week you could keep.</li>
+          </ul>
+        </div>
+        <div class="col not">
+          <h3>We don't ask</h3>
+          <ul>
+            <li>Your diagnosis, history or medication.</li>
+            <li>Why you're coming, in any detail.</li>
+            <li>Your full legal name, birthday or home address.</li>
+            <li>Insurance or payment details.</li>
+            <li>Your phone number or anyone else's.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="demo">
+        <svg viewBox="0 0 26 26" aria-hidden="true"><rect x="5" y="11" width="16" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+        <p><b>On this demo, nothing leaves the page.</b> There is no server behind these forms, no cookies and no analytics. What you type or choose is gone when you close the tab.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="request" id="request" aria-labelledby="request-h">
+    <div class="wrap grid">
+      <div>
+        <p class="kicker">Request</p>
+        <h2 id="request-h">Request a first session.</h2>
+        <p class="lede">Four short answers. We'll write back to offer a time, and you can still change your mind after that.</p>
+        <p class="crisis">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 5.6v5.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="10" cy="14" r="1.1" fill="currentColor"/></svg>
+          <span>This form is not for emergencies. If you are in crisis, call or text <a href="tel:988">988</a> in the US.</span>
+        </p>
+      </div>
+      <div id="formWrap">
+        <form id="req" novalidate>
+          <div class="full carry" id="carry" hidden>
+            <span>Bringing your answers: <b id="carryTxt"></b></span>
+            <button class="textbtn" type="button" id="dropCarry">Leave them out</button>
+          </div>
+          <div>
+            <label class="fl" for="nm">What should we call you? <small>(first name is fine)</small></label>
+            <input id="nm" name="name" type="text" autocomplete="given-name" maxlength="40" required aria-describedby="nm-err">
+            <p class="err" id="nm-err"></p>
+          </div>
+          <div>
+            <label class="fl" for="em">Email</label>
+            <input id="em" name="email" type="email" autocomplete="email" maxlength="120" required aria-describedby="em-err">
+            <p class="err" id="em-err"></p>
+          </div>
+          <fieldset class="plain full">
+            <legend class="fl">How would you like to meet?</legend>
+            <div class="opts form-opts">
+              <label><input type="radio" name="format" value="room" checked><span>In person in Dallas</span></label>
+              <label><input type="radio" name="format" value="video"><span>By video</span></label>
+              <label><input type="radio" name="format" value="either"><span>Either is fine</span></label>
+            </div>
+          </fieldset>
+          <div class="full">
+            <label class="fl" for="wk">Time of week</label>
+            <select id="wk" name="when">
+              <option value="morning">Weekday mornings</option>
+              <option value="afternoon">Weekday afternoons</option>
+              <option value="evening">Weekday evenings</option>
+              <option value="saturday">Saturday mornings</option>
+            </select>
+          </div>
+          <div class="full">
+            <label class="consent"><input type="checkbox" id="ok-cb" required aria-describedby="cb-err"><span>I understand this request is not for emergencies, and that I don't need to share anything else yet.</span></label>
+            <p class="err" id="cb-err"></p>
+          </div>
+          <div class="full form-foot">
+            <button class="btn btn-fog" type="submit">Request a first session</button>
+            <small>Demo only: nothing is sent or stored.</small>
+          </div>
+        </form>
+        <div class="ok" id="ok" tabindex="-1" hidden>
+          <h3 id="okTitle">Thank you.</h3>
+          <p>A real practice would now email you within a working day to offer a first session. On this demo, nothing has been sent or saved anywhere.</p>
+          <p>If you are in crisis, call or text <a href="tel:988">988</a> in the US.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="mark">Neap</span>
+    <span>Talk therapy in Dallas, in person and by video.</span>
+    <span>If you are in crisis, call or text <a href="tel:988">988</a> in the US.</span>
+    <span class="r">A concept site by <a href="/work/">Quvlo</a>. Neap and its therapists are made up, the photos are AI-generated, and nothing on this page is sent anywhere.</span>
+  </div>
+</footer>
+
+
+<script src="site.js"></script>
+</body>
+</html>

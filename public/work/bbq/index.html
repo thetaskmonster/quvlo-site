@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Post Oak &amp; Pepper | Texas Barbecue and Catering, Fort Worth (Concept)</title>
+<meta name="description" content="A concept website by Quvlo for a fictional Fort Worth barbecue joint. Scroll through a fourteen-hour brisket cook, read the pit like a pitmaster, then price your catering.">
+<meta name="theme-color" content="#17110d">
+<link rel="canonical" href="https://quvlo.co/work/bbq/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Quvlo">
+<meta property="og:title" content="Post Oak &amp; Pepper, a concept site by Quvlo">
+<meta property="og:description" content="Fourteen hours. One brisket. Scroll the whole cook.">
+<meta property="og:url" content="https://quvlo.co/work/bbq/">
+<meta property="og:image" content="https://quvlo.co/work/bbq/img/og.jpg">
+<link rel="preload" href="fonts/ultra-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/dm-mono-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="bbq.css">
+</head>
+<body class="is-loading">
+<a class="skip" href="#cater">Skip to catering</a>
+
+<!-- Loader: counts real frame downloads like a pit thermometer coming up to temp -->
+<div class="loader" id="loader" aria-hidden="true">
+  <p class="loader__k">Bringing the pit up</p>
+  <p class="loader__n"><span id="loadPct">0</span><span class="loader__u">%</span></p>
+  <div class="loader__bar"><span id="loadBar"></span></div>
+</div>
+
+<header class="bar">
+  <a class="brand" href="#top" aria-label="Post Oak and Pepper, back to top"><span class="brand__a">Post Oak</span> <span class="brand__amp">&amp;</span> <span class="brand__a">Pepper</span></a>
+  <span class="tag">Concept site</span>
+  <nav class="bar__nav" aria-label="Main">
+    <a href="#menu" class="hide-s">Menu</a>
+    <a href="#cater" class="btn btn--sm">Cater it</a>
+  </nav>
+</header>
+
+<main id="top">
+  <!-- The film: scroll runs one cook, 8:40 pm to 11:00 am -->
+  <section class="film" id="film" aria-label="Scroll story: one brisket smoked overnight on post oak, from splitting wood at dusk to slicing at eleven the next morning">
+    <div class="film__stage">
+      <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage of oak being split at dusk, a smoker firebox lit at night, a brisket rubbed with salt and pepper, the brisket smoking overnight as its bark darkens, wrapped in pink butcher paper at dawn, then sliced to show the smoke ring."></canvas>
+      <canvas id="fxCanvas" class="film__fx" aria-hidden="true"></canvas>
+      <div class="film__spots" id="filmSpots"></div>
+      <div class="letter letter--t" aria-hidden="true"></div>
+      <div class="letter letter--b" aria-hidden="true"></div>
+
+      <!-- Pit log: the pitmaster's notebook, each line ticks when the cook reaches it -->
+      <ol class="log" id="log" aria-label="Cook log">
+        <li data-t="25"><span>9:05p</span> Fire lit, post oak only</li>
+        <li data-t="160"><span>11:20p</span> Pit holding 275°</li>
+        <li data-t="185"><span>11:45p</span> Brisket on, fat cap up</li>
+        <li data-t="380"><span>3:00a</span> 150°, bark setting</li>
+        <li data-t="450"><span>4:10a</span> The stall. Hold steady.</li>
+        <li data-t="560"><span>6:00a</span> Wrapped in pink paper</li>
+        <li data-t="830"><span>10:30a</span> 203°, probes like butter</li>
+        <li data-t="858"><span>11:00a</span> Rested. Slice.</li>
+      </ol>
+
+      <!-- The gauge: brisket internal temp on a dial, pit temp and the clock under it -->
+      <div class="gauge" id="gauge" aria-hidden="true">
+        <svg viewBox="0 0 200 200" class="gauge__dial">
+          <circle cx="100" cy="100" r="92" class="gauge__bezel"/>
+          <circle cx="100" cy="100" r="84" class="gauge__face"/>
+          <path id="gArc" class="gauge__track" d=""/>
+          <path id="gStall" class="gauge__stall" d=""/>
+          <path id="gFill" class="gauge__fill" d=""/>
+          <g id="gTicks" class="gauge__ticks"></g>
+          <line id="gNeedle" x1="100" y1="100" x2="100" y2="30" class="gauge__needle"/>
+          <circle cx="100" cy="100" r="6" class="gauge__hub"/>
+        </svg>
+        <div class="gauge__read">
+          <p class="gauge__t"><span id="gTemp">40</span>°</p>
+          <p class="gauge__k" id="gState">Cold from the box</p>
+        </div>
+        <dl class="gauge__row">
+          <div><dt>Pit</dt><dd><span id="gPit">0</span>°</dd></div>
+          <div><dt>Clock</dt><dd id="gClock">8:40 pm</dd></div>
+        </dl>
+      </div>
+
+      <div class="caps" id="caps">
+        <div class="cap cap--hero" data-shot="0">
+          <p class="cap__k">Texas barbecue · Fort Worth</p>
+          <h1 class="cap__h">Fourteen hours.<br>One brisket.</h1>
+          <p class="cap__p">Scroll the whole cook, from splitting oak at dusk to the first slice at eleven.</p>
+        </div>
+        <div class="cap" data-shot="1">
+          <p class="cap__k">9:05 pm</p>
+          <h2 class="cap__h">Post oak. Nothing else.</h2>
+          <p class="cap__p">Seasoned a year, split the night of. A clean fire makes thin blue smoke.</p>
+        </div>
+        <div class="cap" data-shot="2">
+          <p class="cap__k">11:20 pm</p>
+          <h2 class="cap__h">Salt. Pepper. Done.</h2>
+          <p class="cap__p">Kosher salt and 16-mesh black pepper, half and half. Tap the dots.</p>
+        </div>
+        <div class="cap" data-shot="3">
+          <p class="cap__k">11:45 pm to 6:00 am</p>
+          <h2 class="cap__h">Watch the bark set.</h2>
+          <p class="cap__p">Nobody opens the lid to look. Around 160° the meat stops climbing for hours. That is the stall, and it is normal.</p>
+        </div>
+        <div class="cap" data-shot="4">
+          <p class="cap__k">6:00 am</p>
+          <h2 class="cap__h">Pink paper at sunrise.</h2>
+          <p class="cap__p">Butcher paper breathes, so the bark stays crisp while it pushes through to 203°.</p>
+        </div>
+        <div class="cap cap--end" data-shot="5">
+          <p class="cap__k">11:00 am</p>
+          <h2 class="cap__h">Rested. Then sliced.</h2>
+          <p class="cap__p">A pink ring you can see from across the table.</p>
+          <a class="btn" href="#cater">Price your catering</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cook" aria-labelledby="cook-h">
+    <div class="wrap">
+      <p class="kick">The cook, in one line</p>
+      <h2 id="cook-h" class="h2">Why it takes all night.</h2>
+      <p class="lede">Drag along the line. Every point is a real stage of the cook, stall included.</p>
+    </div>
+    <div class="chart" id="chart">
+      <svg id="chartSvg" class="chart__svg" viewBox="0 0 1200 420" preserveAspectRatio="none" role="img" aria-label="Brisket internal temperature from 40 degrees at 11:45 pm, rising to about 160 degrees by 4 am, holding there through the stall until it is wrapped at 6 am, then climbing to 203 degrees by 10:30 am."></svg>
+      <div class="chart__tip" id="chartTip" aria-hidden="true"><b id="tipT">3:00 am</b><span id="tipV">150°</span><em id="tipN">Bark setting</em></div>
+      <input class="chart__range" id="chartRange" type="range" min="0" max="1000" value="400" aria-label="Move along the cook" aria-valuetext="3:00 am, 150 degrees">
+    </div>
+  </section>
+
+  <section class="menu" id="menu" aria-labelledby="menu-h">
+    <div class="wrap menu__grid">
+      <div>
+        <p class="kick kick--ink">By the pound</p>
+        <h2 id="menu-h" class="h2 h2--ink">Smoked every day until it sells out.</h2>
+        <p class="lede lede--ink">Doors at eleven. When the board is empty, we close.</p>
+      </div>
+      <ul class="board">
+        <li><span class="board__n">Prime brisket</span><span class="board__d">Lean or moist, fourteen hours on post oak</span><span class="board__p">$32/lb</span></li>
+        <li><span class="board__n">Pork spare ribs</span><span class="board__d">St. Louis cut, light glaze, bite-through tender</span><span class="board__p">$24/lb</span></li>
+        <li><span class="board__n">Jalapeño cheddar link</span><span class="board__d">House-made, proper snap</span><span class="board__p">$6 ea</span></li>
+        <li><span class="board__n">Turkey breast</span><span class="board__d">Butter-basted, black pepper crust</span><span class="board__p">$26/lb</span></li>
+        <li><span class="board__n">Beef rib</span><span class="board__d">Saturdays only, about a pound and a half each</span><span class="board__p">$38/lb</span></li>
+        <li><span class="board__n">Sides</span><span class="board__d">Pintos, slaw, potato salad, mac</span><span class="board__p">$5 / $9</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cater" id="cater" aria-labelledby="cater-h">
+    <div class="wrap cater__grid">
+      <div>
+        <p class="kick">Catering</p>
+        <h2 id="cater-h" class="h2">Feed the whole crew.</h2>
+        <p class="lede">Set the head count and the spread. We plan half a pound of meat a guest, and the total updates as you go.</p>
+        <form class="est" id="est" aria-label="Catering estimator">
+          <div class="est__guests">
+            <label for="guests" class="est__l">Guests</label>
+            <output id="guestsOut" for="guests">60</output>
+            <input id="guests" name="guests" type="range" min="20" max="300" step="10" value="60">
+          </div>
+          <fieldset><legend class="est__l">Meats (pick two or more)</legend>
+            <label><input type="checkbox" name="meat" value="brisket" checked><span>Brisket</span></label>
+            <label><input type="checkbox" name="meat" value="ribs" checked><span>Pork ribs</span></label>
+            <label><input type="checkbox" name="meat" value="sausage"><span>Sausage</span></label>
+            <label><input type="checkbox" name="meat" value="turkey"><span>Turkey</span></label>
+          </fieldset>
+          <fieldset><legend class="est__l">Sides</legend>
+            <label><input type="radio" name="sides" value="2" checked><span>Two sides</span></label>
+            <label><input type="radio" name="sides" value="3"><span>Three sides</span></label>
+            <label><input type="radio" name="sides" value="4"><span>Four sides</span></label>
+          </fieldset>
+          <fieldset><legend class="est__l">Service</legend>
+            <label><input type="radio" name="svc" value="drop" checked><span>Drop-off</span></label>
+            <label><input type="radio" name="svc" value="pit"><span>Pit on site, with a pitmaster</span></label>
+          </fieldset>
+        </form>
+      </div>
+      <aside class="ticket" aria-live="polite">
+        <p class="ticket__k">Your order</p>
+        <p class="ticket__n">$<span id="estTotal">0</span></p>
+        <p class="ticket__u">catering total, before tax</p>
+        <ul class="ticket__lines" id="estLines"></ul>
+        <button class="btn btn--full" id="estHold" type="button">Hold a date</button>
+        <p class="ticket__note" id="estNote" role="status">Sample prices for a concept site. A real build uses the restaurant's own menu.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="how" aria-labelledby="how-h">
+    <div class="wrap">
+      <p class="kick">How catering works</p>
+      <h2 id="how-h" class="h2">You pick the day. We start the fire the night before.</h2>
+      <ol class="how__list">
+        <li><b>01</b><h3>Price it here</h3><p>Use the estimator, then hold a date. We confirm within the day.</p></li>
+        <li><b>02</b><h3>Your brisket goes on</h3><p>The night before, on the same pit as everyone else's.</p></li>
+        <li><b>03</b><h3>Sliced to order</h3><p>Packed hot in cambros, or whole for the table if you want to carve.</p></li>
+        <li><b>04</b><h3>Leftovers, maybe</h3><p>They come with reheating notes. There are rarely leftovers.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="faq" aria-labelledby="faq-h">
+    <div class="wrap wrap--narrow">
+      <h2 id="faq-h" class="h2">Before you order.</h2>
+      <details><summary>How far ahead should I book?</summary><p>A week for most events, two weeks for anything over 100 guests.</p></details>
+      <details><summary>Do you sell whole briskets?</summary><p>Yes, by the pound or whole, sliced or unsliced.</p></details>
+      <details><summary>Can you cook on site?</summary><p>For larger events we tow the pit out with a pitmaster. It is in the estimator.</p></details>
+      <details><summary>Where are you?</summary><p>This is a concept site for a fictional restaurant. A real build lists the address and hours here.</p></details>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__grid">
+    <div>
+      <p class="foot__h">Hungry yet?</p>
+      <a class="btn" href="#cater">Price your catering</a>
+    </div>
+    <div class="foot__small">
+      <p>Post Oak &amp; Pepper is a fictional business. This is a concept site designed and built by <a href="/">Quvlo</a> to show what is possible.</p>
+      <p>The footage and photos are AI-generated. Prices are samples.</p>
+      <p><a href="/work/">More Quvlo work</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="film-engine.js" defer></script>
+<script src="bbq.js" defer></script>
+</body>
+</html>
