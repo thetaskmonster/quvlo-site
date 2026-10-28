@@ -109,7 +109,8 @@ button { font: inherit; }
 .film__frame::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(10,20,16,.5) 0%, rgba(10,20,16,.12) 42%, rgba(10,20,16,0) 60%), linear-gradient(0deg, rgba(10,20,16,.42), rgba(10,20,16,0) 34%); }
 
 .caps { position: absolute; z-index: 3; inset: 0; pointer-events: none; }
-.cap { position: absolute; left: calc(var(--gut-l) + 3vw); bottom: 14vh; max-width: min(600px, 46vw); color: #fff; opacity: 0; transform: translateY(20px); transition: opacity .5s var(--ease), transform .7s var(--ease); }
+.cap { position: absolute; left: calc(var(--gut-l) + 3vw); bottom: 14vh; max-width: min(600px, 46vw); color: #fff; opacity: 0; transform: translateY(20px); transition: opacity .15s var(--ease), transform .7s var(--ease); }
+.cap.is-on { transition: opacity .5s var(--ease), transform .7s var(--ease); }
 .cap.is-on { opacity: 1; transform: none; }
 /* each caption sits where its shot is empty: the counters and bedroom shots put it up top, clear of the hand
    and the cleaner (data-place for every screen, data-place-s for phones in portrait only) */

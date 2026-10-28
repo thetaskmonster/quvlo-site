@@ -63,10 +63,10 @@
   </section>
 
   <!-- Film: one afternoon visit, scrubbed by scroll -->
-  <section class="film" id="film" aria-label="Scroll story: one afternoon visit to a Dallas cottage, from arrival at 3 pm to every room done by 6:40 pm">
+  <section class="film" id="film" aria-label="Scroll story: one afternoon visit to a Dallas cottage, from arrival at 1 pm to every room done by 3:45 pm">
     <div class="film__stage" id="stage">
       <div class="film__frame" id="frame">
-        <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage of cleaners arriving at a Tudor cottage, the kitchen cleared, a gloved hand wiping a butcher-block counter, shower glass rinsed and squeegeed, a duvet smoothed flat and the clean house in late afternoon light."></canvas>
+        <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage of cleaners arriving at a Tudor cottage, the kitchen cleared, a gloved hand wiping a butcher-block counter, shower glass rinsed and squeegeed, a duvet smoothed by hand and the clean house in warm afternoon light."></canvas>
       </div>
 
       <aside class="list" id="list" aria-label="Visit checklist">
@@ -74,21 +74,21 @@
         <ol class="list__items">
           <li><span class="tick" aria-hidden="true"></span><span class="list__t">Arrive with our own supplies</span></li>
           <li><span class="tick" aria-hidden="true"></span><span class="list__t">Kitchen, top to bottom</span></li>
-          <li><span class="tick" aria-hidden="true"></span><span class="list__t">Counters, streak-free</span></li>
+          <li><span class="tick" aria-hidden="true"></span><span class="list__t">Counters wiped down</span></li>
           <li><span class="tick" aria-hidden="true"></span><span class="list__t">Bathroom glass and grout</span></li>
           <li><span class="tick" aria-hidden="true"></span><span class="list__t">Beds made</span></li>
-          <li><span class="tick" aria-hidden="true"></span><span class="list__t">Photos sent to your phone</span></li>
+          <li><span class="tick" aria-hidden="true"></span><span class="list__t">Text when we lock up</span></li>
         </ol>
-        <p class="list__time"><span id="listTime">3:00</span> <span id="listAmPm">pm</span></p>
+        <p class="list__time"><span id="listTime">1:00</span> <span id="listAmPm">pm</span></p>
       </aside>
 
       <div class="caps" id="caps">
-        <div class="cap" data-shot="0" data-place-s="top short"><p class="cap__k">3:00 pm · Lakewood</p><h2 class="cap__h"><mark>Everything</mark> comes with us.</h2><p class="cap__p">Caddies, vacuum and cloths. No supplies needed from you.</p></div>
-        <div class="cap" data-shot="1" data-place-s="top"><p class="cap__k">3:10 pm · Kitchen</p><h2 class="cap__h">First the dishes, then <mark>every surface.</mark></h2><p class="cap__p">Dishes washed or loaded and put away, then counters, fronts and floor.</p></div>
-        <div class="cap" data-shot="2" data-place="top" data-place-s="top" data-from-s="0.35" data-place-l="tag"><p class="cap__k">3:45 pm · Counters</p><h2 class="cap__h"><mark>Streak-free</mark> on the butcher block.</h2><p class="cap__p">Plant-based spray, and a separate cloth for the tile.</p></div>
-        <div class="cap" data-shot="3"><p class="cap__k">4:35 pm · Bathroom</p><h2 class="cap__h">Rinsed, then squeegeed edge to edge.</h2><p class="cap__p">Then the chrome, the tub and the grout lines.</p></div>
-        <div class="cap" data-shot="4" data-place="top right" data-place-s="bottom right short"><p class="cap__k">5:30 pm · Bedroom</p><h2 class="cap__h"><mark>Flat</mark> duvet, tucked corners.</h2><p class="cap__p">Sheets changed if you leave fresh ones out, pillows plumped.</p></div>
-        <div class="cap" data-shot="5"><p class="cap__k">6:40 pm · Done</p><h2 class="cap__h">Every room done, <mark>and photographed.</mark></h2><p class="cap__p">The photos are already on your phone, before you're home.</p></div>
+        <div class="cap" data-shot="0" data-place-s="top short"><p class="cap__k">1:00 pm · Lakewood</p><h2 class="cap__h"><mark>Everything</mark> comes with us.</h2><p class="cap__p">Caddies, vacuum and cloths. No supplies needed from you.</p></div>
+        <div class="cap" data-shot="1" data-place-s="top"><p class="cap__k">1:10 pm · Kitchen</p><h2 class="cap__h"><mark>Sink cleared,</mark> then every surface.</h2><p class="cap__p">Dishes loaded into the dishwasher, then counters, cabinet fronts, stovetop and floor.</p></div>
+        <div class="cap" data-shot="2" data-place="top" data-place-s="top" data-from-s="0.35" data-place-l="tag"><p class="cap__k">1:40 pm · Counters</p><h2 class="cap__h">A <mark>damp wipe</mark> on the butcher block.</h2><p class="cap__p">Mild soap on wood, never soaked. A separate cloth for the tile.</p></div>
+        <div class="cap" data-shot="3"><p class="cap__k">2:15 pm · Bathroom</p><h2 class="cap__h"><mark>Scrubbed,</mark> rinsed, then squeegeed.</h2><p class="cap__p">Grout and tub first while the spray sits, glass and chrome dried last, the toilet with its own cloth.</p></div>
+        <div class="cap" data-shot="4" data-place="top right" data-place-s="bottom right short"><p class="cap__k">2:55 pm · Bedroom</p><h2 class="cap__h"><mark>Fresh sheets,</mark> duvet smoothed by hand.</h2><p class="cap__p">Sheets changed if you leave a clean set out.</p></div>
+        <div class="cap" data-shot="5"><p class="cap__k">3:45 pm · Done</p><h2 class="cap__h">Every room done, <mark>before you're home.</mark></h2><p class="cap__p">We text you when we lock up, with photos if you want them.</p></div>
       </div>
       <div class="film__bar" aria-hidden="true"><span id="filmBar"></span></div>
     </div>
@@ -119,27 +119,28 @@
             </div>
           </div>
           <fieldset class="chips"><legend>Type of clean</legend>
-            <label><input type="radio" name="freq" value="0" checked><span>One-time</span></label>
-            <label><input type="radio" name="freq" value="0.15"><span>Every 2 weeks <small>−15%</small></span></label>
-            <label><input type="radio" name="freq" value="0.2"><span>Weekly <small>−20%</small></span></label>
-            <label><input type="radio" name="freq" value="-0.35"><span>Move-out deep clean</span></label>
+            <label><input type="radio" name="freq" value="1.5" data-kind="deep" checked><span>Deep clean <small>first visit or one-time</small></span></label>
+            <label><input type="radio" name="freq" value="0.9" data-kind="rec"><span>Monthly</span></label>
+            <label><input type="radio" name="freq" value="0.82" data-kind="rec"><span>Every 2 weeks</span></label>
+            <label><input type="radio" name="freq" value="0.75" data-kind="rec"><span>Weekly</span></label>
+            <label><input type="radio" name="freq" value="1.8" data-kind="move"><span>Move-out</span></label>
           </fieldset>
           <fieldset class="chips"><legend>Extras</legend>
             <label><input type="checkbox" name="extra" value="35" data-deep="1"><span>Inside the oven<small class="incl" hidden>included</small></span></label>
             <label><input type="checkbox" name="extra" value="30" data-deep="1"><span>Inside the fridge<small class="incl" hidden>included</small></span></label>
             <label><input type="checkbox" name="extra" value="40"><span>Interior windows</span></label>
-            <label><input type="checkbox" name="extra" value="25"><span>Laundry, washed and folded</span></label>
+            <label><input type="checkbox" name="extra" value="25"><span>Laundry, one load washed and folded</span></label>
           </fieldset>
         </form>
       </div>
       <aside class="total" aria-labelledby="totalK">
         <div class="total__clock"><span class="total__dot" id="clockDot" aria-hidden="true"></span><span id="clock">0:00</span> <span class="total__clockk" id="clockK">The clock starts at your first tap</span></div>
         <p class="total__k" id="totalK">Your clean</p>
-        <p class="total__n" aria-hidden="true">$<span id="total">207</span></p>
-        <p class="total__u" id="totalU">one visit, supplies included</p>
+        <p class="total__n" aria-hidden="true">$<span id="total">326</span></p>
+        <p class="total__u" id="totalU">one deep clean: baseboards, inside oven and fridge, supplies included</p>
         <p class="sr" id="totalSay" role="status"></p>
         <a class="btn btn--full btn--ink" href="#book" id="estBook">Book this clean</a>
-        <p class="fine">Demo pricing for a concept site. A real build uses the business's own prices.</p>
+        <p class="fine">Every visit has a $120 minimum, before extras. Demo pricing for a concept site. A real build uses the business's own prices.</p>
       </aside>
     </div>
   </section>
@@ -149,7 +150,7 @@
     <div class="wrap">
       <p class="kick">The checklist</p>
       <h2 id="check-h" class="h2">What gets cleaned, room by room.</h2>
-      <p class="lede">Ticked off and photographed, so you can see it was done.</p>
+      <p class="lede">Ticked off room by room on every visit, with photos if you want them.</p>
       <div class="tabs" role="tablist" aria-label="Rooms">
         <button role="tab" id="t-kitchen" aria-controls="p-kitchen" aria-selected="true" type="button">Kitchen</button>
         <button role="tab" id="t-bath" aria-controls="p-bath" aria-selected="false" tabindex="-1" type="button">Bathrooms</button>
@@ -187,7 +188,7 @@
       <ul class="promise__list">
         <li><h3>Pay after the clean</h3><p>Nothing is charged until the visit is done.</p></li>
         <li><h3>A regular team</h3><p>Regular visits get a regular pair of cleaners. You get their names before the first visit.</p></li>
-        <li><h3>Photos of every room</h3><p>Each room ticked off, with photos sent to your phone.</p></li>
+        <li><h3>A checklist every visit</h3><p>Each room ticked off, and photos if you want them. We text you when we lock up.</p></li>
         <li><h3>Missed a spot? We come back</h3><p>Tell us within 24 hours and we return to fix it, free.</p></li>
       </ul>
     </div>
@@ -199,6 +200,8 @@
       <details><summary>Do I need to be home?</summary><p>No. Most clients leave a code or a key. We lock up and text when we are done.</p></details>
       <details><summary>Do you bring supplies?</summary><p>Yes. All supplies and equipment are included, plant-based where it makes sense.</p></details>
       <details><summary>What about pets?</summary><p>Love them. Tell us their names when you book.</p></details>
+      <details><summary>Are your cleaners insured and background-checked?</summary><p>Yes. They are our own employees, not contractors, background-checked before their first shift. We carry general liability insurance and a janitorial bond. A real build lists the actual policy here.</p></details>
+      <details><summary>Is there anything you won't clean?</summary><p>We work from a two-step stool, so no ladders or high fixtures. We don't move heavy furniture, and we don't take on biohazards, mold or pest problems. Tell us about anything fragile or irreplaceable.</p></details>
       <details><summary>Which areas do you cover?</summary><p>This is a concept site for a fictional company. A real build lists the service area here.</p></details>
     </div>
   </section>
@@ -208,12 +211,12 @@
       <div>
         <p class="kick">Book</p>
         <h2 id="book-h" class="h2">Pick a day for your first clean.</h2>
-        <p class="lede">Choose a day and an arrival time. You get your cleaners' names before they arrive.</p>
+        <p class="lede">Choose a day and an arrival window. You get your cleaners' names before they arrive.</p>
       </div>
       <div class="book__card">
         <div class="book__days" id="bookDays" role="radiogroup" aria-label="Day"></div>
-        <div class="book__times" id="bookTimes" role="radiogroup" aria-label="Arrival time"></div>
-        <button class="btn btn--full btn--ink" id="bookGo" type="button">Hold this time</button>
+        <div class="book__times" id="bookTimes" role="radiogroup" aria-label="Arrival window"></div>
+        <button class="btn btn--full btn--ink" id="bookGo" type="button">Hold this window</button>
         <p class="book__note" id="bookNote" role="status">Demo only: nothing is sent or charged from this concept site.</p>
       </div>
     </div>

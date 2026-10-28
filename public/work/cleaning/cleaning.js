@@ -141,7 +141,7 @@
     setTimeout(() => {
       heroLine.textContent = cleanState ? 'One kitchen down.' : 'Wipe Monday away.';
       heroP.textContent = cleanState
-        ? 'That took you seconds. A typical three-bedroom home takes us under four hours, and every room ends up like this.'
+        ? 'That took you seconds. A team of two does a typical three-bedroom home in about three hours, and every room ends up like this.'
         : 'Drag across the kitchen. That is what we do on every visit, to every room.';
       heroLine.classList.remove('is-swap');
     }, 320);
@@ -240,9 +240,9 @@
   const film = $('#film'), fc = $('#filmCanvas');
   const frame = $('#frame'), caps = $$('.cap'), list = $('#list'), items = $$('#list li');
   const listTime = $('#listTime'), listAmPm = $('#listAmPm'), filmBar = $('#filmBar');
-  // Clock (minutes after midnight) at the start of each shot and at the end. The visit is the 3 pm slot:
-  // soft afternoon light at the door, low sun by the end, under four hours in all.
-  const CLOCK = [900, 910, 945, 995, 1050, 1120, 1120];
+  // Clock (minutes after midnight) at the start of each shot and at the end. The visit is the crew's
+  // second home of the day: in at 1:00 pm, done at 3:45 pm, a team of two.
+  const CLOCK = [780, 790, 820, 855, 895, 945, 945];
   let N = 240;
   const phonePortrait = matchMedia('(max-width: 600px) and (orientation: portrait)');
   const fmt = m => { const h = Math.floor(m / 60), mm = Math.round(m % 60); return [`${h > 12 ? h - 12 : h}:${String(mm).padStart(2, '0')}`, h >= 12 ? 'pm' : 'am']; };
@@ -288,26 +288,31 @@
   const LIMITS = { beds: [0, 6], baths: [1, 5] };
   const deepBoxes = $$('input[data-deep]', est);
   let shown = 0, raf = 0, sayT = 0;
+  // the chosen type of clean: its value multiplies the standard price; data-kind is deep, rec (recurring) or move
+  const kindOf = () => { const r = est.querySelector('input[name="freq"]:checked'); return { mult: r ? +r.value : 1.5, kind: r ? r.dataset.kind : 'deep' }; };
   function price() {
-    const freq = +(est.querySelector('input[name="freq"]:checked') || { value: 0 }).value;
-    // a move-out deep clean already includes the inside of the oven and fridge, so they are not charged twice
-    const extras = $$('input[name="extra"]:checked', est).reduce((a, i) => a + (freq < 0 && i.dataset.deep ? 0 : +i.value), 0);
-    const base = 79 + counts.beds * 28 + counts.baths * 22;
-    // positive freq is a recurring discount, negative is the move-out surcharge
-    return { total: Math.round(base * (1 - freq) + extras), freq };
+    const { mult, kind } = kindOf();
+    // a deep or move-out clean already includes the inside of the oven and fridge, so they are not charged twice
+    const extras = $$('input[name="extra"]:checked', est).reduce((a, i) => a + (kind !== 'rec' && i.dataset.deep ? 0 : +i.value), 0);
+    const base = 95 + counts.beds * 22 + counts.baths * 28;
+    // every visit has a $120 minimum before extras, so ticking an extra always moves the price
+    return { total: Math.max(120, Math.round(base * mult)) + extras, kind };
   }
-  function syncDeep(freq) {
+  function syncDeep(kind) {
+    const incl = kind !== 'rec';
     deepBoxes.forEach(i => {
-      if (freq < 0) { if (!i.disabled) { i.dataset.was = i.checked ? '1' : ''; i.checked = true; i.disabled = true; } }
+      if (incl) { if (!i.disabled) { i.dataset.was = i.checked ? '1' : ''; i.checked = true; i.disabled = true; } }
       else if (i.disabled) { i.disabled = false; i.checked = i.dataset.was === '1'; }
-      i.nextElementSibling.querySelector('.incl').hidden = !(freq < 0);
+      i.nextElementSibling.querySelector('.incl').hidden = !incl;
     });
   }
   function roll() {
     // the oven and fridge boxes are put right for the type of clean first, so the price reads them as shown
-    syncDeep(+(est.querySelector('input[name="freq"]:checked') || { value: 0 }).value);
-    const { total, freq } = price();
-    const unit = freq < 0 ? 'one deep clean, inside the oven, fridge and cabinets included' : freq > 0 ? 'per visit, supplies included' : 'one visit, supplies included';
+    syncDeep(kindOf().kind);
+    const { total, kind } = price();
+    const unit = kind === 'move' ? 'one move-out clean, inside the oven, fridge and cabinets included'
+      : kind === 'rec' ? 'per visit after a first deep clean, supplies included'
+      : 'one deep clean: baseboards, inside oven and fridge, supplies included';
     totalU.textContent = unit;
     const from = shown, start = performance.now();
     cancelAnimationFrame(raf);
@@ -425,9 +430,10 @@
     if (added === 0) { b.setAttribute('aria-checked', 'true'); selDay = text; }
     added++;
   }
-  ['8 am', '10 am', '1 pm', '3 pm'].forEach((t, n) => { const b = chip(t, null, times, () => { selTime = t; }); if (n === 1) { b.setAttribute('aria-checked', 'true'); selTime = t; } });
+  // arrival windows, not exact times: traffic and the home before yours vary
+  [['8 to 9 am', '8 and 9 am'], ['10 to 11 am', '10 and 11 am'], ['12 to 1 pm', '12 and 1 pm']].forEach(([t, say], n) => { const b = chip(t, null, times, () => { selTime = say; }); if (n === 1) { b.setAttribute('aria-checked', 'true'); selTime = say; } });
   $('#bookGo').addEventListener('click', () => {
-    note.textContent = `Held: ${selDay}, arriving ${selTime}. Demo only: nothing was sent. A real build books it straight into the company's calendar.`;
+    note.textContent = `Held: ${selDay}, arriving between ${selTime}. Demo only: nothing was sent. A real build books it straight into the company's calendar.`;
   });
   $$('a[href="#book"]').forEach(a => a.addEventListener('click', () => setTimeout(() => $('#book').focus({ preventScroll: true }), 600)));
 })();
