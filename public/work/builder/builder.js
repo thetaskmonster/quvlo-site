@@ -23,10 +23,10 @@
   const FV = '2026102803';
   // The build days each shot covers. The counter runs through them with the footage, so it always sits
   // inside the range the caption names. One build length everywhere: 330 days, stakes to keys
-  // (the schedule chart, the estimate for The Bluebonnet with Designer finishes, the FAQ). The dry-in
-  // time-lapse ends on Day 150; systems, insulation and drywall (Days 120 to 230) happen off screen, so
-  // the counter jumps at the hard cut into the finished interior, which is the finishes phase.
-  const SPANS = [[1, 1], [1, 30], [30, 90], [90, 150], [230, 315], [315, 330]];
+  // (the schedule chart, the estimate for The Bluebonnet with Designer finishes, the FAQ). The dry-in and
+  // exterior time-lapse runs to Day 210, when the stone, siding and metal roof are done; the counter then
+  // jumps at the hard cut into the finished interior, late in the finishes phase.
+  const SPANS = [[1, 1], [1, 30], [30, 75], [75, 210], [230, 305], [315, 330]];
   const TOTAL = 330;
   const SRC_W = 3840, SRC_H = 2160;
 
@@ -249,8 +249,8 @@
         porch: [['Ceiling', 'Stained cedar'], ['Posts', 'Cedar 8 x 8'], ['Floor', 'Broom-finish concrete']]
       }
     },
-    caliche: {
-      name: 'The Caliche', sqft: 3600, w: 70, h: 44,
+    mesquite: {
+      name: 'The Mesquite', sqft: 3600, w: 70, h: 44,
       up: 'Upstairs: three bedrooms, two baths and a game room, 1,050 sq ft.',
       rooms: [
         ['study', 'Study', 0, 0, 20, 12], ['primary', 'Primary', 0, 12, 20, 18], ['bath', 'Primary bath', 0, 30, 20, 14],
@@ -270,7 +270,7 @@
     },
     bluebonnet: {
       name: 'The Bluebonnet', sqft: 4800, w: 84, h: 56,
-      up: 'Upstairs: two bedrooms and a shared bath over the garage, 670 sq ft. This is the house in the film.',
+      up: 'Upstairs: two bedrooms and a shared bath, 670 sq ft. This is the house in the film.',
       rooms: [
         ['kitchen', 'Kitchen', 0, 0, 26, 20], [null, 'Dining', 0, 20, 26, 14], [null, 'Utility', 0, 34, 26, 8],
         [null, 'Guest suite', 0, 42, 26, 14, 'Guest'], ['great', 'Great room', 26, 0, 32, 30], [null, 'Two-story foyer', 26, 30, 14, 26, 'Foyer'],
@@ -358,7 +358,7 @@
     svgEl('path', { d: `M0 0 h${p.w * S} v${p.h * S} h${-p.w * S} Z`, class: 'wall outline', pathLength: '1' }, planSvg);
     const [dx, dy] = p.door;
     svgEl('path', { d: `M${dx * S + 6} ${dy * S} a30 30 0 0 1 30 -30 v30`, class: 'door' }, planSvg);
-    planCap.textContent = `${p.name} · ground floor · ${p.sqft.toLocaleString('en-US')} sq ft`;
+    planCap.textContent = `${p.name} · ${p.sqft.toLocaleString('en-US')} sq ft living · ground floor shown`;
     planUp.textContent = p.up;
   }
 
@@ -465,8 +465,8 @@
   });
 
   /* ---------- Estimator ---------- */
-  const RATE = { builder: 205, designer: 245, custom: 310 };
-  const SITE = 28000;
+  const RATE = { builder: 265, designer: 330, custom: 425 };
+  const SITE = 60000; // site work, engineering, permits and city fees ("from $60,000")
   const size$ = $('#estSize'), sizeOut = $('#estSizeOut'), hint = $('#estPlanHint');
   const lo$ = $('#estLo'), hi$ = $('#estHi'), rowA = $('#estRowA'), rowAv = $('#estRowAv'), days$ = $('#estDays'), lotNote = $('#estLotNote');
   const lotRow = $('#estLotRow'), estStatus = $('#estStatus');
@@ -506,7 +506,7 @@
     // Screen readers hear the result once, after the input settles, not every step of the count.
     clearTimeout(statusT);
     statusT = setTimeout(() => {
-      estStatus.textContent = `Estimated build cost ${money(lo)} to ${money(hi)}, about ${days} days from stakes to keys.${lot === 'own' ? '' : ' Plus a lot, and one to three months to find and close on it.'}`;
+      estStatus.textContent = `Estimated build cost ${money(lo)} to ${money(hi)}, about ${days} days from stakes to keys.${lot === 'own' ? '' : ' Plus a lot, and one to three months to find and close on it before design starts.'}`;
     }, 700);
   }
 
