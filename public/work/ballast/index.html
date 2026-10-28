@@ -191,7 +191,7 @@ h2.disp{font-size:clamp(44px,6.6vw,108px)}
 .how{background:var(--iron-2);padding:clamp(84px,11vw,170px) var(--gut)}
 .how .grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(40px,6vw,110px);align-items:start}
 .how figure{position:sticky;top:40px}
-.how figure img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:50% 0;border-radius:3px}
+.how figure img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:50% 50%;border-radius:3px}
 .how figcaption{margin-top:12px;font-size:14.5px;color:var(--chalk-dim)}
 .how h2{margin-top:22px}
 .steps{list-style:none;margin-top:clamp(36px,5vw,64px);counter-reset:s}
@@ -212,7 +212,7 @@ h2.disp{font-size:clamp(44px,6.6vw,108px)}
 .feats span{color:var(--chalk-dim)}
 .stage{position:relative;min-height:clamp(620px,62vw,760px)}
 .stage>img{position:absolute;right:0;top:0;bottom:0;width:78%;height:100%;object-fit:cover;object-position:40% 50%;border-radius:3px;filter:saturate(.85)}
-.stage::after{content:"";position:absolute;right:0;top:0;bottom:0;width:78%;background:linear-gradient(90deg,var(--iron) 0%,rgba(15,16,16,.35) 30%,rgba(15,16,16,0) 60%);border-radius:3px;pointer-events:none}
+.stage::after{content:"";position:absolute;right:0;top:0;bottom:0;width:78%;background:linear-gradient(0deg,rgba(15,16,16,.82) 0%,rgba(15,16,16,0) 24%),linear-gradient(90deg,var(--iron) 0%,rgba(15,16,16,.35) 30%,rgba(15,16,16,0) 60%);border-radius:3px;pointer-events:none}
 .phone{position:absolute;z-index:2;left:6%;top:50%;transform:translateY(-50%) rotate(-3deg);width:300px;aspect-ratio:300/640;border-radius:46px;background:#050505;padding:11px;
   box-shadow:0 0 0 1.5px #2b2c2a,0 50px 90px rgba(0,0,0,.6),0 12px 30px rgba(0,0,0,.5)}
 .scr{position:relative;height:100%;border-radius:36px;background:#121312;overflow:hidden;padding:44px 14px 0;font-size:12.5px;line-height:1.35;color:var(--chalk)}
@@ -322,7 +322,7 @@ a.mark,.nav nav a{display:inline-flex;align-items:center;min-height:44px}
   </div>
   <picture>
     <source media="(max-width:820px)" srcset="img/hero-tall.jpg">
-    <img src="img/hero-wide.jpg" alt="A concrete strength gym at dawn: light through tall windows, rows of black power racks, a loaded barbell on the floor beside a worn yellow platform stripe, one lifter at a rack in the distance" fetchpriority="high">
+    <img src="img/hero-wide.jpg" alt="A concrete strength gym at dawn: light through tall windows, rows of black power racks, a loaded barbell resting on a lifting platform beside the yellow walkway line" fetchpriority="high">
   </picture>
   <div class="hero-copy" id="top">
     <h1 class="disp">The scale won't see it. <span class="y">The scan will.</span></h1>
@@ -343,7 +343,7 @@ a.mark,.nav nav a{display:inline-flex;align-items:center;min-height:44px}
         </div>
       </div>
       <figure>
-        <img src="img/scan-room.jpg" alt="A body composition scanner table in a quiet concrete room, a thin line of yellow light along the wall behind it" loading="lazy" width="896" height="1120">
+        <img src="img/scan-room.jpg" alt="A small, bright DXA room: scanner table with a paper sheet, the technologist's desk and monitor beside it" loading="lazy" width="896" height="1120">
         <figcaption>The DXA room. A few minutes lying still, ordered and overseen by our medical director. Weekly check-ins use an InBody scale on the floor.</figcaption>
       </figure>
     </div>
@@ -400,7 +400,7 @@ a.mark,.nav nav a{display:inline-flex;align-items:center;min-height:44px}
   <section class="how" id="how" aria-labelledby="how-h">
     <div class="grid">
       <figure>
-        <img src="img/coach.jpg" alt="A coach in black rests a hand on the upper back of a member in a black training set as she sets up under a barbell in a squat rack" loading="lazy" width="896" height="1120">
+        <img src="img/coach.jpg" alt="A coach stands to the side of a member in a squat rack, watching her set up, both ends of the bar loaded with matching plates" loading="lazy" width="896" height="1120">
         <figcaption>Coaching happens on the floor, one set at a time.</figcaption>
       </figure>
       <div>
