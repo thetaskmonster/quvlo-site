@@ -1,10 +1,10 @@
 /* Caliche & Clover Landscapes (concept by Quvlo). Scroll position is the job: the footage, the
-   day tracker and the tallies all read from one number. Below it, a mowing game where stripes
-   come from the direction the blades lay the grass. No libraries. */
+   day tracker and the tallies all read from the frame actually drawn. Below it, a mowing game where
+   stripes come from the direction the blades lay the grass. No libraries. */
 (() => {
   'use strict';
   // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.
-  const FV = '2026102801';
+  const FV = '2026102813';   // also the ?v= on landscape.css, film-engine.js and landscape.js in index.html
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -15,13 +15,14 @@
 
   /* =========================================================== Film */
   const PER = 40, SHOTS = 6;
-  const film = $('#film'), canvas = $('#filmCanvas');
+  // Real frames per shot. Must match "lens" in frames.json: shots 2 and 4 are shorter than 40 frames.
+  const LENS = [40, 21, 40, 39, 40, 40];
+  const film = $('#film'), stage = $('.film__stage'), canvas = $('#filmCanvas');
   const loader = $('#loader'), loadPct = $('#loadPct'), loadBar = $('#loadBar');
   const bar = $('.bar'), hero = $('#hero'), track = $('#track'), trackCut = $('#trackCut');
   const caps = $$('.cap'), days = $$('.track__days li'), clock = $('#clock');
   const tallies = caps.map(c => $('.tally', c));
 
-  let N = 240;
   let opened = false;
   function openLoader() {
     if (opened) return; opened = true;
@@ -29,60 +30,87 @@
     loader.classList.add('is-open');
   }
 
-  // Day 4 clock for the last shot: 4:30 pm to 7:10 pm
+  // Last shot's clock: 4:30 pm to 7:10 pm, handover at dusk
   const clockText = m => { const h = Math.floor(m / 60), mm = Math.round(m % 60); return `${h % 12 || 12}:${String(mm).padStart(2, '0')} pm`; };
 
-  function ui(f) {
-    const shot = Math.min(SHOTS - 1, Math.floor(f / PER)), local = clamp((f - shot * PER) / (PER - 1));
-    hero.classList.toggle('is-off', f > 22);
-    track.classList.toggle('is-hidden', f < 24);
+  // The stage counts as on screen while most of it is in view. Once the film has scrolled away, no caption
+  // stays "on", so its link can't be tabbed to off screen (the engine makes hidden captions inert).
+  const stageOn = () => { const r = stage.getBoundingClientRect(); return r.bottom > innerHeight * 0.6 && r.top < innerHeight * 0.4; };
+
+  let lastF = 0, lastShot = 0, engine = null;
+  const shotAtScroll = () => {
+    if (!engine || !engine.meta) return lastShot;
+    const len = Math.max(1, film.offsetHeight - stage.offsetHeight), p = clamp(-film.getBoundingClientRect().top / len);
+    return Math.min(SHOTS - 1, Math.floor(engine.frameAt(p) / PER));
+  };
+  // offOnly: called from scroll, where the frame on screen hasn't caught up yet; it may hide captions, never show them
+  function ui(f, shotIn, offOnly) {
+    lastF = f;
+    const shot = shotIn == null ? Math.min(SHOTS - 1, Math.floor(f / PER)) : shotIn;
+    lastShot = shot;
+    const local = clamp((f - shot * PER) / Math.max(1, LENS[shot] - 1));
+    // a caption shows only while the scroll position is in the same shot as the picture on screen: after a
+    // jump (Home, a link), the old picture can hold for a frame or two and its caption must not come with it
+    const onScreen = stageOn() && shotAtScroll() === shot;
+    hero.classList.toggle('is-off', shot > 0 || local > 0.55);
+    track.classList.toggle('is-hidden', shot === 0 && local < 0.6);
     caps.forEach((cap, n) => {
       const s = +cap.dataset.shot;
-      const on = s === SHOTS - 1 ? f >= (SHOTS - 1) * PER + 10 : shot === s && local > 0.06 && local < 0.94;
-      cap.classList.toggle('is-on', on);
+      // data-early: on from the shot's first frame (Day 1 on phones covers the top band of its picture)
+      const on = onScreen && (s === SHOTS - 1 ? shot === s && local > 0.22 : shot === s && (cap.hasAttribute('data-early') || local > 0.06) && local < 0.94);
+      if (!offOnly) cap.classList.toggle('is-on', on); else if (!on) cap.classList.remove('is-on');
       const t = tallies[n];
-      if (t && shot === s) {
-        // The tally runs with the work in the footage
-        const v = lerp(+t.dataset.from, +t.dataset.to, ease(clamp((local - 0.08) / 0.8)));
-        const r = Math.round(v / (t.dataset.sep ? 50 : 1)) * (t.dataset.sep ? 50 : 1);
-        t.textContent = t.dataset.sep ? r.toLocaleString('en-US') : String(r);
-      } else if (t && shot > s) {
-        t.textContent = t.dataset.sep ? (+t.dataset.to).toLocaleString('en-US') : t.dataset.to;
-      }
+      if (!t) return;
+      const from = +t.dataset.from, to = +t.dataset.to, sep = !!t.dataset.sep;
+      // The tally runs with the work in the footage; with reduced motion each shot is a still, so it shows the total
+      let v = from;
+      if (shot > s || (shot === s && reduce)) v = to;
+      else if (shot === s) v = lerp(from, to, ease(clamp((local - 0.08) / 0.8)));
+      const r = sep ? Math.round(v / 50) * 50 : Math.round(v);
+      const txt = sep ? r.toLocaleString('en-US') : String(r);
+      if (t.textContent !== txt) t.textContent = txt;
     });
     days.forEach(li => {
       const s = +li.dataset.shot;
       li.classList.toggle('is-now', s === shot);
       li.classList.toggle('is-done', s < shot);
+      if (s === shot) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
     });
-    trackCut.style.width = (clamp(f / Math.max(1, N - 1)) * 100).toFixed(2) + '%';
-    if (shot === SHOTS - 1) clock.textContent = clockText(lerp(16 * 60 + 30, 19 * 60 + 10, local));
+    trackCut.style.width = (clamp((shot + local) / SHOTS) * 100).toFixed(2) + '%';
+    if (shot === SHOTS - 1) clock.textContent = clockText(lerp(16 * 60 + 30, 19 * 60 + 10, reduce ? 1 : local));
   }
 
-  window.FilmEngine.create({
-    section: film, stage: $('.film__stage'), canvas, FV, range: [0.01, 0.92], rate: 8, mStride: 2,
+  engine = window.FilmEngine.create({
+    section: film, stage, canvas, FV, range: [0.01, 0.92], rate: 8, mStride: 2,
+    bandY: 0.22,   // portrait tablets: the picture band sits high, so the captions fit below it
     lift: '.cap, .hero, .track',
     overlays: { '.cap': 'is-on' },
     onGate: k => { const p = Math.round(k * 100); loadPct.textContent = String(p); loadBar.style.width = p + '%'; },
     onReady: openLoader,
-    onFrame: v => { N = v.N; ui(v.f); },
+    onFrame: v => ui(v.f, v.shot),
   });
   setTimeout(openLoader, 9000); // never trap a visitor behind the loader on a very slow connection
-  const solid = () => bar.classList.toggle('is-solid', film.getBoundingClientRect().bottom < 70);
-  addEventListener('scroll', solid, { passive: true }); solid();
-  ui(0);
+  const onScroll = () => {
+    bar.classList.toggle('is-solid', film.getBoundingClientRect().bottom < 70);
+    ui(lastF, lastShot, true);   // the stage may have scrolled away under a held frame: hide, never show
+  };
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll);
+  onScroll();
 
   /* =========================================================== Mow it yourself */
   const BW = 1920, BH = 1080;          // board image size
   const SS = 0.5;                       // stripe layer scale
   const DECK = 72;                      // cutting width, board px
   const VMAX = 430, ACC = 1100, TURN = 2.7;
+  const STRAIGHT_MIN = 75;              // % of the cut lawn striped along the guides for a run to count
   const AWAY = (() => { const x = 0.38, y = -1, l = Math.hypot(x, y); return [x / l, y / l]; })(); // "away from the viewer"
   const PATTERNS = { straight: [0], diagonal: [Math.PI / 4], checker: [0, Math.PI / 2], diamond: [Math.PI / 4, -Math.PI / 4] };
 
   const board = $('#board'), mc = $('#mowCanvas'), mctx = mc.getContext('2d');
-  const startBox = $('#mowStart'), goBtn = $('#mowGo'), showBtn = $('#mowShow'), resetBtn = $('#mowReset');
+  const startBox = $('#mowStart'), goBtn = $('#mowGo'), showBtn = $('#mowShow'), resetBtn = $('#mowReset'), stopBtn = $('#mowStop');
   const sCov = $('#sCov'), sStr = $('#sStr'), sTime = $('#sTime'), doneEl = $('#mowDone'), bestEl = $('#best'), crewLine = $('#crewLine');
+  const hudCov = $('#hudCov'), hudTime = $('#hudTime'), hudMsg = $('#hudMsg');
 
   const lawnImg = new Image(), maskImg = new Image();
   // One stripe layer per pass direction, so a cross-cut (checkerboard, diamond) keeps both passes.
@@ -98,12 +126,25 @@
   let ready = false, playing = false, auto = null, boardVisible = false, gameDirty = true;
   let pattern = 'diagonal';
   const mower = { x: 960, y: 900, a: 0, v: 0 };
-  let tStart = 0, tNow = 0, finished = false;
-  let strSum = 0, strW = 0;
+  // tNow is mowing time: it only runs while you are driving (paused, hidden or tabbed away, it stops),
+  // and it advances by the same capped step the mower moves by, so the clock and the mower always agree.
+  let started = false, tNow = 0, finished = false, demo = false;
+  // Straight lines are scored from the stripes left on the lawn: every cell remembers whether the last pass
+  // over it ran along a guide line (within 15 degrees, judged over the last 0.3 s of travel so a wiggle can't
+  // fake it). Passes made while swinging round (more than 25 degrees of turn in 0.6 s) never overwrite a cell
+  // that is already cut, the way a U-turn at the end of a row doesn't spoil the row, and grass first cut in a
+  // turn isn't scored until a straight pass goes over it. Up to 15% of the lawn may stay unscored like that
+  // (the turning strips at the ends of the rows); past that, unscored grass counts as not straight, so
+  // driving in circles can't dodge the score.
+  // The headland, the strip within 1.5 deck widths of the edging, is where every row ends and the mower swings
+  // round, often in a gentle arc: there a pass off the guides never spoils a cell and isn't scored either.
+  let okCount = 0, scored = 0, okCell = null, headland = null;   // okCell: 0 off the guides, 1 along them, 2 unscored
+  const trail = [];
+  const ALIGN = Math.cos(15 * Math.PI / 180);
   const keys = new Set();
   let pointer = null;
   let view = { s: 1, x: 0, y: 0 }, mcw = 0, mch = 0, mdpr = 1;
-  let crewSecs = 0;
+  let crewSecs = 0, minSecs = 5, msgT = 0;
 
   const maskAt = (x, y) => {
     if (!maskData) return 0;
@@ -122,10 +163,11 @@
       c.drawImage(maskImg, 0, 0, stripe.width, stripe.height);
     });
     cut = new Uint8Array(GW * GH); cutCount = 0;
-    strSum = 0; strW = 0; tStart = 0; tNow = 0; finished = false;
+    okCell = new Uint8Array(GW * GH); okCount = 0; scored = 0; trail.length = 0; started = false; tNow = 0; finished = false; demo = false;
     mower.x = 960; mower.y = 905; mower.a = 0; mower.v = 0;
-    doneEl.classList.remove('is-on');
+    doneEl.classList.remove('is-on'); doneEl.textContent = '';
     gameDirty = true;
+    syncStart();
     score(true);
   }
 
@@ -152,7 +194,7 @@
 
   // Lay the grass under the deck. Blades bent away from the viewer read light, toward reads dark.
   // Each pass goes to the layer of the pattern direction it is closest to.
-  function stamp(x0, y0, x1, y1) {
+  function stamp(x0, y0, x1, y1, ok, turning) {
     const dx = x1 - x0, dy = y1 - y0, d = Math.hypot(dx, dy);
     if (d < 0.01) return;
     const ux = dx / d, uy = dy / d;
@@ -182,55 +224,69 @@
         const gx = Math.floor((bx + px * t * DECK) / CELL), gy = Math.floor((by + py * t * DECK) / CELL);
         if (gx < 0 || gy < 0 || gx >= GW || gy >= GH) continue;
         const k = gy * GW + gx;
-        if (lawnCell[k] && !cut[k]) { cut[k] = 1; cutCount++; }
+        if (!lawnCell[k]) continue;
+        const v = ok ? 1 : 0, skip = turning || (!ok && headland[k]);
+        if (!cut[k]) {
+          cut[k] = 1; cutCount++;
+          if (skip) okCell[k] = 2; else { okCell[k] = v; scored++; okCount += v; }
+        } else if (!skip && okCell[k] !== v) {
+          if (okCell[k] === 2) scored++; else okCount -= okCell[k];
+          okCell[k] = v; okCount += v;
+        }
       }
     }
     gameDirty = true;
   }
 
-  function straightness(heading, w) {
-    // Angle between the travel line and the nearest guide line for this pattern
-    let best = Math.PI;
-    for (const th of PATTERNS[pattern]) {
-      let dd = Math.abs(((heading - th) % Math.PI + Math.PI) % Math.PI);
-      dd = Math.min(dd, Math.PI - dd);
-      best = Math.min(best, dd);
-    }
-    const sc = 1 - Math.min(best, 0.42) / 0.42;
-    strSum += sc * w; strW += w;
+  // does a travel direction run along a guide line of this pattern?
+  function along(dx, dy) {
+    const d = Math.hypot(dx, dy); if (d < 1e-6) return false;
+    return PATTERNS[pattern].some(th => Math.abs((dx * Math.sin(th) - dy * Math.cos(th)) / d) >= ALIGN);
   }
+  const strPct = () => (cutCount ? Math.round(okCount / Math.max(scored, cutCount * 0.85) * 100) : 0);
 
   function score(force) {
-    const cov = lawnTotal ? cutCount / lawnTotal : 0;
-    sCov.textContent = String(Math.floor(cov * 100));
-    sStr.textContent = String(strW ? Math.round(strSum / strW * 100) : 0);
-    sTime.textContent = fmtTime(tNow);
-    if (!finished && cov >= 0.9 && !auto && tStart && !force) finish();
+    const cov = lawnTotal ? cutCount / lawnTotal : 0, c = String(Math.floor(cov * 100)), t = fmtTime(tNow), s = String(strPct());
+    if (sCov.textContent !== c) { sCov.textContent = c; hudCov.textContent = c; }
+    if (sStr.textContent !== s) sStr.textContent = s;
+    if (sTime.textContent !== t) { sTime.textContent = t; hudTime.textContent = t; }
+    if (!force && playing && started && !finished && !demo && cov >= 0.9) finish();
   }
 
+  // Best times per pattern. Anything that isn't a real, possible run (missing, zero, negative, faster than the
+  // mower can physically cover the lawn) is treated as no best at all.
   function readBest() {
-    try { const o = JSON.parse(localStorage.getItem('cc-mow-best') || '{}'); return (o && typeof o === 'object') ? o : {}; } catch { return {}; }
+    let o = {};
+    try { o = JSON.parse(localStorage.getItem('cc-mow-best') || '{}'); } catch { o = {}; }
+    const out = {};
+    if (o && typeof o === 'object') Object.keys(PATTERNS).forEach(k => { const v = +o[k]; if (Number.isFinite(v) && v >= minSecs) out[k] = v; });
+    return out;
   }
   function writeBest(o) { try { localStorage.setItem('cc-mow-best', JSON.stringify(o)); } catch { /* storage blocked: scores just aren't kept */ } }
+  const patternName = () => ({ straight: 'straight', diagonal: 'diagonal', checker: 'checkerboard', diamond: 'diamond' })[pattern];
   function showBest() {
     const b = readBest()[pattern];
-    bestEl.textContent = Number.isFinite(b) && b > 0 ? `Your best on ${patternName()}: ${fmtTime(b)}` : '';
+    bestEl.textContent = b ? `Your best on ${patternName()}: ${fmtTime(b)}` : '';
   }
-  const patternName = () => ({ straight: 'straight', diagonal: 'diagonal', checker: 'checkerboard', diamond: 'diamond' })[pattern];
 
   function finish() {
     finished = true;
-    const secs = tNow, str = strW ? Math.round(strSum / strW * 100) : 0;
-    const beat = crewSecs && secs < crewSecs;
-    doneEl.textContent = beat ? `Done in ${fmtTime(secs)}. You beat the crew.` : `Done in ${fmtTime(secs)} with ${str}% straight lines.`;
+    const secs = tNow, str = strPct(), t = fmtTime(secs);
+    let msg;
+    if (secs < minSecs) msg = 'Done, but too fast to be real, so it doesn’t count.';
+    else if (str < STRAIGHT_MIN) msg = `Done in ${t}, but only ${str}% straight. The crew keeps it over ${STRAIGHT_MIN}%.`;
+    else {
+      msg = crewSecs && secs < crewSecs ? `Done in ${t}, ${str}% straight. You beat the crew.` : `Done in ${t} with ${str}% straight lines.`;
+      const o = readBest();
+      if (!o[pattern] || secs < o[pattern]) { o[pattern] = Math.round(secs * 10) / 10; writeBest(o); }
+    }
+    doneEl.textContent = msg;
     doneEl.classList.add('is-on');
-    const o = readBest();
-    if (!Number.isFinite(o[pattern]) || secs < o[pattern]) { o[pattern] = Math.round(secs); writeBest(o); }
     showBest();
     stopPlay();
   }
 
-  // ---- Auto-mow: serpentine passes along each guide direction, like a crew would run it
+  // ---- Auto-mow ("Show me"): serpentine passes along each guide direction, like a crew would run it
   function planPath() {
     const segs = [];
     let bx0 = BW, by0 = BH, bx1 = 0, by1 = 0;
@@ -256,27 +312,37 @@
     }
     return segs;
   }
+  // The crew drives the same mower you do: a steady 85% of top speed on the stripes, and every turn at the
+  // end of a pass costs what this mower needs to brake, swing round and get back up to speed.
   function crewTime(segs) {
-    let L = 0;
-    segs.forEach(([a, b]) => { L += Math.hypot(b[0] - a[0], b[1] - a[1]); });
-    return L / (VMAX * 0.94) + segs.length * 0.9;
+    const v = VMAX * 0.85, turn = Math.PI / TURN + 2 * VMAX / ACC;
+    let t = 0;
+    segs.forEach(([a, b], i) => {
+      t += Math.hypot(b[0] - a[0], b[1] - a[1]) / v;
+      // between passes: swing round, and drive across to the next pass (a long hop where the pattern crosses over)
+      if (i < segs.length - 1) { const n = segs[i + 1][0]; t += turn + Math.max(0, Math.hypot(n[0] - b[0], n[1] - b[1]) - DECK) / v; }
+    });
+    return t;
   }
 
   function startAuto() {
     stopPlay();
     freshLawn();
+    demo = true;
     const segs = planPath();
     if (reduce) {
-      segs.forEach(([a, b]) => { stamp(a[0], a[1], b[0], b[1]); straightness(Math.atan2(b[0] - a[0], -(b[1] - a[1])), Math.hypot(b[0] - a[0], b[1] - a[1])); });
+      segs.forEach(([a, b]) => stamp(a[0], a[1], b[0], b[1], true, false));
       tNow = crewSecs;
       const last = segs[segs.length - 1];
       if (last) { mower.x = last[1][0]; mower.y = last[1][1]; mower.a = Math.atan2(last[1][0] - last[0][0], -(last[1][1] - last[0][1])); }
-      score(true); return;
+      syncStart(); score(true); showBoard(); return;
     }
     // Played back as a time-lapse, about 6x real speed
     auto = { segs, i: 0, t: 0, speed: VMAX * 6 };
     board.classList.add('is-auto');
     startBox.hidden = true;
+    showBoard();
+    wake();
   }
   function stepAuto(dt) {
     let left = auto.speed * dt, guard = 0;
@@ -287,29 +353,49 @@
       const t1 = Math.min(L, auto.t + left);
       const k0 = auto.t / L, k1 = t1 / L;
       const x0 = lerp(a[0], b[0], k0), y0 = lerp(a[1], b[1], k0), x1 = lerp(a[0], b[0], k1), y1 = lerp(a[1], b[1], k1);
-      stamp(x0, y0, x1, y1);
+      stamp(x0, y0, x1, y1, true, false);
       mower.x = x1; mower.y = y1; mower.a = Math.atan2(b[0] - a[0], -(b[1] - a[1]));
-      straightness(mower.a, Math.hypot(x1 - x0, y1 - y0));
       left -= t1 - auto.t; auto.t = t1;
       if (auto.t >= L - 0.01) { auto.i++; auto.t = 0; }
     }
     // the clock shows the crew's pace, not the time-lapse
-    tNow = crewSecs * Math.min(1, (auto.i + (auto.segs[auto.i] ? auto.t / Math.hypot(auto.segs[auto.i][1][0] - auto.segs[auto.i][0][0], auto.segs[auto.i][1][1] - auto.segs[auto.i][0][1]) : 0)) / auto.segs.length);
-    if (auto.i >= auto.segs.length) { auto = null; board.classList.remove('is-auto'); startBox.hidden = false; }
+    const seg = auto.segs[auto.i];
+    tNow = crewSecs * Math.min(1, (auto.i + (seg ? auto.t / Math.hypot(seg[1][0] - seg[0][0], seg[1][1] - seg[0][1]) : 0)) / auto.segs.length);
+    if (auto.i >= auto.segs.length) { auto = null; board.classList.remove('is-auto'); startBox.hidden = false; syncStart(); }
   }
 
   // ---- Player
+  // A run in progress (started, not finished, not the "Show me" lawn) can be paused and picked up again.
+  const inRun = () => started && !finished && !demo;
+  function syncStart() { goBtn.textContent = inRun() ? 'Keep mowing' : 'Start mowing'; }
   function startPlay() {
     if (!ready) return;
     auto = null; board.classList.remove('is-auto'); startBox.hidden = false;
-    if (finished) freshLawn();
+    if (finished || demo) freshLawn();
     playing = true;
     board.classList.add('is-playing');
+    stopBtn.hidden = false;
     mc.focus({ preventScroll: true });
+    showBoard();
+    wake();
+  }
+  // the whole lawn, its Pause button and the clock need to be on screen, clear of the fixed header
+  function showBoard() {
+    const r = board.getBoundingClientRect(), top = bar.getBoundingClientRect().bottom + 8;
+    if (r.top < top || r.bottom > innerHeight) scrollBy({ top: r.top - top - Math.max(0, (innerHeight - top - r.height) / 2), behavior: reduce ? 'auto' : 'smooth' });
   }
   function stopPlay() {
-    playing = false; keys.clear(); pointer = null;
+    const was = playing;
+    playing = false; keys.clear(); pointer = null; mower.v = 0;
     board.classList.remove('is-playing');
+    stopBtn.hidden = true;
+    syncStart();
+    // keyboard users land back on the button that resumes
+    if (was && document.activeElement === mc && !finished) goBtn.focus({ preventScroll: true });
+  }
+  function flash(text) {
+    if (hudMsg.textContent !== text) hudMsg.textContent = text;
+    msgT = 0.9;
   }
   function stepPlayer(dt) {
     let fwd = 0, turn = 0;
@@ -321,24 +407,42 @@
       const dx = pointer.x - mower.x, dy = pointer.y - mower.y, dist = Math.hypot(dx, dy);
       if (dist > 10) {
         const want = Math.atan2(dx, -dy);
-        let diff = ((want - mower.a + Math.PI) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2) - Math.PI;
+        const diff = ((want - mower.a + Math.PI) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2) - Math.PI;
         turn = clamp(diff * 3, -1, 1);
         fwd = clamp(dist / 160, 0, 1) * Math.max(0, Math.cos(diff));
       }
     }
+    if (started) tNow += dt;
     const da = turn * TURN * dt;
     mower.a += da;
     const vt = fwd * VMAX;
     mower.v += clamp(vt - mower.v, -ACC * dt, ACC * dt);
     if (Math.abs(mower.v) < 1 && !fwd) mower.v = 0;
     if (!mower.v) return;
-    const nx = mower.x + Math.sin(mower.a) * mower.v * dt, ny = mower.y - Math.cos(mower.a) * mower.v * dt;
-    // Beds, patio and the house are off limits: the mower stops at the steel edging
-    if (maskAt(nx, ny) < 90) { mower.v = 0; return; }
-    if (!tStart) tStart = performance.now();
-    stamp(mower.x, mower.y, nx, ny);
-    const d = Math.hypot(nx - mower.x, ny - mower.y);
-    if (mower.v > 0 && Math.abs(da) < 0.02) straightness(mower.a, d);
+    let nx = mower.x + Math.sin(mower.a) * mower.v * dt, ny = mower.y - Math.cos(mower.a) * mower.v * dt;
+    // Beds, patio and the house are off limits. At the steel edging the mower slides along it (steering the way
+    // the driver is turning first) instead of sticking in a corner; only head-on into a notch does it stop.
+    if (maskAt(nx, ny) < 90) {
+      flash('Steel edging. Turn away.');
+      const sg = turn < 0 ? -1 : 1;
+      let slid = false;
+      for (const dd of [0.5 * sg, -0.5 * sg, 1.0 * sg, -1.0 * sg]) {
+        const a2 = mower.a + dd, sx = mower.x + Math.sin(a2) * mower.v * 0.6 * dt, sy = mower.y - Math.cos(a2) * mower.v * 0.6 * dt;
+        if (maskAt(sx, sy) >= 90) { nx = sx; ny = sy; mower.a += dd * 0.2; mower.v *= 0.92; slid = true; break; }
+      }
+      if (!slid) { mower.v = 0; return; }
+    }
+    started = true;
+    // travel over the last 0.3 s and the 0.3 s before it
+    trail.push({ t: tNow, x: nx, y: ny });
+    while (trail.length > 2 && trail[1].t < tNow - 0.6) trail.shift();
+    const at = t => { for (let i = trail.length - 1; i >= 0; i--) if (trail[i].t <= t) return trail[i]; return trail[0]; };
+    const p1 = at(tNow - 0.3), p0 = at(tNow - 0.6);
+    const ax = nx - p1.x, ay = ny - p1.y, bx = p1.x - p0.x, by = p1.y - p0.y;
+    const la = Math.hypot(ax, ay), lb = Math.hypot(bx, by);
+    const ok = la > 6 ? along(ax, ay) : along(nx - mower.x, ny - mower.y);
+    const turning = la > 6 && lb > 6 && (ax * bx + ay * by) / (la * lb) < Math.cos(25 * Math.PI / 180);
+    stamp(mower.x, mower.y, nx, ny, ok, turning);
     mower.x = nx; mower.y = ny;
   }
 
@@ -403,34 +507,52 @@
     drawMower();
   }
 
-  let mLast = performance.now(), scoreT = 0;
+  // The game loop runs only while the board is on screen.
+  let mLast = performance.now(), scoreT = 0, looping = false;
   function mloop(now) {
+    if (!boardVisible) { looping = false; return; }
     const dt = Math.min(0.05, (now - mLast) / 1000); mLast = now;
-    if (ready && boardVisible) {
+    if (ready) {
       if (auto) stepAuto(dt);
-      else if (playing) { stepPlayer(dt); if (tStart && !finished) tNow = (now - tStart) / 1000; }
+      else if (playing) stepPlayer(dt);
       follow(dt);
       if (playing || auto) gameDirty = true;
       if (gameDirty) { render(); gameDirty = false; }
+      if (msgT > 0) { msgT -= dt; if (msgT <= 0) hudMsg.textContent = ''; }
       scoreT += dt;
       if (scoreT > 0.1) { score(false); scoreT = 0; }
     }
     requestAnimationFrame(mloop);
   }
+  function wake() {
+    if (looping || !boardVisible) return;
+    looping = true; mLast = performance.now();
+    requestAnimationFrame(mloop);
+  }
 
-  // ---- Input
+  // ---- Input. Keys drive the mower only while the lawn itself has focus, never the radios or buttons.
   const KEYMAP = { ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down', ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right' };
-  addEventListener('keydown', e => {
-    if (!playing) return;
-    if (e.code === 'Escape') { stopPlay(); return; }
+  mc.addEventListener('keydown', e => {
+    if (!playing) {
+      if (e.code === 'Enter' || e.code === 'Space') { e.preventDefault(); if (!auto) startPlay(); }
+      return;
+    }
+    if (e.code === 'Escape') { e.preventDefault(); stopPlay(); return; }
+    // keys that would scroll the page away from the lawn do nothing mid-run
+    if (['Space', 'PageUp', 'PageDown', 'Home', 'End'].includes(e.code)) { e.preventDefault(); return; }
     const k = KEYMAP[e.code];
     if (k) { keys.add(k); e.preventDefault(); }
   });
-  addEventListener('keyup', e => { const k = KEYMAP[e.code]; if (k) keys.delete(k); });
-  addEventListener('blur', () => keys.clear());
+  mc.addEventListener('keyup', e => { const k = KEYMAP[e.code]; if (k) keys.delete(k); });
+  // tabbing or clicking away pauses the run (and its clock)
+  mc.addEventListener('blur', () => { if (playing && !pointer) stopPlay(); });
+  addEventListener('blur', () => { keys.clear(); if (playing) stopPlay(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden && playing) stopPlay(); });
+  // A finger aims the mower at a spot just above it, so the finger never covers the mower.
+  const LIFT = 56;
   const toBoard = e => {
-    const r = mc.getBoundingClientRect();
-    return { x: view.x + (e.clientX - r.left) * mdpr / view.s, y: view.y + (e.clientY - r.top) * mdpr / view.s };
+    const r = mc.getBoundingClientRect(), lift = e.pointerType === 'mouse' ? 0 : LIFT;
+    return { x: view.x + (e.clientX - r.left) * mdpr / view.s, y: view.y + (e.clientY - r.top - lift) * mdpr / view.s };
   };
   mc.addEventListener('pointerdown', e => {
     if (!playing) return;
@@ -442,20 +564,29 @@
   mc.addEventListener('pointerup', up);
   mc.addEventListener('pointercancel', up);
   goBtn.addEventListener('click', startPlay);
+  stopBtn.addEventListener('click', stopPlay);
   showBtn.addEventListener('click', startAuto);
   resetBtn.addEventListener('click', () => { stopPlay(); auto = null; board.classList.remove('is-auto'); startBox.hidden = false; freshLawn(); });
+  // A new pattern means a new lawn: guides, stripes, straightness and the clock all belong to one pattern.
   $$('input[name="pat"]').forEach(r => r.addEventListener('change', () => {
     if (!r.checked) return;
     pattern = r.value;
-    buildGuide();
-    if (ready) crewSecs = crewTime(planPath());
-    crewLine.textContent = crewSecs ? `The crew does it in ${fmtTime(crewSecs)}.` : "Beat the crew's time.";
+    stopPlay(); auto = null; board.classList.remove('is-auto'); startBox.hidden = false;
+    if (ready) { freshLawn(); buildGuide(); crewSecs = crewTime(planPath()); }
+    crewLine.textContent = crewSecs ? `The crew does it in ${fmtTime(crewSecs)}.` : 'Then try to beat the crew.';
     showBest();
     syncPattern();
   }));
 
-  new IntersectionObserver(es => { boardVisible = es[0].isIntersecting; if (boardVisible) { msize(); gameDirty = true; } else stopPlay(); }).observe(board);
-  addEventListener('resize', msize);
+  // the game runs while the lawn is on screen; a run pauses once less than half of it is
+  new IntersectionObserver(es => {
+    const e = es[es.length - 1];
+    const was = boardVisible;
+    boardVisible = e.isIntersecting;
+    if (boardVisible && !was) { msize(); gameDirty = true; wake(); }
+    if (playing && e.intersectionRatio < 0.5) stopPlay();
+  }, { threshold: [0, 0.5] }).observe(board);
+  addEventListener('resize', () => { if (boardVisible) msize(); });
 
   Promise.all([
     new Promise(res => { lawnImg.onload = res; lawnImg.onerror = res; lawnImg.src = 'img/lawn.webp'; }),
@@ -473,6 +604,19 @@
     for (let gy = 0; gy < GH; gy++) for (let gx = 0; gx < GW; gx++) {
       if (maskAt((gx + 0.5) * CELL, (gy + 0.5) * CELL) > 128) { lawnCell[gy * GW + gx] = 1; lawnTotal++; }
     }
+    // the headland: lawn cells within 1.5 deck widths of the edging
+    headland = new Uint8Array(GW * GH);
+    const HR = Math.ceil(DECK * 1.5 / CELL);
+    for (let gy = 0; gy < GH; gy++) for (let gx = 0; gx < GW; gx++) {
+      if (!lawnCell[gy * GW + gx]) continue;
+      search: for (let dy = -HR; dy <= HR; dy++) for (let dx = -HR; dx <= HR; dx++) {
+        if (dx * dx + dy * dy > HR * HR) continue;
+        const x = gx + dx, y = gy + dy;
+        if (x < 0 || y < 0 || x >= GW || y >= GH || !lawnCell[y * GW + x]) { headland[gy * GW + gx] = 1; break search; }
+      }
+    }
+    // The fastest any run could be: 90% of the lawn under the deck at full speed in dead-straight lines.
+    minSecs = Math.max(5, 0.9 * lawnTotal * CELL * CELL / (DECK * VMAX));
     ready = true;
     freshLawn();
     buildGuide();
@@ -482,48 +626,74 @@
     msize();
     view.x = clamp(mower.x - mcw / view.s / 2, 0, BW - mcw / view.s);
     view.y = clamp(mower.y - mch / view.s / 2, 0, BH - mch / view.s);
+    gameDirty = true;
+    wake();
   });
-  requestAnimationFrame(mloop);
 
   /* =========================================================== Estimator */
-  const est = $('#est'), totalEl = $('#total'), daysEl = $('#days'), mowRate = $('#mowRate'), mowPat = $('#mowPat');
+  const est = $('#est'), totalEl = $('#total'), estN = $('#estN'), daysEl = $('#days'), mowLine = $('#mowLine'), estSay = $('#estSay');
   const trees = $('#trees'), treesOut = $('#treesOut');
-  function syncPattern() { mowPat.textContent = patternName(); }
-  let shown = 0, raf = 0;
+  function syncPattern() { const p = $('#mowPat'); if (p) p.textContent = patternName(); }
+  let shown = 0, raf = 0, sayT = 0;
   function calc() {
     const fd = new FormData(est);
     const S = +fd.get('size') || 5000;
     const nTrees = clamp(Math.round(+trees.value || 0), 0, 8);
     const sod = +fd.get('sod') || 0;
     const lawnA = S * 0.62, bedA = S * 0.16;
+    const has = k => !!fd.get(k);
     let sum = 0;
     sum += nTrees * 950;
-    if (fd.get('grade')) sum += S * 0.45;
+    if (has('grade')) sum += S * 0.45;
     if (sod) sum += lawnA * sod;
-    if (fd.get('beds')) sum += bedA * 14;
-    if (fd.get('patio')) sum += 300 * 28;
-    if (fd.get('pit')) sum += 3200;
-    if (fd.get('lights')) sum += 2800;
-    if (fd.get('fence')) sum += Math.sqrt(S) * 1.1 * 38;
+    if (has('beds')) sum += bedA * 14;
+    if (has('patio')) sum += 300 * 28;
+    if (has('pit')) sum += 3200;
+    if (has('lights')) sum += 2800;
+    if (has('fence')) sum += Math.sqrt(S) * 1.1 * 38;
     sum = Math.round(sum / 50) * 50;
-    let d = 2 + nTrees * 0.3 + S / 5000 * 1.2 + (fd.get('patio') ? 0.6 : 0) + (fd.get('fence') ? 0.5 : 0);
-    d = clamp(Math.round(d), 1, 12);
-    daysEl.textContent = `${d} working ${d === 1 ? 'day' : 'days'}`;
-    mowRate.textContent = '$' + (S <= 2500 ? 45 : S <= 5000 ? 55 : S <= 10000 ? 75 : 120);
+    // Working days, the way the crew runs a job: trees and fence line first, then grading, then the
+    // planting and sod crew works alongside the stone and lighting crew. The film's yard (about 12,000 sq ft,
+    // two trees, grading, beds, sod, patio, fire pit and lights) comes out at four days.
+    const clear = (nTrees ? 0.5 + 0.25 * (nTrees - 1) : 0) + (has('fence') ? 0.75 : 0);
+    const grade = has('grade') ? Math.max(0.5, S / 12000) : 0;
+    const soft = (has('beds') ? Math.max(0.5, bedA / 2000) : 0) + (sod ? Math.max(0.5, lawnA / 8000) : 0);
+    const hard = (has('patio') ? 1.5 : 0) + (has('pit') ? 0.5 : 0);
+    const lights = has('lights') ? 1 : 0;
+    const d = Math.ceil(clear + grade + Math.max(soft, hard, lights) - 1e-9);
+    const empty = sum === 0;
+    estN.classList.toggle('is-empty', empty);
+    daysEl.textContent = empty ? 'Pick some work above to see a price.' : `${d} working ${d === 1 ? 'day' : 'days'}`;
+    const rate = '$' + (S <= 2500 ? 45 : S <= 5000 ? 55 : S <= 12000 ? 75 : 120);
+    mowLine.textContent = '';
+    mowLine.append(sod ? 'Weekly mowing once the sod roots: ' : 'Weekly mowing: ');
+    const b = document.createElement('span'); b.textContent = rate; mowLine.append(b, ' a visit, ');
+    const p = document.createElement('span'); p.id = 'mowPat'; p.textContent = patternName(); mowLine.append(p, ' stripes');
     const from = shown, t0 = performance.now();
     cancelAnimationFrame(raf);
     const step = now => { const k = reduce ? 1 : ease(clamp((now - t0) / 450)); shown = lerp(from, sum, k); totalEl.textContent = Math.round(shown).toLocaleString('en-US'); if (k < 1) raf = requestAnimationFrame(step); };
     raf = requestAnimationFrame(step);
+    // screen readers hear the settled result once, not the count
+    clearTimeout(sayT);
+    sayT = setTimeout(() => { estSay.textContent = empty ? 'No work picked yet.' : `Estimate $${sum.toLocaleString('en-US')}, ${d} working ${d === 1 ? 'day' : 'days'}.`; }, 700);
   }
   $$('.step__b').forEach(b => b.addEventListener('click', () => {
     const v = clamp((+trees.value || 0) + +b.dataset.step, 0, 8);
     trees.value = String(v); treesOut.textContent = String(v); calc();
   }));
-  est.addEventListener('input', calc);
   est.addEventListener('change', calc);
+  // one tap sets the estimator to the yard in the film
+  $('#filmYard').addEventListener('click', () => {
+    est.querySelector('input[name="size"][value="12000"]').checked = true;
+    est.querySelector('input[name="sod"][value="1.6"]').checked = true;
+    const on = { grade: 1, beds: 1, patio: 1, pit: 1, lights: 1, fence: 0 };
+    Object.keys(on).forEach(k => { est.querySelector(`input[name="${k}"]`).checked = !!on[k]; });
+    trees.value = '2'; treesOut.textContent = '2';
+    calc();
+  });
   est.addEventListener('submit', e => e.preventDefault());
-  syncPattern();
   calc();
+  estSay.textContent = '';
 
   const book = $('#book');
   $('#bookBtn').addEventListener('click', () => { if (book.showModal) book.showModal(); });
