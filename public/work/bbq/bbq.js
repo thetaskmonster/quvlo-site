@@ -180,14 +180,18 @@
   }
   // On landscape screens the pit card takes, for each shot, the corner that covers the least of that shot's
   // subject (top right first); on phones upright and tablets upright it has a fixed place (bbq.css).
-  let HUDS = null, hudShot = -1;
+  let HUDS = null, hudShot = -1, hudFade = 0;
   function applyHud(shot) {
     if (!HUDS || shot === hudShot) return;
     hudShot = shot;
     const h = HUDS[shot];
     if (!h) { hud.style.left = hud.style.top = hud.style.right = ''; hud.style.removeProperty('--low'); hud.dataset.corner = ''; return; }
+    // a move to another corner happens at a cut: the card leaves at once and fades in at its new corner
+    const moved = hud.dataset.corner && hud.dataset.corner !== h.corner && !reduce;
+    if (moved) hud.classList.add('is-moving');
     hud.style.right = 'auto'; hud.style.left = h.l + 'px'; hud.style.top = h.t + 'px';
     hud.style.setProperty('--low', h.low ? '1' : '0'); hud.dataset.corner = h.corner;
+    if (moved) { const tok = ++hudFade; requestAnimationFrame(() => requestAnimationFrame(() => { if (tok === hudFade) hud.classList.remove('is-moving'); })); }
   }
   function placeCaps(v) {
     const W = stage.clientWidth, H = stage.clientHeight;
@@ -269,9 +273,15 @@
     card.append(b, document.createTextNode(n.d));
     el.append(line, pin, card); notesEl.append(el);
     const st = { el, line, pin, card, forced: null };
-    pin.addEventListener('click', () => { st.forced = !el.classList.contains('is-open'); });
+    pin.addEventListener('click', () => {
+      const opening = !el.classList.contains('is-open');
+      // on a phone one card at a time: opening a pin closes the others, and the tapped card is placed first
+      if (opening && stage.clientWidth < 600) noteEls.forEach(o => { if (o !== st) o.forced = false; });
+      st.forced = opening; if (opening) lastTap = st;
+    });
     return st;
   });
+  let lastTap = null;
   const inflate = (r, k) => ({ l: r.l - k, t: r.t - k, r: r.r + k, b: r.b + k });
   function notes(v) {
     if (!v || !v.rect) return;
@@ -287,8 +297,10 @@
     // a card would rather sit off the shot's main subject (the hands, the meat) when there is room
     const subj = (shot === 2 || shot === 5) ? subjects(v, shot, local, local).slice(0, SUBJ[shot].length).filter(r => r.w >= 1) : [];
     const clear = r => ok(r) && !subj.some(q => overlap(r, q) > 0.15 * (r.r - r.l) * (r.b - r.t));
-    NOTES.forEach((n, j) => {
-      const s = noteEls[j];
+    // the card tapped last is placed first, so it gets the room
+    const order = NOTES.map((n, j) => j).sort((a, b) => (noteEls[b] === lastTap) - (noteEls[a] === lastTap));
+    order.forEach(j => {
+      const n = NOTES[j], s = noteEls[j];
       // (with reduced motion the shot's still sits at its middle, so the same windows apply)
       const on = n.shot === shot && local >= n.win[0] && local <= n.win[1];
       let vis = false, X = 0, Y = 0;
@@ -308,7 +320,10 @@
         const w = s.card.offsetWidth || 200, h = s.card.offsetHeight || 60, gap = small ? 26 : 48;
         const tries = [[gap, -h - gap], [-gap - w, -h - gap], [-gap - w, -h / 2], [gap, -h / 2], [gap, gap], [-gap - w, gap], [-w / 2, -h - gap], [-w / 2, gap]];
         const rect = ([dx, dy]) => ({ l: X + dx, t: Y + dy, r: X + dx + w, b: Y + dy + h });
-        const pick = open ? (tries.find(t => clear(rect(t))) || tries.find(t => ok(rect(t)))) : null;
+        const inside = r => r.l >= 8 && r.r <= W - 8 && r.t >= 8 && r.b <= limB;
+        let pick = open ? (tries.find(t => clear(rect(t))) || tries.find(t => ok(rect(t)))) : null;
+        // a card someone tapped always opens: if nothing is free, take the first spot that fits on screen
+        if (open && !pick && s.forced) pick = tries.find(t => inside(rect(t))) || [clamp(-w / 2, 8 - X, W - 8 - w - X), clamp(-h - gap, 8 - Y, limB - h - Y)];
         if (open && !pick) open = false;
         if (pick) {
           const [dx, dy] = pick;

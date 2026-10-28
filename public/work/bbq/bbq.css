@@ -93,6 +93,8 @@ a { color: inherit; }
 /* The pit card: probe dial, pit and clock, and the cook log */
 .hud { position: absolute; z-index: 5; top: calc(76px + env(safe-area-inset-top, 0px)); right: var(--gut-s); translate: 0 calc(var(--low, 0) * -1 * var(--film-hide, 0px)); width: 300px; padding: 14px 16px; border-radius: 6px; background: rgba(14, 10, 8, .78); border: 1px solid rgba(185, 147, 92, .32); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .hud__gauge { display: grid; grid-template-columns: 104px 1fr; grid-template-areas: "dial read" "dial row"; column-gap: 14px; align-items: center; }
+.hud { transition: opacity .2s ease-out; }
+.hud.is-moving { opacity: 0; transition: none; }
 .gauge__dial { grid-area: dial; width: 104px; height: 104px; display: block; }
 .gauge__bezel { fill: none; stroke: var(--brass); stroke-width: 6; }
 .gauge__face { fill: rgba(16, 11, 8, .9); stroke: rgba(0, 0, 0, .6); stroke-width: 2; }
