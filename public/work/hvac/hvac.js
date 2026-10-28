@@ -32,11 +32,11 @@
   const SPOTS = [
     { shot: 1, a: [0.50, 0.173], b: [0.50, 0.18], at: 0.08, side: 'rb', t: 'Fan motor', d: 'Bearings worn. It hums and barely turns, so the heat stays in the coil.' },
     { shot: 1, a: [0.414, 0.528], b: [0.40, 0.55], at: 0.20, side: 'rb', t: 'Coil', d: 'Fifteen summers of dirt and corrosion. Air barely gets through it now.' },
-    { shot: 1, a: [0.707, 0.358], b: [0.75, 0.38], at: 0.70, side: 'lb', t: 'Capacitor', d: 'Bulged. A twelve-dollar part, so we swapped it first. The compressor still would not start.' },
-    { shot: 3, a: [0.31, 0.62], b: [0.26, 0.66], at: 0.08, side: 'rt', t: 'Line set', d: 'New copper, fully insulated, sealed where it enters the brick.' },
+    { shot: 1, a: [0.707, 0.358], b: [0.75, 0.38], at: 0.70, side: 'lb', t: 'Capacitor', d: 'Bulged and reading low on the meter. We tried a test capacitor, no charge, and the compressor still would not start.' },
+    { shot: 3, a: [0.31, 0.62], b: [0.26, 0.66], at: 0.08, side: 'rt', t: 'Line set', d: 'New copper, the large suction line insulated end to end, sealed where it enters the brick.' },
     { shot: 3, a: [0.47, 0.775], b: [0.45, 0.80], at: 0.26, side: 'rt', t: 'Pad', d: 'Level composite pad, raised so rain drains away from the unit.' },
     { shot: 3, a: [0.55, 0.52], b: [0.56, 0.53], at: 0.44, side: 'lt', t: 'Variable-speed fan', d: 'Runs slow and quiet most of the day instead of slamming on and off.' },
-    { shot: 3, a: [0.63, 0.60], b: [0.66, 0.62], at: 0.62, side: 'rt', t: 'Charge', d: 'Vacuum and refrigerant charge checked on gauges and written on your invoice.' }
+    { shot: 3, a: [0.63, 0.60], b: [0.66, 0.62], at: 0.62, side: 'rt', t: 'Charge', d: 'Pressure-tested with nitrogen, vacuum pulled below 500 microns, R-454B charged by weight and checked by subcooling. The numbers go on your invoice.' }
   ];
   const HEAT2 = [255, 193, 94], COOL2 = [159, 219, 255];
   const mix = (a, b, k) => `rgb(${a.map((v, i) => Math.round(lerp(v, b[i], k))).join(',')})`;
@@ -316,7 +316,7 @@
   const fillP = $('#fillP');
   if (fillP) {
     const words = fillP.textContent.trim().split(/\s+/);
-    const hot = new Set(['twelve-dollar', 'capacitor,', 'cottonwood,', '2009.']);
+    const hot = new Set(['capacitor,', 'cottonwood,', '2009.']);
     fillP.textContent = '';
     const spans = words.map((w, n) => {
       const s = document.createElement('span');
@@ -378,7 +378,8 @@
   const SLOTS = [
     { t: '8–10 am', h: 8 }, { t: '10 am–12 pm', h: 10 }, { t: '1–3 pm', h: 13 }, { t: '3–5 pm', h: 15 }, { t: '6–8 pm', h: 18, eve: true }
   ];
-  const FEE_TODAY = 75, FEE_AFTER = 125, TUNE = 129, TUNE_EXTRA = 89, REPAIR = 189;
+  // Same-day visits carry no extra fee (in July, same day is the point); evenings and weekends do.
+  const FEE_AFTER = 125, TUNE = 129, TUNE_EXTRA = 89, REPAIR = 99;
   // The company is in Dallas, so "today" and the open windows follow Dallas time wherever the visitor is.
   function dallasNow() {
     const parts = {};
@@ -418,7 +419,6 @@
   const feeFor = (day, s) => {
     if (need() !== 'repair') return { fee: 0, why: '' };
     if (s.eve || day.weekend) return { fee: FEE_AFTER, why: day.weekend ? 'Weekend' : 'Evening' };
-    if (day.n === 0) return { fee: FEE_TODAY, why: 'Same day' };
     return { fee: 0, why: '' };
   };
   let slotInputs = [];
@@ -460,10 +460,11 @@
       sum = REPAIR + fee;
       linesEl.append(li('Repair visit: trip and diagnosis', `$${REPAIR}`));
       if (fee) linesEl.append(li(why, `+$${fee}`));
-      unitEl.textContent = 'The $189 comes off the repair price if you go ahead.';
+      unitEl.textContent = `The $${REPAIR} comes off the repair price if you go ahead.`;
     } else {
       linesEl.append(li('In-home quote for a new system', 'Free'));
-      unitEl.textContent = 'Free in-home quote, any day of the week.';
+      linesEl.append(li('Most 3-ton heat pumps in DFW, installed', '$9k–$14k'));
+      unitEl.textContent = 'Free in-home quote, any day. Your price is one flat number.';
     }
     whenEl.textContent = `${selDay.long}, ${slot.t}`;
     // screen readers hear the final total once, not the count-up
