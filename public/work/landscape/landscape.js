@@ -4,7 +4,7 @@
 (() => {
   'use strict';
   // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.
-  const FV = '2026102813';   // also the ?v= on landscape.css, film-engine.js and landscape.js in index.html
+  const FV = '2026102822';   // also the ?v= on landscape.css, film-engine.js and landscape.js in index.html
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -15,8 +15,9 @@
 
   /* =========================================================== Film */
   const PER = 40, SHOTS = 6;
-  // Real frames per shot. Must match "lens" in frames.json: shots 2 and 4 are shorter than 40 frames.
-  const LENS = [40, 21, 40, 39, 40, 40];
+  // Real frames per shot: read from frames.json ("lens") once the engine has it; this is the fallback until then.
+  const LENS = [40, 40, 40, 40, 40, 40];
+  const lensOf = s => { const L = engine && engine.meta && engine.meta.lens; return Array.isArray(L) && L.length === SHOTS && +L[s] > 0 ? +L[s] : LENS[s]; };
   const film = $('#film'), stage = $('.film__stage'), canvas = $('#filmCanvas');
   const loader = $('#loader'), loadPct = $('#loadPct'), loadBar = $('#loadBar');
   const bar = $('.bar'), hero = $('#hero'), track = $('#track'), trackCut = $('#trackCut');
@@ -48,7 +49,7 @@
     lastF = f;
     const shot = shotIn == null ? Math.min(SHOTS - 1, Math.floor(f / PER)) : shotIn;
     lastShot = shot;
-    const local = clamp((f - shot * PER) / Math.max(1, LENS[shot] - 1));
+    const local = clamp((f - shot * PER) / Math.max(1, lensOf(shot) - 1));
     // a caption shows only while the scroll position is in the same shot as the picture on screen: after a
     // jump (Home, a link), the old picture can hold for a frame or two and its caption must not come with it
     const onScreen = stageOn() && shotAtScroll() === shot;
@@ -125,7 +126,7 @@
   let lawnCell = null, cut = null, lawnTotal = 0, cutCount = 0;
   let ready = false, playing = false, auto = null, boardVisible = false, gameDirty = true;
   let pattern = 'diagonal';
-  const mower = { x: 960, y: 900, a: 0, v: 0 };
+  const mower = { x: 960, y: 700, a: 0, v: 0 };   // start: open lawn above the roof (img/lawn-mask.png)
   // tNow is mowing time: it only runs while you are driving (paused, hidden or tabbed away, it stops),
   // and it advances by the same capped step the mower moves by, so the clock and the mower always agree.
   let started = false, tNow = 0, finished = false, demo = false;
@@ -164,7 +165,7 @@
     });
     cut = new Uint8Array(GW * GH); cutCount = 0;
     okCell = new Uint8Array(GW * GH); okCount = 0; scored = 0; trail.length = 0; started = false; tNow = 0; finished = false; demo = false;
-    mower.x = 960; mower.y = 905; mower.a = 0; mower.v = 0;
+    mower.x = 960; mower.y = 700; mower.a = 0; mower.v = 0;
     doneEl.classList.remove('is-on'); doneEl.textContent = '';
     gameDirty = true;
     syncStart();
@@ -287,6 +288,12 @@
   }
 
   // ---- Auto-mow ("Show me"): serpentine passes along each guide direction, like a crew would run it
+  const TRIM = 0.25;
+  // the whole machine on the lawn at (x, y) heading a: casters 0.8 deck ahead, 0.5 deck to each side, 0.55 behind
+  const machineOn = (x, y, a) => {
+    const ux = Math.sin(a), uy = -Math.cos(a), px = -uy, py = ux;
+    return [[0.8, 0.5], [0.8, -0.5], [-0.55, 0.5], [-0.55, -0.5], [0.8, 0]].every(([f, s]) => maskAt(x + ux * f * DECK + px * s * DECK, y + uy * f * DECK + py * s * DECK) >= 90);
+  };
   function planPath() {
     const segs = [];
     let bx0 = BW, by0 = BH, bx1 = 0, by1 = 0;
@@ -304,11 +311,22 @@
           const x = cx + px * o + ux * t, y = cy + py * o + uy * t;
           if (maskAt(x, y) > 128) { if (a === null) a = t; b = t; }
         }
+        // keep the deck on the lawn: the stretch is where the centre line is, so pull each end in (TRIM of a deck)
+        if (a !== null) { a += DECK * TRIM; b -= DECK * TRIM; }
         if (a === null || b - a < DECK * 0.6) continue;
         const p0 = [cx + px * o + ux * a, cy + py * o + uy * a], p1 = [cx + px * o + ux * b, cy + py * o + uy * b];
         segs.push(flip ? [p1, p0] : [p0, p1]);
         flip = !flip;
       }
+    }
+    // The time-lapse ends on the last pass: pull its end back (or drop the pass) until the whole machine is on the
+    // lawn there, so the mower never drives onto the roof or a bed at the finish.
+    while (segs.length) {
+      const [p0, p1] = segs[segs.length - 1], L = Math.hypot(p1[0] - p0[0], p1[1] - p0[1]), a = Math.atan2(p1[0] - p0[0], -(p1[1] - p0[1]));
+      let t = L;
+      while (t > DECK * 0.6 && !machineOn(p0[0] + (p1[0] - p0[0]) * t / L, p0[1] + (p1[1] - p0[1]) * t / L, a)) t -= 4;
+      if (t > DECK * 0.6) { segs[segs.length - 1] = [p0, [p0[0] + (p1[0] - p0[0]) * t / L, p0[1] + (p1[1] - p0[1]) * t / L]]; break; }
+      segs.pop();
     }
     return segs;
   }
@@ -334,7 +352,7 @@
       segs.forEach(([a, b]) => stamp(a[0], a[1], b[0], b[1], true, false));
       tNow = crewSecs;
       const last = segs[segs.length - 1];
-      if (last) { mower.x = last[1][0]; mower.y = last[1][1]; mower.a = Math.atan2(last[1][0] - last[0][0], -(last[1][1] - last[0][1])); }
+      if (last) { mower.x = last[1][0]; mower.y = last[1][1]; mower.a = Math.atan2(last[1][0] - last[0][0], -(last[1][1] - last[0][1])); parkOnLawn(); }
       syncStart(); score(true); showBoard(); return;
     }
     // Played back as a time-lapse, about 6x real speed
@@ -343,6 +361,22 @@
     startBox.hidden = true;
     showBoard();
     wake();
+  }
+  // Safety net: planPath already ends the last pass with the whole machine on the lawn. If it ever doesn't, park at
+  // the nearest spot where it is (backed up along the pass first).
+  function parkOnLawn() {
+    const ux = Math.sin(mower.a), uy = -Math.cos(mower.a);
+    const onLawn = (x, y) => machineOn(x, y, mower.a);
+    for (let back = 0; back <= DECK * 1.5; back += 4) {
+      const x = mower.x - ux * back, y = mower.y - uy * back;
+      if (onLawn(x, y)) { mower.x = x; mower.y = y; gameDirty = true; return; }
+    }
+    for (let r = 8; r <= DECK * 4; r += 8) {
+      for (let k = 0; k < 24; k++) {
+        const t = k / 24 * Math.PI * 2, x = mower.x + Math.cos(t) * r, y = mower.y + Math.sin(t) * r;
+        if (onLawn(x, y)) { mower.x = x; mower.y = y; gameDirty = true; return; }
+      }
+    }
   }
   function stepAuto(dt) {
     let left = auto.speed * dt, guard = 0;
@@ -361,7 +395,7 @@
     // the clock shows the crew's pace, not the time-lapse
     const seg = auto.segs[auto.i];
     tNow = crewSecs * Math.min(1, (auto.i + (seg ? auto.t / Math.hypot(seg[1][0] - seg[0][0], seg[1][1] - seg[0][1]) : 0)) / auto.segs.length);
-    if (auto.i >= auto.segs.length) { auto = null; board.classList.remove('is-auto'); startBox.hidden = false; syncStart(); }
+    if (auto.i >= auto.segs.length) { auto = null; parkOnLawn(); board.classList.remove('is-auto'); startBox.hidden = false; syncStart(); }
   }
 
   // ---- Player
@@ -589,8 +623,8 @@
   addEventListener('resize', () => { if (boardVisible) msize(); });
 
   Promise.all([
-    new Promise(res => { lawnImg.onload = res; lawnImg.onerror = res; lawnImg.src = 'img/lawn.webp'; }),
-    new Promise(res => { maskImg.onload = res; maskImg.onerror = res; maskImg.src = 'img/lawn-mask.png'; })
+    new Promise(res => { lawnImg.onload = res; lawnImg.onerror = res; lawnImg.src = `img/lawn.webp?v=${FV}`; }),
+    new Promise(res => { maskImg.onload = res; maskImg.onerror = res; maskImg.src = `img/lawn-mask.png?v=${FV}`; })
   ]).then(() => {
     if (!maskImg.naturalWidth || !lawnImg.naturalWidth) return;
     // read the mask once, at stripe scale, for collisions and coverage

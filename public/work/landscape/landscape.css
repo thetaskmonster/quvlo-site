@@ -92,6 +92,8 @@ img { max-width: 100%; display: block; }
 /* Each caption sits clear of its shot's work (data-place in the HTML) */
 .cap[data-place="right"], .cap[data-place="top-right"] { left: auto; right: max(clamp(20px, 5vw, 72px), env(safe-area-inset-right, 0px)); }
 .cap[data-place="top-right"], .cap[data-place="top-left"] { top: clamp(84px, 12vh, 120px); bottom: auto; }
+/* Day 4: a narrower card, so the sod carrier walking in the middle of the frame stays clear */
+.cap[data-shot="4"] { width: min(420px, 34vw); }
 
 .track { position: absolute; left: max(clamp(20px, 5vw, 72px), env(safe-area-inset-left, 0px)); right: max(clamp(20px, 5vw, 72px), env(safe-area-inset-right, 0px)); bottom: clamp(22px, 4vh, 40px); color: #fff; transition: opacity .4s; }
 .track.is-hidden { opacity: 0; }
@@ -290,9 +292,12 @@ img { max-width: 100%; display: block; }
   .hero::before { inset: -70px -120px -50px -160px; background: radial-gradient(closest-side, rgba(10,22,15,.86), rgba(10,22,15,.62) 60%, rgba(10,22,15,0)); }
   .hero__h { margin-bottom: 8px; font-size: clamp(26px, 4.6vw, 38px); }
   .hero__p { font-size: 13.5px; }
-  .cap, .cap[data-place] { top: 56px; bottom: auto; width: min(320px, 46vw); padding: 10px 14px; }
+  .cap, .cap[data-place] { top: 56px; bottom: auto; width: min(300px, 40vw); padding: 10px 14px; }
+  /* the portrait-phone rule (max-width: 720px) pins every card to the left; put right-hand cards back on the right */
+  .cap[data-place="right"], .cap[data-place="top-right"] { left: auto; right: 16px; }
   .cap[data-phl="bottom"] { top: auto; bottom: 58px; }
   .cap[data-shot="1"] { width: min(290px, 40vw); }
+  .cap[data-shot="4"] { width: min(250px, 34vw); }
   .cap__day { margin-bottom: 4px; font-size: 12.5px; }
   .cap__h { margin-bottom: 6px; font-size: 19px; }
   .cap__p { margin-bottom: 8px; font-size: 12.5px; line-height: 1.38; }
