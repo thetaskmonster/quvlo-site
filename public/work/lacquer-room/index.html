@@ -116,6 +116,7 @@ h2{font-family:var(--display);font-weight:600;font-size:clamp(30px,4.6vw,66px);l
 .svc h3{font-family:var(--display);font-weight:600;font-size:clamp(21px,2vw,28px);letter-spacing:-.015em;line-height:1.1}
 .svc p{margin-top:10px;max-width:52ch;color:#2b2b2a}
 .svc small{display:block;margin-top:12px;font-size:14.5px;color:var(--mute-l)}
+.svc small+small{margin-top:4px}
 .work figure{position:sticky;top:40px;align-self:start}
 .work figure{overflow:hidden}
 .work figure img{width:100%;aspect-ratio:4/5;object-fit:cover}
@@ -188,7 +189,7 @@ a.mark,.nav nav a,.link{display:inline-flex;align-items:center;min-height:44px}
   <div class="hero-copy" id="top">
     <h1 class="wet"><span>Back</span><span>to wet.</span><span class="refl" aria-hidden="true"><span>Back</span><span>to wet.</span></span></h1>
     <div class="hero-side">
-      <p>Paint correction, ceramic coating and paint protection film done by hand under proper light. By appointment in Dallas Fort Worth.</p>
+      <p>Paint correction, ceramic coating and paint protection film, one car at a time under proper light. By appointment in Dallas Fort Worth.</p>
       <div class="actions"><a class="btn" href="#book">Book an inspection</a><a class="link" href="#fifty">See a correction</a></div>
     </div>
   </div>
@@ -201,7 +202,7 @@ a.mark,.nav nav a,.link{display:inline-flex;align-items:center;min-height:44px}
       <figure class="loupe"><div class="lens"><img class="clean" src="img/after.jpg" alt="" aria-hidden="true"><img class="swirl" src="img/loupe.jpg" alt="Close crop of black paint under an inspection light, covered in fine circular swirl marks"></div><figcaption><span class="c0">A door panel under an inspection light, before correction.</span><span class="c1" aria-hidden="true" style="opacity:0">The same light after correction.</span></figcaption></figure>
       <div class="why-text">
         <p>Automatic washes and dry towels leave thousands of fine circular scratches in the clear coat. Each one catches the light, and together they turn deep black into hazy gray.</p>
-        <p>Correction levels the clear coat by a few microns until reflections go sharp again. Then we seal it, so the finish you paid for is the finish you keep.</p>
+        <p>Correction levels the clear coat by a few microns, measured before and after on every panel, until reflections go sharp again. Then we coat it, so it stays easier to wash without putting the swirls back.</p>
       </div>
     </div>
   </section>
@@ -209,7 +210,7 @@ a.mark,.nav nav a,.link{display:inline-flex;align-items:center;min-height:44px}
   <section class="fifty" id="fifty" aria-labelledby="fifty-h"><div class="fifty-pin"><div class="fifty-stick">
     <div class="fifty-head">
       <h2 id="fifty-h">The 50/50.</h2>
-      <p>Every job starts with a test spot. We tape a line down one panel, correct one side, and show you both halves under the same light before we touch the rest. Drag the tape to compare.</p>
+      <p>Every job starts with a test spot. After the wash, decon and clay, we tape a line down one panel, correct one side, and show you both halves under the same light before we touch the rest. Drag the tape to compare.</p>
     </div>
     <div class="panel" id="panel">
       <img class="after" src="img/after.jpg" alt="The same door panel after correction: a clean mirror reflection of the inspection light">
@@ -224,11 +225,11 @@ a.mark,.nav nav a,.link{display:inline-flex;align-items:center;min-height:44px}
 
   <section class="concrete work" id="work" aria-labelledby="work-h">
     <div>
-      <h2 id="work-h">Correct it, coat it, protect it.</h2>
-      <article class="svc"><h3>Paint correction</h3><p>Machine polishing in stages to remove swirls, haze and light scratches. Most cars need one or two stages. The inspection tells us which.</p><small>Usually one to three days in the studio</small></article>
-      <article class="svc"><h3>Ceramic coating</h3><p>A hard, glassy layer bonded to the clear coat after correction. Water beads and rolls off, road film lets go with a rinse, and the gloss holds between washes.</p><small>Applied the day correction finishes</small></article>
-      <article class="svc"><h3>Paint protection film</h3><p>Clear urethane film on the panels that take the hits: bumper, hood, mirrors and rockers. Stone chips land on the film instead of the paint.</p><small>Front end or full body</small></article>
-      <article class="svc"><h3>Interior restoration</h3><p>Leather, Alcantara and carpet cleaned and conditioned, with steam for the places a vacuum can't reach.</p><small>Usually one day</small></article>
+      <h2 id="work-h">Correct it, protect it, coat it.</h2>
+      <article class="svc"><h3>Paint correction</h3><p>Machine polishing in stages to remove swirls, haze and light scratches. Most cars need one or two stages. The inspection tells us which.</p><small>Usually one to three days in the studio</small><small>From $450 (one stage)</small></article>
+      <article class="svc"><h3>Paint protection film</h3><p>Clear, self-healing urethane film on the panels that take the hits. Stone chips land on the film instead of the paint.</p><small>Partial front, full front, track pack or full body</small><small>Full front from $1,500</small></article>
+      <article class="svc"><h3>Ceramic coating</h3><p>A hard, glassy layer bonded to the paint and film after correction. It sets indoors overnight and fully cures over the next few weeks; no water for 24 hours and no automatic washes for a week. Water beads and rolls off, road film lets go with a rinse, and the gloss holds for years, not weeks.</p><small>Applied after correction and any film, then left to set indoors overnight</small><small>From $900 with one-stage correction</small></article>
+      <article class="svc"><h3>Interior restoration</h3><p>Leather cleaned and conditioned, Alcantara cleaned and brushed by hand, carpets shampooed and extracted. Steam for vents, seat rails and the places a vacuum can't reach.</p><small>Usually one day</small><small>From $250</small></article>
     </div>
     <figure>
       <img src="img/beads.jpg" alt="Round water beads sitting on freshly coated graphite paint, a light bar reflected behind them" loading="lazy">
@@ -239,11 +240,11 @@ a.mark,.nav nav a,.link{display:inline-flex;align-items:center;min-height:44px}
   <section class="book" id="book" aria-labelledby="book-h">
     <div class="intro">
       <h2 id="book-h">Book an inspection.</h2>
-      <p>Thirty minutes under our lights. We go panel by panel, tell you what your paint needs and what it doesn't, and send a written quote the same day.</p>
+      <p>Thirty minutes under our lights. We measure the paint on every panel with a depth gauge, tell you what it needs and what it doesn't, and send a written quote the same day.</p>
     </div>
     <div>
       <form id="f" novalidate>
-        <div><label for="car">Your car</label><input id="car" name="car" type="text" placeholder="Year, model and color" autocomplete="off" maxlength="80" required></div>
+        <div><label for="car">Your car</label><input id="car" name="car" type="text" placeholder="Year, make, model and color" autocomplete="off" maxlength="80" required></div>
         <fieldset style="border:0"><legend class="legend">What's bothering you</legend>
           <div class="chips">
             <label><input type="checkbox" name="issue" value="swirls"><span>Swirls and haze</span></label>
@@ -269,7 +270,7 @@ a.mark,.nav nav a,.link{display:inline-flex;align-items:center;min-height:44px}
 <footer>
   <span class="mark">Lacquer Room</span>
   <span>Paint correction, coating and film. By appointment, Dallas Fort Worth.</span>
-  <span>A concept site by <a href="/work/">Quvlo</a>. Lacquer Room is a made-up business, the images are AI-generated, and nothing on this page is sent anywhere.</span>
+  <span>A concept site by <a href="/work/">Quvlo</a>. Lacquer Room is a made-up business, its prices are samples, the images are AI-generated, and nothing on this page is sent anywhere.</span>
 </footer>
 
 

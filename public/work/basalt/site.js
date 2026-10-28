@@ -65,14 +65,17 @@
     requestAnimationFrame(tick);
   });
 
-  // Next open: half-hour slots from now, inside opening hours (6 am to 10 pm, last start 9:30 pm).
+  // Next open: half-hour slots from now, inside opening hours (6 am to 10 pm). The last start depends on the room,
+  // so every session ends by closing: 9 pm for the cedar room and infrared suite, 8:30 pm for the contrast suite.
   // A few are already taken, never the very first one. Booking is a demo: nothing is sent.
   const slots = document.getElementById('slots'), go = document.getElementById('go'), len = document.getElementById('len'), done = document.getElementById('done');
-  let room = 'Cedar room', roomLen = '60 min', pick = null;
+  let room = 'Cedar room', roomLen = '60 min', roomMins = 60, pick = null;
   const fmt = d => { let h = d.getHours(), m = d.getMinutes(); const ap = h >= 12 ? 'pm' : 'am'; h = h % 12 || 12; return `${h}:${String(m).padStart(2, '0')} ${ap}`; };
-  const OPEN = 6, LAST = 21.5;
+  const OPEN = 6, CLOSE = 22;
+  // latest half-hour start that still ends by closing
+  const lastStart = () => Math.floor((CLOSE * 60 - roomMins) / 30) * 30 / 60;
   function nextSlot(d) {
-    const t = d.getHours() + d.getMinutes() / 60;
+    const t = d.getHours() + d.getMinutes() / 60, LAST = lastStart();
     if (t < OPEN) d.setHours(OPEN, 0, 0, 0);
     else if (t > LAST) { d.setDate(d.getDate() + 1); d.setHours(OPEN, 0, 0, 0); }
     return d;
@@ -97,11 +100,14 @@
     }
     label();
   }
-  function label() { go.textContent = `Book ${pick}`; len.textContent = `${room}, ${roomLen}. Robe, towels and water are on us.`; }
+  function label() {
+    const l = lastStart(), d = new Date(); d.setHours(Math.floor(l), Math.round((l % 1) * 60), 0, 0);
+    go.textContent = `Book ${pick}`; len.textContent = `${room}, ${roomLen}, last start ${fmt(d)}. Robe, towels and water are on us.`;
+  }
   go.addEventListener('click', () => { done.textContent = `Demo only: nothing was booked or sent. A real Basalt would now hold ${pick} in the ${room.toLowerCase()} for you.`; });
   document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => {
     document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-pressed', 'false'));
-    b.setAttribute('aria-pressed', 'true'); room = b.dataset.room; roomLen = b.dataset.len; render();
+    b.setAttribute('aria-pressed', 'true'); room = b.dataset.room; roomLen = b.dataset.len; roomMins = +b.dataset.mins || 60; render();
   }));
   render();
 })();

@@ -156,6 +156,7 @@ a.mark,.nav ul a,.link,footer > div > a{display:inline-flex;align-items:center;m
 .ghost{white-space:nowrap}
 .ghost{background:transparent;color:var(--steam);border:1px solid rgba(239,231,218,.35);height:44px;padding:0 18px;border-radius:3px;font:500 14.5px var(--text);cursor:pointer}
 .ghost:hover{border-color:var(--steam)}
+.rules{margin-top:22px;max-width:46ch;font-size:14px;line-height:1.5;color:rgba(239,231,218,.7)}
 
 /* ---------- upstairs ---------- */
 .upstairs{background:var(--trav);color:var(--trav-ink);padding:104px var(--pad) 110px;display:grid;gap:44px}
@@ -266,26 +267,27 @@ footer a{text-underline-offset:4px}
       <h2>One round, about half an hour.</h2>
       <p class="intro">Contrast is the whole practice: let the heat open you up, let the cold close you down, then sit still long enough to notice.</p>
       <ol class="steps">
-        <li><span class="n">1</span><div><b>Heat</b><p>Fifteen minutes in the cedar room at 190°F, or the infrared suite at 140°F if you like it gentler.</p></div></li>
-        <li><span class="n">2</span><div><b>Cold</b><p>Two to three minutes in the plunge at 39°F. Long breath out as you go under.</p></div></li>
-        <li><span class="n">3</span><div><b>Rest</b><p>Ten minutes in the lounge, robe on, phone away. Most people go around twice in an hour-long session.</p></div></li>
+        <li><span class="n">1</span><div><b>Heat</b><p>Ten to fifteen minutes in the cedar room at 190°F (shorter your first time), or the infrared suite at 140°F if you like it gentler.</p></div></li>
+        <li><span class="n">2</span><div><b>Cold</b><p>Two to three minutes in the plunge at 39°F, less on your first visit. Ease in to the waist, then to the shoulders, and keep your head above the water. Long, slow breaths out.</p></div></li>
+        <li><span class="n">3</span><div><b>Rest</b><p>Ten minutes in the lounge, robe on, phone away. Two rounds fit in the hour-long session; the 75-minute contrast suite leaves time to shower and change without rushing.</p></div></li>
       </ol>
       <div class="round" aria-label="Play through one round">
         <div class="track" aria-hidden="true"><span class="h"><em>Heat 15</em></span><span class="c"><em>3</em></span><span class="r"><em>Rest 10</em></span><i class="cursor" id="cursor"></i></div>
         <div class="row"><p class="now" id="now">Press play to run one round in ten seconds.</p><button class="ghost" id="play" type="button">Play a round</button></div>
         <p class="vh" id="said" aria-live="polite"></p>
       </div>
+      <p class="rules">First visit: a short waiver at check-in. Shower before the plunge, drink water between rounds, no alcohol, 18 and up. If you're pregnant or have a heart condition, check with your doctor first.</p>
     </div>
   </section>
 
   <section class="upstairs" id="upstairs" data-temp="72" data-where="Upstairs" data-tone="light">
     <div>
       <h2>Upstairs, it gets quieter.</h2>
-      <p class="intro">A small med spa above the heat, overseen by a medical director, with every treatment given by licensed staff. Book it on its own or right after a round, when you are already slowed down.</p>
+      <p class="intro">A small physician-led med spa above the heat. Our delegating physician's name and Texas license number are posted in every room, and each treatment is given by the licensed professional it calls for. Book it on its own or right after a round, when you are already slowed down.</p>
       <ul class="menu">
-        <li><b>IV drips</b><span class="t">45 min</span><p>Hydration and vitamin blends, only after a medical screening by a licensed provider.</p></li>
-        <li><b>Facials</b><span class="t">60 min</span><p>Deep cleansing and resurfacing, matched to your skin on the day.</p></li>
-        <li><b>Lymphatic body work</b><span class="t">50 min</span><p>Slow, rhythmic treatment that pairs well with a cold plunge.</p></li>
+        <li><b>IV drips</b><span class="t">45 min</span><p>Hydration and vitamin blends. A nurse practitioner reviews your health history and orders your drip, and a registered nurse places and watches every IV.</p></li>
+        <li><b>Facials</b><span class="t">60 min</span><p>Deep cleansing facials by a licensed esthetician, matched to your skin on the day. Peels are done under our physician's orders.</p></li>
+        <li><b>Lymphatic massage</b><span class="t">50 min</span><p>Slow, rhythmic lymphatic massage by a Texas-licensed massage therapist. It pairs well with a cold plunge.</p></li>
         <li><b>Red light</b><span class="t">20 min</span><p>A short session in the light bed, good on its own or between rounds.</p></li>
       </ul>
     </div>
@@ -297,17 +299,17 @@ footer a{text-underline-offset:4px}
       <h2>Next open.</h2>
       <p class="intro">Pick a room and a time. Sessions run in real time, so these update through the day.</p>
       <div class="tabs" role="group" aria-label="Room">
-        <button type="button" aria-pressed="true" data-room="Cedar room" data-len="60 min">Cedar room</button>
-        <button type="button" aria-pressed="false" data-room="Infrared suite" data-len="45 min">Infrared suite</button>
-        <button type="button" aria-pressed="false" data-room="Contrast suite" data-len="75 min, private">Contrast suite</button>
+        <button type="button" aria-pressed="true" data-room="Cedar room" data-len="60 min" data-mins="60">Cedar room</button>
+        <button type="button" aria-pressed="false" data-room="Infrared suite" data-len="45 min" data-mins="45">Infrared suite</button>
+        <button type="button" aria-pressed="false" data-room="Contrast suite" data-len="75 min, private" data-mins="75">Contrast suite</button>
       </div>
       <div class="slots" id="slots" role="group" aria-label="Times"></div>
       <div class="confirm"><button class="btn" id="go" type="button">Book</button><small id="len"></small><p class="done" id="done" role="status"></p></div>
     </div>
     <div class="plans" aria-label="Memberships">
-      <div><b>Single visit</b><p>One session, any room. A good way to find your round.</p></div>
-      <div><b>Four a month</b><p>A weekly reset with a standing time you can keep.</p></div>
-      <div><b>Unlimited</b><p>Come every day if you want, and book upstairs before anyone else.</p></div>
+      <div><b>Single visit</b><p>$49. One session, any room. A good way to find your round.</p></div>
+      <div><b>Four a month</b><p>$149 a month. A weekly reset with a standing time you can keep.</p></div>
+      <div><b>Unlimited</b><p>$219 a month. Come every day if you want, and book upstairs before anyone else.</p></div>
     </div>
   </section>
 </main>

@@ -29,7 +29,7 @@
     document.getElementById('lining').setAttribute('fill', LINING[state.lining][1]);
     drawLapels();
     document.getElementById('why').textContent = CLOTH[state.cloth][1];
-    document.getElementById('sumtxt').textContent = `${CLOTH[state.cloth][0]}, ${state.lapel} lapel, ${LINING[state.lining][0].toLowerCase()} lining.`;
+    document.getElementById('sumtxt').textContent = `${CLOTH[state.cloth][0]}, ${state.lapel === 'shawl' ? 'shawl collar' : `${state.lapel} lapel`}, ${LINING[state.lining][0].toLowerCase()} lining.`;
   }
   for (const [id, key] of [['o-cloth', 'cloth'], ['o-lapel', 'lapel'], ['o-lining', 'lining']]) {
     document.getElementById(id).addEventListener('click', e => {
