@@ -520,7 +520,7 @@
     function tick(now) {
       // schedule first, so nothing that goes wrong in a frame can stop the film
       requestAnimationFrame(tick);
-      try { frame(now); } catch (e) {
+      try { settleCheck(now); frame(now); } catch (e) {
         stats.errors++;
         if (!reported.has('frame')) { reported.add('frame'); console.error('FilmEngine:', e); }
         dirty = true;
@@ -673,8 +673,28 @@
     // Turning the device changes every vh-based height, so keep the visitor at the same point in the film
     // instead of letting the page drop them into another section. This runs inside the resize event,
     // before the next frame is drawn, so no frame is drawn from the old scroll position.
-    let rsz = 0, lastW = innerWidth, restoreP = null;
+    // Some layouts take the new viewport height a few frames after the resize event (seen with reduced
+    // motion, where nothing else is redrawing): the film's height, and so the pixel position of the saved
+    // point, is still the old one when the restore runs. For a short while after a turn, the film's geometry
+    // is watched, and if it changes the visitor is put back at the same point (when they were in the film) and
+    // the canvas resized. When the layout was already final (the usual case) nothing changes, so nothing
+    // happens. A scroll by the visitor ends the watch of the position.
+    let settle = null;
+    function settleCheck(now) {
+      if (!settle) return;
+      if (now > settle.until) { settle = null; return; }
+      const len = filmLen(), top = filmTop();
+      if (Math.abs(len - settle.len) > 1 || Math.abs(top - settle.top) > 1) {
+        settle.len = len; settle.top = top;
+        if (settle.p != null) { scrollInstant(top + settle.p * len); cur = target = settle.p; lastCur = cur; settle.y = scrollY; }
+        resize();
+      } else if (settle.p != null && Math.abs(scrollY - settle.y) > 2) settle.p = null;
+      const r = canvas.getBoundingClientRect();
+      if (Math.round(r.width * dpr) !== cw || Math.round(r.height * dpr) !== ch) resize();
+    }
+    let rsz = 0, lastW = innerWidth, restoreP = null, turned = false;
     const onResize = () => {
+      if (innerWidth !== lastW) turned = true;
       if (innerWidth !== lastW && restoreP == null && target > 0.001 && target < 0.999) restoreP = target;
       lastW = innerWidth;
       if (restoreP != null) { scrollInstant(filmTop() + restoreP * filmLen()); cur = target = restoreP; lastCur = cur; }
@@ -682,8 +702,11 @@
       cancelAnimationFrame(rsz);
       rsz = requestAnimationFrame(() => {
         // once more after the browser has settled the new layout
+        const p = restoreP;
         if (restoreP != null) { scrollInstant(filmTop() + restoreP * filmLen()); cur = target = restoreP; lastCur = cur; restoreP = null; }
         resize();
+        if (turned) settle = { p, len: filmLen(), top: filmTop(), y: scrollY, until: performance.now() + 1500 };
+        turned = false;
       });
     };
     addEventListener('resize', onResize);
