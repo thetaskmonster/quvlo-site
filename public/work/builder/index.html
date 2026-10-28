@@ -17,6 +17,7 @@
 <meta property="og:image" content="https://quvlo.co/work/builder/img/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A finished limestone and board-and-batten house at sunset, its entry and path lights on, on a North Texas corner lot.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="fonts/newsreader-opsz.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/public-sans.woff2" as="font" type="font/woff2" crossorigin>
@@ -47,48 +48,49 @@
   <!-- The film: scrolling builds one house on one lot, in build order -->
   <section class="film" id="film" aria-label="Scroll story: a house is built on one lot, from survey stakes to the day the owners get their keys">
     <div class="film__stage">
-      <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage of a staked lot in North Texas, the slab being poured, the house framed, dried in, the finished interior and the owners at the front door at dusk."></canvas>
+      <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage of a staked lot in North Texas, the slab being poured, the house framed and dried in, the finished great room, and the finished house at sunset with its entry and path lights on."></canvas>
       <svg class="print" id="print" viewBox="0 0 3840 2160" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
 
       <div class="sched" id="sched" aria-hidden="true">
-        <p class="sched__day"><span class="sched__k">Day</span> <span class="sched__n" id="schedDay">001</span><span class="sched__of"> / 270</span></p>
+        <p class="sched__day"><span class="sched__k">Day</span> <span class="sched__n" id="schedDay">001</span><span class="sched__of"> / 330</span></p>
         <div class="sched__bar"><span class="sched__fill" id="schedFill"></span></div>
         <ol class="sched__phases" id="schedPhases">
           <li>Survey</li><li>Slab</li><li>Framing</li><li>Dry-in</li><li>Finishes</li><li>Keys</li>
         </ol>
       </div>
 
+      <div class="shade" aria-hidden="true"></div>
       <div class="caps" id="caps">
         <div class="cap cap--hero" data-shot="0">
-          <p class="cap__k">Custom homes · North Texas</p>
-          <h1 class="cap__h">From stakes to front door.</h1>
-          <p class="cap__p">Scroll to build one house on one lot, in the order we build it, with the schedule running in the corner.</p>
+          <p class="cap__k">Limestone Ridge Homes · North Texas</p>
+          <h1 class="cap__h">Custom homes, built from the stakes up</h1>
+          <p class="cap__p">Scroll to build one house on one lot, in the order we build it. The day count in the corner runs with the footage.</p>
           <p class="cap__hint" aria-hidden="true">Scroll</p>
         </div>
         <div class="cap" data-shot="1">
-          <p class="cap__k">Day 15 · Slab</p>
-          <h2 class="cap__h">Start with the ground.</h2>
-          <p class="cap__p">Survey, soil test and a post-tension slab that suits North Texas clay. The drawing goes down first.</p>
+          <p class="cap__k">Days 1 to 30 · Slab</p>
+          <h2 class="cap__h">A slab made for North Texas clay</h2>
+          <p class="cap__p">Survey stakes, forms and plumbing, then a post-tension slab engineered from the soil report for clay that swells and shrinks.</p>
         </div>
         <div class="cap" data-shot="2">
-          <p class="cap__k">Day 46 · Framing</p>
-          <h2 class="cap__h">The drawing stands up.</h2>
+          <p class="cap__k">Days 30 to 90 · Framing</p>
+          <h2 class="cap__h">Walls go up where the lines were</h2>
           <p class="cap__p">Walls, trusses and sheathing. This is when you walk the rooms for the first time.</p>
         </div>
         <div class="cap" data-shot="3">
-          <p class="cap__k">Day 111 · Dry-in</p>
-          <h2 class="cap__h">Dried in, dressed up.</h2>
-          <p class="cap__p">Standing-seam roof, black steel windows, cut limestone and board-and-batten.</p>
+          <p class="cap__k">Days 90 to 150 · Dry-in</p>
+          <h2 class="cap__h">Roof, windows and stone close it in</h2>
+          <p class="cap__p">Standing-seam roof, black-framed windows, cut limestone and board-and-batten. Plumbing, wiring and HVAC start going in behind the walls.</p>
         </div>
         <div class="cap" data-shot="4">
-          <p class="cap__k">Day 161 · Finishes</p>
-          <h2 class="cap__h">Inside, you choose.</h2>
-          <p class="cap__p">White oak floors, a limestone fireplace and finishes picked with a designer, priced as you go.</p>
+          <p class="cap__k">Days 230 to 315 · Finishes</p>
+          <h2 class="cap__h">Finishes you choose with a designer</h2>
+          <p class="cap__p">White oak floors, an 18-foot great room and a limestone fireplace wall. Every selection is priced before it is ordered.</p>
         </div>
         <div class="cap cap--end" data-shot="5">
-          <p class="cap__k">Day 270 · Keys</p>
-          <h2 class="cap__h">Lights on. Welcome home.</h2>
-          <p class="cap__p">Keys, manuals and a one-year check-in on the calendar.</p>
+          <p class="cap__k">Day 330 · Keys</p>
+          <h2 class="cap__h">Eleven months later, your keys</h2>
+          <p class="cap__p">A walk-through room by room, then keys, manuals for every system and a one-year check-in on the calendar.</p>
           <p class="cap__cta"><a class="btn" href="#plans">Pick a plan</a> <a class="btn btn--ghost" href="#walk">Book a lot walk</a></p>
         </div>
       </div>
@@ -99,32 +101,36 @@
   <section class="sec sec--plans" id="plans" aria-labelledby="plansH">
     <div class="wrap">
       <header class="sec__head">
-        <p class="kicker">Sheet A-101 · Floor plans</p>
-        <h2 id="plansH" class="sec__h">Pick a plan, then walk it.</h2>
-        <p class="sec__p">Three plans we build often. Tap a room to see its size, its finishes and what it looks like built. Your plan carries into the estimate below.</p>
+        <p class="kicker"><span class="kicker__no">A-101</span>Floor plans</p>
+        <h2 id="plansH" class="sec__h">Walk a plan room by room</h2>
+        <p class="sec__p">Three plans we build often. Tap a room for its size and finishes. The photos are from The Bluebonnet, the house in the film. Your plan carries into the estimate below.</p>
       </header>
 
       <div class="plans" id="planTabs" role="radiogroup" aria-label="Floor plan">
-        <button type="button" class="plan-tab" role="radio" aria-checked="false" data-plan="pecan"><span class="plan-tab__n">The Pecan</span><span class="plan-tab__s">2,700 sq ft · 3 bed · 1 story</span></button>
-        <button type="button" class="plan-tab" role="radio" aria-checked="false" data-plan="caliche"><span class="plan-tab__n">The Caliche</span><span class="plan-tab__s">3,600 sq ft · 4 bed · 2 story</span></button>
-        <button type="button" class="plan-tab" role="radio" aria-checked="true" data-plan="bluebonnet"><span class="plan-tab__n">The Bluebonnet</span><span class="plan-tab__s">4,800 sq ft · 4 bed · 2 story</span></button>
+        <button type="button" class="plan-tab" role="radio" aria-checked="false" data-plan="pecan"><span class="plan-tab__n">The Pecan</span><span class="plan-tab__s">2,700 sq ft</span><span class="plan-tab__s">3 bed · 1 story</span></button>
+        <button type="button" class="plan-tab" role="radio" aria-checked="false" data-plan="caliche"><span class="plan-tab__n">The Caliche</span><span class="plan-tab__s">3,600 sq ft</span><span class="plan-tab__s">4 bed · 2 story</span></button>
+        <button type="button" class="plan-tab" role="radio" aria-checked="true" data-plan="bluebonnet"><span class="plan-tab__n">The Bluebonnet</span><span class="plan-tab__s">4,800 sq ft</span><span class="plan-tab__s">4 bed · 2 story</span></button>
       </div>
 
       <div class="sheet">
         <figure class="sheet__plan">
           <svg id="planSvg" class="plan" role="group" aria-label="Ground floor plan"></svg>
-          <figcaption class="sheet__cap"><span id="planCap">The Bluebonnet · ground floor</span><span class="sheet__scale">Scale 1/8" = 1'-0"</span></figcaption>
+          <figcaption class="sheet__cap"><span id="planCap">The Bluebonnet · ground floor · 4,800 sq ft</span><span class="sheet__scale">Scale 1/8" = 1'-0"</span></figcaption>
         </figure>
-        <aside class="room" id="room" aria-live="polite">
-          <div class="room__ph"><img id="roomImg" src="img/room-great.webp" alt="" width="1200" height="900" decoding="async"></div>
-          <p class="room__k" id="roomK">Room 101</p>
+        <aside class="room" id="room" aria-label="Selected room">
+          <div class="room__ph">
+            <img class="room__img is-on" src="img/room-great.webp" alt="" width="1200" height="900" decoding="async">
+            <img class="room__img" src="img/room-great.webp" alt="" width="1200" height="900" decoding="async" aria-hidden="true">
+          </div>
+          <p class="room__src" id="roomSrc">Photo: The Bluebonnet, Designer finishes</p>
+          <p class="room__k" id="roomK">Room 101 · The Bluebonnet</p>
           <h3 class="room__h" id="roomH">Great room</h3>
-          <p class="room__dim" id="roomDim">32'-0" × 28'-0"</p>
-          <ul class="room__fin" id="roomFin"></ul>
-          <p class="room__note">Photos show Designer finishes.</p>
+          <p class="room__dim" id="roomDim">32'-0" × 30'-0" · 960 sq ft</p>
+          <ul class="room__fin" id="roomFin"><li><b>Floor</b><span>Wide-plank white oak</span></li><li><b>Ceiling</b><span>18 ft, cedar beams</span></li><li><b>Fireplace</b><span>Cut limestone, up to the beams</span></li></ul>
         </aside>
+        <p class="sr" id="roomStatus" role="status"></p>
       </div>
-      <p class="plans__up" id="planUp"></p>
+      <p class="plans__up" id="planUp">Upstairs: two bedrooms and a shared bath over the garage, 670 sq ft. This is the house in the film.</p>
     </div>
   </section>
 
@@ -132,8 +138,8 @@
   <section class="sec sec--est" id="estimate" aria-labelledby="estH">
     <div class="wrap est">
       <header class="sec__head">
-        <p class="kicker">Sheet E-1 · Estimate</p>
-        <h2 id="estH" class="sec__h">A ballpark in three answers.</h2>
+        <p class="kicker"><span class="kicker__no">E-1</span>Estimate</p>
+        <h2 id="estH" class="sec__h">What a build like yours costs</h2>
         <p class="sec__p">Size, finish level and whether you own a lot. The real number comes from your plans, and once plans and selections are final the contract price is fixed.</p>
       </header>
       <form class="est__form" id="estForm" novalidate>
@@ -158,33 +164,46 @@
           </div>
         </fieldset>
       </form>
-      <div class="est__out" aria-live="polite">
+      <div class="est__out">
         <p class="est__k">Estimated build cost</p>
-        <p class="est__num"><span id="estLo">$1,190,000</span> <span class="est__to">to</span> <span id="estHi">$1,320,000</span></p>
+        <p class="est__num"><span id="estLo">$1,145,000</span> <span class="est__to">to</span> <span id="estHi">$1,275,000</span></p>
         <dl class="est__rows">
           <div><dt id="estRowA">4,800 sq ft × $245</dt><dd id="estRowAv">$1,176,000</dd></div>
           <div><dt>Site work: survey, soil test, utilities, drive</dt><dd>$28,000</dd></div>
-          <div><dt>Schedule, slab to keys</dt><dd id="estDays">about 270 days</dd></div>
+          <div><dt>Schedule, stakes to keys</dt><dd id="estDays">about 330 days</dd></div>
+          <div id="estLotRow" hidden><dt>Finding and closing on a lot</dt><dd>1 to 3 months before Day 1</dd></div>
         </dl>
-        <p class="est__lot" id="estLotNote">Lot not included.</p>
+        <p class="est__lot" id="estLotNote">Lot not included. We assess your lot for free before you sign.</p>
         <p class="fine">Sample prices for a fictional builder.</p>
+        <p class="sr" id="estStatus" role="status"></p>
       </div>
     </div>
   </section>
 
-  <!-- How we build -->
+  <!-- The build schedule, drawn as a Gantt chart on the same day count as the film -->
   <section class="sec sec--how" id="how" aria-labelledby="howH">
     <div class="wrap">
       <header class="sec__head">
-        <p class="kicker">Sheet G-2 · Process</p>
-        <h2 id="howH" class="sec__h">How we build.</h2>
+        <p class="kicker"><span class="kicker__no">G-2</span>Schedule</p>
+        <h2 id="howH" class="sec__h">The schedule for the house in the film</h2>
+        <p class="sec__p">The Bluebonnet, 4,800 sq ft with Designer finishes: 330 days from the survey stakes to your keys. Design, engineering and permits come first, usually 8 to 12 weeks before Day 1.</p>
       </header>
-      <ol class="steps">
-        <li class="step"><p class="step__d">Before Day 1</p><h3 class="step__h">Design and engineering</h3><p>Your plans or ours, a structural engineer's stamp and a fixed-price contract before anything is dug.</p></li>
-        <li class="step"><p class="step__d">Day 1 to 255</p><h3 class="step__h">Build</h3><p>Weekly photo updates every Friday and a site walk with your builder every month.</p></li>
-        <li class="step"><p class="step__d">Day 256</p><h3 class="step__h">Walk-through</h3><p>A punch list walk-through, room by room, before you sign off.</p></li>
-        <li class="step"><p class="step__d">Day 270</p><h3 class="step__h">Keys</h3><p>Keys, manuals for every system and a one-year check-in on the calendar.</p></li>
+      <ol class="gantt">
+        <li style="--a:0;--b:30"><span class="gantt__t"><b>Site and slab</b><span>Days 1 to 30</span></span><span class="gantt__track" aria-hidden="true"><span class="gantt__bar"></span></span></li>
+        <li style="--a:30;--b:90"><span class="gantt__t"><b>Framing</b><span>Days 30 to 90</span></span><span class="gantt__track" aria-hidden="true"><span class="gantt__bar"></span></span></li>
+        <li style="--a:90;--b:150"><span class="gantt__t"><b>Dry-in and cladding</b><span>Days 90 to 150</span></span><span class="gantt__track" aria-hidden="true"><span class="gantt__bar"></span></span></li>
+        <li style="--a:120;--b:200"><span class="gantt__t"><b>Plumbing, wiring and HVAC</b><span>Days 120 to 200</span></span><span class="gantt__track" aria-hidden="true"><span class="gantt__bar"></span></span></li>
+        <li style="--a:200;--b:230"><span class="gantt__t"><b>Insulation and drywall</b><span>Days 200 to 230</span></span><span class="gantt__track" aria-hidden="true"><span class="gantt__bar"></span></span></li>
+        <li style="--a:230;--b:315"><span class="gantt__t"><b>Finishes</b><span>Days 230 to 315</span></span><span class="gantt__track" aria-hidden="true"><span class="gantt__bar"></span></span></li>
+        <li style="--a:315;--b:330"><span class="gantt__t"><b>Walk-through and fixes</b><span>Days 315 to 330</span></span><span class="gantt__track" aria-hidden="true"><span class="gantt__bar"></span></span></li>
+        <li class="gantt__keys" style="--a:329;--b:330"><span class="gantt__t"><b>Keys</b><span>Day 330</span></span><span class="gantt__track" aria-hidden="true"><span class="gantt__bar"></span></span></li>
       </ol>
+      <p class="gantt__axis" aria-hidden="true"><span></span><span class="gantt__ticks"><span>Day 1</span><span>100</span><span>200</span><span>300</span></span></p>
+      <ul class="gantt__notes">
+        <li>Photo updates every Friday, and a site walk with your builder every month.</li>
+        <li>A punch list walk-through, room by room, before you sign off.</li>
+        <li>Keys, manuals for every system and a one-year check-in on the calendar.</li>
+      </ul>
     </div>
   </section>
 
@@ -192,14 +211,14 @@
   <section class="sec sec--war" id="warranty" aria-labelledby="warH">
     <div class="wrap war">
       <header class="sec__head">
-        <p class="kicker">Sheet G-3 · Warranty</p>
-        <h2 id="warH" class="sec__h">Ten years on the structure.</h2>
+        <p class="kicker"><span class="kicker__no">G-3</span>Warranty</p>
+        <h2 id="warH" class="sec__h">Ten years on the structure</h2>
         <p class="sec__p">Foundation, framing and roof structure for ten years. Plumbing, electrical and HVAC for two. Everything else, down to the cabinet hinges, for one.</p>
       </header>
       <div class="war__chart" id="warChart">
-        <div class="war__row"><span class="war__l">Everything</span><span class="war__bar" style="--y:1"><span class="war__n">1 yr</span></span></div>
-        <div class="war__row"><span class="war__l">Systems</span><span class="war__bar" style="--y:2"><span class="war__n">2 yr</span></span></div>
-        <div class="war__row"><span class="war__l">Structure</span><span class="war__bar war__bar--k" style="--y:10"><span class="war__n">10 yr</span></span></div>
+        <div class="war__row"><span class="war__l">Everything</span><span class="war__track" style="--y:1"><span class="war__bar"></span><span class="war__n">1 year</span></span></div>
+        <div class="war__row"><span class="war__l">Systems</span><span class="war__track" style="--y:2"><span class="war__bar"></span><span class="war__n">2 years</span></span></div>
+        <div class="war__row"><span class="war__l">Structure</span><span class="war__track" style="--y:10"><span class="war__bar war__bar--k"></span><span class="war__n">10 years</span></span></div>
         <div class="war__axis" aria-hidden="true"><span>0</span><span>5</span><span>10 years</span></div>
       </div>
     </div>
@@ -209,13 +228,13 @@
   <section class="sec sec--faq" id="faq" aria-labelledby="faqH">
     <div class="wrap faq">
       <header class="sec__head">
-        <p class="kicker">Sheet G-4 · Notes</p>
-        <h2 id="faqH" class="sec__h">Questions.</h2>
+        <p class="kicker"><span class="kicker__no">G-4</span>Notes</p>
+        <h2 id="faqH" class="sec__h">What owners ask before they sign</h2>
       </header>
       <div class="faq__list">
         <details><summary>Do I need my own lot?</summary><p>No. We can help you find one, or build on a lot you own. We assess lots before you buy, so you know about the soil, the slope and the utilities first.</p></details>
         <details><summary>Will the price change during the build?</summary><p>Once plans and selections are final, the contract price is fixed. Changes you ask for later are priced before they are made.</p></details>
-        <details><summary>How long does a build take?</summary><p>Most homes take eight to eleven months from slab to keys. The estimate above gives a schedule for your size.</p></details>
+        <details><summary>How long does a build take?</summary><p>Most homes take seven to fourteen months from the survey stakes to keys, depending on size and finishes. The Bluebonnet in the film, with Designer finishes, takes about eleven (330 days). Design and permits come before that, and the estimate above gives a schedule for your size.</p></details>
         <details><summary>Can I bring my own plans?</summary><p>Yes. We review them with our engineer, suggest changes that save money and price them line by line.</p></details>
         <details><summary>Which areas do you build in?</summary><p>This is a concept site for a fictional builder. A real build lists the counties served here.</p></details>
       </div>
@@ -226,20 +245,20 @@
   <section class="sec sec--walk" id="walk" aria-labelledby="walkH">
     <div class="wrap walk">
       <header class="sec__head">
-        <p class="kicker">Sheet G-5 · Site visit</p>
-        <h2 id="walkH" class="sec__h">Book a lot walk.</h2>
+        <p class="kicker"><span class="kicker__no">G-5</span>Site visit</p>
+        <h2 id="walkH" class="sec__h">Walk a lot with one of our builders</h2>
         <p class="sec__p">Walk your lot, or one you are looking at, with a builder. We bring a soil probe and the survey and tell you what it will take to build there.</p>
       </header>
       <form class="walk__form" id="walkForm" novalidate>
-        <div class="field"><label for="wName">Name</label><input id="wName" name="name" type="text" autocomplete="name" maxlength="80" required></div>
-        <div class="field"><label for="wEmail">Email</label><input id="wEmail" name="email" type="email" autocomplete="email" maxlength="120" required></div>
+        <div class="field"><label for="wName">Name</label><input id="wName" name="name" type="text" autocomplete="name" maxlength="80" required aria-describedby="walkMsg"></div>
+        <div class="field"><label for="wEmail">Email</label><input id="wEmail" name="email" type="email" autocomplete="email" maxlength="120" required aria-describedby="walkMsg"></div>
         <div class="field"><label for="wWhere">Where is the lot?</label><input id="wWhere" name="where" type="text" maxlength="120" placeholder="Town or nearest cross streets"></div>
         <fieldset class="field">
           <legend>Pick a morning</legend>
           <div class="chips" id="walkDays" role="radiogroup" aria-label="Morning for the lot walk"></div>
         </fieldset>
         <button type="submit" class="btn">Request the walk</button>
-        <p class="walk__msg" id="walkMsg" role="status"></p>
+        <p class="walk__msg" id="walkMsg" role="status">Concept site: nothing you type here is sent.</p>
       </form>
     </div>
   </section>
