@@ -30,7 +30,7 @@
 <!-- Loader: the studio's hexagon ceiling lights up one cell per batch of frames -->
 <div class="loader" id="loader" aria-hidden="true">
   <svg class="loader__hex" id="loaderHex" viewBox="0 0 240 210"></svg>
-  <p class="loader__line">Bay lights warming · <span id="loadPct">0</span>%</p>
+  <p class="loader__line">Bay lights coming on · <span id="loadPct">0</span>%</p>
 </div>
 
 <header class="bar" id="bar">
@@ -51,7 +51,7 @@
       <!-- the job's work order as one line along the bottom, clear of the installers -->
       <aside class="job" aria-hidden="true">
         <span class="job__i job__i--id">Job <b>0417</b></span>
-        <span class="job__i job__i--film">Film <b>Satin Charcoal</b></span>
+        <span class="job__i job__i--film">Film <b>3M 2080 Satin Dark Gray</b></span>
         <span class="job__i">Panels <b id="jobPanels">0</b>/23</span>
         <span class="job__i">Glass <b id="jobTint">Factory</b></span>
         <i class="job__bar" id="jobFill"></i>
@@ -70,22 +70,22 @@
         <div class="cap" data-shot="1">
           <p class="cap__k">Day 1 · Prep</p>
           <h2 class="cap__h">Every panel is cleaned before film goes on.</h2>
-          <p class="cap__p">Washed, decontaminated and wiped down, edges taped, so the film bonds instead of lifting.</p>
+          <p class="cap__p">Washed, clay-barred and wiped with alcohol, then the badges, lights and trim come off so the film can wrap behind them.</p>
         </div>
         <div class="cap" data-shot="2">
           <p class="cap__k">Day 2 · Lay</p>
           <h2 class="cap__h">The hood goes on as one sheet.</h2>
-          <p class="cap__p">Two installers float it over the panel, then squeegee it down and cut around the crest.</p>
+          <p class="cap__p">Two installers glass one oversized sheet over the hood, then squeegee it down from the center out.</p>
         </div>
         <div class="cap" data-shot="3">
           <p class="cap__k">Day 3 · Edges</p>
           <h2 class="cap__h">Heat locks the film into every curve.</h2>
-          <p class="cap__p">Each edge is post-heated, so the film stays where it was put.</p>
+          <p class="cap__p">Every stretched edge and recess is post-heated to around 200°F, checked with an infrared thermometer, so the film can&rsquo;t creep back.</p>
         </div>
         <div class="cap" data-shot="4">
           <p class="cap__k">Day 3 · Tint</p>
           <h2 class="cap__h">Ceramic tint, cut to the door glass.</h2>
-          <p class="cap__p">Shaped outside, laid inside. 35% on the doors keeps it within Texas limits.</p>
+          <p class="cap__p">Shaped outside, laid inside. 35% on the doors keeps it within Texas limits, with the state compliance sticker on the driver&rsquo;s glass.</p>
         </div>
         <div class="cap cap--end" data-shot="5">
           <p class="cap__k">Day 4 · Reveal</p>
@@ -108,7 +108,7 @@
         <p class="kick">Try it on</p>
         <h2 id="cfg-h" class="h2">Pick a color. Pick a shade.</h2>
         <p class="cfg__lede">Five films that are not on Porsche&rsquo;s standard paint list, plus the factory white to compare.</p>
-        <p class="cfg__now"><span class="cfg__dot" id="cfgDot"></span><span id="cfgName">Satin Charcoal</span><span class="cfg__code" id="cfgCode">SC-2080</span></p>
+        <p class="cfg__now"><span class="cfg__dot" id="cfgDot"></span><span id="cfgName">Satin Dark Gray</span><span class="cfg__code" id="cfgCode">3M 2080-S261</span></p>
       </div>
       <div class="swatches" id="swatches" role="radiogroup" aria-label="Wrap color"></div>
       <button class="btn btn--ghost cfg__hold" id="cfgHold" type="button" aria-pressed="false">Hold to see factory white</button>
@@ -149,8 +149,8 @@
             <label><input type="radio" name="fin" value="1500" data-fin="shift"><span>Color-shift</span></label>
           </fieldset>
           <fieldset><legend>Add</legend>
-            <label><input type="checkbox" name="add" value="450" data-add="tint" checked><span>Ceramic tint</span></label>
-            <label><input type="checkbox" name="add" value="2200" data-add="ppf"><span>Front PPF</span></label>
+            <label><input type="checkbox" name="add" value="495" data-add="tint" checked><span>Ceramic tint</span></label>
+            <label><input type="checkbox" name="add" value="2200" data-add="ppf"><span id="ppfLabel">Front PPF (over the wrap)</span></label>
             <label><input type="checkbox" name="add" value="350" data-add="dechrome"><span>Dechrome trim</span></label>
           </fieldset>
         </form>
@@ -158,7 +158,7 @@
       <aside class="ticket" aria-labelledby="ticketK">
         <p class="ticket__k" id="ticketK">Work order</p>
         <ul class="ticket__lines" id="ticketLines"></ul>
-        <p class="ticket__n">$<span id="estTotal">6,650</span></p>
+        <p class="ticket__n">$<span id="estTotal">6,695</span></p>
         <p class="ticket__u">installed, film and labor</p>
         <p class="vh" id="estLive" aria-live="polite"></p>
         <a class="btn btn--full" href="#book">Book a consult</a>
@@ -174,8 +174,8 @@
       <ul class="svc__grid">
         <li><span class="svc__n">From $5,800</span><h3>Color change</h3><p>Gloss, satin, matte and color-shift films, one continuous sheet per panel.</p></li>
         <li><span class="svc__n">Front from $2,200</span><h3>Paint protection</h3><p>Self-healing PPF for the front end or the whole car. Rock chips stay in the film.</p></li>
-        <li><span class="svc__n">$450, sides and rear</span><h3>Window tint</h3><p>Ceramic film that blocks heat, not your view, cut to stay inside Texas limits.</p></li>
-        <li><span class="svc__n">From $350</span><h3>Dechrome</h3><p>Trim, window surrounds and wheels in black or color.</p></li>
+        <li><span class="svc__n">From $495, sides and rear</span><h3>Window tint</h3><p>Ceramic film that blocks heat, not your view, cut to stay inside Texas limits.</p></li>
+        <li><span class="svc__n">From $350</span><h3>Dechrome</h3><p>Window trim, badges and grille surrounds in gloss or satin black.</p></li>
       </ul>
     </div>
   </section>
@@ -186,9 +186,9 @@
       <h2 id="steps-h" class="h2">Drop it off Monday, drive it home Thursday.</h2>
       <ol class="steps__list">
         <li><span class="steps__d">Before</span><h3>Consult</h3><p>See the film in person, under the same lights it will be laid under.</p></li>
-        <li><span class="steps__d">Day 1</span><h3>Prep</h3><p>Wash, decontaminate, wipe down and tape the edges.</p></li>
+        <li><span class="steps__d">Day 1</span><h3>Prep</h3><p>Wash, clay bar and alcohol wipe, then the badges, lights and trim come off.</p></li>
         <li><span class="steps__d">Days 2 and 3</span><h3>Install</h3><p>Panel by panel, edges post-heated, tint cut and laid.</p></li>
-        <li><span class="steps__d">Day 4</span><h3>Collect</h3><p>Walk-around under our lights, with a care guide for the film.</p></li>
+        <li><span class="steps__d">Day 4</span><h3>Collect</h3><p>Walk-around under our lights. No washing for a week while the film cures; after that, hand wash only.</p></li>
       </ol>
     </div>
   </section>
@@ -213,8 +213,8 @@
     <div class="wrap wrap--narrow">
       <h2 id="faq-h" class="h2">Asked at the counter.</h2>
       <details><summary>Does a wrap damage paint?</summary><p>On factory paint, a quality film removes cleanly when the time comes. Repainted panels are checked first.</p></details>
-      <details><summary>How long does it last?</summary><p>Typically several years with proper care. We go over washing and care at pickup.</p></details>
-      <details><summary>Is the tint legal?</summary><p>Texas measures tint with the glass, not the film alone. Front side windows must let through at least 25% of light, so 35% film is the darkest we lay there. Rear side windows are exempt, so any shade is legal. The rear window can be any shade when the car has outside mirrors on both sides, as a 911 does. On the windshield, a tinted strip can only run above the AS-1 line, or in the top 5 inches where there is no line; clear UV film can cover all of it.</p></details>
+      <details><summary>How long does it last?</summary><p>In Texas sun, plan on about 3 to 5 years for most color films, less for color-shift, with the hood and roof aging first. Kept garaged, longer. We go over washing and care at pickup.</p></details>
+      <details><summary>Is the tint legal?</summary><p>Texas measures tint with the glass, not the film alone. Front side windows must let through at least 25% of light, so 35% film is the darkest we lay there. Rear side windows are exempt, so any shade is legal. The rear window can be any shade when the car has outside mirrors on both sides, as a 911 does. On the windshield, a tinted strip can only run above the AS-1 line, or in the top 5 inches where there is no line; clear UV film can cover all of it. Every car we tint leaves with the Texas compliance sticker in the driver&rsquo;s window.</p></details>
       <details><summary>Where are you?</summary><p>This is a concept site for a fictional studio. A real build lists the address and hours here.</p></details>
     </div>
   </section>
@@ -223,11 +223,11 @@
 <footer class="foot">
   <div class="wrap foot__grid">
     <ul class="foot__wall" aria-label="The films on our swatch wall">
-      <li style="--c:#3e4146">SC-2080<span>Satin Charcoal</span></li>
-      <li style="--c:#1d5560">ST-4060<span>Satin Dark Teal</span></li>
-      <li style="--c:#5d5a41">MO-3350<span>Matte Olive Drab</span></li>
-      <li style="--c:#141415">MB-0010<span>Matte Black</span></li>
-      <li style="--c:#5b2d91;--c2:#178a86">CS-7020<span>Purple to Teal</span></li>
+      <li style="--c:#3e4146">3M 2080-&#8288;S261<span>Satin Dark Gray</span></li>
+      <li style="--c:#1d5560">Color matched<span>Satin Dark Teal</span></li>
+      <li style="--c:#5d5a41">3M 2080-&#8288;M26<span>Matte Military Green</span></li>
+      <li style="--c:#141415">3M 2080-&#8288;M12<span>Matte Black</span></li>
+      <li style="--c:#5b2d91;--c2:#178a86">Avery SW900 ColorFlow<span>Satin Rushing Riptide</span></li>
     </ul>
     <div class="foot__small">
       <p>Satin &amp; Shade Wrap Studio is a fictional business, not affiliated with Porsche. This concept site was designed and built by Quvlo to show what is possible.</p>

@@ -14,11 +14,11 @@
   /* ---------- Colors (the accent of the whole page follows the pick) ---------- */
   // base: the color without its finish, so the work order can name any finish the visitor picks
   const COLORS = [
-    { k: 'charcoal', name: 'Satin Charcoal', base: 'Charcoal', code: 'SC-2080', fin: 'satin', c: '#3e4146', hi: '#9aa0a8', gl: .12 },
-    { k: 'teal', name: 'Satin Dark Teal', base: 'Dark Teal', code: 'ST-4060', fin: 'satin', c: '#1d5560', hi: '#7cc0c8', gl: .12 },
-    { k: 'olive', name: 'Matte Olive Drab', base: 'Olive Drab', code: 'MO-3350', fin: 'matte', c: '#5d5a41', hi: '#b5ae86', gl: 0 },
-    { k: 'matte', name: 'Matte Black', base: 'Black', code: 'MB-0010', fin: 'matte', c: '#141415', hi: '#8d9096', gl: 0 },
-    { k: 'shift', name: 'Color-Shift Purple to Teal', base: 'Purple to Teal', code: 'CS-7020', fin: 'shift', c: '#5b2d91', c2: '#178a86', hi: '#b398e0', gl: .35 },
+    { k: 'charcoal', name: 'Satin Dark Gray', base: 'Dark Gray', code: '3M 2080-S261', fin: 'satin', c: '#3e4146', hi: '#9aa0a8', gl: .12 },
+    { k: 'teal', name: 'Satin Dark Teal', base: 'Dark Teal', code: 'Teal, color matched', fin: 'satin', c: '#1d5560', hi: '#7cc0c8', gl: .12 },
+    { k: 'olive', name: 'Matte Military Green', base: 'Military Green', code: '3M 2080-M26', fin: 'matte', c: '#5d5a41', hi: '#b5ae86', gl: 0 },
+    { k: 'matte', name: 'Matte Black', base: 'Black', code: '3M 2080-M12', fin: 'matte', c: '#141415', hi: '#8d9096', gl: 0 },
+    { k: 'shift', name: 'Satin Rushing Riptide', base: 'Rushing Riptide', code: 'Avery SW900 ColorFlow', fin: 'shift', c: '#5b2d91', c2: '#178a86', hi: '#b398e0', gl: .35 },
     { k: 'white', name: 'Factory White', base: 'Factory White', code: 'Paint, no film', fin: null, c: '#e8e7e3', hi: '#efece6', gl: .45 }
   ];
   const setWrap = col => { root.style.setProperty('--wrap', col.c); root.style.setProperty('--wrap-hi', col.hi); };
@@ -145,8 +145,10 @@
   // chosen in the estimator, which a swatch resets to that film's own finish.
   const FIN = { gloss: 'Gloss', satin: 'Satin', matte: 'Matte', shift: 'Color-Shift' };
   const finOf = () => { const r = $('input[name="fin"]:checked', est); return r ? r.dataset.fin : current.fin; };
-  const pickName = () => current.k === 'white' ? current.name : `${FIN[finOf()]} ${current.base}`;
-  function showName() { nameEl.textContent = pickName(); codeEl.textContent = current.code; }
+  // the color-shift film comes in one finish only, so it keeps its own name
+  const pickName = () => current.k === 'white' || current.k === 'shift' ? current.name : `${FIN[finOf()]} ${current.base}`;
+  // the full film code only when the chosen finish is that film's own; otherwise just the series
+  function showName() { nameEl.textContent = pickName(); codeEl.textContent = current.k === 'white' || finOf() === current.fin ? current.code : current.code.split('-')[0]; }
   function apply(col) {
     if (col === current && !busy) return;
     current = col;
@@ -251,7 +253,7 @@
 
   /* ---------- Estimator as a work order ---------- */
   const est = $('#est'), total = $('#estTotal'), lines = $('#ticketLines'), live = $('#estLive');
-  const estWhite = $('#estWhite'), fsCov = $('#estCov'), fsFin = $('#estFin');
+  const estWhite = $('#estWhite'), fsCov = $('#estCov'), fsFin = $('#estFin'), ppfLabel = $('#ppfLabel');
   const fmt = n => n.toLocaleString('en-US');
   // The color-shift film only comes as color-shift, and color-shift is only that film: the finishes that
   // don't go with the pick are switched off, so the surcharge always matches the film.
@@ -259,6 +261,8 @@
     const white = col.k === 'white';
     fsCov.disabled = fsFin.disabled = white;
     estWhite.hidden = !white;
+    // PPF goes over the wrap; on factory white it goes straight on the paint
+    ppfLabel.textContent = white ? 'Front PPF' : 'Front PPF (over the wrap)';
     if (white) return;
     $$('input[name="fin"]', est).forEach(r => { r.disabled = (r.dataset.fin === 'shift') !== (col.k === 'shift'); });
     const r = $(`input[name="fin"][data-fin="${col.fin}"]`, est);
@@ -296,7 +300,7 @@
     liveT = setTimeout(() => { live.textContent = `Estimate $${fmt(sum)}.`; }, 600);
   }
   est.addEventListener('change', () => { showName(); renderTicket(); });
-  shown = 6650;
+  shown = 6695;
   syncFinish(current); showName();
   setTint();
 
