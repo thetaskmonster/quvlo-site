@@ -4,7 +4,7 @@
 (() => {
   'use strict';
   // Bump when any film frame or showroom picture changes, so browsers fetch the new files instead of cached ones.
-  const FV = '2026103101';
+  const FV = '2026103103';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -56,14 +56,14 @@
   let opened = false;
   function openLoader() { if (opened) return; opened = true; document.body.classList.remove('is-loading'); loader.classList.add('is-open'); }
 
-  /* Rev counter: off while the car is parked in the garage (shots 0 and 1). In the drive (shot 2) it
-     follows the car's speed, measured from the wall sliding past in each frame (at a steady gear, rpm
-     tracks speed). At the jet (shot 3) the engine idles. The 6.2 V8 redlines near 5,800; this never
-     gets close. */
+  /* Rev counter: off while the car is parked in the garage (shots 0 and 1). In the drive (shot 2) the car
+     cruises at a steady city speed; the counter follows the street's measured slide past the car, damped,
+     because the buildings also change distance as the street passes (so their slide is not pure speed).
+     At the jet (shot 3) the engine idles. The 6.2 V8 redlines near 5,800; this never gets close. */
   const tach = $('.tach'), tachRpm = $('#tachRpm'), tachFill = $('#tachFill'), MAX = 7000, IDLE = 650;
-  const DRIVE = [1630, 1600, 1570, 1550, 1530, 1490, 1460, 1440, 1420, 1400, 1380, 1360, 1360, 1350, 1330, 1330,
-    1340, 1350, 1360, 1390, 1430, 1470, 1490, 1510, 1530, 1540, 1540, 1540, 1560, 1560, 1560, 1570,
-    1570, 1570, 1570, 1570, 1570, 1560, 1540, 1550]; // one value per drive frame (source frames 20-59)
+  const DRIVE = [1340, 1360, 1370, 1380, 1400, 1410, 1420, 1430, 1450, 1460, 1470, 1480, 1480, 1490, 1500, 1510,
+    1520, 1520, 1530, 1530, 1540, 1540, 1550, 1550, 1550, 1550, 1560, 1560, 1560, 1560, 1560, 1560,
+    1550, 1550, 1550, 1550, 1540, 1540, 1530, 1530]; // one value per drive frame (source frames 0-117, every 3rd)
   function rpmAt(shot, local) {
     if (shot < 2) return 0;
     if (shot === 3) return IDLE;

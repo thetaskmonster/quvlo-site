@@ -21,7 +21,7 @@
    - The sticky stage is sized to the large viewport, and visible bottom-anchored overlays are lifted above
      Safari's toolbar while it shows, so nothing jumps or leaves a dark band when the toolbar collapses.
    - With reduced motion, each shot is a still: the picture changes only at shot boundaries, and only the
-     stills download.
+     stills download. Optional "stills" in frames.json (1-based, one per shot) picks them.
    - Overlays read the frame actually drawn (view.i, view.shot, view.f), never the raw scroll position, and
      hidden overlays are made inert so they can't be tapped or tabbed to ("overlays" option).
    - In-page links that land inside the film load and decode their frame first, then jump straight there
@@ -83,7 +83,13 @@
     const lenOf = s => (LEN && LEN[s]) || PER;
     const hiOf = s => Math.min(N - 1, s * PER + lenOf(s) - 1);
     const real = i => i >= 0 && i < N && i <= hiOf(shotOf(i));
-    const repFrame = s => { const lo = s * PER, n = lenOf(s); return Math.min(hiOf(s), s === 0 ? lo + Math.min(8, Math.round((n - 1) / 2)) : s === SHOTS - 1 ? lo + Math.max(0, n - 6) : lo + Math.round((n - 1) / 2)); };
+    // the still each shot shows under reduced motion: "stills" in frames.json (1-based, one per shot) when it
+    // names a real frame of that shot, otherwise a frame chosen by position
+    const repFrame = s => {
+      const lo = s * PER, n = lenOf(s), pick = M && Array.isArray(M.stills) && M.stills.length === SHOTS && typeof M.stills[s] === 'number' ? Math.round(M.stills[s]) - 1 : -1;
+      if (pick >= lo && pick <= hiOf(s)) return pick;
+      return Math.min(hiOf(s), s === 0 ? lo + Math.min(8, Math.round((n - 1) / 2)) : s === SHOTS - 1 ? lo + Math.max(0, n - 6) : lo + Math.round((n - 1) / 2));
+    };
 
     /* ---------- Which frame set and fit this screen gets ---------- */
     function pickMode() {
