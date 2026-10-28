@@ -11,6 +11,8 @@
    - One frame is drawn at a time, never two blended, so moving subjects never double up.
    - Optional per-shot time maps and scroll weights in frames.json ("tm", "weights") keep on-screen motion
      even (tools/scrollfilm/timemap.py measures them).
+   - Optional "coverX" in frames.json (one per shot, default 0.5): where the 16:9 sets crop their sides on screens
+     narrower than the frame, so a subject near the edge of a shot stays in view.
    - Optional "lens" in frames.json: how many real frames each shot has (default: all of "per"). Slots at or
      past a shot's length don't exist as far as the engine is concerned: never fetched, decoded or drawn,
      never a fallback, never in the loader's gate.
@@ -21,7 +23,7 @@
    - The sticky stage is sized to the large viewport, and visible bottom-anchored overlays are lifted above
      Safari's toolbar while it shows, so nothing jumps or leaves a dark band when the toolbar collapses.
    - With reduced motion, each shot is a still: the picture changes only at shot boundaries, and only the
-     stills download.
+     stills download. Optional "stills" in frames.json (1-based, one per shot) picks them.
    - Overlays read the frame actually drawn (view.i, view.shot, view.f), never the raw scroll position, and
      hidden overlays are made inert so they can't be tapped or tabbed to ("overlays" option).
    - In-page links that land inside the film load and decode their frame first, then jump straight there
@@ -55,7 +57,7 @@
     const BG = o.bg || [section, stage].map(el => getComputedStyle(el).backgroundColor).find(c => c && c !== 'transparent' && !/rgba\([^)]*,\s*0\)/.test(c)) || '#0b0b0b';
     const MAX_FETCH = 6, MAX_DECODE = 3;
 
-    let M = null, PER = 40, SHOTS = 6, N = 0, W = null, TM = null, LEN = null, ready = false, failed = false;
+    let M = null, PER = 40, SHOTS = 6, N = 0, W = null, TM = null, LEN = null, CX = null, ready = false, failed = false;
     let store = null, prevStore = null, mode = null;
     let cw = 0, ch = 0, dpr = 1, visible = true, near = true, dirty = true;
     let target = 0, cur = 0, dir = 1, lastCur = 0, lastShot = -1;
@@ -83,7 +85,13 @@
     const lenOf = s => (LEN && LEN[s]) || PER;
     const hiOf = s => Math.min(N - 1, s * PER + lenOf(s) - 1);
     const real = i => i >= 0 && i < N && i <= hiOf(shotOf(i));
-    const repFrame = s => { const lo = s * PER, n = lenOf(s); return Math.min(hiOf(s), s === 0 ? lo + Math.min(8, Math.round((n - 1) / 2)) : s === SHOTS - 1 ? lo + Math.max(0, n - 6) : lo + Math.round((n - 1) / 2)); };
+    // the still each shot shows under reduced motion: "stills" in frames.json (1-based, one per shot) when it
+    // names a real frame of that shot, otherwise a frame chosen by position
+    const repFrame = s => {
+      const lo = s * PER, n = lenOf(s), pick = M && Array.isArray(M.stills) && M.stills.length === SHOTS && typeof M.stills[s] === 'number' ? Math.round(M.stills[s]) - 1 : -1;
+      if (pick >= lo && pick <= hiOf(s)) return pick;
+      return Math.min(hiOf(s), s === 0 ? lo + Math.min(8, Math.round((n - 1) / 2)) : s === SHOTS - 1 ? lo + Math.max(0, n - 6) : lo + Math.round((n - 1) / 2));
+    };
 
     /* ---------- Which frame set and fit this screen gets ---------- */
     function pickMode() {
@@ -385,7 +393,10 @@
       const fit = st.set !== 'm' && mode && mode.fit === 'band' ? 'band' : 'cover';
       if (fit === 'cover') {
         const s = Math.max(cw / iw, ch / ih);
-        return { x: (cw - iw * s) / 2, y: (ch - ih * s) / 2, w: iw * s, h: ih * s, fit };
+        // the 16:9 sets crop the sides when the screen is narrower than the frame: "coverX" in frames.json (one per
+        // shot, 0 = keep the left edge, 1 = the right, default 0.5) says where. The phone set is already framed.
+        const ax = st.set !== 'm' && CX ? CX[shotOf(i)] : 0.5;
+        return { x: (cw - iw * s) * ax, y: (ch - ih * s) / 2, w: iw * s, h: ih * s, fit };
       }
       const s = Math.max(cw / iw, (ch * BAND) / ih);
       const u0 = M.m && M.m.crop ? M.m.crop[i] + (M.m.cropW || 0.31) / 2 : 0.5;
@@ -653,6 +664,7 @@
       W = Array.isArray(M.weights) && M.weights.length === SHOTS ? M.weights.slice() : new Array(SHOTS).fill(1);
       TM = Array.isArray(M.tm) && M.tm.length === SHOTS ? M.tm : null;
       LEN = Array.isArray(M.lens) && M.lens.length === SHOTS ? M.lens.map(n => Math.round(clamp(+n || PER, 1, PER))) : null;
+      CX = Array.isArray(M.coverX) && M.coverX.length === SHOTS ? M.coverX.map(v => (typeof v === 'number' && Number.isFinite(v) ? clamp(v, 0, 1) : 0.5)) : null;
       // Reduced motion: one still per shot, no scrub, and a shorter section
       if (reduce) section.style.height = `${SHOTS * 60 + 100}vh`;
       mode = pickMode();

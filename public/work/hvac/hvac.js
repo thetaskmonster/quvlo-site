@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.
-  const FV = '2026102804';
+  const FV = '2026102806';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -30,13 +30,13 @@
   // Hotspots: position at the start (a) and end (b) of their shot; "at" is when the note opens.
   // "side" is where the card sits on tablets and desktops: r/l = right/left, t/b = above/below.
   const SPOTS = [
-    { shot: 1, a: [0.50, 0.173], b: [0.50, 0.18], at: 0.08, side: 'rb', t: 'Fan motor', d: 'Bearings worn. It hums and barely turns, so the heat stays in the coil.' },
-    { shot: 1, a: [0.414, 0.528], b: [0.40, 0.55], at: 0.20, side: 'rb', t: 'Coil', d: 'Fifteen summers of dirt and corrosion. Air barely gets through it now.' },
-    { shot: 1, a: [0.707, 0.358], b: [0.75, 0.38], at: 0.70, side: 'lb', t: 'Capacitor', d: 'Bulged and reading low on the meter. We tried a test capacitor, no charge, and the compressor still would not start.' },
-    { shot: 3, a: [0.31, 0.62], b: [0.26, 0.66], at: 0.08, side: 'rt', t: 'Line set', d: 'New copper, the large suction line insulated end to end, sealed where it enters the brick.' },
-    { shot: 3, a: [0.47, 0.775], b: [0.45, 0.80], at: 0.26, side: 'rt', t: 'Pad', d: 'Level composite pad, raised so rain drains away from the unit.' },
-    { shot: 3, a: [0.55, 0.52], b: [0.56, 0.53], at: 0.44, side: 'lt', t: 'Variable-speed fan', d: 'Runs slow and quiet most of the day instead of slamming on and off.' },
-    { shot: 3, a: [0.63, 0.60], b: [0.66, 0.62], at: 0.62, side: 'rt', t: 'Charge', d: 'Pressure-tested with nitrogen, vacuum pulled below 500 microns, R-454B charged by weight and checked by subcooling. The numbers go on your invoice.' }
+    { shot: 1, a: [0.420, 0.130], b: [0.400, 0.123], at: 0.08, side: 'rb', t: 'Fan motor', d: 'Bearings worn. It hums and barely turns, so the heat stays in the coil.' },
+    { shot: 1, a: [0.485, 0.550], b: [0.449, 0.539], at: 0.20, side: 'lb', t: 'Coil', d: 'Fifteen summers of dirt and cottonwood, fins flattened at the corners. Air barely gets through it now.' },
+    { shot: 1, a: [0.605, 0.390], b: [0.570, 0.388], at: 0.70, side: 'lb', t: 'Capacitor', d: 'Bulged and tested low. On the clamp meter the compressor pulls locked-rotor amps and will not start, even on a test capacitor.' },
+    { shot: 3, a: [0.780, 0.710], b: [0.720, 0.764], at: 0.08, side: 'rt', t: 'Line set', d: 'New copper, the large suction line insulated end to end, sealed where it enters the brick.' },
+    { shot: 3, a: [0.680, 0.840], b: [0.605, 0.915], at: 0.26, side: 'rt', t: 'Pad', d: 'Level composite pad, raised so rain drains away from the unit.' },
+    { shot: 3, a: [0.520, 0.299], b: [0.408, 0.245], at: 0.44, side: 'rt', t: 'Variable-speed fan', d: 'Runs slow and quiet most of the day instead of slamming on and off.' },
+    { shot: 3, a: [0.560, 0.440], b: [0.453, 0.440], at: 0.62, side: 'rt', t: 'Charge', d: 'Pressure-tested with nitrogen, vacuum pulled below 500 microns, R-454B charged by weight and checked by subcooling. The numbers go on your invoice.' }
   ];
   const HEAT2 = [255, 193, 94], COOL2 = [159, 219, 255];
   const mix = (a, b, k) => `rgb(${a.map((v, i) => Math.round(lerp(v, b[i], k))).join(',')})`;
@@ -346,10 +346,10 @@
 
   /* ---------- The unit: a still with parts you can tap (no 3D model until a real one exists) ---------- */
   const UNIT = [
-    { x: 0.22, y: 0.42, t: 'Coil on two sides', d: 'More surface to shed heat, so the fan can run slow and quiet.' },
-    { x: 0.55, y: 0.52, t: 'Variable-speed fan', d: 'The fan and compressor run low and steady most of the day instead of slamming on and off.' },
-    { x: 0.80, y: 0.50, t: 'Service panel', d: 'Wiring and the refrigerant valves sit behind one panel, so a tune-up takes minutes.' },
-    { x: 0.75, y: 0.77, t: 'Feet and pad', d: 'Bolted down on a level pad, raised so rain drains away from the unit.' }
+    { x: 0.28, y: 0.52, t: 'Coil on four sides', d: 'Coil all the way around, behind louvered guards: more surface to shed heat, so the fan can run slow and quiet.' },
+    { x: 0.51, y: 0.21, t: 'Variable-speed fan', d: 'The fan blows up through the grille on top. It and the compressor run low and steady most of the day instead of slamming on and off.' },
+    { x: 0.53, y: 0.48, t: 'Service panel', d: 'Wiring sits behind one corner panel, with the two refrigerant valves just below it, so a tune-up takes minutes.' },
+    { x: 0.53, y: 0.86, t: 'Mounting feet', d: 'They bolt down to a level pad, raised so rain drains away from the unit.' }
   ];
   const unitDots = $('#unitDots'), unitNote = $('#unitNote');
   if (unitDots && unitNote) {
