@@ -18,51 +18,74 @@
   const ft = n => `${n}'-0"`;
 
   /* ---------- Story data ---------- */
-  const PER = 40;
+  // The film has six shots. The engine reports which shot is on screen and how far through it the picture is
+  // (0 to 1), whatever each shot's length in frames (frames.json "per" and "lens"). The blueprint overlay below
+  // is timed in story frames: 40 per shot, as the film was first cut.
+  const STORY = 40;
   // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.
-  const FV = '2026102803';
-  // The build days each shot covers. The counter runs through them with the footage, so it always sits
-  // inside the range the caption names. One build length everywhere: 330 days, stakes to keys
-  // (the schedule chart, the estimate for The Bluebonnet with Designer finishes, the FAQ). The dry-in and
-  // exterior time-lapse runs to Day 210, when the stone, siding and metal roof are done; the counter then
-  // jumps at the hard cut into the finished interior, late in the finishes phase.
-  const SPANS = [[1, 1], [1, 30], [30, 75], [75, 210], [230, 305], [315, 330]];
+  const FV = '2026102904';
+  // The build days each shot covers, as [position in the shot, day] knots. The counter runs through them with
+  // the footage, so it always sits inside the range the caption names and matches the schedule chart. One build
+  // length everywhere: 330 days, stakes to keys (the chart, the estimate for The Bluebonnet with Designer
+  // finishes, the FAQ). The slab shot is site prep (the pier rig leaves, beam trenches, forms, vapor barrier) to
+  // Day 15, then a hard cut (film frames 124 to 125, at 0.878 to 0.898 of the shot) to a six-frame pour on Day 19,
+  // after the cables are laid and inspected; curing and stripping the forms happen across the cut into framing (Day 30).
+  // The exterior shot is two chained clips: dry-in to Day 95 (underlayment over the decking, wrap, windows; no
+  // stone yet; 20 frames, to 0.253), then scaffold, stone, siding and the metal roof, about two thirds done by
+  // Day 180. The counter jumps at the hard cut into the finished interior, late in the finishes phase.
+  const SPANS = [
+    [[0, 1], [1, 1]],
+    [[0, 1], [0.878, 15], [0.898, 19], [1, 19]],
+    [[0, 30], [1, 75]],
+    [[0, 75], [0.253, 95], [1, 180]],
+    [[0, 230], [1, 305]],
+    [[0, 315], [1, 330]]
+  ];
+  const dayAt = (knots, k) => {
+    for (let i = 1; i < knots.length; i++) {
+      const [k0, d0] = knots[i - 1], [k1, d1] = knots[i];
+      if (k <= k1 || i === knots.length - 1) return lerp(d0, d1, clamp((k - k0) / (k1 - k0)));
+    }
+    return knots[0][1];
+  };
   const TOTAL = 330;
   const SRC_W = 3840, SRC_H = 2160;
 
-  // Blueprint of the front elevation, traced from the finished house in the locked street shot.
+  // Blueprint of the front elevation, traced from the finished house in the locked street shot (reshoot,
+  // 2026-10-28: first frame of the dusk clip; the construction clips share its camera and footprint).
   // Points are fractions of the source frame (u across, v down).
   const P = (pts, cls) => ({ pts, cls: cls || 'ln' });
   const R = (u0, v0, u1, v1, cls) => P([[u0, v0], [u1, v0], [u1, v1], [u0, v1], [u0, v0]], cls);
   const ELEV = [
-    P([[0.276, 0.72], [0.816, 0.72]]),                                    // slab
-    P([[0.34, 0.72], [0.34, 0.40]]),                                      // left wall
-    P([[0.798, 0.72], [0.798, 0.527]]),                                   // right wall
-    P([[0.283, 0.524], [0.365, 0.496], [0.548, 0.496]]),                  // porch roof
-    P([[0.283, 0.524], [0.548, 0.524]], 'ln ln--thin'),                   // porch eave
-    P([[0.34, 0.40], [0.38, 0.40], [0.456, 0.315], [0.548, 0.315]]),      // left wing roof
-    P([[0.535, 0.396], [0.607, 0.262], [0.679, 0.39]]),                   // central gable
-    P([[0.548, 0.40], [0.548, 0.72]]),
-    P([[0.668, 0.40], [0.668, 0.72]]),
-    P([[0.64, 0.312], [0.733, 0.312], [0.765, 0.402], [0.668, 0.402]]),   // right wing roof
-    P([[0.754, 0.402], [0.754, 0.48]]),
-    P([[0.637, 0.50], [0.754, 0.48], [0.81, 0.527], [0.668, 0.527]]),     // right lower roof
-    R(0.581, 0.406, 0.637, 0.71),                                         // two-story glass entry
-    P([[0.609, 0.406], [0.609, 0.71]], 'ln ln--thin'),
-    R(0.374, 0.418, 0.415, 0.49, 'ln ln--thin'),
-    R(0.469, 0.418, 0.52, 0.458, 'ln ln--thin'),
-    R(0.674, 0.424, 0.698, 0.477, 'ln ln--thin'),
-    R(0.71, 0.424, 0.733, 0.477, 'ln ln--thin'),
-    R(0.358, 0.555, 0.42, 0.676, 'ln ln--thin'),
-    R(0.467, 0.555, 0.525, 0.707, 'ln ln--thin'),                        // front doors
-    R(0.705, 0.57, 0.756, 0.682, 'ln ln--thin'),
-    P([[0.29, 0.524], [0.29, 0.72]], 'ln ln--thin'),                      // porch posts
-    P([[0.315, 0.524], [0.315, 0.72]], 'ln ln--thin'),
-    P([[0.43, 0.524], [0.43, 0.72]], 'ln ln--thin')
+    P([[0.27, 0.645], [0.448, 0.65], [0.738, 0.67], [0.822, 0.66]]),       // slab
+    P([[0.338, 0.645], [0.338, 0.384]]),                                    // left wing wall
+    P([[0.338, 0.384], [0.36, 0.287], [0.431, 0.391]]),                     // left gable
+    P([[0.27, 0.508], [0.339, 0.473], [0.456, 0.456]]),                     // porch roof
+    P([[0.27, 0.508], [0.418, 0.499]], 'ln ln--thin'),                      // porch eave
+    P([[0.437, 0.383], [0.48, 0.245], [0.561, 0.356]]),                     // centre gable
+    P([[0.448, 0.383], [0.448, 0.65]]),
+    P([[0.529, 0.273], [0.715, 0.191], [0.75, 0.386]]),                     // main roof and right gable
+    P([[0.561, 0.356], [0.667, 0.33]], 'ln ln--thin'),                      // main eave
+    P([[0.738, 0.386], [0.738, 0.67]]),                                     // right stone wall
+    P([[0.508, 0.478], [0.673, 0.421]]),                                    // lower front roof
+    P([[0.72, 0.506], [0.803, 0.404], [0.822, 0.518]]),                     // garage wing gable
+    P([[0.822, 0.518], [0.822, 0.66]]),
+    R(0.464, 0.37, 0.51, 0.569),                                            // two-story glass
+    P([[0.487, 0.37], [0.487, 0.569]], 'ln ln--thin'),
+    R(0.358, 0.395, 0.378, 0.462, 'ln ln--thin'),
+    R(0.695, 0.361, 0.716, 0.446, 'ln ln--thin'),
+    R(0.353, 0.518, 0.383, 0.613, 'ln ln--thin'),
+    R(0.426, 0.523, 0.446, 0.643, 'ln ln--thin'),                           // front door
+    R(0.539, 0.502, 0.585, 0.613, 'ln ln--thin'),
+    R(0.633, 0.53, 0.677, 0.669, 'ln ln--thin'),                            // garage doors
+    R(0.684, 0.539, 0.719, 0.659, 'ln ln--thin'),
+    P([[0.283, 0.513], [0.283, 0.638]], 'ln ln--thin'),                     // porch posts
+    P([[0.315, 0.513], [0.315, 0.638]], 'ln ln--thin'),
+    P([[0.366, 0.513], [0.366, 0.638]], 'ln ln--thin')
   ];
   const DIMS = [
-    { pts: [[0.283, 0.752], [0.81, 0.752]], ticks: true, t: "84'-0\"", at: [0.546, 0.79] },
-    { pts: [[0.835, 0.262], [0.835, 0.72]], ticks: true, t: "31'-6\"", at: [0.85, 0.49], up: true }
+    { pts: [[0.27, 0.705], [0.822, 0.705]], ticks: true, t: "84'-0\"", at: [0.546, 0.742] },
+    { pts: [[0.848, 0.191], [0.848, 0.67]], ticks: true, t: "31'-6\"", at: [0.863, 0.43], up: true }
   ];
 
   /* ---------- Film (shared engine: film-engine.js) ---------- */
@@ -107,17 +130,18 @@
       tx.textContent = d.t;
     });
     // Centred under the house, so it fits every crop (phones, the phone-landscape panel, tablets).
-    const lab = svgEl('text', { x: 0.546 * SRC_W, y: 0.835 * SRC_H, class: 'lab', 'text-anchor': 'middle' }, dimG);
+    const lab = svgEl('text', { x: 0.546 * SRC_W, y: 0.79 * SRC_H, class: 'lab', 'text-anchor': 'middle' }, dimG);
     lab.textContent = 'FRONT ELEVATION · THE BLUEBONNET';
   }
   const dimG = () => print.querySelector('.dimg');
 
   let lastView = '';
   function placePrint(v) {
-    // Draw from the bare lot to the slab, hold, then let the real framing take over.
-    const f = v.f;
-    const drawP = reduce ? 1 : ease(clamp((f - 30) / 48));
-    const fadeIn = clamp((f - 28) / 6);
+    // Draw from the bare lot to the slab, hold, then let the real framing take over (story frames, 40 a shot).
+    const f = v.shot * STORY + v.local * (STORY - 1);
+    // nothing over the aerial: the drawing is in the tripod's coordinates, so it starts with the slab shot
+    const drawP = reduce ? 1 : ease(clamp((f - 40) / 38));
+    const fadeIn = v.shot >= 1 ? clamp((f - 40) / 3) : 0;
     // gone by frame 110, before the dry-in, where the footage drifts from the drawing
     const fadeOut = 1 - ease(clamp((f - 92) / 18));
     const op = fadeIn * fadeOut;
@@ -183,15 +207,13 @@
   }
 
   let lastDay = -1, lastShot = -1;
-  function ui(f, vLocal) {
-    const shot = Math.min(5, Math.floor(f / PER));
-    // the engine's local position knows each shot's real length (shot 6 has 31 frames, "lens" in frames.json)
-    const local = typeof vLocal === 'number' ? vLocal : clamp((f - shot * PER) / (PER - 1));
+  function ui(vShot, vLocal) {
+    const shot = Math.min(5, Math.max(0, vShot | 0));
+    const local = clamp(+vLocal || 0);
     // The counter runs through the days the shot covers, in step with the time-lapse on screen. The last
     // shot reaches Day 330 before its caption ("Day 330 · Keys") comes up, then holds.
-    const [d0, d1] = SPANS[shot];
     const k = shot === 5 ? clamp(local / 0.28) : local;
-    const day = Math.round(lerp(d0, d1, k));
+    const day = Math.round(dayAt(SPANS[shot], k));
     if (day !== lastDay) { schedDay.textContent = String(day).padStart(3, '0'); lastDay = day; }
     schedFill.style.setProperty('--p', ((day - 1) / (TOTAL - 1)).toFixed(4));
     if (shot !== lastShot) {
@@ -201,7 +223,7 @@
     caps.forEach(cap => {
       const s = +cap.dataset.shot;
       let on;
-      if (s === 0) on = f < 22;
+      if (s === 0) on = shot === 0 && local < 22 / (STORY - 1);
       else if (s === 5) on = shot === 5 && local >= 0.3;
       else on = shot === s && local > 0.08 && local < 0.9;
       cap.classList.toggle('is-on', on);
@@ -213,18 +235,20 @@
   buildPrint();
   print.setAttribute('preserveAspectRatio', 'none');
   window.FilmEngine.create({
-    section: film, stage: $('.film__stage'), canvas, FV, range: [0.01, 0.9], rate: 9,
+    // per/count/shots only matter if frames.json fails to load: the engine then plays the 80-slot layout and
+    // never draws a frame from another shot (the empty slots of short shots just 404)
+    section: film, stage: $('.film__stage'), canvas, FV, range: [0.01, 0.9], rate: 9, per: 80, shots: 6, count: 440,
     lift: '.cap, .sched',
     overlays: { '.cap': 'is-on' },
     onGate: k => { loadPct.textContent = String(Math.round(k * 100)); },
     onReady: openLoader,
     onDraw: (ctx, v) => placePrint(v),
-    onFrame: v => ui(v.f, v.local),
+    onFrame: v => ui(v.shot, v.local),
   });
   setTimeout(openLoader, 9000); // never trap a visitor behind the loader on a very slow connection
   const solid = () => bar.classList.toggle('is-solid', film.getBoundingClientRect().bottom < 90);
   addEventListener('scroll', solid, { passive: true }); solid();
-  ui(0);
+  ui(0, 0);
 
   /* ---------- Plans ---------- */
   // Rooms in feet: [key, name, x, y, w, h, short name for phones]. Rooms with a key can be tapped; the rest
@@ -294,7 +318,7 @@
     great: ['img/room-great.webp', 'The Bluebonnet great room seen from the foyer: an 18-foot ceiling with cedar beams, a limestone fireplace wall and the kitchen beyond'],
     kitchen: ['img/room-kitchen.webp', 'The Bluebonnet kitchen with white oak cabinets, a plaster hood and a long island'],
     primary: ['img/room-primary.webp', 'The Bluebonnet primary bedroom with a vaulted beamed ceiling, a limestone wall and a wall of black-framed windows'],
-    bath: ['img/room-bath.webp', 'The Bluebonnet primary bath with a freestanding tub, a glass-panel shower and limestone walls'],
+    bath: ['img/room-bath.webp', 'The Bluebonnet primary bath with a freestanding tub, a glass-panel shower, and honed limestone on the floor and the shower walls'],
     study: ['img/room-study.webp', 'The Bluebonnet study with built-in shelves floor to ceiling'],
     porch: ['img/room-porch.webp', 'The Bluebonnet back porch with an outdoor fireplace, cedar posts and a cedar ceiling']
   };
