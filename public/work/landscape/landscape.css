@@ -158,7 +158,7 @@ img { max-width: 100%; display: block; }
 /* never taller than the screen, so there is always page around it to scroll with, even mid-game */
 @media (orientation: landscape) and (max-height: 700px) { .board { width: min(100%, calc((100svh - 76px) * 16 / 9)); margin-inline: auto; } }
 @media (max-width: 720px) { .board { aspect-ratio: 1 / 1; } }
-.board__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; touch-action: pan-y; }
+.board__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; touch-action: pan-y; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
 .board.is-playing .board__canvas { touch-action: none; }
 .board__start { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 12px; background: rgba(17,36,26,.35); color: #fff; text-align: center; transition: opacity .3s; }
 .board.is-playing .board__start { opacity: 0; pointer-events: none; }
@@ -205,10 +205,15 @@ img { max-width: 100%; display: block; }
 .svc h3 { margin: 14px 0 10px; font: 400 26px/1.1 var(--serif); }
 .svc p { margin: 0; color: #cfdac9; font-size: 15.5px; }
 .svc .svc__from { margin-top: 14px; color: var(--blue-l); font-weight: 600; font-size: 14px; }
+/* an odd last card (the ongoing mowing program) closes the list as a full-width row, never an orphan */
+.svc li:last-child:nth-child(3n+1) { grid-column: 1 / -1; }
+.svc li:last-child:nth-child(3n+1) p { max-width: 62ch; }
 @media (max-width: 960px) {
   .svc { grid-template-columns: 1fr 1fr; }
   .svc li, .svc li:not(:nth-child(3n+1)) { padding: 24px 20px 26px 0; border-left: 0; }
   .svc li:nth-child(even) { padding-left: 20px; border-left: 1px solid rgba(207,218,201,.2); }
+  .svc li:last-child:nth-child(3n+1) { grid-column: auto; }
+  .svc li:last-child:nth-child(odd) { grid-column: 1 / -1; }
 }
 @media (max-width: 600px) {
   .svc { grid-template-columns: 1fr; }

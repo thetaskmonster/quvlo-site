@@ -643,24 +643,28 @@
     const lawnA = S * 0.62, bedA = S * 0.16;
     const has = k => !!fd.get(k);
     let sum = 0;
-    sum += nTrees * 950;
+    sum += nTrees * 1200;
     if (has('grade')) sum += S * 0.45;
     if (sod) sum += lawnA * sod;
+    if (has('irr')) sum += (lawnA + bedA) * 0.6;   // sprinkler zones over the lawn and beds
     if (has('beds')) sum += bedA * 14;
     if (has('patio')) sum += 300 * 28;
     if (has('pit')) sum += 3200;
-    if (has('lights')) sum += 2800;
+    if (has('lights')) sum += 4200;
     if (has('fence')) sum += Math.sqrt(S) * 1.1 * 38;
     sum = Math.round(sum / 50) * 50;
-    // Working days, the way the crew runs a job: trees and fence line first, then grading, then the
-    // planting and sod crew works alongside the stone and lighting crew. The film's yard (about 12,000 sq ft,
-    // two trees, grading, beds, sod, patio, fire pit and lights) comes out at four days.
-    const clear = (nTrees ? 0.5 + 0.25 * (nTrees - 1) : 0) + (has('fence') ? 0.75 : 0);
+    // Working days, the way three crews run a job: trees first, then grading, then the planting and sod
+    // crew works alongside the stone and lighting crew, the irrigator and the fence crew. The film's yard
+    // (about 12,000 sq ft, two trees, grading, sprinklers, beds, sod, patio, fire pit, lights and a new
+    // cedar fence) comes out at four days.
+    const clear = nTrees ? 0.5 + 0.25 * (nTrees - 1) : 0;
     const grade = has('grade') ? Math.max(0.5, S / 12000) : 0;
     const soft = (has('beds') ? Math.max(0.5, bedA / 2000) : 0) + (sod ? Math.max(0.5, lawnA / 8000) : 0);
     const hard = (has('patio') ? 1.5 : 0) + (has('pit') ? 0.5 : 0);
     const lights = has('lights') ? 1 : 0;
-    const d = Math.ceil(clear + grade + Math.max(soft, hard, lights) - 1e-9);
+    const irr = has('irr') ? Math.max(0.5, (lawnA + bedA) / 8000) : 0;
+    const fence = has('fence') ? 1 : 0;
+    const d = Math.ceil(clear + grade + Math.max(soft, hard, lights, irr, fence) - 1e-9);
     const empty = sum === 0;
     estN.classList.toggle('is-empty', empty);
     daysEl.textContent = empty ? 'Pick some work above to see a price.' : `${d} working ${d === 1 ? 'day' : 'days'}`;
@@ -686,7 +690,7 @@
   $('#filmYard').addEventListener('click', () => {
     est.querySelector('input[name="size"][value="12000"]').checked = true;
     est.querySelector('input[name="sod"][value="1.6"]').checked = true;
-    const on = { grade: 1, beds: 1, patio: 1, pit: 1, lights: 1, fence: 0 };
+    const on = { grade: 1, irr: 1, beds: 1, patio: 1, pit: 1, lights: 1, fence: 1 };
     Object.keys(on).forEach(k => { est.querySelector(`input[name="${k}"]`).checked = !!on[k]; });
     trees.value = '2'; treesOut.textContent = '2';
     calc();
