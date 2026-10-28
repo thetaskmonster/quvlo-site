@@ -328,8 +328,11 @@
     const stageH = () => stage.offsetHeight || innerHeight;
     const filmTop = () => section.getBoundingClientRect().top + scrollY;
     const filmLen = () => Math.max(1, section.offsetHeight - stageH());
+    // where the film's bottom edge sat on screen last frame (null when off screen), for a turn just below it
+    let filmBottom = null;
     function progress() {
       const r = section.getBoundingClientRect();
+      filmBottom = r.bottom > 0 && r.bottom < innerHeight ? r.bottom : null;
       return clamp(-r.top / filmLen());
     }
     function frameAt(p) {
@@ -679,34 +682,133 @@
     // is watched, and if it changes the visitor is put back at the same point (when they were in the film) and
     // the canvas resized. When the layout was already final (the usual case) nothing changes, so nothing
     // happens. A scroll by the visitor ends the watch of the position.
-    let settle = null;
+    // Outside the film (below it, or further down the page) the same turn would move what the visitor is
+    // reading by thousands of pixels, since the film above it is sized in vh. There the element being read is
+    // remembered as the visitor scrolls, and kept at the same height on screen across the turn and the watch.
+    // A change of height only (Safari's toolbar, a window or Stage Manager resize) never moves the page; with
+    // reduced motion it starts a short watch of the canvas size alone.
+    let settle = null, anchor = null, anchorT = 0, turnAnchor = null, lastY = scrollY, ownY = -1;
+    const pinned = el => { for (let x = el; x && x !== document.body; x = x.parentElement) { const p = getComputedStyle(x).position; if (p === 'fixed' || p === 'sticky') return true; } return false; };
+    function pickAnchor() {
+      anchorT = 0;
+      if (turnAnchor || restoreP != null) return; // held still during a turn
+      anchor = null;
+      // only content outside the film counts: while the film's stage fills the screen, nothing is found
+      if (scrollY < 1) return;
+      // a line just under where a fixed header usually ends, then further down (the end of the film's
+      // stage can still cover the top of the screen)
+      const lines = [Math.min(100, innerHeight * 0.3), innerHeight * 0.3, innerHeight * 0.5, innerHeight * 0.7];
+      for (const [u, line] of lines.flatMap(y => [[0.25, y], [0.5, y]])) {
+        for (let el of document.elementsFromPoint(innerWidth * u, line)) {
+          if (el === document.body || el === document.documentElement || el.contains(section) || section.contains(el)) break;
+          if (pinned(el)) continue;
+          // like the browser's own scroll anchoring: the first piece of content that reaches below the line,
+          // not the box around it (a container's padding can change with the turn)
+          for (let k = 0; k < 20; k++) {
+            const c = Array.from(el.children).find(x => { const r = x.getBoundingClientRect(); return r.height > 0 && r.bottom > line && !pinned(x); });
+            if (!c) break;
+            el = c;
+          }
+          // drawn graphics (a chart's SVG) are often redrawn on a resize: hold the whole SVG instead, and
+          // keep the block around it as a fallback in case the element itself is replaced or hidden
+          if (el.ownerSVGElement) { let g = el.ownerSVGElement; while (g.ownerSVGElement) g = g.ownerSVGElement; el = g; }
+          const up = el.parentElement && el.parentElement.closest('section, article, aside, footer, form, figure, li, div');
+          anchor = { el, top: el.getBoundingClientRect().top, y: scrollY, up: up && up !== document.body && !section.contains(up) ? { el: up, top: up.getBoundingClientRect().top } : null };
+          return;
+        }
+      }
+    }
+    // Picked once scrolling has paused (100 ms), so it stays off the scroll path. Scrolls the engine makes
+    // itself (restores) don't count.
+    const queueAnchor = () => { clearTimeout(anchorT); anchorT = setTimeout(pickAnchor, 100); };
+    // scrolling moves the place; a tap (an answer opening, a section growing) can move the content under it
+    addEventListener('scroll', () => { if (Math.abs(scrollY - ownY) < 1) { ownY = -1; return; } lastY = scrollY; queueAnchor(); }, { passive: true });
+    // a tap also ends the hold after a turn, so a link (or a smooth scroll it starts) goes where it points
+    addEventListener('click', () => { if (settle) settle.a = null; queueAnchor(); }, true);
+    addEventListener('toggle', queueAnchor, true);
+    // put the remembered element back where it was on screen; returns false if it is gone
+    // (an element the new layout hides, height 0, is let go rather than followed)
+    function putAnchor(a) {
+      if (!a) return false;
+      if (!a.el.isConnected || !a.el.getBoundingClientRect().height) return a.up ? putAnchor(a.up) : false;
+      const r = a.el.getBoundingClientRect();
+      const d = r.top - a.top;
+      if (Math.abs(d) >= 1) { scrollInstant(scrollY + d); ownY = scrollY; }
+      return true;
+    }
+    // after a turn the same element stays the one being read until the visitor scrolls, so turning there and
+    // back returns to the same place even when the turn shows a different element at the reading line
+    function endSettle() {
+      const kept = settle && settle.a;
+      settle = null; turnAnchor = null;
+      lastY = scrollY;
+      if (kept && kept.el.isConnected) {
+        // the block around it is re-measured where it now sits, so a later fallback starts from here
+        kept.y = scrollY; if (kept.up) kept.up.top = kept.up.el.getBoundingClientRect().top; anchor = kept;
+      } else pickAnchor();
+    }
     function settleCheck(now) {
       if (!settle) return;
-      if (now > settle.until) { settle = null; return; }
+      if (now > settle.until) { endSettle(); return; }
       const len = filmLen(), top = filmTop();
+      // the layout changed this frame (the film, or the page's height: a page that shrinks a frame late
+      // makes the browser clamp the scroll, which is not the visitor scrolling)
+      let relaid = false;
       if (Math.abs(len - settle.len) > 1 || Math.abs(top - settle.top) > 1) {
+        relaid = true;
         settle.len = len; settle.top = top;
         if (settle.p != null) { scrollInstant(top + settle.p * len); cur = target = settle.p; lastCur = cur; settle.y = scrollY; }
         resize();
       } else if (settle.p != null && Math.abs(scrollY - settle.y) > 2) settle.p = null;
+      if (settle.a) {
+        // the visitor scrolled: their new place stands; otherwise follow late layout below the film too
+        const dh = document.documentElement.scrollHeight;
+        if (dh !== settle.dh) relaid = true;
+        settle.dh = dh;
+        if (Math.abs(scrollY - settle.y) > 2 && !relaid) settle.a = null;
+        else if (putAnchor(settle.a)) settle.y = scrollY;
+        else settle.a = null;
+      }
       const r = canvas.getBoundingClientRect();
       if (Math.round(r.width * dpr) !== cw || Math.round(r.height * dpr) !== ch) resize();
     }
     let rsz = 0, lastW = innerWidth, restoreP = null, turned = false;
     const onResize = () => {
-      if (innerWidth !== lastW) turned = true;
-      if (innerWidth !== lastW && restoreP == null && target > 0.001 && target < 0.999) restoreP = target;
+      if (innerWidth !== lastW) {
+        turned = true;
+        if (anchorT) {
+          // the visitor turned within 100 ms of scrolling: bring the last pick up to date by how far they
+          // scrolled since (both measured before the turn), or, inside the film, leave it to the film
+          clearTimeout(anchorT); anchorT = 0;
+          if (target > 0.001 && target < 0.999) anchor = null;
+          else if (anchor && anchor.el.isConnected) { const dy = lastY - anchor.y; anchor = { el: anchor.el, top: anchor.top - dy, y: lastY, up: anchor.up && { el: anchor.up.el, top: anchor.up.top - dy } }; }
+          // a pick now would read the new layout; with the film's edge on screen, the fallback below is surer
+          else if (filmBottom == null) pickAnchor();
+        }
+        // just past the film, with its bottom edge still on screen, none of the reading lines reach the
+        // content below it: hold the block that follows the film where it was instead
+        const nx = section.nextElementSibling;
+        if (!turnAnchor && restoreP == null && !anchor && target >= 0.999 && filmBottom != null && nx) {
+          anchor = { el: nx, top: filmBottom + (nx.getBoundingClientRect().top - section.getBoundingClientRect().bottom), y: lastY, up: null };
+        }
+        if (!turnAnchor && restoreP == null && anchor) turnAnchor = anchor;
+      }
+      if (innerWidth !== lastW && restoreP == null && !turnAnchor && target > 0.001 && target < 0.999) restoreP = target;
       lastW = innerWidth;
       if (restoreP != null) { scrollInstant(filmTop() + restoreP * filmLen()); cur = target = restoreP; lastCur = cur; }
+      else if (turnAnchor && !putAnchor(turnAnchor)) turnAnchor = null;
       resize();
       cancelAnimationFrame(rsz);
       rsz = requestAnimationFrame(() => {
         // once more after the browser has settled the new layout
         const p = restoreP;
         if (restoreP != null) { scrollInstant(filmTop() + restoreP * filmLen()); cur = target = restoreP; lastCur = cur; restoreP = null; }
+        else if (turnAnchor && !putAnchor(turnAnchor)) turnAnchor = null;
         resize();
-        if (turned) settle = { p, len: filmLen(), top: filmTop(), y: scrollY, until: performance.now() + 1500 };
+        if (turned) settle = { p, a: p == null ? turnAnchor : null, len: filmLen(), top: filmTop(), y: scrollY, dh: document.documentElement.scrollHeight, until: performance.now() + 1500 };
+        else if (reduce && !settle) settle = { p: null, a: null, len: filmLen(), top: filmTop(), y: scrollY, until: performance.now() + 1500 };
         turned = false;
+        if (!settle || !settle.a) turnAnchor = null;
       });
     };
     addEventListener('resize', onResize);

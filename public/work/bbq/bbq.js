@@ -425,30 +425,6 @@
   size();
   ui(null);
 
-  // Turning a phone changes the film's height (it is sized in vh), which would throw a visitor who is below
-  // the film into another section. Below the film, remember which section is at the top of the screen and
-  // how far into it, and put them back there after the turn. (Inside the film, the engine keeps the place.)
-  const blocks = $$('main > section, footer').filter(el => el !== film);
-  let anchor = null, anchorQ = false, lastW = innerWidth;
-  const keepAnchor = () => {
-    anchorQ = false;
-    if (film.getBoundingClientRect().bottom > 0) { anchor = null; return; }
-    const el = blocks.find(b => b.getBoundingClientRect().bottom > 0);
-    if (!el) { anchor = null; return; }
-    const r = el.getBoundingClientRect();
-    anchor = { el, k: -r.top / Math.max(1, r.height) };
-  };
-  addEventListener('scroll', () => { if (!anchorQ) { anchorQ = true; requestAnimationFrame(keepAnchor); } }, { passive: true });
-  addEventListener('resize', () => {
-    if (innerWidth === lastW) return; // the toolbar showing or hiding is not a turn
-    lastW = innerWidth;
-    if (!anchor) return;
-    const a = anchor;
-    const put = () => { const r = a.el.getBoundingClientRect(); scrollTo(scrollX, scrollY + r.top + a.k * r.height); };
-    put(); requestAnimationFrame(put);
-  });
-  keepAnchor();
-
   /* ---------- The probe chart ---------- */
   const chart = $('#chart'), svg = $('#chartSvg'), tip = $('#chartTip'), knob = $('#chartKnob');
   if (chart && svg && knob) {

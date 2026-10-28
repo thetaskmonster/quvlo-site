@@ -782,7 +782,8 @@
           clearTimeout(anchorT); anchorT = 0;
           if (target > 0.001 && target < 0.999) anchor = null;
           else if (anchor && anchor.el.isConnected) { const dy = lastY - anchor.y; anchor = { el: anchor.el, top: anchor.top - dy, y: lastY, up: anchor.up && { el: anchor.up.el, top: anchor.up.top - dy } }; }
-          else pickAnchor();
+          // a pick now would read the new layout; with the film's edge on screen, the fallback below is surer
+          else if (filmBottom == null) pickAnchor();
         }
         // just past the film, with its bottom edge still on screen, none of the reading lines reach the
         // content below it: hold the block that follows the film where it was instead
