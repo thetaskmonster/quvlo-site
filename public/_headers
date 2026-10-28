@@ -51,6 +51,12 @@
 /work/wrap/f/*
   Cache-Control: public, max-age=604800
 
+/work/wrap/img/*
+  Cache-Control: public, max-age=86400
+
+/work/wrap/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
 /work/bbq/*
   X-Robots-Tag: noindex
 

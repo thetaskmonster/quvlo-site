@@ -11,6 +11,9 @@
    - One frame is drawn at a time, never two blended, so moving subjects never double up.
    - Optional per-shot time maps and scroll weights in frames.json ("tm", "weights") keep on-screen motion
      even (tools/scrollfilm/timemap.py measures them).
+   - Optional "lens" in frames.json: how many real frames each shot has (default: all of "per"). Slots at or
+     past a shot's length don't exist as far as the engine is concerned: never fetched, decoded or drawn,
+     never a fallback, never in the loader's gate.
    - The frame set follows the screen's shape and size: landscape gets the 16:9 set (the lighter "l" set
      on phones, when the site has one), phones in portrait the portrait set, tablets in portrait the 16:9
      set in a wide band. Rotating swaps sets in place, no reload, and keeps the visitor at the same point.
@@ -52,7 +55,7 @@
     const BG = o.bg || [section, stage].map(el => getComputedStyle(el).backgroundColor).find(c => c && c !== 'transparent' && !/rgba\([^)]*,\s*0\)/.test(c)) || '#0b0b0b';
     const MAX_FETCH = 6, MAX_DECODE = 3;
 
-    let M = null, PER = 40, SHOTS = 6, N = 0, W = null, TM = null, ready = false, failed = false;
+    let M = null, PER = 40, SHOTS = 6, N = 0, W = null, TM = null, LEN = null, ready = false, failed = false;
     let store = null, prevStore = null, mode = null;
     let cw = 0, ch = 0, dpr = 1, visible = true, near = true, dirty = true;
     let target = 0, cur = 0, dir = 1, lastCur = 0, lastShot = -1;
@@ -76,7 +79,11 @@
 
     const url = (set, i) => `${base}f/${set}/${String(i + 1).padStart(3, '0')}.webp${FV ? '?v=' + FV : ''}`;
     const shotOf = i => Math.min(SHOTS - 1, Math.floor(i / PER));
-    const repFrame = s => s === 0 ? 8 : s === SHOTS - 1 ? s * PER + PER - 6 : s * PER + Math.round(PER / 2);
+    // real frames per shot ("lens"); a shot without one has all PER
+    const lenOf = s => (LEN && LEN[s]) || PER;
+    const hiOf = s => Math.min(N - 1, s * PER + lenOf(s) - 1);
+    const real = i => i >= 0 && i < N && i <= hiOf(shotOf(i));
+    const repFrame = s => { const lo = s * PER, n = lenOf(s); return Math.min(hiOf(s), s === 0 ? lo + Math.min(8, Math.round((n - 1) / 2)) : s === SHOTS - 1 ? lo + Math.max(0, n - 6) : lo + Math.round((n - 1) / 2)); };
 
     /* ---------- Which frame set and fit this screen gets ---------- */
     function pickMode() {
@@ -120,9 +127,9 @@
       for (const [i, b] of st.bmp) { if (!(shown && shown.bmp === b)) { closeB(b); st.bmp.delete(i); } }
       Object.values(st.extra).forEach(x => { x.bmp.forEach(closeB); x.bmp.clear(); });
     }
-    const avail = (st, i) => i % st.stride === 0;
+    const avail = (st, i) => i % st.stride === 0 && real(i);
     function snap(st, f) {
-      const s = shotOf(Math.max(0, Math.min(N - 1, Math.round(f)))), lo = s * PER, hi = Math.min(N - 1, lo + PER - 1);
+      const s = shotOf(Math.max(0, Math.min(N - 1, Math.round(f)))), lo = s * PER, hi = hiOf(s);
       let j = lo + Math.round((f - lo) / st.stride) * st.stride;
       const hiAvail = hi - ((hi - lo) % st.stride);
       return Math.max(lo, Math.min(hiAvail, j));
@@ -209,7 +216,7 @@
     // Priority: the exact frame, then the frame across the next cut when the playhead is near it, then
     // the rest of this shot by distance (ahead of the playhead first).
     function wanted(st, t) {
-      const s = shotOf(t), lo = s * PER, hi = Math.min(N - 1, lo + PER - 1), list = [];
+      const s = shotOf(t), lo = s * PER, hi = hiOf(s), list = [];
       for (let i = lo; i <= hi; i++) if (avail(st, i) && st.blobs[i]) list.push(i);
       list.sort((a, b) => (Math.abs(a - t) + ((a - t) * dir < 0 ? 0.5 : 0)) - (Math.abs(b - t) + ((b - t) * dir < 0 ? 0.5 : 0)));
       const K = budget(st), out = list.slice(0, K - 2);
@@ -259,6 +266,7 @@
       if (!canBitmap || !st || st.dead || reduce) return;
       for (let i = 0; i < N && st.thumbBusy < 2; i += 8) {
         const j = i - (i % st.stride);
+        if (!real(j)) continue;
         if (st.thumbs.has(j) || st.thumbPending.has(j) || !st.blobs[j]) continue;
         st.thumbBusy++; st.thumbPending.add(j);
         createImageBitmap(st.blobs[j], { resizeWidth: st.set === 'm' ? 360 : 640, resizeQuality: 'medium' })
@@ -271,7 +279,7 @@
     function drawable(st, t) {
       if (!st || st.dead) return null;
       if (alive(st.bmp.get(t))) return { i: t, bmp: st.bmp.get(t) };
-      const s = shotOf(t), lo = s * PER, hi = lo + PER - 1;
+      const s = shotOf(t), lo = s * PER, hi = hiOf(s);
       let best = -1, bd = 1e9;
       for (const [i, b] of st.bmp) {
         if (i < lo || i > hi || !alive(b)) continue;
@@ -296,7 +304,7 @@
       if (gateList || !store || !N) return;
       gateList = [];
       if (reduce) for (let s = 0; s < SHOTS; s++) gateList.push(snap(store, repFrame(s)));
-      else for (let i = 0; i < N; i += 8) gateList.push(i - (i % store.stride));
+      else for (let i = 0; i < N; i += 8) { const j = i - (i % store.stride); if (real(j)) gateList.push(j); }
       gateSet = new Set(gateList);
     }
     // The loader opens once the gate is through, or straight away when the film is not on screen (a reload
@@ -334,8 +342,8 @@
         if (pos <= acc + w || k === SHOTS - 1) { s = k; t = clamp((pos - acc) / w); break; }
         acc += w;
       }
-      const local = TM && TM[s] ? interp(TM[s], t * (TM[s].length - 1)) : t * (PER - 1);
-      return Math.min(N - 1, s * PER + local);
+      const local = TM && TM[s] ? interp(TM[s], t * (TM[s].length - 1)) : t * (lenOf(s) - 1);
+      return Math.min(hiOf(s), s * PER + local);
     }
     // Scroll without animation, whatever the page's scroll-behavior says.
     function scrollInstant(y) {
@@ -404,9 +412,9 @@
       const set = st.set, crop = set === 'm' && M.m && M.m.crop ? M.m.crop[i] : 0, cropW = set === 'm' && M.m ? (M.m.cropW || 1) : 1;
       const toCanvas = (u, v) => [R.x + ((u - crop) / cropW) * R.w, R.y + v * R.h];
       const shot = shotOf(i);
-      fFloat = clamp(fFloat, shot * PER, shot * PER + PER - 1);
+      fFloat = clamp(fFloat, shot * PER, hiOf(shot));
       return {
-        f: fFloat, i, shot, local: clamp((fFloat - shot * PER) / (PER - 1)), p, set, fit: R.fit, dpr, cw, ch, PER, SHOTS, N,
+        f: fFloat, i, shot, local: clamp((fFloat - shot * PER) / Math.max(1, lenOf(shot) - 1)), p, set, fit: R.fit, dpr, cw, ch, PER, SHOTS, N,
         rect: R, toCanvas, toScreen: (u, v) => { const c = toCanvas(u, v); return [c[0] / dpr, c[1] / dpr]; },
         // the whole source frame, in CSS pixels relative to the canvas
         srcRect: () => { const x0 = R.x - (crop / cropW) * R.w, w = R.w / cropW; return { x: x0 / dpr, y: R.y / dpr, w: w / dpr, h: R.h / dpr }; },
@@ -498,7 +506,7 @@
           if (view) {
             // smooth counters while the exact frame is on screen; f never leaves the drawn shot, so
             // anything keyed to f agrees with the picture
-            if (shown && shown.i === t && view.i === t) { const fc = clamp(fFloat, view.shot * PER, view.shot * PER + PER - 1); if (view.f !== fc) { view.f = fc; view.local = clamp((fc - view.shot * PER) / (PER - 1)); } }
+            if (shown && shown.i === t && view.i === t) { const fc = clamp(fFloat, view.shot * PER, hiOf(view.shot)); if (view.f !== fc) { view.f = fc; view.local = clamp((fc - view.shot * PER) / Math.max(1, lenOf(view.shot) - 1)); } }
             // p is the scroll position: use it only for things tied to scrolling itself, never to the picture
             view.p = cur; view.target = t;
             const sig = view.i + ':' + view.f.toFixed(3) + ':' + cur.toFixed(5);
@@ -641,6 +649,7 @@
       PER = M.per || 40; SHOTS = M.shots || Math.ceil(M.count / PER); N = Math.min(M.count, PER * SHOTS);
       W = Array.isArray(M.weights) && M.weights.length === SHOTS ? M.weights.slice() : new Array(SHOTS).fill(1);
       TM = Array.isArray(M.tm) && M.tm.length === SHOTS ? M.tm : null;
+      LEN = Array.isArray(M.lens) && M.lens.length === SHOTS ? M.lens.map(n => Math.round(clamp(+n || PER, 1, PER))) : null;
       // Reduced motion: one still per shot, no scrub, and a shorter section
       if (reduce) section.style.height = `${SHOTS * 60 + 100}vh`;
       mode = pickMode();

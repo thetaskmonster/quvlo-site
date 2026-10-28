@@ -5,18 +5,23 @@
 <meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Satin &amp; Shade Wrap Studio | Wraps, PPF and Tint, Dallas (Concept)</title>
-<meta name="description" content="A concept website by Quvlo for a fictional Dallas wrap studio. Scroll to wrap a white Porsche 911 in satin charcoal, then pick a color and a tint and watch the car change.">
+<meta name="description" content="Concept site by Quvlo for a fictional Dallas wrap studio: scroll through four days of wrapping a white 911, then try five films and a Texas-legal tint.">
 <meta name="theme-color" content="#0b0b0c">
 <link rel="canonical" href="https://quvlo.co/work/wrap/">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Quvlo">
 <meta property="og:title" content="Satin &amp; Shade, a concept site by Quvlo">
-<meta property="og:description" content="Scroll to wrap a white Porsche 911 in satin charcoal. Then pick your color.">
+<meta property="og:description" content="Four days of wrapping a white 911 in satin charcoal, then a color and tint picker.">
 <meta property="og:url" content="https://quvlo.co/work/wrap/">
 <meta property="og:image" content="https://quvlo.co/work/wrap/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A Porsche 911 wrapped in satin charcoal under hexagon studio lights, from the Satin and Shade concept site">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="fonts/big-shoulders.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/hanken.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/martian-mono.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="wrap.css">
 </head>
 <body class="is-loading">
@@ -25,7 +30,7 @@
 <!-- Loader: the studio's hexagon ceiling lights up one cell per batch of frames -->
 <div class="loader" id="loader" aria-hidden="true">
   <svg class="loader__hex" id="loaderHex" viewBox="0 0 240 210"></svg>
-  <p class="loader__line"><span id="loadPct">0</span>% · Lights on</p>
+  <p class="loader__line">Bay lights warming · <span id="loadPct">0</span>%</p>
 </div>
 
 <header class="bar" id="bar">
@@ -39,16 +44,17 @@
 </header>
 
 <main id="top">
-  <section class="film" id="film" aria-label="Scroll story: a white Porsche 911 is prepped, wrapped in satin charcoal, tinted and revealed">
+  <section class="film" id="film" aria-label="Scroll story: a white Porsche 911 Carrera S is prepped, wrapped in satin charcoal, tinted and revealed">
     <div class="film__stage">
-      <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage of a white Porsche 911 rolling into a hexagon-lit studio, being prepped, wrapped in satin charcoal film by hand, tinted and revealed."></canvas>
+      <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage of a white Porsche 911 Carrera S rolling into a hexagon-lit studio, being prepped, wrapped in satin charcoal film, its door glass tinted, and revealed."></canvas>
 
+      <!-- the job's work order as one line along the bottom, clear of the installers -->
       <aside class="job" aria-hidden="true">
-        <p class="job__row"><span>Job</span><span>0417</span></p>
-        <p class="job__row"><span>Film</span><span>Satin Charcoal</span></p>
-        <p class="job__row"><span>Panels</span><span><b id="jobPanels">0</b> / 23</span></p>
-        <p class="job__row"><span>Glass</span><span id="jobTint">Factory</span></p>
-        <div class="job__bar"><i id="jobFill"></i></div>
+        <span class="job__i job__i--id">Job <b>0417</b></span>
+        <span class="job__i job__i--film">Film <b>Satin Charcoal</b></span>
+        <span class="job__i">Panels <b id="jobPanels">0</b>/23</span>
+        <span class="job__i">Glass <b id="jobTint">Factory</b></span>
+        <i class="job__bar" id="jobFill"></i>
       </aside>
 
       <ol class="stages" id="stages" aria-hidden="true">
@@ -58,32 +64,32 @@
       <div class="caps">
         <div class="cap cap--hero" data-shot="0">
           <p class="cap__k">Wraps, PPF &amp; tint · Dallas</p>
-          <h1 class="cap__h">Every panel,<br>a new color.</h1>
-          <p class="cap__p">Scroll to wrap a white 911 in satin charcoal, by hand, panel by panel.</p>
+          <h1 class="cap__h">Four days to turn a white 911 satin charcoal.</h1>
+          <p class="cap__p">Scroll through the job in our bay: prep, film, edges, tint.</p>
         </div>
         <div class="cap" data-shot="1">
           <p class="cap__k">Day 1 · Prep</p>
-          <h2 class="cap__h">Panels<br>clean.</h2>
-          <p class="cap__p">Every panel decontaminated and wiped down, edges taped, so the film bonds instead of lifting.</p>
+          <h2 class="cap__h">Every panel is cleaned before film goes on.</h2>
+          <p class="cap__p">Washed, decontaminated and wiped down, edges taped, so the film bonds instead of lifting.</p>
         </div>
         <div class="cap" data-shot="2">
           <p class="cap__k">Day 2 · Lay</p>
-          <h2 class="cap__h">One sheet<br>per panel.</h2>
-          <p class="cap__p">Laid by two installers and a felt squeegee, cut neatly around the crest. No seams where you look.</p>
+          <h2 class="cap__h">The hood goes on as one sheet.</h2>
+          <p class="cap__p">Two installers float it over the panel, then squeegee it down and cut around the crest.</p>
         </div>
         <div class="cap" data-shot="3">
           <p class="cap__k">Day 3 · Edges</p>
-          <h2 class="cap__h">Heat sets<br>the memory.</h2>
-          <p class="cap__p">Every curve post-heated, so the film stays where it was put.</p>
+          <h2 class="cap__h">Heat locks the film into every curve.</h2>
+          <p class="cap__p">Each edge is post-heated, so the film stays where it was put.</p>
         </div>
         <div class="cap" data-shot="4">
           <p class="cap__k">Day 3 · Tint</p>
-          <h2 class="cap__h">Ceramic<br>shade.</h2>
-          <p class="cap__p">Rear glass first. Cooler cabin, darker glass, inside Texas limits.</p>
+          <h2 class="cap__h">Ceramic tint, cut to the door glass.</h2>
+          <p class="cap__p">Shaped outside, laid inside. 35% on the doors keeps it within Texas limits.</p>
         </div>
         <div class="cap cap--end" data-shot="5">
           <p class="cap__k">Day 4 · Reveal</p>
-          <h2 class="cap__h">Same car.<br>New character.</h2>
+          <h2 class="cap__h">Day four, it goes home charcoal.</h2>
           <a class="btn cap__btn" href="#colors">Pick your color</a>
         </div>
       </div>
@@ -92,24 +98,34 @@
 
   <section class="cfg" id="colors" aria-labelledby="cfg-h">
     <div class="cfg__stage" id="cfgStage">
-      <div class="cfg__layers" id="cfgLayers"></div>
-      <div class="cfg__sweep" id="cfgSweep" aria-hidden="true"></div>
+      <div class="cfg__frame">
+        <div class="cfg__layers" id="cfgLayers"></div>
+        <div class="cfg__sweep" id="cfgSweep" aria-hidden="true"></div>
+      </div>
     </div>
     <div class="cfg__ui">
       <div class="cfg__head">
         <p class="kick">Try it on</p>
-        <h2 id="cfg-h" class="h2">Pick a color.<br>Pick a shade.</h2>
+        <h2 id="cfg-h" class="h2">Pick a color. Pick a shade.</h2>
         <p class="cfg__lede">Five films that are not on Porsche&rsquo;s standard paint list, plus the factory white to compare.</p>
-        <p class="cfg__now" aria-live="polite"><span class="cfg__dot" id="cfgDot"></span><span id="cfgName">Satin Charcoal</span><span class="cfg__code" id="cfgCode">SC-2080</span></p>
+        <p class="cfg__now"><span class="cfg__dot" id="cfgDot"></span><span id="cfgName">Satin Charcoal</span><span class="cfg__code" id="cfgCode">SC-2080</span></p>
       </div>
       <div class="swatches" id="swatches" role="radiogroup" aria-label="Wrap color"></div>
-      <div class="tint">
-        <label class="tint__label" for="tintRange">Window tint <output id="tintOut" for="tintRange">35%</output></label>
-        <input class="tint__range" id="tintRange" type="range" min="0" max="4" step="1" value="2" aria-valuetext="35 percent light through">
-        <ol class="tint__ticks" aria-hidden="true"><li>70%</li><li>50%</li><li>35%</li><li>20%</li><li>5%</li></ol>
-        <p class="tint__note" id="tintNote" aria-live="polite">Legal on every window in Texas.</p>
-      </div>
-      <button class="btn btn--ghost cfg__hold" id="cfgHold" type="button">Hold to see factory white</button>
+      <button class="btn btn--ghost cfg__hold" id="cfgHold" type="button" aria-pressed="false">Hold to see factory white</button>
+      <fieldset class="tint">
+        <legend class="tint__legend">Window tint</legend>
+        <div class="tint__row">
+          <label class="tint__label" for="tintFront">Front doors <output id="tintFrontOut" for="tintFront">35%</output></label>
+          <input class="tint__range" id="tintFront" type="range" min="0" max="2" step="1" value="2" aria-valuetext="35 percent light through">
+          <ol class="tint__ticks" aria-hidden="true"><li>70%</li><li>50%</li><li>35%</li></ol>
+        </div>
+        <div class="tint__row">
+          <label class="tint__label" for="tintRear">Rear glass <output id="tintRearOut" for="tintRear">20%</output></label>
+          <input class="tint__range" id="tintRear" type="range" min="0" max="4" step="1" value="3" aria-valuetext="20 percent light through">
+          <ol class="tint__ticks" aria-hidden="true"><li>70%</li><li>50%</li><li>35%</li><li>20%</li><li>5%</li></ol>
+        </div>
+        <p class="tint__note">Texas law: front doors must pass 25% of light with the glass, so 35% film is our darkest there. Rear side windows can be any shade, and the rear window too on a car with mirrors on both sides.</p>
+      </fieldset>
     </div>
   </section>
 
@@ -120,29 +136,31 @@
         <h2 id="price-h" class="h2">Price your wrap.</h2>
         <p class="lede">Choose the coverage, the finish and the extras. Your color pick above sets the finish for you.</p>
         <form class="est" id="est" aria-label="Wrap price estimator">
-          <fieldset><legend>Coverage</legend>
-            <label><input type="radio" name="cov" value="650"><span>Accents only</span></label>
-            <label><input type="radio" name="cov" value="3900" checked><span>Full color change</span></label>
-            <label><input type="radio" name="cov" value="4800"><span>Full + door jambs</span></label>
+          <p class="est__white" id="estWhite" hidden>Factory White keeps your paint, so there is no color film to price. Pick a film color above to price a wrap, or add tint, PPF and dechrome below.</p>
+          <fieldset id="estCov"><legend>Coverage</legend>
+            <label><input type="radio" name="cov" value="900"><span>Accents only</span></label>
+            <label><input type="radio" name="cov" value="5800" checked><span>Full color change</span></label>
+            <label><input type="radio" name="cov" value="7200"><span>Full + door jambs</span></label>
           </fieldset>
-          <fieldset><legend>Finish</legend>
+          <fieldset id="estFin"><legend>Finish</legend>
             <label><input type="radio" name="fin" value="0" data-fin="gloss"><span>Gloss</span></label>
-            <label><input type="radio" name="fin" value="350" data-fin="satin" checked><span>Satin</span></label>
-            <label><input type="radio" name="fin" value="350" data-fin="matte"><span>Matte</span></label>
-            <label><input type="radio" name="fin" value="1200" data-fin="shift"><span>Color-shift</span></label>
+            <label><input type="radio" name="fin" value="400" data-fin="satin" checked><span>Satin</span></label>
+            <label><input type="radio" name="fin" value="400" data-fin="matte"><span>Matte</span></label>
+            <label><input type="radio" name="fin" value="1500" data-fin="shift"><span>Color-shift</span></label>
           </fieldset>
           <fieldset><legend>Add</legend>
-            <label><input type="checkbox" name="add" value="450" checked><span>Ceramic tint</span></label>
-            <label><input type="checkbox" name="add" value="1600"><span>Front PPF</span></label>
-            <label><input type="checkbox" name="add" value="300"><span>Dechrome trim</span></label>
+            <label><input type="checkbox" name="add" value="450" data-add="tint" checked><span>Ceramic tint</span></label>
+            <label><input type="checkbox" name="add" value="2200" data-add="ppf"><span>Front PPF</span></label>
+            <label><input type="checkbox" name="add" value="350" data-add="dechrome"><span>Dechrome trim</span></label>
           </fieldset>
         </form>
       </div>
-      <aside class="ticket" aria-live="polite">
-        <p class="ticket__k">Work order</p>
+      <aside class="ticket" aria-labelledby="ticketK">
+        <p class="ticket__k" id="ticketK">Work order</p>
         <ul class="ticket__lines" id="ticketLines"></ul>
-        <p class="ticket__n">$<span id="estTotal">4,700</span></p>
+        <p class="ticket__n">$<span id="estTotal">6,650</span></p>
         <p class="ticket__u">installed, film and labor</p>
+        <p class="vh" id="estLive" aria-live="polite"></p>
         <a class="btn btn--full" href="#book">Book a consult</a>
         <p class="fine">Sample prices for a concept site. A real build uses the studio's own pricing.</p>
       </aside>
@@ -154,10 +172,10 @@
       <p class="kick">What we do</p>
       <h2 id="svc-h" class="h2">Film, tint and protection.</h2>
       <ul class="svc__grid">
-        <li><span class="svc__n">01</span><h3>Color change</h3><p>Gloss, satin, matte and color-shift films, one continuous sheet per panel.</p></li>
-        <li><span class="svc__n">02</span><h3>Paint protection</h3><p>Self-healing PPF for the front end or the whole car. Rock chips stay in the film.</p></li>
-        <li><span class="svc__n">03</span><h3>Window tint</h3><p>Ceramic film that blocks heat, not your view, cut to stay inside Texas limits.</p></li>
-        <li><span class="svc__n">04</span><h3>Dechrome</h3><p>Trim, window surrounds and wheels in black or color.</p></li>
+        <li><span class="svc__n">From $5,800</span><h3>Color change</h3><p>Gloss, satin, matte and color-shift films, one continuous sheet per panel.</p></li>
+        <li><span class="svc__n">Front from $2,200</span><h3>Paint protection</h3><p>Self-healing PPF for the front end or the whole car. Rock chips stay in the film.</p></li>
+        <li><span class="svc__n">$450, sides and rear</span><h3>Window tint</h3><p>Ceramic film that blocks heat, not your view, cut to stay inside Texas limits.</p></li>
+        <li><span class="svc__n">From $350</span><h3>Dechrome</h3><p>Trim, window surrounds and wheels in black or color.</p></li>
       </ul>
     </div>
   </section>
@@ -165,11 +183,11 @@
   <section class="steps" aria-labelledby="steps-h">
     <div class="wrap">
       <p class="kick">How a wrap works</p>
-      <h2 id="steps-h" class="h2">Four days, door to door.</h2>
+      <h2 id="steps-h" class="h2">Drop it off Monday, drive it home Thursday.</h2>
       <ol class="steps__list">
         <li><span class="steps__d">Before</span><h3>Consult</h3><p>See the film in person, under the same lights it will be laid under.</p></li>
         <li><span class="steps__d">Day 1</span><h3>Prep</h3><p>Wash, decontaminate, wipe down and tape the edges.</p></li>
-        <li><span class="steps__d">Days 2–3</span><h3>Install</h3><p>Panel by panel, edges post-heated, tint cut and laid.</p></li>
+        <li><span class="steps__d">Days 2 and 3</span><h3>Install</h3><p>Panel by panel, edges post-heated, tint cut and laid.</p></li>
         <li><span class="steps__d">Day 4</span><h3>Collect</h3><p>Walk-around under our lights, with a care guide for the film.</p></li>
       </ol>
     </div>
@@ -186,17 +204,17 @@
         <div class="book__days" id="bookDays" role="radiogroup" aria-label="Day"></div>
         <div class="book__times" id="bookTimes" role="radiogroup" aria-label="Time"></div>
         <button class="btn btn--full" type="submit">Hold this slot</button>
-        <p class="book__note" id="bookNote" role="status">Your color and tint picks come with you.</p>
+        <p class="book__note" id="bookNote" role="status">Your work order comes with you. This is a concept site, so nothing is sent.</p>
       </form>
     </div>
   </section>
 
   <section class="faq" aria-labelledby="faq-h">
     <div class="wrap wrap--narrow">
-      <h2 id="faq-h" class="h2">Before you book.</h2>
+      <h2 id="faq-h" class="h2">Asked at the counter.</h2>
       <details><summary>Does a wrap damage paint?</summary><p>On factory paint, a quality film removes cleanly when the time comes. Repainted panels are checked first.</p></details>
       <details><summary>How long does it last?</summary><p>Typically several years with proper care. We go over washing and care at pickup.</p></details>
-      <details><summary>Is the tint legal?</summary><p>In Texas, front side windows must let in at least 25% of light. The slider above shows when a shade is rear glass only.</p></details>
+      <details><summary>Is the tint legal?</summary><p>Texas measures tint with the glass, not the film alone. Front side windows must let through at least 25% of light, so 35% film is the darkest we lay there. Rear side windows are exempt, so any shade is legal. The rear window can be any shade when the car has outside mirrors on both sides, as a 911 does. On the windshield, a tinted strip can only run above the AS-1 line, or in the top 5 inches where there is no line; clear UV film can cover all of it.</p></details>
       <details><summary>Where are you?</summary><p>This is a concept site for a fictional studio. A real build lists the address and hours here.</p></details>
     </div>
   </section>
@@ -204,12 +222,18 @@
 
 <footer class="foot">
   <div class="wrap foot__grid">
-    <p class="foot__h">Pick your color.</p>
+    <ul class="foot__wall" aria-label="The films on our swatch wall">
+      <li style="--c:#3e4146">SC-2080<span>Satin Charcoal</span></li>
+      <li style="--c:#1d5560">ST-4060<span>Satin Dark Teal</span></li>
+      <li style="--c:#5d5a41">MO-3350<span>Matte Olive Drab</span></li>
+      <li style="--c:#141415">MB-0010<span>Matte Black</span></li>
+      <li style="--c:#5b2d91;--c2:#178a86">CS-7020<span>Purple to Teal</span></li>
+    </ul>
     <div class="foot__small">
-      <p>Satin &amp; Shade Wrap Studio is a fictional business. This is a concept site designed and built by <a href="/">Quvlo</a> to show what is possible.</p>
+      <p>Satin &amp; Shade Wrap Studio is a fictional business, not affiliated with Porsche. This concept site was designed and built by Quvlo to show what is possible.</p>
       <p>The car, footage and photos are AI-generated. Prices are samples.</p>
-      <p>Porsche, 911 and Carrera are trademarks of Dr. Ing. h.c. F. Porsche AG. Satin &amp; Shade is a fictional business and is not affiliated with Porsche.</p>
-      <p><a href="/work/">More Quvlo work</a></p>
+      <p>Porsche, 911 and Carrera are trademarks of Dr. Ing. h.c. F. Porsche AG.</p>
+      <p class="foot__links"><a href="/">Quvlo</a><a href="/work/">More Quvlo work</a></p>
     </div>
   </div>
 </footer>
