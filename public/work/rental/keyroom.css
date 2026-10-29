@@ -115,7 +115,9 @@ h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -.035em; line-height: 
 .show__pic { position: relative; min-height: 0; margin: 0 calc(-1 * var(--pad)); overflow: hidden; touch-action: pan-y; background: #0d0f14;
   -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 7%, #000 93%, transparent 100%); mask-image: linear-gradient(180deg, transparent 0, #000 7%, #000 93%, transparent 100%); }
 .show__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; max-width: none; user-select: none; -webkit-user-drag: none; }
-.show__ctl { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; }
+/* the car keys are the main control: big, centred, above the view switch, so people pick a car */
+.show__ctl { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.show__ctl .keyrow { order: -1; }
 .views { display: flex; gap: 4px; padding: 4px; border-radius: 999px; border: 1px solid var(--line); background: rgba(11,15,23,.62); }
 .vbtn { min-width: 72px; min-height: 44px; padding: 0 16px; border: 1px solid transparent; border-radius: 999px; background: transparent; color: var(--plat-2); font: 500 15px/1 var(--f); cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
 .vbtn:hover { color: var(--plat); background: rgba(228,231,235,.06); }
@@ -134,12 +136,21 @@ h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -.035em; line-height: 
 .co__k { display: block; margin-top: 3px; font: 400 13px/1.2 var(--f); color: var(--plat-2); }
 
 /* Key row */
-.keyrow { display: flex; gap: 6px; padding: 6px; border-radius: 18px; background: rgba(11,15,23,.62); border: 1px solid var(--line); }
-.kbtn { display: grid; justify-items: center; gap: 4px; width: 88px; padding: 6px 4px; border: 1px solid transparent; border-radius: 13px; background: transparent; color: var(--plat-2); font: 500 13px/1 var(--f); white-space: nowrap; cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
-.kbtn img { width: 30px; height: 50px; object-fit: contain; filter: saturate(.9); transition: transform .25s; }
+.keyrow { display: flex; gap: 8px; padding: 8px; border-radius: 22px; background: rgba(11,15,23,.62); border: 1px solid var(--line); }
+.kbtn { display: grid; justify-items: center; gap: 8px; width: 116px; padding: 10px 6px; border: 1px solid transparent; border-radius: 16px; background: transparent; color: var(--plat-2); font: 500 15px/1 var(--f); white-space: nowrap; cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
+.kbtn img { width: 72px; height: 131px; object-fit: contain; filter: saturate(.9); transition: transform .25s; }
 .kbtn:hover { color: var(--plat); background: rgba(228,231,235,.06); }
 .kbtn:hover img { transform: translateY(-2px) rotate(-4deg); }
 .kbtn[aria-checked="true"] { color: #fff; background: rgba(184,118,63,.18); border-color: rgba(211,146,86,.6); }
+/* shorter desktop screens: smaller keys, so the car picture keeps its room */
+@media (min-width: 761px) and (max-height: 820px) and (min-height: 501px), (min-width: 761px) and (max-width: 1365px) and (min-height: 501px) and (orientation: landscape) { .kbtn { width: 86px; padding: 6px 4px; gap: 6px; } .kbtn img { width: 40px; height: 72px; } }
+/* wide screens on their side: keys centred on the same row as the view switch, so the car picture keeps its height
+   (from 1170 px wide; narrower, the row would not fit and the keys stay centred above the switch) */
+@media (min-width: 1170px) and (min-height: 501px) and (orientation: landscape) {
+  .show__ctl { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; }
+  .show__ctl .keyrow { grid-column: 2; grid-row: 1; order: 0; }
+  .show__ctl .views { grid-column: 3; grid-row: 1; justify-self: end; }
+}
 
 /* Sections */
 .quote, .how, .faq, .reserve { padding: clamp(80px, 11vw, 150px) 0; }
@@ -253,8 +264,8 @@ details p { margin: 0 0 24px; max-width: 620px; color: var(--plat-2); }
   .views { width: 100%; justify-content: space-between; }
   .vbtn { flex: 1; }
   .keyrow { width: 100%; justify-content: space-between; gap: 2px; padding: 4px; }
-  .kbtn { width: auto; flex: 1; min-width: 0; padding: 6px 2px; font-size: 11px; }
-  .kbtn img { width: 24px; height: 40px; }
+  .kbtn { width: auto; flex: 1; min-width: 0; padding: 8px 2px; gap: 6px; font-size: 12px; }
+  .kbtn img { width: 40px; height: 73px; }
   .co__v { font-size: 16px; }
   .co__k { font-size: 11px; }
   .co__card { padding: 6px 9px; }
@@ -266,10 +277,13 @@ details p { margin: 0 0 24px; max-width: 620px; color: var(--plat-2); }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
 /* Short phones (SE): the showroom fits under the bar when a link lands on it */
+@media (max-width: 400px) { .kbtn { font-size: 11px; } }
 @media (max-width: 760px) and (max-height: 600px) and (orientation: portrait) {
   .show__stage { gap: 6px; padding-bottom: 8px; }
-  .kbtn { padding: 4px 2px; gap: 2px; }
-  .kbtn img { width: 20px; height: 32px; }
+  .kbtn { padding: 3px 2px; gap: 3px; }
+  .kbtn img { width: 26px; height: 46px; }
+  .show__ctl { gap: 6px; }
+  .keyrow { padding: 3px; }
   /* the jet shot's car sits lower in the short phone frame: a smaller headline keeps the caption below its tires */
   .cap--s3 { bottom: 34px; }
   .cap--s3 .cap__h { font-size: 26px; }
