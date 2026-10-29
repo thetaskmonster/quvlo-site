@@ -29,6 +29,8 @@
     if (opened) return; opened = true;
     document.body.classList.remove('is-loading');
     loader.classList.add('is-open');
+    // once faded, take the loader out of the page entirely: iPhone Safari tints its toolbars from fixed elements, even invisible ones
+    setTimeout(() => { loader.style.display = 'none'; }, 1300);
   }
 
   // Last shot's clock: 4:30 pm to 7:10 pm, handover at dusk

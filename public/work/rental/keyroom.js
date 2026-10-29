@@ -54,7 +54,9 @@
   const bar = $('.bar'), hero = $('#hero'), caps = $$('.cap');
   const stageEl = $('.film__stage');
   let opened = false;
-  function openLoader() { if (opened) return; opened = true; document.body.classList.remove('is-loading'); loader.classList.add('is-open'); }
+  function openLoader() { if (opened) return; opened = true; document.body.classList.remove('is-loading'); loader.classList.add('is-open');
+    // once faded, take the loader out of the page entirely: iPhone Safari tints its toolbars from fixed elements, even invisible ones
+    setTimeout(() => { loader.style.display = 'none'; }, 1000); }
 
   /* Rev counter: off while the car is parked in the garage (shots 0 and 1). In the drive (shot 2) the car
      cruises at a steady city speed; the counter follows the street's measured slide past the car, damped,

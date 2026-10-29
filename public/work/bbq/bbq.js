@@ -79,6 +79,8 @@
     if (opened) return; opened = true;
     document.body.classList.remove('is-loading');
     loader.classList.add('is-open');
+    // once faded, take the loader out of the page entirely: iPhone Safari tints its toolbars from fixed elements, even invisible ones
+    setTimeout(() => { loader.style.display = 'none'; }, 900);
   }
   // Shot and progress through its real frames (frames.json "lens") for a fractional frame index
   function at(f) {

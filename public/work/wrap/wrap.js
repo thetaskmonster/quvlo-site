@@ -52,6 +52,8 @@
     if (opened) return; opened = true;
     document.body.classList.remove('is-loading');
     setTimeout(() => loader.classList.add('is-gone'), reduce ? 0 : 350);
+    // once faded, take the loader out of the page entirely: iPhone Safari tints its toolbars from fixed elements, even invisible ones
+    setTimeout(() => { loader.style.display = 'none'; }, reduce ? 50 : 1300);
   }
 
   // Shots can hold fewer than 40 distinct frames (frames.json "lens"); a shot's progress is measured
