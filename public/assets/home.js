@@ -240,13 +240,40 @@
   {
     const links = $$('.index a'), photos = $$('.work .photos img');
     const light = k => { links.forEach(a => a.classList.toggle('on', a.dataset.piece === k)); photos.forEach(p => p.classList.toggle('on', p.dataset.for === k)); };
-    links.forEach(a => { a.addEventListener('pointerenter', () => light(a.dataset.piece)); a.addEventListener('focus', () => light(a.dataset.piece)); });
+    // a finger landing on a name fires pointerenter too; on touch the scroll position decides instead
+    links.forEach(a => { a.addEventListener('pointerenter', e => { if (e.pointerType !== 'touch') light(a.dataset.piece); }); a.addEventListener('focus', () => light(a.dataset.piece)); });
     // something is lit on arrival, so the section never opens on a black screen
     if (links[0]) light(links[0].dataset.piece);
-    // phones: the name in the middle of the screen lights up as you scroll past it
-    if ('IntersectionObserver' in window && matchMedia('(hover: none)').matches) {
-      const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) light(e.target.dataset.piece); }), { rootMargin: '-45% 0px -45% 0px' });
-      links.forEach(a => io.observe(a));
+    // phones: the name nearest a focus line lights up as you scroll. The line sits mid-screen, but starts at the
+    // first name when the page is at the top and ends at the last name at the bottom, so every name gets its turn
+    // (a fixed mid-screen band skipped the first two names, which sit above the middle at scroll 0).
+    if (links.length && matchMedia('(hover: none)').matches) {
+      let queued = false;
+      const pick = () => {
+        queued = false;
+        const vh = innerHeight, mid = vh / 2, y = scrollY, max = Math.max(0, document.documentElement.scrollHeight - vh);
+        const centers = links.map(a => { const r = a.getBoundingClientRect(); return r.top + r.height / 2 + y; });
+        const n = centers.length, firstAt0 = centers[0], lastAtMax = centers[n - 1] - max;
+        const d1 = Math.max(0, mid - firstAt0), d2 = Math.max(0, lastAtMax - mid);
+        let line = mid;
+        // near the top: ease the line from the first name (at scroll 0) down to mid-screen
+        if (d1 > 0) line = firstAt0 + d1 * Math.min(1, y / d1);
+        // near the bottom: ease it on to the last name (at the end of the page)
+        if (d2 > 0 && max > 0) { const left = max - y; if (left < d2) line = Math.max(line, mid + d2 * (1 - left / d2)); }
+        // a page too short for both ramps: sweep the names evenly across the whole scroll instead
+        const at = max > 0 && d1 + d2 >= max ? centers[0] + (centers[n - 1] - centers[0]) * Math.min(1, Math.max(0, y / max)) : y + line;
+        let best = 0;
+        centers.forEach((c, i) => { if (Math.abs(c - at) < Math.abs(centers[best] - at)) best = i; });
+        const k = links[best].dataset.piece;
+        if (!links[best].classList.contains('on')) light(k);
+      };
+      const queue = () => { if (!queued) { queued = true; requestAnimationFrame(pick); } };
+      addEventListener('scroll', queue, { passive: true });
+      addEventListener('resize', queue);
+      // web fonts swap in late and move the names; re-pick when the section's layout changes
+      if ('ResizeObserver' in window) new ResizeObserver(queue).observe(links[0].closest('section') || document.body);
+      if (document.fonts) document.fonts.ready.then(queue);
+      queue();
     }
   }
 
