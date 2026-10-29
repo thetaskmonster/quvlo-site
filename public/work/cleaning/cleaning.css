@@ -117,6 +117,8 @@ button { font: inherit; }
 .cap[data-place~="top"] { bottom: auto; top: calc(186px + env(safe-area-inset-top, 0px)); }
 .cap[data-place~="right"] { left: auto; right: calc(var(--gut-r) + 3vw); text-align: right; }
 .cap[data-place~="right"] .cap__p { margin-left: auto; }
+/* the bathroom caption stays on the tile wall, right of the squeegee lane (wide screens only) */
+@media (min-width: 901px) { .cap[data-shot="3"] { max-width: min(470px, 33vw); } }
 /* a soft shade behind the words so they read on bright rooms and walls (AA against the footage) */
 .cap::before { content: ""; position: absolute; z-index: -1; inset: -14px -22px; border-radius: 40px; background: rgba(10,20,16,.56); filter: blur(22px); pointer-events: none; }
 /* the time and room, as a small dark tag (like the time stamp on the photos the cleaners send) */
@@ -133,6 +135,9 @@ button { font: inherit; }
    the cleaner on iPad and desktop). */
 .list { position: absolute; z-index: 4; left: var(--gut-l); top: calc(80px + env(safe-area-inset-top, 0px)); display: grid; grid-template-columns: auto auto; align-items: center; column-gap: 16px; min-width: 270px; max-width: calc(100% - 2 * var(--gut)); padding: 11px 14px 38px 12px; border-radius: 16px; background: rgba(251,252,247,.94); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 20px 40px -24px rgba(0,0,0,.5); opacity: 0; transition: opacity .5s; }
 .list.is-on { opacity: 1; }
+.list { transition: opacity .5s, transform .5s var(--ease); }
+/* phones: the card steps up and out for the bathroom shot, where the squeegee works the top of the glass */
+.list.is-on.is-tuck { opacity: 0; transform: translateY(-14px); pointer-events: none; transition: opacity .2s, transform .2s var(--ease); }
 .list__k { display: none; }
 .list__items { list-style: none; margin: 0; padding: 0; display: flex; gap: 5px; }
 .list__t { display: none; }
@@ -301,6 +306,7 @@ button { font: inherit; }
   .cap[data-place-l~="tag"] .cap__h { display: none; }
   .cap[data-place~="top"], .cap[data-place~="right"] { top: auto; bottom: 9vh; left: auto; right: var(--gut-r); max-width: 46vw; text-align: right; }
   .cap[data-place-l~="tag"][data-place] { left: var(--gut-l); right: auto; text-align: left; }
+  .cap[data-shot="3"] { max-width: 38vw; }
   .cap { bottom: 9vh; max-width: 62vw; }
   .cap__h { font-size: clamp(26px, 5vw, 34px); }
   .cap__k { margin-bottom: 6px; padding: 5px 8px; font-size: 13px; }

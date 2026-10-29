@@ -66,7 +66,7 @@
   <section class="film" id="film" aria-label="Scroll story: one afternoon visit to a Dallas cottage, from arrival at 1 pm to every room done by 3:45 pm">
     <div class="film__stage" id="stage">
       <div class="film__frame" id="frame">
-        <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage of cleaners arriving at a Tudor cottage, the kitchen cleared, a gloved hand wiping a butcher-block counter, shower glass rinsed and squeegeed, a duvet smoothed by hand and the clean house in warm afternoon light."></canvas>
+        <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage of cleaners arriving at a Tudor cottage, the kitchen cleared in a time-lapse, crumbs swept off a butcher-block counter before a damp wipe, shower glass squeegeed top to bottom, a duvet pulled square and smoothed by hand, and the clean house in warm afternoon light."></canvas>
       </div>
 
       <aside class="list" id="list" aria-label="Visit checklist">
@@ -74,7 +74,7 @@
         <ol class="list__items">
           <li><span class="tick" aria-hidden="true"></span><span class="list__t">Arrive with our own supplies</span></li>
           <li><span class="tick" aria-hidden="true"></span><span class="list__t">Kitchen, top to bottom</span></li>
-          <li><span class="tick" aria-hidden="true"></span><span class="list__t">Counters wiped down</span></li>
+          <li><span class="tick" aria-hidden="true"></span><span class="list__t">Counters wiped, crumbs first</span></li>
           <li><span class="tick" aria-hidden="true"></span><span class="list__t">Bathroom glass and grout</span></li>
           <li><span class="tick" aria-hidden="true"></span><span class="list__t">Beds made</span></li>
           <li><span class="tick" aria-hidden="true"></span><span class="list__t">Text when we lock up</span></li>
@@ -85,9 +85,9 @@
       <div class="caps" id="caps">
         <div class="cap" data-shot="0" data-place-s="top short"><p class="cap__k">1:00 pm · Lakewood</p><h2 class="cap__h"><mark>Everything</mark> comes with us.</h2><p class="cap__p">Caddies, vacuum and cloths. No supplies needed from you.</p></div>
         <div class="cap" data-shot="1" data-place-s="top"><p class="cap__k">1:10 pm · Kitchen</p><h2 class="cap__h"><mark>Sink cleared,</mark> then every surface.</h2><p class="cap__p">Dishes loaded into the dishwasher, then counters, cabinet fronts, stovetop and floor.</p></div>
-        <div class="cap" data-shot="2" data-place="top" data-place-s="top" data-from-s="0.35" data-place-l="tag"><p class="cap__k">1:40 pm · Counters</p><h2 class="cap__h">A <mark>damp wipe</mark> on the butcher block.</h2><p class="cap__p">Mild soap on wood, never soaked. A separate cloth for the tile.</p></div>
-        <div class="cap" data-shot="3"><p class="cap__k">2:15 pm · Bathroom</p><h2 class="cap__h"><mark>Scrubbed,</mark> rinsed, then squeegeed.</h2><p class="cap__p">Grout and tub first while the spray sits, glass and chrome dried last, the toilet with its own cloth.</p></div>
-        <div class="cap" data-shot="4" data-place="top right" data-place-s="bottom right short"><p class="cap__k">2:55 pm · Bedroom</p><h2 class="cap__h"><mark>Fresh sheets,</mark> duvet smoothed by hand.</h2><p class="cap__p">Sheets changed if you leave a clean set out.</p></div>
+        <div class="cap" data-shot="2" data-place="top" data-place-s="top" data-from-s="0.6" data-place-l="tag"><p class="cap__k">1:40 pm · Counters</p><h2 class="cap__h"><mark>Crumbs first, then a damp wipe</mark> on the butcher block.</h2><p class="cap__p">Mild soap on wood, never soaked. A separate cloth for the tile.</p></div>
+        <div class="cap" data-shot="3" data-place="bottom right" data-place-s="short" data-from-s="0.8"><p class="cap__k">2:15 pm · Bathroom</p><h2 class="cap__h"><mark>Scrubbed,</mark> rinsed, then squeegeed top to bottom.</h2><p class="cap__p">Grout and tub first while the spray sits, glass and chrome dried last, the toilet with its own cloth.</p></div>
+        <div class="cap" data-shot="4" data-place="top right" data-place-s="bottom right short"><p class="cap__k">2:55 pm · Bedroom</p><h2 class="cap__h"><mark>Fresh sheets,</mark> duvet squared and smoothed.</h2><p class="cap__p">Sheets changed if you leave a clean set out.</p></div>
         <div class="cap" data-shot="5"><p class="cap__k">3:45 pm · Done</p><h2 class="cap__h">Every room done, <mark>before you're home.</mark></h2><p class="cap__p">We text you when we lock up, with photos if you want them.</p></div>
       </div>
       <div class="film__bar" aria-hidden="true"><span id="filmBar"></span></div>
@@ -163,11 +163,11 @@
           <ul class="ticks"><li>Counters, backsplash and cabinet fronts</li><li>Sink scrubbed, faucet polished</li><li>Stovetop and oven door degreased</li><li>Microwave inside and out</li><li>Floors vacuumed and mopped</li><li>Trash out, fresh liner in</li></ul>
         </div>
         <div class="panel" role="tabpanel" id="p-bath" aria-labelledby="t-bath" hidden>
-          <img src="img/room-bath.webp" alt="A 1940s bathroom with mint-green and black tile, a clawfoot tub, a clean towel on a hook and a glass screen being squeegeed clear." width="1200" height="900" loading="lazy" decoding="async">
+          <img src="img/room-bath.webp" alt="A modern walk-in shower with frameless glass and large gray tile, the glass being squeegeed clear from the top down." width="1200" height="900" loading="lazy" decoding="async">
           <ul class="ticks"><li>Shower, tub and glass, no water spots</li><li>Toilet inside, outside and behind</li><li>Mirrors and chrome, streak-free</li><li>Grout lines brushed</li><li>Towels folded or hung</li><li>Floors by hand at the edges</li></ul>
         </div>
         <div class="panel" role="tabpanel" id="p-bed" aria-labelledby="t-bed" hidden>
-          <img src="img/room-bed.webp" alt="A cleaner shaking out a white duvet over a walnut bed under a sloped ceiling." width="1200" height="900" loading="lazy" decoding="async">
+          <img src="img/room-bed.webp" alt="A cleaner smoothing a squared white duvet flat by hand on a walnut bed under a sloped ceiling." width="1200" height="900" loading="lazy" decoding="async">
           <ul class="ticks"><li>Beds made, sheets changed if left out</li><li>Dusting, top shelf to baseboard</li><li>Mirrors and glass</li><li>Under the bed, where we can reach</li><li>Floors vacuumed</li></ul>
         </div>
         <div class="panel" role="tabpanel" id="p-living" aria-labelledby="t-living" hidden>

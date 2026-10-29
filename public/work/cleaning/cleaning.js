@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.
-  const FV = '2026102813';
+  const FV = '2026102823';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -245,6 +245,8 @@
   const CLOCK = [780, 790, 820, 855, 895, 945, 945];
   let N = 240;
   const phonePortrait = matchMedia('(max-width: 600px) and (orientation: portrait)');
+  // on phones the checklist card sits over the top of the shower glass, so it steps aside for the whole bathroom shot
+  const phoneSmall = matchMedia('(max-width: 600px) and (orientation: portrait), (orientation: landscape) and (max-height: 500px)');
   const fmt = m => { const h = Math.floor(m / 60), mm = Math.round(m % 60); return [`${h > 12 ? h - 12 : h}:${String(mm).padStart(2, '0')}`, h >= 12 ? 'pm' : 'am']; };
   function filmUi(p, f, shot, local) {
     const r = film.getBoundingClientRect();
@@ -256,8 +258,10 @@
     frame.style.setProperty('--r', `${lerp(28, 0, open)}px`);
     // a caption can wait for its shot's action to move out of its way on phones (data-from-s, a 0-1 point)
     const phoneUp = phonePortrait.matches;
-    caps.forEach(c => { const s = +c.dataset.shot, from = phoneUp && c.dataset.fromS ? +c.dataset.fromS : 0.08; c.classList.toggle('is-on', open > 0.9 && s === shot && local > from && local < 0.92); });
+    caps.forEach(c => { const s = +c.dataset.shot, from = phoneUp && c.dataset.fromS && !reduce ? +c.dataset.fromS : 0.08; c.classList.toggle('is-on', open > 0.9 && s === shot && local > from && local < 0.92); });
     list.classList.toggle('is-on', open > 0.9);
+    // with a margin either side of the shot, so the card is already gone when the blade first shows, scrolling down or up
+    list.classList.toggle('is-tuck', phoneSmall.matches && (shot === 3 || (shot === 2 && local > 0.9) || (shot === 4 && local < 0.1)));
     const q = f / Math.max(1, N - 1);
     // one checklist line per scene: the line for the scene on screen is current, earlier ones are done
     items.forEach((li, n) => {
