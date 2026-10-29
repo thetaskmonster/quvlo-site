@@ -23,21 +23,21 @@
   // is timed in story frames: 40 per shot, as the film was first cut.
   const STORY = 40;
   // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.
-  const FV = '2026102904';
+  const FV = '2026102906';
   // The build days each shot covers, as [position in the shot, day] knots. The counter runs through them with
   // the footage, so it always sits inside the range the caption names and matches the schedule chart. One build
   // length everywhere: 330 days, stakes to keys (the chart, the estimate for The Bluebonnet with Designer
   // finishes, the FAQ). The slab shot is site prep (the pier rig leaves, beam trenches, forms, vapor barrier) to
-  // Day 15, then a hard cut (film frames 124 to 125, at 0.878 to 0.898 of the shot) to a six-frame pour on Day 19,
+  // Day 15, then a hard cut (film frames 118 to 119, at 0.925 to 0.95 of the shot) to a three-frame pour on Day 19,
   // after the cables are laid and inspected; curing and stripping the forms happen across the cut into framing (Day 30).
   // The exterior shot is two chained clips: dry-in to Day 95 (underlayment over the decking, wrap, windows; no
-  // stone yet; 20 frames, to 0.253), then scaffold, stone, siding and the metal roof, about two thirds done by
+  // stone yet; 17 frames, to 0.239), then scaffold, stone, siding and the metal roof, about two thirds done by
   // Day 180. The counter jumps at the hard cut into the finished interior, late in the finishes phase.
   const SPANS = [
     [[0, 1], [1, 1]],
-    [[0, 1], [0.878, 15], [0.898, 19], [1, 19]],
+    [[0, 1], [0.925, 15], [0.95, 19], [1, 19]],
     [[0, 30], [1, 75]],
-    [[0, 75], [0.253, 95], [1, 180]],
+    [[0, 75], [0.239, 95], [1, 180]],
     [[0, 230], [1, 305]],
     [[0, 315], [1, 330]]
   ];
@@ -140,10 +140,11 @@
     // Draw from the bare lot to the slab, hold, then let the real framing take over (story frames, 40 a shot).
     const f = v.shot * STORY + v.local * (STORY - 1);
     // nothing over the aerial: the drawing is in the tripod's coordinates, so it starts with the slab shot
-    const drawP = reduce ? 1 : ease(clamp((f - 40) / 38));
+    const drawP = reduce ? 1 : ease(clamp((f - 40) / 32));
     const fadeIn = v.shot >= 1 ? clamp((f - 40) / 3) : 0;
-    // gone by frame 110, before the dry-in, where the footage drifts from the drawing
-    const fadeOut = 1 - ease(clamp((f - 92) / 18));
+    // drawn by the end of the prep, gone by the end of the pour (story frame 80): the framed house is a different
+    // massing from the dusk house the drawing is traced from, so the drawing never lies over the walls
+    const fadeOut = 1 - ease(clamp((f - 74) / 6));
     const op = fadeIn * fadeOut;
     print.style.opacity = op.toFixed(3);
     if (op <= 0.001) { holeLoop(false); return; }
@@ -206,7 +207,26 @@
     capMaskRect.setAttribute('rx', (12 * k).toFixed(1));
   }
 
-  let lastDay = -1, lastShot = -1;
+  let lastShot = -1;
+  // At a hard time-lapse cut the day jumps (19 to 30, 95 to 180). Rather than snapping, the counter and the
+  // chart roll through the skipped days in a moment, so the jump reads as time passing, not a glitch.
+  let shownDay = -1, targetDay = -1, rollRaf = 0;
+  const showDay = d => { schedDay.textContent = String(d).padStart(3, '0'); schedFill.style.setProperty('--p', ((d - 1) / (TOTAL - 1)).toFixed(4)); };
+  function setDay(day) {
+    if (day === targetDay) return;
+    targetDay = day;
+    if (reduce || shownDay < 0 || Math.abs(day - shownDay) <= 3) {
+      cancelAnimationFrame(rollRaf); rollRaf = 0; shownDay = day; showDay(day); return;
+    }
+    cancelAnimationFrame(rollRaf);
+    const from = shownDay, t0 = performance.now(), dur = Math.min(800, 300 + Math.abs(day - from) * 6);
+    const step = now => {
+      const p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+      shownDay = Math.round(from + (targetDay - from) * e); showDay(shownDay);
+      rollRaf = p < 1 ? requestAnimationFrame(step) : 0;
+    };
+    rollRaf = requestAnimationFrame(step);
+  }
   function ui(vShot, vLocal) {
     const shot = Math.min(5, Math.max(0, vShot | 0));
     const local = clamp(+vLocal || 0);
@@ -214,8 +234,7 @@
     // shot reaches Day 330 before its caption ("Day 330 · Keys") comes up, then holds.
     const k = shot === 5 ? clamp(local / 0.28) : local;
     const day = Math.round(dayAt(SPANS[shot], k));
-    if (day !== lastDay) { schedDay.textContent = String(day).padStart(3, '0'); lastDay = day; }
-    schedFill.style.setProperty('--p', ((day - 1) / (TOTAL - 1)).toFixed(4));
+    setDay(day);
     if (shot !== lastShot) {
       phases.forEach((li, n) => { li.classList.toggle('is-on', n === shot); li.classList.toggle('is-done', n < shot); });
       lastShot = shot;
