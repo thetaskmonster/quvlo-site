@@ -32,8 +32,9 @@
  *   - Continue a chat:     { "sessionId": "<from the session event>", "message": "..." }
  *   message: up to 1,200 characters. Never send history; it is ignored.
  *
- * Also: GET /api/concierge returns { "ok": true, "available": boolean }, whether the key and
- * salt are set. The page checks it once so an unconfigured site never sends a doomed POST.
+ * Also: GET /api/concierge returns { "ok": true, "available": boolean, "humanCheck": boolean }:
+ * whether the key and salt are set, and whether new chats need a Turnstile token. No model call.
+ * The page checks it once so an unconfigured site never sends a doomed POST.
  *
  * Response, case 1: Content-Type application/json. The request was not
  * answered. Shape:
@@ -691,8 +692,17 @@ function openChat(session) {
 }
 
 /**
- * GET /api/concierge: is the concierge set up at all? { "ok": true, "available": boolean }
- * The page asks once before the first chat, so an unconfigured site shows its offline note
- * without a failed request. It says nothing about budgets or limits; POST still decides those.
+ * GET /api/concierge: is the concierge set up at all?
+ *   { "ok": true, "available": boolean, "humanCheck": boolean }
+ * A health check with no model call and no storage access, so it costs no tokens. The page asks once,
+ * when the question section comes near (never on page load), and shows the chat as offline unless the
+ * answer is available:true. humanCheck says a Turnstile token is required for a new chat, so a page
+ * whose site key is missing can say "offline" up front instead of failing every chat with bot_check.
+ * Both are booleans: nothing secret is ever echoed. It says nothing about budgets or limits; POST
+ * still decides those.
  */
-export const onRequestGet = ({ env }) => json({ ok: true, available: Boolean(env.ANTHROPIC_API_KEY && env.RATE_SALT) });
+export const onRequestGet = ({ env }) => json({
+  ok: true,
+  available: Boolean(env.ANTHROPIC_API_KEY && env.RATE_SALT),
+  humanCheck: Boolean(env.TURNSTILE_SECRET),
+});

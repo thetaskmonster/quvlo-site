@@ -104,7 +104,7 @@
     const l = lastStart(), d = new Date(); d.setHours(Math.floor(l), Math.round((l % 1) * 60), 0, 0);
     go.textContent = `Book ${pick}`; len.textContent = `${room}, ${roomLen}, last start ${fmt(d)}. Robe, towels and water are on us.`;
   }
-  go.addEventListener('click', () => { done.textContent = `Demo only: nothing was booked or sent. A real Basalt would now hold ${pick} in the ${room.toLowerCase()} for you.`; });
+  go.addEventListener('click', () => { done.textContent = `Demo only: nothing was booked or sent. If Lakewood Sauna House were real, it would now hold ${pick} in the ${room.toLowerCase()} for you.`; });
   document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => {
     document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-pressed', 'false'));
     b.setAttribute('aria-pressed', 'true'); room = b.dataset.room; roomLen = b.dataset.len; roomMins = +b.dataset.mins || 60; render();

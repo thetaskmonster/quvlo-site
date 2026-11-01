@@ -1,10 +1,10 @@
-/* Caliche & Clover Landscapes (concept by Quvlo). Scroll position is the job: the footage, the
+/* Teague & Sons Landscape (concept by Quvlo). Scroll position is the job: the footage, the
    day tracker and the tallies all read from the frame actually drawn. Below it, a mowing game where
    stripes come from the direction the blades lay the grass. No libraries. */
 (() => {
   'use strict';
   // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.
-  const FV = '2026102901';   // also the ?v= on landscape.css, film-engine.js and landscape.js in index.html
+  const FV = '2026110104';   // also the ?v= on landscape.css, film-engine.js and landscape.js in index.html
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -68,7 +68,14 @@
       // The tally runs with the work in the footage; with reduced motion each shot is a still, so it shows the total
       let v = from;
       if (shot > s || (shot === s && reduce)) v = to;
-      else if (shot === s) v = lerp(from, to, ease(clamp((local - 0.08) / 0.8)));
+      else if (shot === s && t.dataset.steps) {
+        // a time-lapse shot of held stills: the tally steps with the still on screen (data-steps, one value per beat)
+        // data-beats: the frame (0-based, within the shot) where each later beat's still begins
+        const st = t.dataset.steps.split(',').map(Number), beats = (t.dataset.beats || '').split(',').filter(Boolean).map(Number);
+        const j = Math.round(local * (lensOf(shot) - 1));
+        let k = 0; while (k < beats.length && j >= beats[k]) k++;
+        v = st[Math.min(st.length - 1, k)];
+      } else if (shot === s) v = lerp(from, to, ease(clamp((local - 0.08) / 0.8)));
       const r = sep ? Math.round(v / 50) * 50 : Math.round(v);
       const txt = sep ? r.toLocaleString('en-US') : String(r);
       if (t.textContent !== txt) t.textContent = txt;

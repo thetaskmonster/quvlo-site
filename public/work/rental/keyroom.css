@@ -1,4 +1,4 @@
-/* Keyroom (concept by Quvlo). One garage at night: black-blue, cognac light, platinum trim.
+/* Whitlock & Sons Car Rental (concept by Quvlo). One garage at night: black-blue, cognac light, platinum trim.
    One type family, Host Grotesk, set big and tight the way car brands set their names. */
 @font-face { font-family: 'Host Grotesk'; src: url('fonts/host-grotesk-latin.woff2') format('woff2-variations'), url('fonts/host-grotesk-latin.woff2') format('woff2'); font-weight: 300 800; font-style: normal; font-display: swap; }
 
@@ -278,6 +278,10 @@ details p { margin: 0 0 24px; max-width: 620px; color: var(--plat-2); }
 }
 /* Short phones (SE): the showroom fits under the bar when a link lands on it */
 @media (max-width: 400px) { .kbtn { font-size: 11px; } }
+/* phones: the full name stacks, Whitlock & Sons over a small tracked CAR RENTAL */
+@media (max-width: 400px) { .bar { gap: 10px; } .bar .btn--sm { padding: 0 14px; } .tag { padding: 3px 7px; } }
+@media (max-width: 600px) { .brand { font-size: 18px; } .brand__x { display: block; white-space: nowrap; margin-top: 3px; font-size: 9px; font-weight: 700; letter-spacing: .36em; text-transform: uppercase; } }
+@media (max-width: 400px) { .brand { font-size: 16px; } }
 @media (max-width: 760px) and (max-height: 600px) and (orientation: portrait) {
   .show__stage { gap: 6px; padding-bottom: 8px; }
   .kbtn { padding: 3px 2px; gap: 3px; }

@@ -1,4 +1,4 @@
-/* Post Oak & Pepper (concept). Colors come from the cook itself: charred post oak bark,
+/* Haskins & Sons Barbecue (concept). Colors come from the cook itself: charred post oak bark,
    ember, thin blue smoke, and pink butcher paper. --k runs 0 to 1 across the cook and
    drives the ember glow and the warmth of the light sections. */
 
@@ -59,6 +59,7 @@ a { color: inherit; }
 .bar.is-solid { background: rgba(23, 17, 13, .88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
 .brand { display: inline-flex; align-items: center; min-height: 44px; font: 400 19px/1 var(--display); text-decoration: none; letter-spacing: .01em; white-space: nowrap; text-shadow: 0 1px 10px rgba(0, 0, 0, .6); }
 .brand__amp { color: var(--ember-2); }
+.brand__x { white-space: pre; }
 .tag { white-space: nowrap; font: 500 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; padding: 6px 8px; border: 1px dashed rgba(241, 233, 225, .6); border-radius: 3px; color: var(--ash); background: rgba(14, 10, 8, .72); }
 .bar__nav { margin-left: auto; display: flex; align-items: center; gap: 22px; }
 .bar__nav a:not(.btn) { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; font-weight: 600; text-shadow: 0 1px 10px rgba(0, 0, 0, .6); }
@@ -305,6 +306,11 @@ a { color: inherit; }
   .ticket__t { font-size: 13px; }
 }
 @media (max-width: 520px) { .notes__grid { grid-template-columns: 1fr; } }
+/* phones: "Barbecue" steps down to a second line in the tag's mono caps, so the full name fits beside the tag and Cater it */
+@media (max-width: 520px) {
+  .brand { flex-wrap: wrap; align-content: center; row-gap: 4px; }
+  .brand__x { flex-basis: 100%; white-space: nowrap; font: 500 9px/1 var(--mono); letter-spacing: .42em; text-transform: uppercase; color: var(--ember-2); }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
@@ -312,3 +318,9 @@ a { color: inherit; }
   .film__fx { display: none; }
   .cap, .note, .note__card { transition: none; }
 }
+
+/* upright phones, the rub: the shaker, the falling rub and the meat fill the middle and right of the frame, so the
+   caption becomes a narrow card on the left */
+[data-layout="tall"] .cap[data-shot="2"] { right: auto; width: min(46%, 200px); padding: 10px 12px 11px; }
+[data-layout="tall"] .cap[data-shot="2"] .cap__h { font-size: 19px; }
+[data-layout="tall"] .cap[data-shot="2"] .cap__p { font-size: 12.5px; margin-top: 6px; }

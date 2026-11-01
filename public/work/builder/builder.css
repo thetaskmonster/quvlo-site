@@ -1,4 +1,4 @@
-/* Limestone Ridge Homes (concept by Quvlo).
+/* Lindell Custom Homes (concept by Quvlo).
    Fonts, self-hosted from npm @fontsource-variable 5.3.0 (SIL OFL 1.1, licences in fonts/):
    Newsreader (display serif), Public Sans (body), Red Hat Mono (dimensions). */
 @font-face { font-family: 'Newsreader'; src: url('fonts/newsreader-opsz.woff2') format('woff2'); font-weight: 200 800; font-style: normal; font-display: swap; }
@@ -64,7 +64,7 @@ button, input { font: inherit; color: inherit; }
 /* Header */
 .bar { position: fixed; inset: 0 0 auto; z-index: 50; display: flex; align-items: center; gap: 14px; padding: 14px calc(var(--pad) + var(--safe-r)) 14px calc(var(--pad) + var(--safe-l)); color: #fff; transition: background .3s, color .3s, box-shadow .3s; }
 .bar.is-solid { background: rgba(226, 229, 227, .92); color: var(--ink); backdrop-filter: blur(10px); box-shadow: 0 1px 0 rgba(16, 45, 88, .12); }
-.brand { white-space: nowrap; display: inline-flex; align-items: center; gap: 10px; font: 500 21px/1 var(--serif); text-decoration: none; letter-spacing: -.01em; }
+.brand { white-space: nowrap; display: inline-flex; align-items: center; min-height: 44px; gap: 10px; font: 500 21px/1 var(--serif); text-decoration: none; letter-spacing: -.01em; }
 .brand__mark { width: 14px; height: 14px; border: 2px solid currentColor; border-radius: 2px; position: relative; }
 .brand__mark::after { content: ''; position: absolute; right: -6px; top: -6px; width: 6px; height: 6px; background: var(--flag); border-radius: 1px; }
 .tag { white-space: nowrap; font: 500 12px/1 var(--mono); letter-spacing: .02em; padding: 6px 9px; border-radius: 4px; background: var(--flag-ink); color: #fff; }
@@ -316,7 +316,8 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
   .show-s { display: inline; }
   .bar { padding: 10px calc(16px + var(--safe-r)) 10px calc(16px + var(--safe-l)); gap: 10px; }
   .brand { font-size: 18px; }
-  .brand__sub { display: none; }
+  /* the full name stacks: Lindell over CUSTOM HOMES in the plan-sheet mono */
+  .brand__sub { display: block; white-space: nowrap; margin-top: 3px; font: 500 9px/1 var(--mono); letter-spacing: .22em; text-transform: uppercase; }
   .tag { font-size: 11px; padding: 5px 7px; }
   .bar__nav { gap: 0; }
   .bar .btn--sm { padding: 0 14px; }
@@ -348,7 +349,7 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
   .war__axis { margin-left: 94px; }
   .foot__grid { grid-template-columns: 1fr; }
 }
-@media (max-width: 360px) { .tag { display: none; } }
+@media (max-width: 340px) { .tag { display: none; } }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001s !important; animation-delay: 0s !important; transition-duration: .001s !important; }
 }

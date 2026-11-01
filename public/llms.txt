@@ -1,0 +1,30 @@
+# Quvlo
+
+> Quvlo is a one-person web studio in Dallas Fort Worth, Texas, run by Kyle Chalk. It builds websites for small businesses together with the systems behind them: online booking, a client list (CRM), and automations such as reminder texts and follow-ups. Clients can be anywhere in the US. Contact: hello@quvlo.co.
+
+How it works, in four steps: a 15-minute call; a written plan with one fixed price; the build, tested on real phones and an iPad with a private preview link; then launch on the client's own domain with booking and follow-ups switched on. The homepage tells this as a short scroll story about a storefront that keeps working through the night.
+
+Quvlo has no published client reviews or testimonials. The sites listed under Studio Work are concept sites for invented businesses, built to show the work. They are not real companies, and their prices, addresses and phone numbers are made up.
+
+## Pages
+
+- [Home](https://quvlo.co/): what Quvlo builds, a short scroll story of one booking moving through a business overnight, a reel of the seven filmed concept sites, the four-step process, a short note from Kyle, an AI concierge that asks a few questions and writes a short project brief, and a form to request a call.
+- [Studio Work](https://quvlo.co/work/): an index of all thirteen concept sites, each a full working website.
+- [Privacy](https://quvlo.co/privacy): what the site and the concierge collect, and how long chats are kept.
+- [Terms](https://quvlo.co/terms): the terms for using the site.
+
+## Studio Work (concept sites)
+
+- [Hulen Heating & Air](https://quvlo.co/work/hvac/): AC company. Scroll film, a live thermostat, prices that follow the time you book.
+- [Hollis Family Cleaning](https://quvlo.co/work/cleaning/): house cleaning. A wipe-it-clean hero, a price in 30 seconds, booking.
+- [Medrano Wrap & Tint](https://quvlo.co/work/wrap/): wrap and tint studio. A live color picker, a tint slider, booking.
+- [Haskins & Sons Barbecue](https://quvlo.co/work/bbq/): Texas barbecue. A 14-hour smoke clock, menu, catering estimator.
+- [Lindell Custom Homes](https://quvlo.co/work/builder/): custom home builder. The house builds as you scroll, floor plans, estimator.
+- [Teague & Sons Landscape](https://quvlo.co/work/landscape/): landscaping. A four-day yard rebuild, estimator.
+- [Whitlock & Sons Car Rental](https://quvlo.co/work/rental/): premium car rental. A night garage film, a six-car showroom, an honest quote.
+- [Lakewood Sauna House](https://quvlo.co/work/basalt/): sauna and cold plunge house. Website, booking, memberships.
+- [Whitfield Tailors](https://quvlo.co/work/inlay/): tailor. Website, jacket builder, fittings.
+- [Holloway Strength Club](https://quvlo.co/work/ballast/): gym. Website, body scans, member app.
+- [Noor Haddad Coaching](https://quvlo.co/work/longhand/): personal coach. Website, client portal, follow-ups.
+- [Swiss Avenue Counseling](https://quvlo.co/work/neap/): therapy practice. Website, matching, private intake.
+- [Kessler Detail Works](https://quvlo.co/work/lacquer-room/): paint correction and ceramic coating. Website, a 50/50 test spot, inspection booking.

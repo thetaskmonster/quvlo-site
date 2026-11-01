@@ -1,4 +1,4 @@
-/* Limestone Ridge Homes (concept by Quvlo). No libraries. Nothing is sent anywhere. */
+/* Lindell Custom Homes (concept by Quvlo). No libraries. Nothing is sent anywhere. */
 (() => {
   'use strict';
   const $ = (s, r = document) => r.querySelector(s);

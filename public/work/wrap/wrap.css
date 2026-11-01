@@ -1,4 +1,4 @@
-/* Satin & Shade (concept). Studio black, satin and hex-light white.
+/* Medrano Wrap & Tint (concept). Studio black, satin and hex-light white.
    The accent is whatever wrap color is picked: --wrap follows the configurator. */
 
 @font-face { font-family: "Big Shoulders"; src: url(fonts/big-shoulders.woff2) format("woff2-variations"); font-weight: 100 900; font-display: swap; }
@@ -58,6 +58,7 @@ a { color: inherit; }
 .bar.is-solid { background: rgba(11, 11, 12, .82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
 .brand { display: inline-flex; align-items: center; min-height: 44px; white-space: nowrap; font: 800 26px/1 var(--display); letter-spacing: .02em; text-transform: uppercase; text-decoration: none; }
 .brand i { font-style: normal; font-weight: 300; color: var(--mist); }
+.brand__x { white-space: pre; }
 .tag { white-space: nowrap; font: 400 10px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; padding: 6px 8px; border: 1px solid var(--line); border-radius: 2px; color: var(--mist); }
 .bar__nav { margin-left: auto; display: flex; align-items: center; gap: 22px; }
 .bar__nav a:not(.btn) { display: inline-flex; align-items: center; min-height: 44px; font: 600 13px/1 var(--sans); letter-spacing: .06em; text-transform: uppercase; text-decoration: none; color: var(--mist); }
@@ -293,6 +294,9 @@ a { color: inherit; }
   .cfg__lede { display: none; }
 }
 @media (max-width: 480px) {
+  /* the full name stacks: MEDRANO over a smaller, tracked WRAP & TINT */
+  .brand { flex-direction: column; align-items: flex-start; justify-content: center; }
+  .brand__x { white-space: nowrap; margin-top: 3px; font-size: 9.5px; font-weight: 600; letter-spacing: .3em; }
   /* Edges: the hand and squeegee sit low in the phone frame, so that caption drops its line of detail */
   .cap[data-shot="3"] .cap__p { display: none; }
   .svc__grid, .steps__list { grid-template-columns: 1fr; }

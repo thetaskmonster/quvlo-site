@@ -25,6 +25,7 @@ img,canvas{display:block;max-width:100%}
 a{color:inherit}
 h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.035em;line-height:.98}
 :focus-visible{outline:3px solid var(--teal);outline-offset:3px;border-radius:4px}
+main:focus,.form-msg:focus{outline:none}
 .vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .skip{position:absolute;left:12px;top:-60px;z-index:100;background:var(--bone);color:#000;padding:10px 14px;border-radius:8px;text-decoration:none}
 .skip:focus{top:12px}
@@ -35,9 +36,9 @@ h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.035em;line-
 .top{position:fixed;top:0;left:0;right:0;z-index:50;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 var(--gut);padding-top:env(safe-area-inset-top);background:linear-gradient(180deg,var(--night) 0,var(--night) 62%,rgba(5,7,13,0) 100%)}
 .mark{font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:-.02em;text-decoration:none}
 .top nav{display:flex;gap:26px;align-items:center;font-size:15px}
-.top nav a{text-decoration:none;opacity:.86;display:inline-flex;align-items:center;min-height:44px}
+.top nav a{text-decoration:none;opacity:.86;display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px}
 .top .book-link{opacity:1;border-bottom:1px solid rgba(236,231,220,.5);padding-bottom:2px}
-@media (max-width:640px){.hide-s{display:none}.mark{font-size:20px}.top nav{font-size:14px}}
+@media (max-width:640px){.hide-s,.top nav a.hide-s{display:none}.mark{font-size:20px}.top nav{font-size:14px}}
 
 /* ---------- the door and the model ---------- */
 .act{position:relative}
@@ -47,7 +48,8 @@ h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.035em;line-
 #tv,#glows{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none}
 #tv .q{position:absolute;left:0;top:0;transform-origin:0 0;background:#000;overflow:hidden}
 #tv .q img{display:block;width:100%;height:100%}
-#glows i{position:absolute;border-radius:50%;mix-blend-mode:screen;opacity:0;background:radial-gradient(circle,rgba(241,184,119,.6),rgba(241,184,119,.14) 45%,transparent 70%)}
+#tv .q video{position:absolute;inset:0;width:100%;height:100%;object-fit:fill}
+#glows i{position:absolute;left:0;top:0;width:640px;height:640px;transform-origin:50% 50%;border-radius:50%;mix-blend-mode:screen;opacity:0;background:radial-gradient(circle,rgba(241,184,119,.6),rgba(241,184,119,.14) 45%,transparent 70%)}
 #glows i.cool{background:radial-gradient(circle,rgba(175,220,230,.58),rgba(175,220,230,.12) 45%,transparent 70%)}
 #rain{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .shade{position:absolute;left:0;right:0;pointer-events:none}
@@ -57,6 +59,8 @@ h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.035em;line-
 
 .hero-copy{position:relative;z-index:3;padding:96px var(--gut) 0;max-width:720px}
 .hero-copy h1{font-size:clamp(40px,10.6vw,88px)}
+.see{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:14px;font-size:16px;color:var(--champagne);text-decoration:underline;text-decoration-color:rgba(230,210,168,.45);text-underline-offset:6px}
+.see:hover{color:var(--bone)}
 .plain{margin-top:22px;font-size:clamp(19px,2.1vw,30px);line-height:1.32;max-width:31ch;text-shadow:0 1px 14px rgba(0,0,0,.55)}
 
 .story{position:relative;z-index:3}
@@ -76,15 +80,20 @@ h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.035em;line-
 html:not(.door) .act .stage{display:grid;grid-template-columns:minmax(0,1fr)}
 html:not(.door) .act .scene{position:relative;height:88svh;grid-area:1/1}
 html:not(.door) .act .hero-copy{grid-area:1/1;align-self:start;max-height:88svh}
-html:not(.door) .act .story{padding:40px var(--gut) 20px;display:grid;gap:22px;max-width:760px}
+html:not(.door) .act .story{padding:40px var(--gut) 20px;display:grid;grid-template-columns:minmax(0,1fr);gap:22px;max-width:760px}
 html:not(.door) .act .clock,html:not(.door) .act .rooms{display:none}
 html:not(.door) .act .stops{display:grid;gap:18px}
 html:not(.door) .act .stops .say{font-size:clamp(22px,5.4vw,34px)}
+/* the times are the story (a night shift), so the still layout shows them, not only screen readers */
+html:not(.door) .act .stops .vh{position:static!important;width:auto;height:auto;overflow:visible;clip:auto;white-space:normal;display:block;
+  font:700 .78em/1.1 var(--display);letter-spacing:-.02em;color:var(--tungsten);margin-bottom:6px;font-variant-numeric:tabular-nums}
+@media (max-width:899px){html:not(.door) .act .hero-copy{max-width:none;background:linear-gradient(180deg,rgba(5,7,13,.7) 0,rgba(5,7,13,.45) 72%,rgba(5,7,13,0) 100%);padding-bottom:36px}}
+html:not(.door) .act .plain{text-shadow:0 1px 3px rgba(0,0,0,.8),0 1px 18px rgba(0,0,0,.7)}
 html:not(.door) .act #model,html:not(.door) .act #rain{display:none}
 
 /* with the runtime: the stage pins and everything is placed by home.js. The height is reserved here, before any
-   script or scene data arrives (7.6 screens = the story's 6.6 plus one), and home.js then sets the exact pixels. */
-.door .act{height:760vh;height:calc(7.6 * 100svh)}
+   script or scene data arrives (5.8 screens = the story's 4.8 plus one), and home.js then sets the exact pixels. */
+.door .act{height:580vh;height:calc(5.8 * 100svh)}
 .door .act .stage{position:sticky;top:0;height:100svh;min-height:0}
 .door .act .hero-copy{position:absolute;top:0;left:0;right:0}
 .door .act .story{position:absolute;inset:0;pointer-events:none}
@@ -146,6 +155,7 @@ html:not(.door) .act #model,html:not(.door) .act #rain{display:none}
   .door .act .say[data-say="roof"]{top:auto;bottom:calc(14px + env(safe-area-inset-bottom))}
   .door .act .clock{top:56px;font-size:clamp(34px,14svh,56px)}
   .room{font-size:13px;padding:6px 10px 6px 9px}
+  .job{--jw:220px}.job-in{padding:9px 12px 8px}.job-d{display:none}.job-name{font-size:17px;margin-top:3px}.job-msg{font-size:13.5px;padding:7px 10px;margin-top:5px}.job-f{margin-top:5px}
   html.js .thumb{display:none}
   .work,.start,.close{padding-top:80px;padding-bottom:70px}
   .work{min-height:0}
@@ -160,14 +170,14 @@ html:not(.door) .act #model,html:not(.door) .act #rain{display:none}
 .work .photos{position:absolute;inset:0}
 .work .photos img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s,clip-path .45s cubic-bezier(.2,.7,.2,1)}
 .work .photos img.on{opacity:1}
-.work .veil{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.84) 0,rgba(0,0,0,.5) 50%,rgba(0,0,0,.36) 85%,rgba(0,0,0,.62) 100%),linear-gradient(180deg,rgba(0,0,0,.6),rgba(0,0,0,0) 30%,rgba(0,0,0,0) 70%,rgba(0,0,0,.7))}
+.work .veil{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.84) 0,rgba(0,0,0,.45) 45%,rgba(0,0,0,.08) 75%,rgba(0,0,0,.25) 100%),linear-gradient(180deg,rgba(0,0,0,.6),rgba(0,0,0,0) 30%,rgba(0,0,0,0) 70%,rgba(0,0,0,.7))}
 @media (max-width:899px){.work .veil{background:linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.55)),linear-gradient(180deg,rgba(0,0,0,.5),rgba(0,0,0,0) 30%,rgba(0,0,0,0) 70%,rgba(0,0,0,.7))}}
 .work-in{position:relative;z-index:1;max-width:760px}
 .work h1,.work h2{font-size:clamp(28px,4.4vw,52px);max-width:17ch}
 .index{list-style:none;margin-top:clamp(36px,6vw,64px)}
 .index a{display:block;padding:10px 0 14px;text-decoration:none;color:rgba(236,231,220,.5);transition:color .25s}
 .index a:hover,.index a:focus-visible,.index a.on{color:var(--bone)}
-.index .nm{display:block;line-height:1;font-size:clamp(44px,9vw,92px);white-space:nowrap}
+.index .nm{display:block;line-height:1.02;font-size:clamp(34px,9vw,72px);white-space:normal;text-wrap:balance;overflow-wrap:normal;hyphens:none}
 .index .ds{display:block;margin-top:8px;font-size:15px;color:var(--mist)}
 .f-melodrama{font-family:'Melodrama',Georgia,serif;font-weight:400;letter-spacing:-.01em}
 .f-panchang{font-family:'Panchang',system-ui,sans-serif;font-weight:800;letter-spacing:-.02em;font-size:clamp(30px,6.4vw,66px)!important}
@@ -175,7 +185,9 @@ html:not(.door) .act #model,html:not(.door) .act #rain{display:none}
 .f-tanker{font-family:'Tanker',system-ui,sans-serif;font-weight:400;letter-spacing:.01em}
 .f-cabinet{font-family:'Cabinet Grotesk',system-ui,sans-serif;font-weight:800;letter-spacing:-.02em}
 .f-gambarino{font-family:'Gambarino',Georgia,serif;font-weight:400}
-.note{margin-top:28px;max-width:46ch;color:var(--soft);font-size:15px}
+.index + .all{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:22px;font-size:16px;color:var(--bone);text-decoration:underline;text-decoration-color:var(--champagne-2);text-underline-offset:5px}
+.index + .all:hover{color:var(--champagne)}
+.note{margin-top:20px;max-width:46ch;color:var(--soft);font-size:15px}
 
 /* ---------- the question and the concierge ---------- */
 .start{padding:120px var(--gut) 110px;background:var(--night)}
@@ -189,7 +201,10 @@ html:not(.door) .act #model,html:not(.door) .act #rain{display:none}
 .pick-note{margin-top:22px;color:var(--soft);max-width:48ch;font-size:15.5px}
 .chat{background:var(--graphite);border:1px solid rgba(236,231,220,.1);border-radius:24px;padding:28px 26px 20px;display:flex;flex-direction:column;min-height:420px}
 .chat-who{display:flex;align-items:center;gap:8px;font-size:14.5px;color:var(--soft)}
-.chat-who i{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px var(--teal)}
+.chat-who i{width:8px;height:8px;border-radius:50%;background:var(--mist);opacity:.6}
+/* teal only once the server has said the concierge is really running; grey and labelled "offline" when it isn't */
+.chat.live .chat-who i{background:var(--teal);opacity:1;box-shadow:0 0 10px var(--teal)}
+.chat.off .chat-who i{background:var(--mist);opacity:.6;box-shadow:none}
 .log{flex:1;display:flex;flex-direction:column;gap:16px;margin:18px 0;overflow-y:auto;max-height:52svh}
 .log .ai{font-size:19px;line-height:1.45;max-width:36ch;white-space:pre-wrap}
 .log .me{align-self:flex-end;max-width:32ch;background:var(--tungsten);color:#1a1408;padding:11px 16px;border-radius:18px 18px 5px 18px;font-size:16.5px;white-space:pre-wrap}
@@ -204,7 +219,10 @@ html:not(.door) .act #model,html:not(.door) .act #rain{display:none}
 .compose button:disabled{opacity:.4;cursor:default}
 .chat-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 18px;margin-top:12px;font-size:13.5px;color:var(--mist)}
 .chat-foot > a{color:var(--bone);display:inline-flex;align-items:center;min-height:44px}
-.chat-foot span a{display:inline-block;padding:12px 0}
+.chat-foot > a{color:var(--bone);display:inline-flex;align-items:center;min-height:44px}
+.chat-foot span{flex:1 1 100%}
+.chat.off .chat-foot .chat-skip{display:none}  /* offline: the log already ends with "Request a call" */
+.pick-note a{display:inline-block;padding:11px 0;margin:-11px 0}
 @media (min-width:900px){.start-in{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:start}.start-in > h2{grid-column:1}.pick{grid-column:1}.chat{grid-column:2;grid-row:1 / span 2;position:sticky;top:96px}}
 
 /* ---------- the close ---------- */
@@ -219,23 +237,196 @@ html:not(.door) .act #model,html:not(.door) .act #rain{display:none}
 .reach{display:grid;gap:18px}
 .reach label{display:block;font-size:14.5px;color:var(--soft);margin-bottom:8px}
 .reach input{width:100%;height:54px;padding:0 16px;background:var(--graphite);border:1px solid #2a2f38;border-radius:12px;color:var(--bone);font:inherit;font-size:16px}
-.reach input::placeholder{color:#626875}
+.reach input::placeholder{color:#8a909b}
+.reach input[aria-invalid="true"]{border-color:var(--signal)}
 .reach .btn{width:100%;margin-top:6px}
 .form-msg{min-height:1.4em;font-size:15px;color:var(--soft)}
 .form-msg.err{color:var(--signal)}
 .price{margin-top:18px;text-align:center;color:var(--soft);font-size:15px}
+.price a{display:inline-block;padding:15px 4px;margin:-15px -4px}
 @media (min-width:900px){.close-in{grid-template-columns:1fr minmax(360px,460px);align-items:start}}
 
 /* phone thumb bar: two buttons in reach once the hero has gone */
-.thumb{position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:40;display:none;gap:8px;padding:6px;border-radius:999px;background:rgba(13,17,24,.86);border:1px solid rgba(236,231,220,.12);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transform:translateY(140%);transition:transform .3s}
+.thumb{position:fixed;left:12px;right:12px;max-width:440px;margin:0 auto;bottom:max(12px,env(safe-area-inset-bottom));z-index:40;display:none;gap:8px;padding:6px;border-radius:999px;background:rgba(13,17,24,.86);border:1px solid rgba(236,231,220,.12);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transform:translateY(140%);transition:transform .2s ease-out}
 .thumb a{flex:1;text-align:center;padding:12px 0;border-radius:999px;text-decoration:none;font-size:15px}
 .thumb .go{background:var(--tungsten);color:#1a1408}
 .thumb.on{transform:none}
-@media (max-width:899px){.js .thumb{display:flex}}
+@media (max-width:640px){.js .thumb{display:flex}}
 
-.foot{display:flex;flex-wrap:wrap;gap:12px 32px;align-items:baseline;padding:34px var(--gut) 110px;background:var(--graphite);color:var(--soft);font-size:14.5px}
+.foot{display:flex;flex-wrap:wrap;gap:12px 32px;align-items:baseline;padding:34px var(--gut) 34px;background:var(--graphite);color:var(--soft);font-size:14.5px}
 .foot .mark{color:var(--bone);font-size:19px}
 .foot nav{display:flex;gap:20px;margin-left:auto}
-.foot nav a,.top a.mark{display:inline-flex;align-items:center;min-height:44px}
+.foot nav a,.top a.mark{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px}
+.foot .copy{font-size:13.5px;color:var(--mist);flex-basis:100%}
+/* the bottom padding leaves room for the thumb bar, which only exists below 900 px */
+@media (max-width:640px){.js .thumb ~ .foot{padding-bottom:110px}}  /* room for the thumb bar, which only exists on phones */
 
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+
+/* ================= Phase B (2026-11-01): the job card, the reel, process, about ================= */
+
+/* ---------- the job card: one booking traveling through the house overnight ---------- */
+.job{--jw:min(270px,calc(100vw - 40px))}
+.job-in{background:rgba(13,17,24,.88);border:1px solid rgba(236,231,220,.14);border-radius:14px;padding:12px 14px 11px;box-shadow:0 18px 40px rgba(0,0,0,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.job-h{display:flex;align-items:center;gap:7px;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--mist)}
+.job-h i{width:7px;height:7px;border-radius:50%;background:var(--tungsten);box-shadow:0 0 8px var(--tungsten)}
+.job-h i.cool{background:var(--teal);box-shadow:0 0 8px var(--teal)}
+.job-name{margin-top:6px;font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.02em;line-height:1.1}
+.job-d{margin-top:3px;font-size:14.5px;color:var(--soft)}
+.job-f{margin-top:8px;font-size:12.5px;color:var(--mist);font-variant-numeric:tabular-nums}
+.job-msg{margin-top:8px;background:var(--graphite-2);border-radius:14px 14px 14px 4px;padding:9px 12px;font-size:15px;line-height:1.35;color:var(--bone)}
+/* story running: one card, its three states stacked in one cell, placed by home.js */
+.door .act .story > .job{left:0;top:0;width:var(--jw);display:grid;transform-origin:50% 50%}
+.door .act .job-in{grid-area:1/1;opacity:0}
+/* still layout: the three states as a row of cards under the story */
+html:not(.door) .act .job{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:12px;margin-top:8px}
+@media (min-width:900px) and (min-aspect-ratio:4/3){.job{--jw:290px}.job-name{font-size:22px}}
+
+/* ---------- the reel: seven film sites ---------- */
+.reel{padding:120px var(--gut) 110px;background:#000}
+.reel-head{max-width:1400px;margin:0 auto 48px;display:grid;gap:18px}
+.reel h2{font-size:clamp(40px,7vw,96px);max-width:12ch}
+.reel-note{max-width:52ch;color:var(--soft);font-size:clamp(16px,1.3vw,18px)}
+.reel-toggle{justify-self:start;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid rgba(236,231,220,.22);background:none;color:var(--soft);font:inherit;font-size:14.5px;cursor:pointer}
+.reel-toggle:hover{color:var(--bone);border-color:rgba(236,231,220,.45)}
+.reel-toggle::before{content:"";width:8px;height:10px;border-left:3px solid currentColor;border-right:3px solid currentColor}
+.reel-toggle[aria-pressed="true"]::before{width:0;height:0;border:0;border-left:9px solid currentColor;border-top:6px solid transparent;border-bottom:6px solid transparent}
+@media (min-width:900px){.reel-head{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:end;column-gap:48px}.reel-head h2{grid-row:1 / span 2}.reel-toggle{grid-column:2}}
+.reel-list{list-style:none;max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:56px 28px}
+.reel .feature{grid-column:1 / -1}
+.card a{position:relative;display:block;text-decoration:none;color:var(--bone)}
+.film{position:relative;display:block;aspect-ratio:16 / 9;overflow:hidden;border-radius:14px;background:#0b0d12}
+.film img,.film video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:filter .3s}
+.film video{opacity:0;transition:opacity .45s,filter .3s}
+.film video.on{opacity:1}
+.card .nm{display:block;margin-top:18px;font-size:clamp(26px,2.4vw,38px);line-height:1.08;text-decoration:underline;text-decoration-color:transparent;text-decoration-thickness:2px;text-underline-offset:8px;transition:text-decoration-color .25s}
+.card .nm.f-panchang{font-size:clamp(20px,1.9vw,30px)!important}
+.feature .nm{font-size:clamp(32px,4.2vw,64px)}
+.feature .nm.f-panchang{font-size:clamp(26px,3.2vw,48px)!important}
+.card .tag{position:absolute;top:14px;left:14px;padding:5px 10px;border-radius:999px;background:rgba(5,7,13,.7);border:1px solid rgba(236,231,220,.18);font-size:12.5px;letter-spacing:.04em;color:var(--bone)}
+.card .ds{display:block;margin-top:8px;max-width:56ch;color:var(--mist);font-size:15px}
+.card a:hover .film img,.card a:hover .film video{filter:brightness(1.12)}
+.card a:hover .nm,.card a:focus-visible .nm{text-decoration-color:var(--champagne-2)}
+.card a:focus-visible{outline-offset:6px;border-radius:16px}
+@media (max-width:899px){.reel-list{gap:44px 18px}}
+/* phones: a strip of portrait cards, the next one peeking in */
+@media (max-width:699px){
+  .reel-list{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;margin:0 calc(-1 * var(--gut));padding:0 var(--gut) 8px;scroll-padding:0 var(--gut);scrollbar-width:none}
+  .reel-list::-webkit-scrollbar{display:none}
+  .reel .card{flex:0 0 78vw;scroll-snap-align:start}
+  .film{aspect-ratio:4 / 5}
+  .card .nm,.feature .nm{font-size:clamp(24px,7vw,32px)}
+  .card .nm.f-panchang,.feature .nm.f-panchang{font-size:clamp(19px,5.4vw,24px)!important}
+}
+
+/* ---------- the photographed pieces: the secondary list ---------- */
+#pieces{min-height:0;padding-top:100px;padding-bottom:90px}
+#pieces h2{font-size:clamp(26px,3.2vw,40px);max-width:20ch}
+#pieces .index .nm{font-size:clamp(30px,6.4vw,58px)}
+#pieces .index .nm.f-panchang{font-size:clamp(22px,4.6vw,44px)!important}
+
+/* ---------- process: four lamps on one wire, each with a small lit window ---------- */
+.process{padding:120px var(--gut) 120px;background:var(--night)}
+.process-in{max-width:1400px;margin:0 auto}
+.process h2{font-size:clamp(40px,6vw,80px);max-width:12ch}
+.steps{list-style:none;margin-top:clamp(44px,6vw,80px);display:grid;gap:56px;position:relative;--wire:rgba(241,184,119,.16)}
+.step{position:relative}
+.step .lamp{display:inline-flex;align-items:center;gap:9px;padding:8px 14px 8px 12px;border-radius:999px;background:var(--graphite);border:1px solid rgba(236,231,220,.12);font-size:15px;color:var(--mist);position:relative;z-index:1;transition:color .5s,border-color .5s}
+.step .lamp::before{content:"";width:8px;height:8px;border-radius:50%;background:#3a3f48;transition:background .5s,box-shadow .5s}
+.step.lit .lamp{color:var(--bone);border-color:rgba(241,184,119,.38)}
+.step.lit .lamp::before{background:var(--tungsten);box-shadow:0 0 10px var(--tungsten)}
+/* the wire between lamps: a faint line that carries the light forward to the next lamp once a step is lit */
+.step::after{content:"";position:absolute;background:var(--wire);transition:background .6s,box-shadow .6s}
+.step:last-child::after{display:none}
+.step.lit::after{background:linear-gradient(var(--wd,90deg),rgba(241,184,119,.75),rgba(241,184,119,.18));box-shadow:0 0 8px rgba(241,184,119,.25)}
+/* the window: a small scene lit from inside, like the storefront at night */
+.win{position:relative;margin-top:20px;height:224px;border-radius:16px;border:1px solid rgba(236,231,220,.1);background:#0a0d13;display:grid;place-items:center;overflow:hidden;transition:border-color .6s}
+/* unlit vs lit is the window's warm glow, never the content's opacity (so the text keeps its contrast) */
+.win::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 30% 0%,rgba(241,184,119,.18),rgba(241,184,119,0) 60%);opacity:0;transition:opacity .6s;pointer-events:none}
+.win > *{position:relative}
+.step.lit .win{border-color:rgba(241,184,119,.22)}
+.step.lit .win::before{opacity:1}
+.step h3{margin-top:22px;font-size:clamp(24px,2.3vw,32px);letter-spacing:-.025em;line-height:1.08;color:rgba(236,231,220,.62);transition:color .5s}
+.step.lit h3{color:var(--bone)}
+.step > p:not(.lamp){margin-top:10px;color:var(--mist);max-width:34ch;font-size:16px}
+/* window 1: a calendar slot */
+.cal{width:min(220px,80%);font-size:12.5px;color:var(--mist);font-variant-numeric:tabular-nums}
+.cal-h{display:flex;justify-content:space-between;text-transform:uppercase;letter-spacing:.06em;padding-bottom:8px;border-bottom:1px solid rgba(236,231,220,.12)}
+.cal-h b{color:var(--bone);font-weight:500}
+.cal-r{display:flex;gap:10px;align-items:flex-start;min-height:30px;padding-top:6px;border-bottom:1px dashed rgba(236,231,220,.08)}
+.cal-r span{width:34px;flex:none}
+.cal-r.on b{flex:1;display:flex;justify-content:space-between;gap:6px;padding:6px 9px;border-radius:7px;background:var(--tungsten);color:#1a1408;font-weight:500;font-size:13px}
+.cal-r.on small{font-size:11.5px;opacity:.75}
+/* window 2: the plan, line items and one fixed price (no numbers: Kyle quotes after the call) */
+.quote{width:min(230px,82%);font-size:13px;color:var(--soft)}
+.q-h{font-family:var(--display);font-weight:700;font-size:16px;color:var(--bone);letter-spacing:-.01em;margin-bottom:8px}
+.q-l,.q-t{display:flex;align-items:baseline;gap:8px;padding:3px 0}
+.q-l i{flex:1;border-bottom:1px dotted rgba(236,231,220,.25)}
+.q-l::after{content:"";width:9px;height:9px;border-radius:2px;border:1px solid rgba(70,184,177,.8);background:rgba(70,184,177,.25)}
+.q-t{margin-top:6px;padding-top:8px;border-top:1px solid rgba(236,231,220,.14);justify-content:space-between;color:var(--bone)}
+.q-t b{font-weight:500;color:var(--champagne)}
+.q-yes{margin-top:10px;display:inline-block;padding:5px 12px;border-radius:999px;background:var(--tungsten);color:#1a1408;font-size:12px}
+/* window 3: the private preview on a phone */
+.phone{width:96px;height:178px;margin-top:64px;align-self:start;border-radius:18px;border:2px solid rgba(236,231,220,.35);background:#06080c;padding:8px 7px;display:flex;flex-direction:column;gap:6px;box-shadow:0 0 30px rgba(241,184,119,.12)}
+.ph-url{font-size:8.5px;text-align:center;color:var(--teal);border:1px solid rgba(70,184,177,.4);border-radius:999px;padding:2px 0}
+.ph-scr{flex:1;border-radius:9px;background:linear-gradient(180deg,rgba(241,184,119,.22),rgba(241,184,119,.05));padding:10px 7px;display:flex;flex-direction:column;gap:5px}
+.ph-scr i{height:6px;border-radius:3px;background:rgba(236,231,220,.7)}
+.ph-scr i + i{width:70%}
+.ph-scr i.s{width:85%;height:4px;background:rgba(236,231,220,.3);margin-top:4px}
+.ph-scr b{margin-top:auto;font-size:8.5px;font-weight:500;text-align:center;padding:4px 0;border-radius:999px;background:var(--tungsten);color:#1a1408}
+/* window 4: your domain, switched on */
+.browser{width:min(240px,84%);border-radius:10px;border:1px solid rgba(236,231,220,.18);background:#06080c;overflow:hidden;font-size:12.5px}
+.br-bar{display:flex;align-items:center;gap:5px;padding:7px 9px;background:var(--graphite-2)}
+.br-bar i{width:7px;height:7px;border-radius:50%;background:rgba(236,231,220,.25)}
+.br-bar span{flex:1;margin-left:6px;padding:3px 8px;border-radius:6px;background:#0a0d13;color:var(--bone);font-size:12px}
+.br-bar span::before{content:"";display:inline-block;width:7px;height:8px;margin-right:6px;border:1.5px solid var(--mist);border-radius:2px 2px 1px 1px;vertical-align:-1px}
+.br-on{display:flex;align-items:center;gap:9px;padding:9px 12px;color:var(--soft)}
+.br-on + .br-on{border-top:1px solid rgba(236,231,220,.07)}
+.br-on b{width:24px;height:14px;border-radius:999px;background:var(--teal);position:relative;box-shadow:0 0 8px rgba(70,184,177,.5)}
+.br-on b::after{content:"";position:absolute;right:2px;top:2px;width:10px;height:10px;border-radius:50%;background:var(--bone)}
+/* phones: a vertical run, the wire down the left past each lamp */
+.step::after{left:15px;top:44px;bottom:-56px;width:2px;--wd:180deg}
+@media (max-width:899px){.step > .win,.step > h3,.step > p:not(.lamp){margin-left:38px}}
+@media (min-width:900px){
+  .steps{grid-template-columns:repeat(4,minmax(0,1fr));gap:28px}
+  .step::after{left:auto;right:-28px;top:20px;bottom:auto;width:calc(100% - 96px);height:2px;--wd:90deg;transform:translateX(0)}
+}
+/* without JavaScript, or with reduced motion, every lamp is on */
+html:not(.js) .step .lamp::before{background:var(--tungsten);box-shadow:0 0 10px var(--tungsten)}
+html:not(.js) .step h3{color:var(--bone)}
+html:not(.js) .win::before{opacity:1}
+@media (prefers-reduced-motion:reduce){.step .lamp,.step h3{color:var(--bone)}.step .lamp::before{background:var(--tungsten)}.win::before{opacity:1}}
+
+/* ---------- about: a note from Kyle, written at night with the storefront lit behind it ---------- */
+.about{position:relative;padding:130px var(--gut) 130px;background:#000;overflow:hidden}
+.about-night{position:absolute;inset:0 0 0 auto;width:min(58%,860px);pointer-events:none}
+.about-night img{width:100%;height:100%;object-fit:cover;object-position:50% 46%;opacity:.55;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 45%);mask-image:linear-gradient(90deg,transparent 0,#000 45%)}
+.about-in{position:relative;max-width:1400px;margin:0 auto}
+.letter{max-width:640px;padding:clamp(28px,4vw,52px);border-radius:22px;background:radial-gradient(90% 60% at 0% 0%,rgba(241,184,119,.14),rgba(241,184,119,0) 70%),rgba(13,17,24,.92);border:1px solid rgba(236,231,220,.1);box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.letter .from{display:inline-flex;align-items:center;gap:9px;font-size:14px;color:var(--mist)}
+.letter .from::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--tungsten);box-shadow:0 0 10px var(--tungsten)}
+.about h2{margin-top:18px;font-size:clamp(36px,4.6vw,64px);max-width:13ch}
+.letter > p:not(.from):not(.sign){margin-top:20px;font-size:clamp(18px,1.5vw,21px);line-height:1.55;color:var(--soft);max-width:46ch}
+.letter > p:nth-of-type(2){color:var(--bone)}
+.sign{margin-top:30px;font-family:var(--display);font-weight:700;font-size:28px;letter-spacing:-.02em;display:flex;flex-direction:column}
+.sign::before{content:"";width:46px;height:2px;margin-bottom:14px;background:var(--tungsten);box-shadow:0 0 8px rgba(241,184,119,.5)}
+.sign span{font-family:var(--text);font-weight:500;font-size:14px;letter-spacing:0;color:var(--mist);margin-top:4px}
+.about-photo{margin:0 0 22px;width:120px;height:150px;border-radius:14px;overflow:hidden;background:var(--graphite)}
+.about-photo img{width:100%;height:100%;object-fit:cover}
+@media (max-width:899px){
+  .about{padding-top:0}
+  .about-night{position:relative;inset:auto;width:auto;height:46svh;margin:0 calc(-1 * var(--gut)) -90px}
+  .about-night img{-webkit-mask-image:linear-gradient(180deg,#000 40%,transparent 100%);mask-image:linear-gradient(180deg,#000 40%,transparent 100%);object-position:50% 52%}
+}
+
+/* ---------- the question: an example brief fills the empty side until a pick ---------- */
+.example{display:none}
+@media (min-width:900px){
+  .example{display:block;grid-column:2;grid-row:1 / span 2;align-self:start;position:sticky;top:96px;margin:0;border:1px dashed rgba(236,231,220,.18);border-radius:24px;padding:28px 28px 26px;color:var(--mist)}
+  .example figcaption{display:inline-block;font-size:13px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:999px;border:1px solid rgba(236,231,220,.18)}
+  .example dl{margin-top:22px;display:grid;gap:18px}
+  .example dt{font-size:13.5px;margin-bottom:4px}
+  .example dd{font-family:var(--display);font-weight:700;font-size:clamp(20px,2vw,28px);line-height:1.12;letter-spacing:-.02em;color:rgba(236,231,220,.6)}
+  .example p{margin-top:22px;font-size:14.5px}
+}

@@ -1,4 +1,4 @@
-/* Satin & Shade (concept by Quvlo). No libraries. */
+/* Medrano Wrap & Tint (concept by Quvlo). No libraries. */
 (() => {
   'use strict';
   // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.

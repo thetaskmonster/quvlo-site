@@ -21,8 +21,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/fonts/zodiak-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/author-500.woff2" as="font" type="font/woff2" crossorigin>
-<script src="/assets/boot.js?v=20261027g"></script>
-<link rel="stylesheet" href="/assets/site.css?v=20261027g">
+<script src="/assets/boot.js?v=20261101b5"></script>
+<link rel="stylesheet" href="/assets/site.css?v=20261101b5">
 <!-- Cloudflare Turnstile site key (public). Empty = no bot check on the page. Set together with TURNSTILE_SECRET in Cloudflare. -->
 <meta name="quvlo-turnstile" content="">
 <!--
@@ -48,20 +48,20 @@
 </script>
 </head>
 <body>
-<a class="skip" href="#start">Skip to the questions</a>
+<a class="skip" href="#main">Skip to main content</a>
 
 <header class="top" id="top">
   <a class="mark" href="/" aria-label="Quvlo, home">Quvlo</a>
-  <nav aria-label="Main"><a href="#work" class="hide-s">Studio Work</a><a href="#close" class="book-link">Request a call</a></nav>
+  <nav aria-label="Main"><a href="#work">Work</a><a href="#process" class="hide-s">Process</a><a href="#close" class="book-link">Request a call</a></nav>
 </header>
 
-<main>
+<main id="main" tabindex="-1">
   <!-- The door and the model. One pinned stage; scrolling drives the camera, the roof and the clock.
        Without JavaScript (or with reduced motion) it is a still picture followed by the same story as text. -->
   <section class="act" id="door" aria-labelledby="h1">
     <div class="stage">
       <div class="scene" aria-hidden="true">
-        <picture><source media="(min-width:900px) and (min-aspect-ratio:4/3), (max-height:500px) and (min-aspect-ratio:8/5)" srcset="/model/hook/d-poster.webp"><img class="poster" src="/model/stills/shop-p.webp" alt="" fetchpriority="high" decoding="async"></picture>
+        <picture><source media="(min-width:900px) and (min-aspect-ratio:4/3), (max-height:500px) and (min-aspect-ratio:8/5)" srcset="/model/hook/d-poster.webp"><source media="(min-width:600px)" srcset="/model/stills/shop-d.webp"><img class="poster" src="/model/stills/shop-p.webp" alt="" fetchpriority="high" decoding="async"></picture>
         <canvas id="model"></canvas>
         <div id="tv"></div>
         <div id="glows"></div>
@@ -71,7 +71,8 @@
 
       <div class="hero-copy">
         <h1 id="h1">Your business, still working at 3&nbsp;am.</h1>
-        <p class="plain">We build the website, the booking and the follow-ups. For businesses anywhere.</p>
+        <p class="plain">We build the website, the booking and the follow-ups, so nothing waits for you to wake&nbsp;up.</p>
+        <a class="see" href="#work">See the work <span aria-hidden="true">&darr;</span></a>
       </div>
 
       <div class="story">
@@ -80,10 +81,15 @@
         <ol class="stops">
           <li class="say" data-stop="0"><span class="vh">6:04 pm. </span>A booking comes in after you&rsquo;ve&nbsp;closed.</li>
           <li class="say" data-stop="1"><span class="vh">11:42 pm. </span>It files itself under the right client.</li>
-          <li class="say" data-stop="2"><span class="vh">3:17 am. </span>A missed appointment gets a rebook link. It waits until 9&nbsp;am to&nbsp;send.</li>
-          <li class="say" data-stop="3"><span class="vh">7:55 am. </span>Today&rsquo;s first client gets a reminder before you&rsquo;re&nbsp;up.</li>
+          <li class="say" data-stop="2"><span class="vh">7:55 am. </span>Today&rsquo;s first client gets a reminder before you&rsquo;re&nbsp;up.</li>
         </ol>
-        <p class="say small" data-say="turn">One studio builds every piece of it: the site, the booking, the CRM and the automations behind&nbsp;them.</p>
+        <p class="say small" data-say="turn">One studio builds all of&nbsp;it.</p>
+        <!-- The job card: one customer's booking traveling through the house overnight (the captions carry the same story for screen readers) -->
+        <div class="job" aria-hidden="true">
+          <div class="job-in" data-k="0"><p class="job-h"><i></i>New booking</p><p class="job-name">Dana Reyes</p><p class="job-d">Sat, 10:00 am &middot; first visit</p><p class="job-f">Booked on your website &middot; 6:04 pm</p></div>
+          <div class="job-in" data-k="1"><p class="job-h"><i class="cool"></i>Client record</p><p class="job-name">Dana Reyes</p><p class="job-d">New client &middot; 1 visit booked</p><p class="job-f">Filed on its own &middot; 11:42 pm</p></div>
+          <div class="job-in sms" data-k="2"><p class="job-h"><i class="cool"></i>Text to Dana</p><p class="job-msg">Hi Dana, see you at 10 this morning. Reply C to confirm.</p><p class="job-f">Sent 7:55 am</p></div>
+        </div>
         <ul class="rooms" aria-hidden="true">
           <li class="room warm" data-room="0">Website</li><li class="room warm" data-room="1">Client list</li><li class="room cool" data-room="2">Automation</li><li class="room cool" data-room="3">Reminder texts</li>
         </ul>
@@ -91,25 +97,141 @@
     </div>
   </section>
 
-  <section class="work" id="work" aria-labelledby="work-h">
+  <section class="reel" id="work" aria-labelledby="reel-h">
+    <div class="reel-head">
+      <h2 id="reel-h">Seven businesses, filmed.</h2>
+      <p class="reel-note">Every site is live and fully built, and each one tells its story as you scroll. The businesses are invented, so you can see the work before you hire&nbsp;us.</p>
+      <button type="button" class="reel-toggle" id="reel-toggle" aria-pressed="false" hidden>Pause the films</button>
+    </div>
+    <ul class="reel-list">
+      <li class="card feature"><a href="/work/landscape/">
+        <span class="film" aria-hidden="true"><picture><source media="(max-width:699px)" srcset="/model/reel/landscape-m.webp?v=b5"><img src="/model/reel/landscape-d.webp?v=b5" alt="" loading="lazy" decoding="async" width="1280" height="720"></picture><video muted playsinline preload="none" data-film="landscape"></video></span>
+        <span class="nm f-cabinet">Teague &amp; Sons Landscape</span> <span class="tag">Concept</span>
+        <span class="ds">Landscaping. A four-day yard rebuild, a mow-it-yourself game, an estimator</span>
+      </a></li>
+      <li class="card"><a href="/work/bbq/">
+        <span class="film" aria-hidden="true"><picture><source media="(max-width:699px)" srcset="/model/reel/bbq-m.webp?v=b5"><img src="/model/reel/bbq-d.webp?v=b5" alt="" loading="lazy" decoding="async" width="1280" height="720"></picture><video muted playsinline preload="none" data-film="bbq"></video></span>
+        <span class="nm f-melodrama">Haskins &amp; Sons Barbecue</span> <span class="tag">Concept</span>
+        <span class="ds">Texas barbecue. A 14-hour smoke clock, the menu, a catering estimator</span>
+      </a></li>
+      <li class="card"><a href="/work/cleaning/">
+        <span class="film" aria-hidden="true"><picture><source media="(max-width:699px)" srcset="/model/reel/cleaning-m.webp?v=b5"><img src="/model/reel/cleaning-d.webp?v=b5" alt="" loading="lazy" decoding="async" width="1280" height="720"></picture><video muted playsinline preload="none" data-film="cleaning"></video></span>
+        <span class="nm f-boska">Hollis Family Cleaning</span> <span class="tag">Concept</span>
+        <span class="ds">House cleaning. A wipe-it-clean hero, a price in 30 seconds, booking</span>
+      </a></li>
+      <li class="card"><a href="/work/rental/">
+        <span class="film" aria-hidden="true"><picture><source media="(max-width:699px)" srcset="/model/reel/rental-m.webp?v=b5"><img src="/model/reel/rental-d.webp?v=b5" alt="" loading="lazy" decoding="async" width="1280" height="720"></picture><video muted playsinline preload="none" data-film="rental"></video></span>
+        <span class="nm f-gambarino">Whitlock &amp; Sons Car Rental</span> <span class="tag">Concept</span>
+        <span class="ds">Premium car rental. A night garage film, a six-car showroom, an honest quote</span>
+      </a></li>
+      <li class="card"><a href="/work/builder/">
+        <span class="film" aria-hidden="true"><picture><source media="(max-width:699px)" srcset="/model/reel/builder-m.webp?v=b5"><img src="/model/reel/builder-d.webp?v=b5" alt="" loading="lazy" decoding="async" width="1280" height="720"></picture><video muted playsinline preload="none" data-film="builder"></video></span>
+        <span class="nm f-gambarino">Lindell Custom Homes</span> <span class="tag">Concept</span>
+        <span class="ds">Custom home builder. The house builds as you scroll. Floor plans and an estimator</span>
+      </a></li>
+      <li class="card"><a href="/work/wrap/">
+        <span class="film" aria-hidden="true"><picture><source media="(max-width:699px)" srcset="/model/reel/wrap-m.webp?v=b5"><img src="/model/reel/wrap-d.webp?v=b5" alt="" loading="lazy" decoding="async" width="1280" height="720"></picture><video muted playsinline preload="none" data-film="wrap"></video></span>
+        <span class="nm f-tanker">Medrano Wrap &amp; Tint</span> <span class="tag">Concept</span>
+        <span class="ds">Wrap and tint studio. A live color picker, a tint slider, booking</span>
+      </a></li>
+      <li class="card"><a href="/work/hvac/">
+        <span class="film" aria-hidden="true"><picture><source media="(max-width:699px)" srcset="/model/reel/hvac-m.webp?v=b5"><img src="/model/reel/hvac-d.webp?v=b5" alt="" loading="lazy" decoding="async" width="1280" height="720"></picture><video muted playsinline preload="none" data-film="hvac"></video></span>
+        <span class="nm f-panchang">Hulen Heating &amp; Air</span> <span class="tag">Concept</span>
+        <span class="ds">AC company. A live thermostat, prices that follow the time you book</span>
+      </a></li>
+    </ul>
+  </section>
+
+  <section class="work" id="pieces" aria-labelledby="work-h">
     <div class="photos" aria-hidden="true">
-      <img data-for="basalt" src="/model/idx/basalt-1080.webp" alt="" loading="lazy" decoding="async">
-      <img data-for="inlay" src="/model/idx/inlay-1080.webp" alt="" loading="lazy" decoding="async">
-      <img data-for="ballast" src="/model/idx/ballast-1080.webp" alt="" loading="lazy" decoding="async">
-      <img data-for="longhand" src="/model/idx/longhand-1080.webp" alt="" loading="lazy" decoding="async">
-      <img data-for="neap" src="/model/idx/lowtide-1080.webp" alt="" loading="lazy" decoding="async">
+      <picture><source media="(min-aspect-ratio:1/1)" srcset="/model/idx/basalt-wide.webp"><img data-for="basalt" src="/model/idx/basalt-1080.webp" alt="" loading="lazy" decoding="async"></picture>
+      <picture><source media="(min-aspect-ratio:1/1)" srcset="/model/idx/inlay-wide.webp"><img data-for="inlay" src="/model/idx/inlay-1080.webp" alt="" loading="lazy" decoding="async"></picture>
+      <picture><source media="(min-aspect-ratio:1/1)" srcset="/model/idx/ballast-wide.webp"><img data-for="ballast" src="/model/idx/ballast-1080.webp" alt="" loading="lazy" decoding="async"></picture>
+      <picture><source media="(min-aspect-ratio:1/1)" srcset="/model/idx/longhand-wide.webp"><img data-for="longhand" src="/model/idx/longhand-1080.webp" alt="" loading="lazy" decoding="async"></picture>
+      <picture><source media="(min-aspect-ratio:1/1)" srcset="/model/idx/lowtide-wide.webp"><img data-for="neap" src="/model/idx/lowtide-1080.webp" alt="" loading="lazy" decoding="async"></picture>
+      <picture><source media="(min-aspect-ratio:1/1)" srcset="/model/idx/lacquer-wide.webp"><img data-for="lacquer" src="/model/idx/lacquer-1080.webp" alt="" loading="lazy" decoding="async"></picture>
       <div class="veil"></div>
     </div>
     <div class="work-in">
-      <h2 id="work-h">Businesses we designed and built, to show what&rsquo;s possible.</h2>
+      <h2 id="work-h">Six more, built around photography.</h2>
       <ul class="index">
-        <li><a href="/work/basalt/" data-piece="basalt"><span class="nm f-melodrama">Basalt</span><span class="ds">Sweat house and med spa. Website, booking, memberships</span></a></li>
-        <li><a href="/work/inlay/" data-piece="inlay"><span class="nm f-boska">Inlay</span><span class="ds">Tailor. Website, jacket builder, fittings</span></a></li>
-        <li><a href="/work/ballast/" data-piece="ballast"><span class="nm f-tanker">Ballast</span><span class="ds">Recomp gym. Website, body scans, member app</span></a></li>
-        <li><a href="/work/longhand/" data-piece="longhand"><span class="nm f-cabinet">Longhand</span><span class="ds">Personal coach. Website, client portal, follow-ups</span></a></li>
-        <li><a href="/work/neap/" data-piece="neap"><span class="nm f-gambarino">Neap</span><span class="ds">Therapy practice. Website, matching, private intake</span></a></li>
+        <li><a href="/work/basalt/" data-piece="basalt"><span class="nm f-melodrama">Lakewood Sauna House</span><span class="ds">Sweat house and med spa. Website, booking, memberships</span></a></li>
+        <li><a href="/work/inlay/" data-piece="inlay"><span class="nm f-boska">Whitfield Tailors</span><span class="ds">Tailor. Website, jacket builder, fittings</span></a></li>
+        <li><a href="/work/ballast/" data-piece="ballast"><span class="nm f-tanker">Holloway Strength Club</span><span class="ds">Recomp gym. Website, body scans, member app</span></a></li>
+        <li><a href="/work/longhand/" data-piece="longhand"><span class="nm f-cabinet">Noor Haddad Coaching</span><span class="ds">Personal coach. Website, client portal, follow-ups</span></a></li>
+        <li><a href="/work/neap/" data-piece="neap"><span class="nm f-gambarino">Swiss Avenue Counseling</span><span class="ds">Therapy practice. Website, matching, private intake</span></a></li>
+        <li><a href="/work/lacquer-room/" data-piece="lacquer"><span class="nm f-panchang">Kessler Detail Works</span><span class="ds">Paint correction and coating. Website, the 50/50 test spot, inspections</span></a></li>
       </ul>
-      <p class="note">Each name opens the full site. These are made-up businesses, built so you can see the work before you hire us.</p>
+      <a class="all" href="/work/">See every site on one page <span aria-hidden="true">&rarr;</span></a>
+    </div>
+  </section>
+
+  <section class="process" id="process" aria-labelledby="process-h">
+    <div class="process-in">
+      <h2 id="process-h">From a call to&nbsp;live.</h2>
+      <!-- Four steps on one lamp-lit wire: each lamp comes on as you reach it. The small "windows" are drawn in HTML/CSS
+           and are illustrations (the time slot and the domain are examples), so they are hidden from screen readers. -->
+      <ol class="steps">
+        <li class="step">
+          <p class="lamp">The call</p>
+          <div class="win" aria-hidden="true"><div class="cal">
+            <p class="cal-h">Tue <b>6 pm</b></p>
+            <p class="cal-r"><span>5:45</span></p>
+            <p class="cal-r on"><span>6:00</span><b>Call with Kyle<small>15 min</small></b></p>
+            <p class="cal-r"><span>6:15</span></p>
+          </div></div>
+          <h3>A 15-minute call</h3>
+          <p>About the business, what happens after you close, and what you&rsquo;d fix first.</p>
+        </li>
+        <li class="step">
+          <p class="lamp">The plan</p>
+          <div class="win" aria-hidden="true"><div class="quote">
+            <p class="q-h">Plan for your business</p>
+            <p class="q-l"><span>Website</span><i></i></p>
+            <p class="q-l"><span>Online booking</span><i></i></p>
+            <p class="q-l"><span>Reminder texts</span><i></i></p>
+            <p class="q-t"><span>Fixed quote</span><b>one price</b></p>
+            <p class="q-yes">Say yes to start</p>
+          </div></div>
+          <h3>A plan and a fixed quote</h3>
+          <p>The pages, the booking and what gets automated, written down with one price. Nothing starts until you say&nbsp;yes.</p>
+        </li>
+        <li class="step">
+          <p class="lamp">The build</p>
+          <div class="win" aria-hidden="true"><div class="phone">
+            <p class="ph-url">Private preview</p>
+            <div class="ph-scr"><i></i><i></i><i class="s"></i><b>Book a time</b></div>
+          </div></div>
+          <h3>Tested on real phones</h3>
+          <p>Kyle builds it and tests it on real phones and an iPad. You get a private preview link to try on your own phone as it comes together.</p>
+        </li>
+        <li class="step">
+          <p class="lamp">Launch</p>
+          <div class="win" aria-hidden="true"><div class="browser">
+            <p class="br-bar"><i></i><i></i><i></i><span>yourbusiness.com</span></p>
+            <p class="br-on"><b></b>Booking on</p>
+            <p class="br-on"><b></b>Follow-ups on</p>
+          </div></div>
+          <h3>Live on your domain</h3>
+          <p>The site goes live on your own domain, with the booking and the follow-ups switched&nbsp;on.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="about" id="about" aria-labelledby="about-h">
+    <div class="about-night" aria-hidden="true"><img src="/model/stills/shop-d.webp" alt="" loading="lazy" decoding="async" width="1140" height="2050"></div>
+    <div class="about-in">
+      <article class="letter">
+        <!-- Photo slot: add the image and remove "hidden"; it sits at the top of the note. -->
+        <figure class="about-photo" hidden></figure>
+        <p class="from">A note from Kyle</p>
+        <h2 id="about-h">Hi, I&rsquo;m Kyle. Quvlo is&nbsp;me.</h2>
+        <p>I design and build every site myself, here in Dallas Fort Worth: the pages, the booking, the client list and the automations behind them. The person on your call is the person writing the code, so nothing gets lost in a hand-off.</p>
+        <p>I build for businesses that do their work in person and can&rsquo;t pick up the phone at 9&nbsp;pm. Your site should keep working after you&rsquo;ve gone home. That&rsquo;s the whole&nbsp;idea.</p>
+        <p>So far I&rsquo;ve built 13 concept sites, each with its own design, so you can see the work before you hire&nbsp;me.</p>
+        <p class="sign">Kyle Chalk<span>Dallas Fort Worth</span></p>
+      </article>
     </div>
   </section>
 
@@ -124,11 +246,21 @@
           <button type="button" class="opt" data-choice="automation" aria-pressed="false">An automation</button>
           <button type="button" class="opt" data-choice="unsure" aria-pressed="false">Not sure yet</button>
         </div>
-        <p class="pick-note" id="pick-note">Pick one and the AI concierge asks a few questions, then writes up a short brief for the call. <a href="#close">Skip it and request a call</a>.</p>
+        <p class="pick-note" id="pick-note"><span id="pick-say">Pick one and the AI concierge asks a few questions, then writes up a short brief for the call.</span> <a href="#close">Skip it and request a call</a>.</p>
       </div>
 
+      <figure class="example" id="example">
+        <figcaption>Example brief</figcaption>
+        <dl>
+          <div><dt>You&rsquo;re making</dt><dd>A booking site for a Fort Worth detailer</dd></div>
+          <div><dt>Because</dt><dd>Calls after 6 pm go to voicemail, and most never call back</dd></div>
+          <div><dt>It works when</dt><dd>Saturday is full by Thursday</dd></div>
+        </dl>
+        <p>Pick an answer and yours starts here.</p>
+      </figure>
+
       <div class="chat" id="chat" hidden>
-        <p class="chat-who"><i aria-hidden="true"></i>AI concierge</p>
+        <p class="chat-who"><i aria-hidden="true"></i><span id="chat-state">AI concierge</span></p>
         <div class="log" id="log" role="log" aria-live="polite" aria-relevant="additions"></div>
         <div id="human"></div>
         <form class="compose" id="compose">
@@ -137,7 +269,7 @@
           <button type="submit" aria-label="Send">&#8593;</button>
         </form>
         <p class="compose-hint" id="compose-hint" role="status"></p>
-        <p class="chat-foot"><a href="#close">Skip, request a call</a><span>Replies are written by Claude, an AI made by Anthropic. Chats are deleted after 90 days, but a brief you save is kept with a copy of its chat so Kyle has it for your call. <a href="/privacy">Privacy</a></span></p>
+        <p class="chat-foot"><a href="#close" class="chat-skip">Skip, request a call</a><span>Replies are written by Claude, an AI made by Anthropic. Chats are deleted after 90 days, but a brief you save is kept with a copy of its chat so Kyle has it for your call.</span><a href="/privacy">Privacy</a></p>
       </div>
     </div>
   </section>
@@ -145,22 +277,24 @@
   <section class="close" id="close" aria-labelledby="close-h">
     <div class="close-in">
       <div class="brief-col">
-        <h2 id="close-h">Let&rsquo;s talk it&nbsp;through.</h2>
+        <h2 id="close-h">15 minutes, then a fixed&nbsp;quote.</h2>
         <dl class="brief" id="brief" hidden>
           <div><dt>You&rsquo;re making</dt><dd data-k="making"></dd></div>
           <div><dt>Because</dt><dd data-k="because"></dd></div>
           <div><dt>It works when</dt><dd data-k="works_when"></dd></div>
         </dl>
         <p class="brief-fix" id="brief-fix" hidden>Anything wrong there? Tell the concierge and it will update the brief.</p>
-        <p class="who">You&rsquo;ll talk to Kyle, the person building it. Based in Dallas Fort&nbsp;Worth.</p>
+        <p class="who">You&rsquo;ll talk to Kyle, in Dallas Fort&nbsp;Worth.</p>
       </div>
       <div class="book-col">
         <form class="reach" id="reach" action="https://formspree.io/f/mzdlnbkj" method="POST">
           <input type="hidden" name="_subject" value="Quvlo: call request">
           <input type="hidden" name="brief" id="reach-brief" value="">
+          <!-- spam trap: people never see or fill it; Formspree drops any submission that has it filled -->
+          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" hidden>
           <div class="row"><label for="r-name">Name</label><input id="r-name" name="name" type="text" autocomplete="name" maxlength="80" required></div>
-          <div class="row"><label for="r-email">Email</label><input id="r-email" name="email" type="email" autocomplete="email" maxlength="120" required></div>
-          <div class="row"><label for="r-when">When suits you for 15 minutes?</label><input id="r-when" name="when" type="text" maxlength="120" placeholder="For example, weekday mornings"></div>
+          <div class="row"><label for="r-email">Email</label><input id="r-email" name="email" type="email" autocomplete="email" maxlength="120" required pattern="[^@\s]+@[^@\s]+\.[^@\s]{2,}" title="An email like name@business.com"></div>
+          <div class="row"><label for="r-when">What time works for a 15-minute call?</label><input id="r-when" name="when" type="text" maxlength="120" placeholder="For example, weekday mornings"></div>
           <button class="btn" type="submit">Request a call</button>
           <p class="form-msg" id="reach-msg" role="status"></p>
         </form>
@@ -170,14 +304,15 @@
   </section>
 </main>
 
-<nav class="thumb" id="thumb" aria-label="Quick links"><a href="#work">Studio Work</a><a href="#start" class="go">Start</a></nav>
+<nav class="thumb" id="thumb" aria-label="Quick links"><a href="#work">Work</a><a href="#start" class="go">Start</a></nav>
 
 <footer class="foot">
   <span class="mark">Quvlo</span>
   <span>Websites, booking and the systems behind them. Based in Dallas Fort Worth, building for businesses anywhere.</span>
-  <nav aria-label="Legal"><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav>
+  <nav aria-label="Legal"><a href="mailto:hello@quvlo.co">hello@quvlo.co</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav>
+  <small class="copy">&copy; 2026 Quvlo</small>
 </footer>
 
-<script src="/assets/home.js?v=20261027g" defer></script>
+<script src="/assets/home.js?v=20261101b5" defer></script>
 </body>
 </html>
