@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.
-  const FV = '2026102806';
+  const FV = '2026110102';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -25,18 +25,21 @@
   const tempAt = f => piece(INSIDE, minutesAt(f));
   // 0 = the hot house, 1 = cooled. It stays hot until the new unit runs at 7:00 pm, then follows the number down.
   const coolAt = f => { const m = minutesAt(f); return m < 1140 ? 0 : clamp((93 - piece(INSIDE, m)) / 4); };
+  // The digital manifold's screen in the start-up shot: corners (top-left, top-right, bottom-left) as fractions of
+  // the source frame at the shot's first and last frame. The push-in is linear, so the screen moves linearly.
+  const MANIFOLD = { shot: 3, a: [[0.5476, 0.4243], [0.5786, 0.4204], [0.5482, 0.4594]], b: [[0.4400, 0.4056], [0.4784, 0.4008], [0.4407, 0.4492]] };
   // Thermostat screen in the living room shot, as fractions of the source frame.
   const THERMO = { shot: 4, tl: [0.7430, 0.2118], tr: [0.7982, 0.1993], bl: [0.7438, 0.2803] };
   // Hotspots: position at the start (a) and end (b) of their shot; "at" is when the note opens.
   // "side" is where the card sits on tablets and desktops: r/l = right/left, t/b = above/below.
   const SPOTS = [
-    { shot: 1, a: [0.420, 0.130], b: [0.400, 0.123], at: 0.08, side: 'rb', t: 'Fan motor', d: 'Bearings worn. It hums and barely turns, so the heat stays in the coil.' },
-    { shot: 1, a: [0.485, 0.550], b: [0.449, 0.539], at: 0.20, side: 'lb', t: 'Coil', d: 'Fifteen summers of dirt and cottonwood, fins flattened at the corners. Air barely gets through it now.' },
-    { shot: 1, a: [0.605, 0.390], b: [0.570, 0.388], at: 0.70, side: 'lb', t: 'Capacitor', d: 'Bulged and tested low. On the clamp meter the compressor pulls locked-rotor amps and will not start, even on a test capacitor.' },
+    { shot: 1, a: [0.400, 0.123], b: [0.400, 0.123], at: 0.08, side: 'rb', t: 'Fan motor', d: 'Bearings worn. It hums and barely turns, so the heat stays in the coil.' },
+    { shot: 1, a: [0.470, 0.530], b: [0.470, 0.530], at: 0.20, side: 'lb', t: 'Coil', d: 'Fifteen summers of dirt and cottonwood, fins flattened at the corners. Air barely gets through it now.' },
+    { shot: 1, a: [0.570, 0.388], b: [0.570, 0.388], at: 0.70, side: 'lb', t: 'Capacitor', d: 'Bulged and tested low. On the clamp meter the compressor pulls locked-rotor amps and will not start, even on a test capacitor.' },
     { shot: 3, a: [0.780, 0.710], b: [0.720, 0.764], at: 0.08, side: 'rt', t: 'Line set', d: 'New copper, the large suction line insulated end to end, sealed where it enters the brick.' },
     { shot: 3, a: [0.680, 0.840], b: [0.605, 0.915], at: 0.26, side: 'rt', t: 'Pad', d: 'Level composite pad, raised so rain drains away from the unit.' },
     { shot: 3, a: [0.520, 0.299], b: [0.408, 0.245], at: 0.44, side: 'rt', t: 'Variable-speed fan', d: 'Runs slow and quiet most of the day instead of slamming on and off.' },
-    { shot: 3, a: [0.560, 0.440], b: [0.453, 0.440], at: 0.62, side: 'rt', t: 'Charge', d: 'Pressure-tested with nitrogen, vacuum pulled below 500 microns, R-454B charged by weight and checked by subcooling. The numbers go on your invoice.' }
+    { shot: 3, a: [0.563, 0.468], b: [0.459, 0.460], at: 0.62, side: 'rb', t: 'Charge', d: 'Pressure-tested with nitrogen, vacuum pulled below 500 microns, R-454B charged by weight and checked by subcooling. The numbers go on your invoice.' }
   ];
   const HEAT2 = [255, 193, 94], COOL2 = [159, 219, 255];
   const mix = (a, b, k) => `rgb(${a.map((v, i) => Math.round(lerp(v, b[i], k))).join(',')})`;
@@ -70,69 +73,9 @@
     dpr = v.dpr; N = v.N;
     // the captions, HUD and hero state follow this frame first, so the notes below see the right occluders
     ui(v.f);
-    const fg = v.extra('fg');
-    highLabel = null;
-    if (fg) { drawBigTemp(ctx, v); ctx.drawImage(fg, v.rect.x, v.rect.y, v.rect.w, v.rect.h); drawHighLabel(ctx, v); }
     if (v.shot === THERMO.shot) drawThermostat(ctx, v);
+    if (v.shot === MANIFOLD.shot) drawManifold(ctx, v);
     placeSpots(v);
-  }
-
-  // "104°", the day's high, set behind the roofline at the end of the drone shot.
-  function drawBigTemp(ctx, v) {
-    const fg = (v.meta && v.meta.fg) || [];
-    const first = fg[0] - 1;
-    const k = ease(clamp((v.i - first) / 4));
-    if (k <= 0) return;
-    const [, top] = v.toCanvas(0.5, 0.08);
-    const [, base] = v.toCanvas(0.5, 0.40);
-    const [, roof] = v.toCanvas(0.5, 0.27);
-    const h = base - top;
-    ctx.save();
-    ctx.globalAlpha = k;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'alphabetic';
-    // Safari's canvas has no fontStretch: the figure is then set at normal width, and it is measured after
-    // the stretch is set either way, so it always fits.
-    ctx.font = `900 ${Math.round(h)}px Archivo`;
-    if ('fontStretch' in ctx) ctx.fontStretch = 'ultra-expanded';
-    const maxW = v.cw * 0.8;
-    const w = ctx.measureText('104°').width;
-    let s = Math.min(1, maxW / w);
-    let capH = h * 0.72 * s;
-    // 60% of the figure shows above the roof, and its top stays clear of the top bar
-    const room = (roof - (bar.getBoundingClientRect().bottom + 30) * v.dpr) / 0.6;
-    // a phone on its side has almost no sky between the bar and the roof: the figure is left out there
-    // (the hero line carries the 104°) rather than shrunk to a smudge or run under the bar
-    if (room < 50 * v.dpr) { ctx.restore(); return; }
-    if (capH > room) { s *= room / capH; capH = h * 0.72 * s; }
-    const y = roof + capH * 0.4;
-    const grad = ctx.createLinearGradient(0, y - capH, 0, y);
-    grad.addColorStop(0, '#ffb347'); grad.addColorStop(1, '#ff5a0a');
-    ctx.fillStyle = grad;
-    ctx.translate(v.cw / 2, y);
-    ctx.scale(s, s);
-    ctx.fillText('104°', 0, 0);
-    ctx.restore();
-    // it is the day's high, not the reading now (the HUD has that): labelled after the house is drawn over it
-    // just under where the figure goes behind the roof, so it never runs into the top bar
-    highLabel = { x: v.cw / 2, y: roof + 24 * v.dpr, k };
-  }
-  let highLabel = null;
-  function drawHighLabel(ctx, v) {
-    if (!highLabel) return;
-    const { x, y, k } = highLabel, d = v.dpr;
-    ctx.save();
-    ctx.globalAlpha = k;
-    ctx.font = `500 ${Math.round(14 * d)}px "Plex Mono", monospace`;
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    const w = ctx.measureText("Today's high").width + 18 * d, h = 26 * d;
-    ctx.fillStyle = 'rgba(6,12,18,.72)';
-    ctx.beginPath();
-    if (ctx.roundRect) ctx.roundRect(x - w / 2, y - h / 2, w, h, 7 * d); else ctx.rect(x - w / 2, y - h / 2, w, h);
-    ctx.fill();
-    ctx.fillStyle = '#ffc15e';
-    ctx.fillText("Today's high", x, y + d);
-    ctx.restore();
   }
 
   // The live number drawn onto the thermostat in the footage.
@@ -170,6 +113,32 @@
     ctx.restore();
   }
 
+  // Start-up readings on the manifold's screen (R-454B, 7 pm, about 101° outside): steady, slightly soft and dim
+  // like the rest of the footage, in the screen's perspective.
+  function drawManifold(ctx, v) {
+    const k = clamp((v.f - MANIFOLD.shot * PER) / (PER - 1));
+    const P = n => v.toCanvas(lerp(MANIFOLD.a[n][0], MANIFOLD.b[n][0], k), lerp(MANIFOLD.a[n][1], MANIFOLD.b[n][1], k));
+    const tl = P(0), tr = P(1), bl = P(2);
+    const w = Math.hypot(tr[0] - tl[0], tr[1] - tl[1]), h = Math.hypot(bl[0] - tl[0], bl[1] - tl[1]);
+    if (w < 24) return;
+    ctx.save();
+    ctx.setTransform((tr[0] - tl[0]) / w, (tr[1] - tl[1]) / w, (bl[0] - tl[0]) / h, (bl[1] - tl[1]) / h, tl[0], tl[1]);
+    if ('filter' in ctx) ctx.filter = `blur(${Math.max(0.4, w / 260).toFixed(2)}px)`;
+    ctx.fillStyle = 'rgba(28,34,30,.78)';
+    const row = (y, size, l, r) => {
+      ctx.font = `600 ${size}px "Plex Mono", monospace`;
+      ctx.textAlign = 'left'; ctx.fillText(l, w * 0.07, y);
+      ctx.textAlign = 'right'; ctx.fillText(r, w * 0.93, y);
+    };
+    ctx.textBaseline = 'middle';
+    row(h * 0.17, h * 0.13, 'R-454B', 'SUC  LIQ');
+    row(h * 0.40, h * 0.22, '131', '388');
+    ctx.fillRect(w * 0.06, h * 0.55, w * 0.88, Math.max(1, h * 0.012));
+    row(h * 0.70, h * 0.15, 'SH', '9.2°F');
+    row(h * 0.88, h * 0.15, 'SC', '10.6°F');
+    ctx.restore();
+  }
+
   /* Hotspots: cards with leader lines on larger screens, one note at a time in the sheet on phones */
   let engine = null;
   const spotEls = SPOTS.map((S, n) => {
@@ -195,6 +164,22 @@
   });
 
   let picked = -1, pickedShot = -1, sheetIdx = -1;
+  // The phone note panel keeps one height, fitted to the longest note at this width, so every note shows whole
+  // and the caption above it never jumps as notes change.
+  let sheetW = -1;
+  function fitSheet() {
+    const w = sheet.clientWidth;
+    if (!w || w === sheetW) return;
+    sheetW = w;
+    const t = sheetT.textContent, d = sheetD.textContent;
+    root.style.setProperty('--sheet-h', 'auto');
+    sheet.style.height = 'auto';
+    let h = 96;
+    SPOTS.forEach(S => { sheetT.textContent = S.t; sheetD.textContent = S.d; h = Math.max(h, Math.ceil(sheet.offsetHeight)); });
+    sheet.style.height = '';
+    sheetT.textContent = t; sheetD.textContent = d;
+    root.style.setProperty('--sheet-h', h + 'px');
+  }
   // where the CSS hides the HUD for the hero and the end (phones)
   const hudHides = matchMedia('(max-width: 860px), (orientation: landscape) and (max-height: 520px)');
   const inRect = (r, X, Y, pad) => r && X > r.left - pad && X < r.right + pad && Y > r.top - pad && Y < r.bottom + pad;
@@ -211,7 +196,8 @@
     const hudOff = (stage.classList.contains('is-hero') || stage.classList.contains('is-end')) && hudHides.matches;
     const box = el => { const r = el.getBoundingClientRect(); return r.width ? r : null; };
     const occ = [capOn, hudOff ? null : hud, getComputedStyle(rail).display === 'none' ? null : rail, small ? sheet : null].filter(Boolean).map(box).filter(Boolean);
-    const k = ease(clamp(local));
+    // the start-up shot is a linear push, so its dots move linearly with it; the others ease
+    const k = shot === MANIFOLD.shot ? clamp(local) : ease(clamp(local));
     const pos = SPOTS.map((S, n) => {
       const on = S.shot === shot && local > 0.03 && local < 0.97;
       const [x, y] = v.toCanvas(lerp(S.a[0], S.b[0], k), lerp(S.a[1], S.b[1], k));
@@ -262,6 +248,7 @@
       s.path.setAttribute('d', `M${X},${Y} L${ax},${ay}`);
     });
     const showSheet = small && active >= 0;
+    if (small) fitSheet();
     if (showSheet && active !== sheetIdx) { sheetT.textContent = SPOTS[active].t; sheetD.textContent = SPOTS[active].d; sheetIdx = active; }
     sheet.classList.toggle('is-on', showSheet);
   }
@@ -301,8 +288,6 @@
     section: film, stage, canvas, FV, range: [0.015, 0.885], rate: 9,
     lift: '.cap, .hud, .rail, .sheet',
     overlays: { '.cap': 'is-on', '.spot': 'is-on', '.sheet': 'is-on' },
-    // the lighter phone-landscape set (l) shares the 16:9 framing, so it uses the 16:9 cut-outs
-    extra: [{ name: 'fg', frames: null, url: (set, i) => `fg/${set === 'm' ? 'm' : 'd'}/${String(i + 1).padStart(3, '0')}.webp?v=${FV}` }],
     // the loader clock runs from 9:00 am, when the AC quit, to 12:40 pm, the first shot
     onGate: k => { const m = lerp(540, 760, clamp(k)); loadClock.textContent = fmtClock(m).split(' ')[0]; loadAmPm.textContent = m < 720 ? 'am' : 'pm'; },
     onReady: openLoader,
