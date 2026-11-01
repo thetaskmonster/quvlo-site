@@ -4,7 +4,7 @@
 (() => {
   'use strict';
   // Bump when any film frame or showroom picture changes, so browsers fetch the new files instead of cached ones.
-  const FV = '2026103103';
+  const FV = '2026110102';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -63,15 +63,16 @@
      because the buildings also change distance as the street passes (so their slide is not pure speed).
      At the jet (shot 3) the engine idles. The 6.2 V8 redlines near 5,800; this never gets close. */
   const tach = $('.tach'), tachRpm = $('#tachRpm'), tachFill = $('#tachFill'), MAX = 7000, IDLE = 650;
-  const DRIVE = [1340, 1360, 1370, 1380, 1400, 1410, 1420, 1430, 1450, 1460, 1470, 1480, 1480, 1490, 1500, 1510,
-    1520, 1520, 1530, 1530, 1540, 1540, 1550, 1550, 1550, 1550, 1560, 1560, 1560, 1560, 1560, 1560,
-    1550, 1550, 1550, 1550, 1540, 1540, 1530, 1530]; // one value per drive frame (source frames 0-117, every 3rd)
+  const DRIVE = [1290, 1330, 1380, 1400, 1400, 1410, 1420, 1420, 1410, 1410, 1400, 1390, 1380, 1390, 1400, 1410,
+    1420, 1430, 1430, 1430, 1430, 1450, 1480, 1510, 1520, 1510, 1480, 1450, 1420, 1400, 1390]; // one value per drive frame (source frames 0-30)
   function rpmAt(shot, local) {
     if (shot < 2) return 0;
     if (shot === 3) return IDLE;
     const k = clamp(local, 0, DRIVE.length - 1), i = Math.min(DRIVE.length - 2, Math.floor(k)), t = k - i;
     return DRIVE[i] + (DRIVE[i + 1] - DRIVE[i]) * t;
   }
+  // Real frames per shot, as "lens" in frames.json: the drive ends before the signals ahead come into view.
+  const SHOT_LEN = [40, 40, DRIVE.length, 40];
   let lastRpm = -1;
   function ui(v) {
     const f = v.f, shot = v.shot, PER = v.PER, local = f - shot * PER;
@@ -83,7 +84,7 @@
       if (reduce) on = s === shot;
       else if (s === 0) on = shot === 0 && local > 16 && local < PER - 2;
       else if (s === 3) on = shot === 3 && local > 3;
-      else on = shot === s && local > 2 && local < PER - 3;
+      else on = shot === s && local > 2 && local < SHOT_LEN[s] - 3;
       cap.classList.toggle('is-on', on);
     });
     const raw = rpmAt(shot, local), rpm = Math.round(raw / 10) * 10;
