@@ -283,6 +283,8 @@ button { font: inherit; }
   .cap[data-place-s~="right"] .cap__p { margin-left: auto; }
   /* the two cleaners fill the arrival shot top to bottom: only the time and headline, low over the path */
   .cap[data-place-s~="short"] .cap__p { display: none; }
+  /* the bathroom shot: the checklist card is tucked, so its caption rises to just under the header, clear of the blade */
+  .cap[data-shot="3"][data-place-s~="top"] { top: calc(74px + env(safe-area-inset-top, 0px)); }
   /* "Do it for me" sits up by the cabinets, off the mess on the floor */
   .wipe__auto { top: 56px; bottom: auto; }
 }
@@ -321,6 +323,7 @@ button { font: inherit; }
 /* Short phones (SE): a top caption keeps only its time and headline, so it stays above the cleaners */
 @media (max-width: 600px) and (max-height: 600px) and (orientation: portrait) {
   .cap[data-place-s] .cap__p { display: none; }
+  .cap[data-shot="3"] .cap__h { font-size: 28px; }
 }
 
 /* Short phones (SE): a squarer kitchen so the whole headline fits on the first screen */
