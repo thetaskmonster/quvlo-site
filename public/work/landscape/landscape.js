@@ -4,7 +4,7 @@
 (() => {
   'use strict';
   // Bump when any film frame changes, so browsers fetch the new frames instead of cached ones.
-  const FV = '2026102822';   // also the ?v= on landscape.css, film-engine.js and landscape.js in index.html
+  const FV = '2026102901';   // also the ?v= on landscape.css, film-engine.js and landscape.js in index.html
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -93,7 +93,16 @@
     onFrame: v => ui(v.f, v.shot),
   });
   setTimeout(openLoader, 9000); // never trap a visitor behind the loader on a very slow connection
+  // A visitor who lands below the film (a link to #mow or #price, or a restored scroll position) never waits for
+  // the film: the loader opens at once and the frames keep loading in the background.
+  const startsBelowFilm = () => {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const target = id ? document.getElementById(id) : null;
+    return (target && !film.contains(target) && target !== film) || film.getBoundingClientRect().bottom <= 0;
+  };
+  if (startsBelowFilm()) openLoader();
   const onScroll = () => {
+    if (!opened && film.getBoundingClientRect().bottom <= 0) openLoader();
     bar.classList.toggle('is-solid', film.getBoundingClientRect().bottom < 70);
     ui(lastF, lastShot, true);   // the stage may have scrolled away under a held frame: hide, never show
   };
