@@ -126,6 +126,9 @@ a { color: inherit; }
 .is-fulllog .log li { display: grid; padding: 3px 0; }
 .is-fulllog .log li.is-done { color: rgba(241, 233, 225, .8); }
 .is-fulllog .log li.is-done::before { background: var(--ember); border-color: var(--ember); }
+/* before 9:00 pm nothing is "now" yet: on tall screens the full log still shows, as the night's plan (hollow dots),
+   so the pit card is never an empty box */
+.is-fulllog .log.is-empty { visibility: visible; }
 
 /* Short landscape screens (phones on their side): a compact card, no log */
 [data-layout="short"] .hud { top: calc(58px + env(safe-area-inset-top, 0px)); width: 236px; padding: 8px 10px; }
