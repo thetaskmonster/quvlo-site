@@ -668,7 +668,7 @@
             const a = document.createElement('a'); a.className = 'act-link'; a.href = '#close'; a.textContent = 'See your brief'; log.appendChild(a); log.scrollTop = log.scrollHeight;
           } else add('ai note', 'I’ve written up the brief below, next to the call request form.');
         }
-        else if (ev === 'done') { finished = true; settle(); if (d.turnsLeft === 0) { ended = true; compose.hidden = true; add('ai off', 'That’s the end of this chat. Your brief is next to the call request form below.'); } }
+        else if (ev === 'done') { finished = true; settle(); if (d.turnsLeft === 0) { ended = true; compose.hidden = true; add('ai off', 'That’s the end of this chat. Your brief is next to the call request form below.'); if (chat.closest('dialog')) { const l = document.createElement('a'); l.className = 'act-link'; l.href = '#close'; l.textContent = 'See your brief'; log.appendChild(l); } } }
         else if (ev === 'error') { finished = true; fallback(typeof d.reason === 'string' ? d.reason : ''); }
       }
       // Health check: GET /api/concierge answers {available, humanCheck} with no model call, so it spends no tokens.
@@ -724,10 +724,15 @@
       // Bot check (Cloudflare Turnstile), only when a site key is configured. Loaded on first pick, never on page load.
       const humanToken = () => new Promise(resolve => {
         if (!siteKey) { resolve(null); return; }
-        const go = () => window.turnstile.render('#human', { sitekey: siteKey, appearance: 'interaction-only', callback: t => resolve(t), 'error-callback': () => resolve(null), 'expired-callback': () => resolve(null) });
+        // The token is needed once, so the widget is removed as soon as it answers. If it never answers (for example its
+        // frame reloaded mid-check when the pop-up opened or closed), give up after 20 s so the chat is never stuck.
+        let id = null, done = false;
+        const finish = t => { if (done) return; done = true; clearTimeout(timer); try { if (id !== null) window.turnstile.remove(id); } catch { /* already gone */ } resolve(t); };
+        const timer = setTimeout(() => finish(null), 20000);
+        const go = () => { try { id = window.turnstile.render('#human', { sitekey: siteKey, appearance: 'interaction-only', callback: t => finish(t), 'error-callback': () => finish(null), 'expired-callback': () => finish(null) }); } catch { finish(null); } };
         if (window.turnstile) { go(); return; }
         const sc = document.createElement('script'); sc.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'; sc.async = true;
-        sc.onload = go; sc.onerror = () => resolve(null); document.head.appendChild(sc);
+        sc.onload = go; sc.onerror = () => finish(null); document.head.appendChild(sc);
       });
       opts.forEach(b => b.addEventListener('click', async () => {
         if (busy) return;
@@ -767,25 +772,41 @@
   {
     const pop = $('#pop'), body = $('.pop-body', pop || document), home = $('#start'), inner = $('.start-in', home || document);
     if (pop && body && home && inner && typeof pop.showModal === 'function') {
-      let opener = null;
+      let opener = null, goTo = null, downOnPop = false;
+      // moveBefore keeps the bot-check frame alive where the browser supports it; appendChild is the fallback.
+      const place = parent => { try { if (typeof parent.moveBefore === 'function') { parent.moveBefore(inner, null); return; } } catch { /* fall back */ } parent.appendChild(inner); };
       const open = from => {
         if (pop.open) return;
-        opener = from || document.activeElement;
-        body.appendChild(inner); doc.classList.add('pop-open'); pop.showModal(); body.scrollTop = 0;
-        const chat = $('#chat'), msg = $('#msg');
-        const target = chat && !chat.hidden && msg && !msg.disabled ? msg : $('.opt[aria-pressed="true"]', inner) || $('.opt', inner);
+        opener = from || document.activeElement; goTo = null;
+        // Hold the section's height while its content is away, so nothing below it moves (Safari has no scroll anchoring).
+        home.style.minHeight = home.offsetHeight + 'px';
+        place(body); doc.classList.add('pop-open'); pop.showModal();
+        const chat = $('#chat'), msg = $('#msg'), live = chat && !chat.hidden;
+        if (live) chat.scrollIntoView({ block: 'start' }); else body.scrollTop = 0;
+        const target = live && msg && !msg.disabled ? msg : $('.opt[aria-pressed="true"]', inner) || $('.opt', inner);
         if (target) target.focus({ preventScroll: true });
       };
+      const restore = () => { if (inner.parentNode !== home) place(home); home.style.minHeight = ''; doc.classList.remove('pop-open'); };
       pop.addEventListener('close', () => {
-        home.appendChild(inner); doc.classList.remove('pop-open');
-        if (opener && opener.isConnected && !opener.inert && !opener.closest('[aria-hidden="true"]')) opener.focus({ preventScroll: true });
-        opener = null;
+        restore();
+        if (goTo) {
+          // Left through a link to the page: focus where it went, not the button that opened the pop-up.
+          if (!goTo.hasAttribute('tabindex')) goTo.setAttribute('tabindex', '-1');
+          goTo.focus({ preventScroll: true });
+        } else if (opener && opener.isConnected && !opener.inert && !opener.closest('[aria-hidden="true"], [inert]')) opener.focus({ preventScroll: true });
+        opener = null; goTo = null;
       });
       $('.pop-x', pop).addEventListener('click', () => pop.close());
-      // A tap on the dimmed area outside the window (the dialog box itself, not its contents) closes it.
-      pop.addEventListener('click', e => { if (e.target === pop) pop.close(); });
-      // Links inside that lead to the page (the call form, "See your brief"): close first, then let the link scroll.
-      pop.addEventListener('click', e => { const a = e.target.closest('a[href^="#"]'); if (a && a.getAttribute('href') !== '#start') pop.close(); });
+      // A tap on the dimmed area outside the window closes it, but not a text selection that ends there.
+      pop.addEventListener('pointerdown', e => { downOnPop = e.target === pop; });
+      pop.addEventListener('click', e => { if (e.target === pop && downOnPop) pop.close(); downOnPop = false; });
+      // Links inside that lead to the page (the call form, "See your brief"): put everything back first, then let the
+      // link scroll, so it lands on its target.
+      pop.addEventListener('click', e => {
+        const a = e.target.closest('a[href^="#"]'); if (!a || a.getAttribute('href') === '#start') return;
+        const id = decodeURIComponent(a.getAttribute('href').slice(1)), el = id && document.getElementById(id);
+        goTo = el ? ($('h2', el) || el) : null; restore(); pop.close();
+      });
       document.addEventListener('click', e => {
         const a = e.target.closest('[data-concierge], a[href="#start"]');
         if (!a || pop.contains(a) || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
