@@ -90,6 +90,9 @@
  *                              { ok:false, fallback:true, reason:"unavailable" }
  *   RATE_SALT                  required. Random string, salts the IP hash.
  *                              Without it the concierge answers "unavailable".
+ *   CONCIERGE_MODEL            optional, plain text: opus (default), sonnet
+ *                              or haiku. Faster models answer sooner; anything
+ *                              else falls back to opus. Redeploy after changing.
  *   CONCIERGE_DAILY_CAP_USD    default 5
  *   CONCIERGE_MONTHLY_CAP_USD  default 50
  *   AIRTABLE_TOKEN             personal access token, data.records:write
@@ -117,11 +120,21 @@ import {
   OPENING_LINES, DOOR_LABELS, HANDOFF_LINES, WRAP_UP_NOTE, SAVE_BRIEF_TOOL, SYSTEM_PROMPT, doorNote,
 } from '../_lib/concierge-playbook.js';
 
-const MODEL = 'claude-opus-5-5';
-// Replies are one to three sentences, but thinking counts toward max_tokens
-// too, so leave real room. At $20 per million output tokens the worst case
-// for one call is about 8 cents, and the daily cap bounds the total.
+// The model is picked by CONCIERGE_MODEL. Each entry holds only what differs.
+// Replies are one to three sentences, but on Opus thinking counts toward
+// max_tokens too, so leave real room; the daily cap bounds the total.
 const MAX_TOKENS = 4000;
+const MODELS = Object.freeze({
+  // Thinking stays on (Opus 5.5 cannot turn it off); low effort keeps it brief.
+  // If a safety classifier declines a benign message, Anthropic re-runs it on
+  // its recommended fallback model instead of failing the chat.
+  opus: { model: 'claude-opus-5-5', thinking: null, fallback: true },
+  // Sonnet 5.5 turns thinking off with "between_tools" (allowed at low effort).
+  sonnet: { model: 'claude-sonnet-5-5', thinking: { type: 'between_tools' }, fallback: true },
+  // Haiku 5.5 accepts disabled thinking at low effort; it has no server-side fallback.
+  haiku: { model: 'claude-haiku-5-5', thinking: { type: 'disabled' }, fallback: false },
+});
+const modelFor = (env) => MODELS[String(env.CONCIERGE_MODEL || '').trim().toLowerCase()] || MODELS.opus;
 // One reply can take a model call, a save_brief call, and the follow-up line.
 const MAX_MODEL_ROUNDS = 3;
 const SESSION_TTL_SECONDS = 90 * 24 * 60 * 60; // 90 days, see PRIVACY above
@@ -425,25 +438,21 @@ export function forReplay(content) {
   return content.filter((b, i) => i >= boundary || !dropBefore.has(b.type));
 }
 
-function requestParams(session) {
+function requestParams(session, cfg) {
   return {
-    model: MODEL,
+    model: cfg.model,
     max_tokens: MAX_TOKENS,
-    // Thinking stays on (Opus 5.5 cannot turn it off); low effort keeps it
-    // brief, which is right for a short conversational reply.
+    ...(cfg.thinking ? { thinking: cfg.thinking } : {}),
     output_config: { effort: 'low' },
     // Stable prefix, cached: the tool definition and the system prompt.
     system: [{ type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
     tools: [SAVE_BRIEF_TOOL],
-    // Forced tool choice is not allowed on Opus 5.5; the prompt says when to
-    // call save_brief and the tool is strict so its arguments match.
+    // Forced tool choice is not allowed on Opus 5.5 or Sonnet 5.5; the prompt
+    // says when to call save_brief and the tool is strict so its arguments match.
     tool_choice: { type: 'auto' },
     // Cache the growing conversation as well.
     cache_control: { type: 'ephemeral' },
-    // If a safety classifier declines a benign message, Anthropic re-runs it
-    // on its recommended fallback model instead of failing the chat.
-    betas: ['server-side-fallback-2026-07-01'],
-    fallbacks: 'default',
+    ...(cfg.fallback ? { betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' } : {}),
     messages: session.messages,
   };
 }
@@ -461,6 +470,7 @@ function errorReason(err) {
  */
 async function runModel(env, session, send) {
   const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY, maxRetries: 1, timeout: 60_000 });
+  const cfg = modelFor(env);
   let spentUsd = 0;
 
   for (let round = 0; round < MAX_MODEL_ROUNDS; round++) {
@@ -468,7 +478,7 @@ async function runModel(env, session, send) {
     let shown = '';
     let message;
     try {
-      const stream = client.beta.messages.stream(requestParams(session));
+      const stream = client.beta.messages.stream(requestParams(session, cfg));
       for await (const event of stream) {
         if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
           const piece = scrub.push(event.delta.text);
@@ -485,7 +495,7 @@ async function runModel(env, session, send) {
 
     const tail = scrub.flush();
     if (tail) { shown += tail; await send('delta', { text: tail }); }
-    spentUsd += usageCostUsd(message.usage, MODEL);
+    spentUsd += usageCostUsd(message.usage, cfg.model);
 
     // Check the stop reason before using the content. A refusal here means
     // the requested model and its fallback both declined.

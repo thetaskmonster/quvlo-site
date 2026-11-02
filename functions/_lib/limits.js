@@ -30,7 +30,9 @@ export const LIMITS = Object.freeze({
 });
 
 /**
- * Prices in USD per million tokens. Claude Opus 5.5 is the model we ask for.
+ * Prices in USD per million tokens. The chat asks for Claude Opus 5.5 unless
+ * CONCIERGE_MODEL picks Sonnet 5.5 or Haiku 5.5 (Haiku's rates are for prompts
+ * of 100K tokens or fewer; a chat prompt is a few thousand).
  * When Anthropic's server-side fallback answers instead (a safety classifier
  * declined the request on Opus 5.5 and another model took over), that turn is
  * billed at the fallback model's rates, which can be higher, so any model not
@@ -38,6 +40,8 @@ export const LIMITS = Object.freeze({
  */
 const PRICES = {
   'claude-opus-5-5': { input: 4, output: 20, cacheRead: 0.2, cacheWrite: 5 },
+  'claude-sonnet-5-5': { input: 2, output: 10, cacheRead: 0.2, cacheWrite: 2.5 },
+  'claude-haiku-5-5': { input: 0.1, output: 0.5, cacheRead: 0.01, cacheWrite: 0.125 },
 };
 const FALLBACK_PRICE = { input: 5, output: 25, cacheRead: 0.5, cacheWrite: 6.25 };
 
