@@ -474,7 +474,7 @@
   // doesn't bring it back: pausing is when people read, and it would land on the lines at the bottom. It never shows during the
   // story or over the reel, the questions or the form. Phones only: from 641 px the header has the same links.
   {
-    const bar = $('#thumb'), close = $('#close'), start = $('#start'), work = $('#work'), reelSec = $('.reel');
+    const bar = $('#thumb'), close = $('#close'), start = $('#start'), work = $('#work'), reelSec = $('.reel'), fab = $('#fab');
     if (bar && close) {
       const over = el => { if (!el) return false; const r = el.getBoundingClientRect(); return r.top < innerHeight * .75 && r.bottom > innerHeight * .25; };
       let lastY = scrollY, down = true, queued = false;
@@ -487,6 +487,12 @@
         const allowed = past && close.getBoundingClientRect().top > innerHeight * .6 && !over(start) && !over(reelSec);
         const on = atEnd || (allowed && !down);
         bar.classList.toggle('on', on); bar.inert = !on; if (on) bar.removeAttribute('aria-hidden'); else bar.setAttribute('aria-hidden', 'true');
+        // The corner pill (641 px and up): shown once past the reel, hidden over the questions and from the call form down.
+        if (fab) {
+          const fon = past && close.getBoundingClientRect().top > innerHeight * .6 && !over(start);
+          fab.classList.toggle('on', fon); fab.tabIndex = fon ? 0 : -1;
+          if (fon) fab.removeAttribute('aria-hidden'); else fab.setAttribute('aria-hidden', 'true');
+        }
       };
       const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(tick); } };
       addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', tick); tick();
@@ -655,7 +661,13 @@
         let d; try { d = JSON.parse(data || '{}'); } catch { return; }
         if (ev === 'session') { if (typeof d.sessionId === 'string') sid = d.sessionId; status('live'); }
         else if (ev === 'delta' || ev === 'replace') { answered = true; if (!bubble) bubble = add('ai', ''); bubble.classList.remove('wait'); const t = typeof d.text === 'string' ? d.text : ''; bubble.textContent = ev === 'delta' ? bubble.textContent + t : t; log.scrollTop = log.scrollHeight; }
-        else if (ev === 'brief') { settle(); showBrief(d); add('ai note', 'I’ve written up the brief below, next to the call request form.'); }
+        else if (ev === 'brief') {
+          settle(); showBrief(d);
+          if (chat.closest('dialog')) {
+            add('ai note', 'I’ve written up your brief. It’s on the page next to the call request form.');
+            const a = document.createElement('a'); a.className = 'act-link'; a.href = '#close'; a.textContent = 'See your brief'; log.appendChild(a); log.scrollTop = log.scrollHeight;
+          } else add('ai note', 'I’ve written up the brief below, next to the call request form.');
+        }
         else if (ev === 'done') { finished = true; settle(); if (d.turnsLeft === 0) { ended = true; compose.hidden = true; add('ai off', 'That’s the end of this chat. Your brief is next to the call request form below.'); } }
         else if (ev === 'error') { finished = true; fallback(typeof d.reason === 'string' ? d.reason : ''); }
       }
@@ -746,4 +758,40 @@
       msg.addEventListener('input', () => { say(''); msg.style.height = 'auto'; msg.style.height = Math.min(140, msg.scrollHeight) + 'px'; });
     }
   }
+
+  /* ============================ the pop-up ============================ */
+  // "Start your project" (the thumb bar on phones, the corner pill from 641 px, and any link to #start) opens a dialog
+  // that holds the page's own questions and chat: .start-in moves in while it is open and back to #start on close, so it
+  // is one conversation in two places. Esc, the close button or a tap outside closes it. A link to the call form from
+  // inside closes it first, then the page scrolls there. Without JS (or <dialog>) the links simply go to #start.
+  {
+    const pop = $('#pop'), body = $('.pop-body', pop || document), home = $('#start'), inner = $('.start-in', home || document);
+    if (pop && body && home && inner && typeof pop.showModal === 'function') {
+      let opener = null;
+      const open = from => {
+        if (pop.open) return;
+        opener = from || document.activeElement;
+        body.appendChild(inner); doc.classList.add('pop-open'); pop.showModal(); body.scrollTop = 0;
+        const chat = $('#chat'), msg = $('#msg');
+        const target = chat && !chat.hidden && msg && !msg.disabled ? msg : $('.opt[aria-pressed="true"]', inner) || $('.opt', inner);
+        if (target) target.focus({ preventScroll: true });
+      };
+      pop.addEventListener('close', () => {
+        home.appendChild(inner); doc.classList.remove('pop-open');
+        if (opener && opener.isConnected && !opener.inert && !opener.closest('[aria-hidden="true"]')) opener.focus({ preventScroll: true });
+        opener = null;
+      });
+      $('.pop-x', pop).addEventListener('click', () => pop.close());
+      // A tap on the dimmed area outside the window (the dialog box itself, not its contents) closes it.
+      pop.addEventListener('click', e => { if (e.target === pop) pop.close(); });
+      // Links inside that lead to the page (the call form, "See your brief"): close first, then let the link scroll.
+      pop.addEventListener('click', e => { const a = e.target.closest('a[href^="#"]'); if (a && a.getAttribute('href') !== '#start') pop.close(); });
+      document.addEventListener('click', e => {
+        const a = e.target.closest('[data-concierge], a[href="#start"]');
+        if (!a || pop.contains(a) || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        e.preventDefault(); open(a);
+      });
+    }
+  }
+
 })();

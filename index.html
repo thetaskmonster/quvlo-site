@@ -22,7 +22,7 @@
 <link rel="preload" href="/fonts/zodiak-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/author-500.woff2" as="font" type="font/woff2" crossorigin>
 <script src="/assets/boot.js?v=20261101b5"></script>
-<link rel="stylesheet" href="/assets/site.css?v=20261101b5">
+<link rel="stylesheet" href="/assets/site.css?v=20261102p1">
 <!-- Cloudflare Turnstile site key (public). Empty = no bot check on the page. Set together with TURNSTILE_SECRET in Cloudflare. -->
 <meta name="quvlo-turnstile" content="0x4AAAAAAFwRvBNvtQDGCSvh">
 <!--
@@ -304,7 +304,15 @@
   </section>
 </main>
 
-<nav class="thumb" id="thumb" aria-label="Quick links"><a href="#work">Work</a><a href="#start" class="go">Start</a></nav>
+<nav class="thumb" id="thumb" aria-label="Quick links"><a href="#work">Work</a><a href="#start" class="go" data-concierge>Start your project</a></nav>
+<!-- Desktop and tablet: the same way in, as a pill in the corner. Both open the pop-up below. -->
+<a href="#start" class="fab" id="fab" data-concierge aria-hidden="true" tabindex="-1">Start your project</a>
+<!-- The pop-up. While open, the questions and the chat (.start-in) move in here; on close they move back to the
+     page, so it is one conversation in two places and nothing is lost. -->
+<dialog class="pop" id="pop" aria-labelledby="start-h">
+  <div class="pop-bar"><button type="button" class="pop-x" aria-label="Close">&times;</button></div>
+  <div class="pop-body"></div>
+</dialog>
 
 <footer class="foot">
   <span class="mark">Quvlo</span>
@@ -313,6 +321,6 @@
   <small class="copy">&copy; 2026 Quvlo</small>
 </footer>
 
-<script src="/assets/home.js?v=20261101b5" defer></script>
+<script src="/assets/home.js?v=20261102p1" defer></script>
 </body>
 </html>
