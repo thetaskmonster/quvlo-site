@@ -615,6 +615,12 @@
       // eslint-disable-next-line no-control-regex
       const clean = t => t.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/g, '').replace(/[\u200b-\u200f\u202a-\u202e\u2060-\u2069\ufeff]/g, '').trim();
       const label = k => { const b = opts.find(o => o.dataset.choice === k); return b ? b.textContent.trim() : ''; };
+      // Inside the pop-up the brief isn't in view, so the chat offers a way to it (once, at the end of the log).
+      const briefLink = () => {
+        if (log.querySelector('a.act-link[href="#close"].brief-go')) { log.scrollTop = log.scrollHeight; return; }
+        const a = document.createElement('a'); a.className = 'act-link brief-go'; a.href = '#close'; a.textContent = 'See your brief';
+        log.appendChild(a); log.scrollTop = log.scrollHeight;
+      };
       function showBrief(b) {
         const dl = $('#brief'); if (!dl) return;
         ['making', 'because', 'works_when'].forEach(k => { $(`[data-k="${k}"]`, dl).textContent = typeof b[k] === 'string' ? b[k] : ''; });
@@ -663,12 +669,9 @@
         else if (ev === 'delta' || ev === 'replace') { answered = true; if (!bubble) bubble = add('ai', ''); bubble.classList.remove('wait'); const t = typeof d.text === 'string' ? d.text : ''; bubble.textContent = ev === 'delta' ? bubble.textContent + t : t; log.scrollTop = log.scrollHeight; }
         else if (ev === 'brief') {
           settle(); showBrief(d);
-          if (chat.closest('dialog')) {
-            add('ai note', 'I’ve written up your brief. It’s on the page next to the call request form.');
-            const a = document.createElement('a'); a.className = 'act-link'; a.href = '#close'; a.textContent = 'See your brief'; log.appendChild(a); log.scrollTop = log.scrollHeight;
-          } else add('ai note', 'I’ve written up the brief below, next to the call request form.');
+          if (chat.closest('dialog')) { add('ai note', 'I’ve written up your brief. It’s on the page next to the call request form.'); briefLink(); } else add('ai note', 'I’ve written up the brief below, next to the call request form.');
         }
-        else if (ev === 'done') { finished = true; settle(); if (d.turnsLeft === 0) { ended = true; compose.hidden = true; add('ai off', 'That’s the end of this chat. Your brief is next to the call request form below.'); if (chat.closest('dialog')) { const l = document.createElement('a'); l.className = 'act-link'; l.href = '#close'; l.textContent = 'See your brief'; log.appendChild(l); } } }
+        else if (ev === 'done') { finished = true; settle(); if (d.turnsLeft === 0) { ended = true; compose.hidden = true; if (chat.closest('dialog')) { add('ai off', 'That’s the end of this chat. Your brief is on the page next to the call request form.'); briefLink(); } else add('ai off', 'That’s the end of this chat. Your brief is next to the call request form below.'); } }
         else if (ev === 'error') { finished = true; fallback(typeof d.reason === 'string' ? d.reason : ''); }
       }
       // Health check: GET /api/concierge answers {available, humanCheck} with no model call, so it spends no tokens.
@@ -725,11 +728,11 @@
       const humanToken = () => new Promise(resolve => {
         if (!siteKey) { resolve(null); return; }
         // The token is needed once, so the widget is removed as soon as it answers. If it never answers (for example its
-        // frame reloaded mid-check when the pop-up opened or closed), give up after 20 s so the chat is never stuck.
+        // frame reloaded mid-check when the pop-up opened or closed), give up 45 s after it appears so the chat is never stuck.
         let id = null, done = false;
         const finish = t => { if (done) return; done = true; clearTimeout(timer); try { if (id !== null) window.turnstile.remove(id); } catch { /* already gone */ } resolve(t); };
-        const timer = setTimeout(() => finish(null), 20000);
-        const go = () => { try { id = window.turnstile.render('#human', { sitekey: siteKey, appearance: 'interaction-only', callback: t => finish(t), 'error-callback': () => finish(null), 'expired-callback': () => finish(null) }); } catch { finish(null); } };
+        let timer = null;
+        const go = () => { timer = setTimeout(() => finish(null), 45000); try { id = window.turnstile.render('#human', { sitekey: siteKey, appearance: 'interaction-only', callback: t => finish(t), 'error-callback': () => finish(null), 'expired-callback': () => finish(null) }); } catch { finish(null); } };
         if (window.turnstile) { go(); return; }
         const sc = document.createElement('script'); sc.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'; sc.async = true;
         sc.onload = go; sc.onerror = () => finish(null); document.head.appendChild(sc);
@@ -782,7 +785,7 @@
         home.style.minHeight = home.offsetHeight + 'px';
         place(body); doc.classList.add('pop-open'); pop.showModal();
         const chat = $('#chat'), msg = $('#msg'), live = chat && !chat.hidden;
-        if (live) chat.scrollIntoView({ block: 'start' }); else body.scrollTop = 0;
+        body.scrollTop = live ? chat.getBoundingClientRect().top - body.getBoundingClientRect().top + body.scrollTop : 0;
         const target = live && msg && !msg.disabled ? msg : $('.opt[aria-pressed="true"]', inner) || $('.opt', inner);
         if (target) target.focus({ preventScroll: true });
       };
