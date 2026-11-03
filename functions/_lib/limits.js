@@ -248,12 +248,25 @@ export async function visitorKey(request, env) {
  * through across a window boundary; fine for this purpose.
  */
 export async function hitWindow(kv, name, who, limit, windowSeconds, now = Date.now()) {
+  const hit = await checkWindow(kv, name, who, limit, windowSeconds, now);
+  if (hit.allowed) await hit.commit();
+  return { allowed: hit.allowed, count: hit.allowed ? hit.count + 1 : hit.count };
+}
+
+/**
+ * The same check in two steps, so the caller can read several counters at once and save the new counts
+ * without making the visitor wait for the write. commit() writes count + 1; call it only once every
+ * check for the request has passed, so a refused request is never counted.
+ */
+export async function checkWindow(kv, name, who, limit, windowSeconds, now = Date.now()) {
   const slot = Math.floor(now / 1000 / windowSeconds);
   const key = `rl:${name}:${who}:${slot}`;
   const count = Number(await kv.get(key)) || 0;
-  if (count >= limit) return { allowed: false, count };
-  await kv.put(key, String(count + 1), { expirationTtl: ttl(windowSeconds + 60) });
-  return { allowed: true, count: count + 1 };
+  return {
+    allowed: count < limit,
+    count,
+    commit: () => kv.put(key, String(count + 1), { expirationTtl: ttl(windowSeconds + 60) }),
+  };
 }
 
 // ---------------------------------------------------------------------------

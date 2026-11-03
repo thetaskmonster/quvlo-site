@@ -114,7 +114,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import {
   LIMITS, SESSION_ID, EMAIL, cleanText, cleanLine, readCappedBody, originAllowed,
-  storeFor, visitorKey, hitWindow, budgetStatus, recordSpend, usageCostUsd,
+  storeFor, visitorKey, checkWindow, budgetStatus, recordSpend, usageCostUsd,
 } from '../_lib/limits.js';
 import {
   OPENING_LINES, DOOR_LABELS, HANDOFF_LINES, WRAP_UP_NOTE, SAVE_BRIEF_TOOL, SYSTEM_PROMPT, doorNote,
@@ -594,30 +594,45 @@ export async function onRequestPost({ request, env, waitUntil }) {
   try {
     const who = await visitorKey(request, env);
 
+    // Read everything this request needs at once (each read is a round trip to storage), then check in order.
+    const [loaded, budget, msgs] = await Promise.all([
+      parsed.sessionId ? loadSession(kv, parsed.sessionId) : null,
+      parsed.message ? budgetStatus(kv, env) : null,
+      parsed.message ? checkWindow(kv, 'm', who, LIMITS.messagesPerWindow, LIMITS.messageWindowSeconds) : null,
+    ]);
+
     if (parsed.sessionId) {
-      session = await loadSession(kv, parsed.sessionId);
+      session = loaded;
       if (!session) return reject('session_not_found', 404);
     }
 
     if (parsed.message) {
       if (session && session.turns >= LIMITS.visitorTurnsPerChat) return fallback('chat_turn_limit', 429);
       if (session && session.refusals >= MAX_REFUSALS_PER_CHAT) return fallback('declined', 409);
-      const budget = await budgetStatus(kv, env);
       if (!budget.ok) return fallback(budget.reason, 503);
     }
 
+    const counts = [];
     if (!session) {
-      if (!(await humanCheckOk(parsed.turnstile, request, env))) return fallback('bot_check', 403);
-      const chats = await hitWindow(kv, 'c', who, LIMITS.chatsPerWindow, LIMITS.chatWindowSeconds);
+      const [human, chats] = await Promise.all([
+        humanCheckOk(parsed.turnstile, request, env),
+        checkWindow(kv, 'c', who, LIMITS.chatsPerWindow, LIMITS.chatWindowSeconds),
+      ]);
+      if (!human) return fallback('bot_check', 403);
       if (!chats.allowed) return fallback('chat_rate_limit', 429);
+      counts.push(chats.commit);
       session = newSession(parsed.choice);
       isNew = true;
     }
 
     if (parsed.message) {
-      const msgs = await hitWindow(kv, 'm', who, LIMITS.messagesPerWindow, LIMITS.messageWindowSeconds);
       if (!msgs.allowed) return fallback('message_rate_limit', 429);
+      counts.push(msgs.commit);
     }
+
+    // Every check passed: count this request. The writes finish in the background instead of delaying the reply.
+    const counted = Promise.all(counts.map((commit) => commit())).catch((e) => console.error('concierge: could not count request', e?.message));
+    if (typeof waitUntil === 'function') waitUntil(counted);
   } catch (e) {
     console.error('concierge: storage unavailable', e?.message);
     return fallback('unavailable', 503);
@@ -641,6 +656,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
 
   const work = (async () => {
     let failed = false;
+    let spentUsd = 0;
     try {
       await send('session', { sessionId: session.id, turnsLeft: turnsLeftOf(session) });
       if (isNew && session.door && parsed.message === null) {
@@ -668,11 +684,14 @@ export async function onRequestPost({ request, env, waitUntil }) {
           session.messages.length = historyBefore;
           session.wrapUpSent = wrapUpBefore;
         }
-        try { await recordSpend(kv, result.spentUsd); } catch (e) { console.error('concierge: could not record spend', e?.message); }
+        spentUsd = result.spentUsd;
       }
 
+      // Save the chat before "done" (the visitor's next message reads it back), then record the spend after,
+      // so the reply box unlocks one storage round trip sooner. The daily and monthly caps still see every cent.
       try { await saveSession(kv, session); } catch (e) { console.error('concierge: could not save chat', e?.message); }
       if (!failed) await send('done', { turnsLeft: turnsLeftOf(session), briefSaved: Boolean(session.brief) });
+      try { await recordSpend(kv, spentUsd); } catch (e) { console.error('concierge: could not record spend', e?.message); }
     } catch (e) {
       console.error('concierge: unexpected failure', e?.message);
       await send('error', { fallback: true, reason: 'upstream_error' });
