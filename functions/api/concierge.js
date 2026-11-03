@@ -468,7 +468,7 @@ function errorReason(err) {
  * Runs one visitor message through the model and streams the reply.
  * Mutates `session` (append only) and returns { spentUsd, failed }.
  */
-async function runModel(env, session, send) {
+async function runModel(env, session, send, timing = { rounds: [] }) {
   const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY, maxRetries: 1, timeout: 60_000 });
   const cfg = modelFor(env);
   let spentUsd = 0;
@@ -477,10 +477,15 @@ async function runModel(env, session, send) {
     const scrub = makeScrubber();
     let shown = '';
     let message;
+    const t0 = Date.now();
+    const lap = { round, firstEventMs: null, firstTextMs: null };
+    timing.rounds.push(lap);
     try {
       const stream = client.beta.messages.stream(requestParams(session, cfg));
       for await (const event of stream) {
+        if (lap.firstEventMs === null) lap.firstEventMs = Date.now() - t0;
         if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+          if (lap.firstTextMs === null) lap.firstTextMs = Date.now() - t0;
           const piece = scrub.push(event.delta.text);
           if (piece) { shown += piece; await send('delta', { text: piece }); }
         }
@@ -588,6 +593,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   // call form. (A built-in salt would be public in this repository, so it is never used.)
   if (!env.ANTHROPIC_API_KEY || !env.RATE_SALT) return fallback('unavailable', 503);
 
+  const startedAt = Date.now();
   const { kv } = storeFor(env);
   let session;
   let isNew = false;
@@ -654,6 +660,9 @@ export async function onRequestPost({ request, env, waitUntil }) {
     }
   };
 
+  // Server-side stopwatch for each reply. Sent as a "timing" event, which the page ignores; it holds only
+  // durations, so nothing about the visitor or the setup is revealed.
+  const timing = { model: modelFor(env).model, setupMs: Date.now() - startedAt, rounds: [] };
   const work = (async () => {
     let failed = false;
     let spentUsd = 0;
@@ -675,7 +684,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
           session.messages.push({ role: 'system', content: WRAP_UP_NOTE });
           session.wrapUpSent = true;
         }
-        const result = await runModel(env, session, send);
+        const result = await runModel(env, session, send, timing);
         failed = result.failed;
         if (failed && session.messages.length === historyBefore + (session.wrapUpSent && !wrapUpBefore ? 2 : 1)) {
           // Nothing was answered. Take the unanswered message (and any
@@ -692,6 +701,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
       // so the visitor doesn't wait for the spend write. The daily and monthly caps still see every cent.
       try { await saveSession(kv, session); } catch (e) { console.error('concierge: could not save chat', e?.message); }
       if (!failed) {
+        if (timing.rounds.length) await send('timing', timing);
         await send('done', { turnsLeft: turnsLeftOf(session), briefSaved: Boolean(session.brief) });
         try { await writer.close(); } catch { /* already closed */ }
       }
