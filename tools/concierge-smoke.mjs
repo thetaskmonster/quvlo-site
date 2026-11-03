@@ -29,7 +29,7 @@ function fakeKV() {
   };
 }
 
-const calls = { anthropic: [], airtable: [], formspree: [], other: [] };
+const calls = { anthropic: [], warmups: [], airtable: [], formspree: [], other: [] };
 let script = []; // queue of scripted Anthropic replies
 
 const sse = (events) =>
@@ -71,6 +71,14 @@ globalThis.fetch = async (input, init = {}) => {
   const body = init.body ? JSON.parse(init.body) : null;
   if (url.startsWith('https://api.anthropic.com/')) {
     const headers = new Headers(init.headers);
+    if (body && body.max_tokens === 0) {  // cache warm-up: prefill only, no reply
+      calls.warmups.push({ url, body, headers });
+      return new Response(JSON.stringify({
+        id: 'msg_warm', type: 'message', role: 'assistant', model: body.model, content: [],
+        stop_reason: 'max_tokens', stop_sequence: null,
+        usage: { input_tokens: 10, output_tokens: 0, cache_read_input_tokens: 0, cache_creation_input_tokens: 2000 },
+      }), { status: 200, headers: { 'content-type': 'application/json' } });
+    }
     calls.anthropic.push({ url, body, headers });
     const next = script.shift();
     if (!next) throw new Error('unexpected Anthropic call');
@@ -199,11 +207,24 @@ await test('missing API key returns the unavailable fallback', async () => {
 const env = baseEnv();
 let sessionId;
 
-await test('door choice opens a chat without calling the model', async () => {
+await test('door choice opens a chat without a reply call, and warms the cache', async () => {
   const before = calls.anthropic.length;
-  const { res } = await call({ choice: 'crm' }, { env, ip: freshIp() });
+  const warmBefore = calls.warmups.length;
+  const { res, pending } = await call({ choice: 'crm' }, { env, ip: freshIp() });
   const events = await readEvents(res);
+  await Promise.all(pending);
   assert.equal(calls.anthropic.length, before);
+  assert.equal(calls.warmups.length, warmBefore + 1, 'one warm-up');
+  const warm = calls.warmups.at(-1).body;
+  assert.equal(warm.max_tokens, 0);
+  assert.equal(warm.stream, undefined, 'warm-up is not streamed');
+  assert.equal(warm.model, 'claude-opus-5-5');
+  assert.deepEqual(warm.output_config, { effort: 'low' });
+  assert.equal(warm.system[0].text, SYSTEM_PROMPT);
+  assert.deepEqual(warm.system[0].cache_control, { type: 'ephemeral' });
+  assert.equal(warm.cache_control, undefined, 'no top-level breakpoint on the placeholder');
+  assert.equal(warm.tools[0].name, 'save_brief');
+  assert.equal(warm.messages.length, 1);
   assert.equal(events[0].name, 'session');
   assert.equal(events[0].data.turnsLeft, 14);
   sessionId = events[0].data.sessionId;
@@ -257,7 +278,8 @@ await test('a message streams a reply; em dashes scrubbed; history server-side o
 await test('spend is tracked from usage at Opus 5.5 rates', async () => {
   const month = new Date().toISOString().slice(0, 7);
   const rec = JSON.parse(await env.CONCIERGE.get(`cost:${month}`));
-  const expected = (1200 * 4 + 80 * 20) / 1e6;
+  // The door chat's cache warm-up (10 input + 2000 cache-write tokens) plus the first reply.
+  const expected = (10 * 4 + 2000 * 5) / 1e6 + (1200 * 4 + 80 * 20) / 1e6;
   assert.ok(Math.abs(rec.usd - expected) < 1e-9, `${rec.usd} vs ${expected}`);
   assert.ok(Math.abs(rec.dayUsd - expected) < 1e-9);
   assert.equal(usageCostUsd({ input_tokens: 0, output_tokens: 0, cache_read_input_tokens: 1_000_000 }, 'claude-opus-5-5'), 0.2);
@@ -317,6 +339,42 @@ await test('brief correction updates the same Airtable record', async () => {
   assert.match(calls.airtable.at(-1).url, /\/Briefs\/recABCDEFGHIJKLMN$/);
   assert.equal(calls.airtable.at(-1).body.fields.Email, 'sam@example.com', 'earlier email kept');
   delete env.AIRTABLE_TOKEN;
+});
+
+await test('one-call brief: words and save_brief in one reply, no second model call', async () => {
+  const brief = { making: 'A focused quote site', because: 'Calls go unbooked', works_when: 'Quotes arrive with photos' };
+  const before = calls.anthropic.length;
+  script.push({ body: messageEvents([
+    { type: 'thinking' },
+    { type: 'text', pieces: ['A focused quote site fits. ', "Anything wrong there? Fix it and I'll update the brief."] },
+    { type: 'tool_use', id: 'toolu_9', name: 'save_brief', input: brief },
+  ], 'tool_use') });
+  const { res, pending } = await call({ sessionId, message: 'That sounds right' }, { env, ip: freshIp() });
+  const events = await readEvents(res);
+  await Promise.all(pending);
+  assert.equal(calls.anthropic.length, before + 1, 'exactly one model call');
+  assert.ok(events.find((e) => e.name === 'brief'), 'card sent');
+  assert.match(textOf(events), /Anything wrong there\?/);
+  assert.equal(events.at(-1).name, 'done');
+  const stored = JSON.parse(await env.CONCIERGE.get(`chat:${sessionId}`));
+  assert.equal(stored.messages.at(-1).role, 'assistant', 'the reply ends the turn');
+  assert.equal(stored.messages.at(-1).content.at(-1).type, 'tool_use');
+  assert.equal(stored.pendingResults.length, 1);
+  assert.equal(stored.pendingResults[0].tool_use_id, 'toolu_9');
+});
+
+await test('one-call brief: waiting results go in front of the next message', async () => {
+  script.push(reply(['Good. Use the Request a call form below.']));
+  const { res, pending } = await call({ sessionId, message: 'Looks good' }, { env, ip: freshIp() });
+  await readEvents(res);
+  await Promise.all(pending);
+  const sent = calls.anthropic.at(-1).body.messages;
+  const lastUser = sent.filter((m) => m.role === 'user').at(-1);
+  assert.equal(lastUser.content[0].type, 'tool_result');
+  assert.equal(lastUser.content[0].tool_use_id, 'toolu_9');
+  assert.deepEqual(lastUser.content[1], { type: 'text', text: 'Looks good' });
+  const stored = JSON.parse(await env.CONCIERGE.get(`chat:${sessionId}`));
+  assert.equal(stored.pendingResults, null);
 });
 
 await test('refusal replaces the partial reply with the handoff line', async () => {

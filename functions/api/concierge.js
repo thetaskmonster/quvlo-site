@@ -545,7 +545,8 @@ async function runModel(env, session, send, timing = { rounds: [] }) {
       }
       const isUpdate = Boolean(session.brief);
       session.brief = brief;
-      const delivered = await deliverBrief(env, session, brief, isUpdate);
+      // Show the card at once; the copy to Kyle (Airtable and the notification) is sent while it appears.
+      const delivering = deliverBrief(env, session, brief, isUpdate);
       await send('brief', {
         making: brief.making,
         because: brief.because,
@@ -558,17 +559,55 @@ async function runModel(env, session, send, timing = { rounds: [] }) {
         text: `[Brief card] You're making: ${brief.making} | Because: ${brief.because} | It works when: ${brief.works_when}`,
         at: new Date().toISOString(),
       });
+      const delivered = await delivering;
       results.push({
         type: 'tool_result',
         tool_use_id: call.id,
-        content: delivered
-          ? 'Saved and sent to Kyle. The visitor can now see the summary card. Reply in one or two sentences: if this is the first version, ask whether anything is wrong and say they can fix it and you will update the brief; if they have already confirmed it, point them to the Request a call form on the page, where Kyle picks it up and emails them to set a time.'
-          : 'The visitor can see the summary card, but it could not be sent to Kyle automatically. Ask whether anything is wrong with it, and ask them to send it with the Request a call form on the page so nothing gets lost.',
+        content: shown.trim()
+          // The reply already had words: these results ride in front of the visitor's next message.
+          ? (delivered
+            ? 'Saved and sent to Kyle. The visitor can see the summary card.'
+            : 'Saved, and the visitor can see the summary card, but it could not be sent to Kyle automatically. When it fits, ask them to send it with the Request a call form on the page so nothing gets lost.')
+          : (delivered
+            ? 'Saved and sent to Kyle. The visitor can now see the summary card. Reply in one or two sentences: if this is the first version, ask whether anything is wrong and say they can fix it and you will update the brief; if they have already confirmed it, point them to the Request a call form on the page, where Kyle picks it up and emails them to set a time.'
+            : 'The visitor can see the summary card, but it could not be sent to Kyle automatically. Ask whether anything is wrong with it, and ask them to send it with the Request a call form on the page so nothing gets lost.'),
       });
     }
+    // One call per reply: when the visitor already saw words in this reply, end it here and keep the results
+    // for the next turn, instead of calling the model again just for a follow-up line.
+    if (shown.trim()) { session.pendingResults = results; return { spentUsd, failed: false }; }
     session.messages.push({ role: 'user', content: results });
   }
   return { spentUsd, failed: false };
+}
+
+/**
+ * Warm the model's prompt cache while the visitor reads the opening line, so their first answer is not a cold
+ * start. A max_tokens: 0 request only reads the prompt (tools and system, cached at the system prompt's
+ * breakpoint) and writes nothing back. It uses the same model, thinking and effort as real replies, or the
+ * cache entry would not match. Never blocks the chat; any failure is only logged. Skipped over the caps.
+ */
+async function warmCache(env, kv, session) {
+  try {
+    const budget = await budgetStatus(kv, env);
+    if (!budget.ok) return;
+    const cfg = modelFor(env);
+    const p = requestParams(session, cfg);
+    const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY, maxRetries: 0, timeout: 20_000 });
+    const msg = await client.messages.create({
+      model: p.model,
+      max_tokens: 0,
+      ...(p.thinking ? { thinking: p.thinking } : {}),
+      output_config: p.output_config,
+      system: p.system,
+      tools: p.tools,
+      tool_choice: p.tool_choice,
+      messages: [session.messages[0]],
+    });
+    await recordSpend(kv, usageCostUsd(msg.usage, cfg.model));
+  } catch (e) {
+    console.error('concierge: cache warm-up failed', e?.message);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -666,17 +705,23 @@ export async function onRequestPost({ request, env, waitUntil }) {
   const work = (async () => {
     let failed = false;
     let spentUsd = 0;
+    let warming = null;
     try {
       await send('session', { sessionId: session.id, turnsLeft: turnsLeftOf(session) });
       if (isNew && session.door && parsed.message === null) {
         await send('delta', { text: OPENING_LINES[session.door] });
+        warming = warmCache(env, kv, session);
       }
 
       if (parsed.message) {
         const historyBefore = session.messages.length;
         const wrapUpBefore = session.wrapUpSent;
         session.turns += 1;
-        session.messages.push({ role: 'user', content: parsed.message });
+        // A brief saved at the end of the last reply left its tool results waiting (see runModel). They go in
+        // front of this message, as the API requires an answer to every tool call before the next user turn.
+        const pending = Array.isArray(session.pendingResults) && session.pendingResults.length ? session.pendingResults : null;
+        session.pendingResults = null;
+        session.messages.push({ role: 'user', content: pending ? [...pending, { type: 'text', text: parsed.message }] : parsed.message });
         session.transcript.push({ role: 'visitor', text: parsed.message, at: new Date().toISOString() });
         if (!session.wrapUpSent && turnsLeftOf(session) <= WRAP_UP_AT_TURNS_LEFT) {
           // Appended after the history (never edited in), so the cached
@@ -692,6 +737,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
           // visitor can simply send it again. The turn still counts.
           session.messages.length = historyBefore;
           session.wrapUpSent = wrapUpBefore;
+          session.pendingResults = pending;
         }
         spentUsd = result.spentUsd;
       }
@@ -706,6 +752,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
         try { await writer.close(); } catch { /* already closed */ }
       }
       try { await recordSpend(kv, spentUsd); } catch (e) { console.error('concierge: could not record spend', e?.message); }
+      if (warming) await warming;
     } catch (e) {
       console.error('concierge: unexpected failure', e?.message);
       await send('error', { fallback: true, reason: 'upstream_error' });
