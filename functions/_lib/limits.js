@@ -255,7 +255,8 @@ export async function hitWindow(kv, name, who, limit, windowSeconds, now = Date.
 
 /**
  * The same check in two steps, so the caller can read several counters at once and save the new counts
- * without making the visitor wait for the write. commit() writes count + 1; call it only once every
+ * without making the visitor wait for the write. Like hitWindow, these counters are soft: requests that
+ * arrive before the previous write lands can share a count. The spending caps are the hard limit. commit() writes count + 1; call it only once every
  * check for the request has passed, so a refused request is never counted.
  */
 export async function checkWindow(kv, name, who, limit, windowSeconds, now = Date.now()) {

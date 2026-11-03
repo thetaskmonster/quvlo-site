@@ -687,10 +687,14 @@ export async function onRequestPost({ request, env, waitUntil }) {
         spentUsd = result.spentUsd;
       }
 
-      // Save the chat before "done" (the visitor's next message reads it back), then record the spend after,
-      // so the reply box unlocks one storage round trip sooner. The daily and monthly caps still see every cent.
+      // Save the chat before "done" (the visitor's next message reads it back). Then close the stream, which is
+      // what unlocks the reply box on the page, and record the spend after that (waitUntil keeps the work alive),
+      // so the visitor doesn't wait for the spend write. The daily and monthly caps still see every cent.
       try { await saveSession(kv, session); } catch (e) { console.error('concierge: could not save chat', e?.message); }
-      if (!failed) await send('done', { turnsLeft: turnsLeftOf(session), briefSaved: Boolean(session.brief) });
+      if (!failed) {
+        await send('done', { turnsLeft: turnsLeftOf(session), briefSaved: Boolean(session.brief) });
+        try { await writer.close(); } catch { /* already closed */ }
+      }
       try { await recordSpend(kv, spentUsd); } catch (e) { console.error('concierge: could not record spend', e?.message); }
     } catch (e) {
       console.error('concierge: unexpected failure', e?.message);
