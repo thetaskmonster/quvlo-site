@@ -574,7 +574,8 @@ async function runModel(env, session, send, timing = { rounds: [] }) {
           : delivered
             ? (shown.trim() ? '' : 'The visitor saw no words from you in this reply, so lead with your recommendation in a sentence. ')
               + 'Saved and sent to Kyle. The visitor can now see the summary card. Reply in one or two sentences: if this is the first version, ask whether anything is wrong and say they can fix it and you will update the brief; if they have already confirmed it, point them to the Request a call form on the page, where Kyle picks it up and emails them to set a time.'
-            : 'The visitor can see the summary card, but it could not be sent to Kyle automatically. Ask whether anything is wrong with it, and ask them to send it with the Request a call form on the page so nothing gets lost.',
+            : (shown.trim() ? '' : 'The visitor saw no words from you in this reply, so lead with your recommendation in a sentence. ')
+              + 'The visitor can see the summary card, but it could not be sent to Kyle automatically. Ask whether anything is wrong with it, and ask them to send it with the Request a call form on the page so nothing gets lost.',
       });
     }
     // One call per reply: when the visitor already saw words in this reply and every save worked, end it here and
@@ -704,8 +705,8 @@ export async function onRequestPost({ request, env, waitUntil }) {
     }
   };
 
-  // Server-side stopwatch for each reply. Sent as a "timing" event, which the page ignores; it holds only
-  // durations, so nothing about the visitor or the setup is revealed.
+  // Server-side stopwatch for each reply. Sent as a "timing" event, which the page ignores; it holds durations,
+  // the model name and how many prompt tokens came from the cache, so nothing about the visitor is revealed.
   const timing = { model: modelFor(env).model, setupMs: Date.now() - startedAt, rounds: [] };
   const work = (async () => {
     let failed = false;
