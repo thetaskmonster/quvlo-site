@@ -491,6 +491,7 @@ async function runModel(env, session, send, timing = { rounds: [] }) {
         }
       }
       message = await stream.finalMessage();
+      lap.cacheReadTokens = message.usage?.cache_read_input_tokens ?? null;
     } catch (err) {
       console.error('concierge: model call failed', err?.constructor?.name, err?.status ?? '', err?.message?.slice?.(0, 200));
       if (shown) session.transcript.push({ role: 'concierge', text: shown, at: new Date().toISOString(), incomplete: true });
@@ -533,14 +534,17 @@ async function runModel(env, session, send, timing = { rounds: [] }) {
     if (!toolUses.length) return { spentUsd, failed: false };
 
     const results = [];
+    let allSaved = true;
     for (const call of toolUses) {
       if (call.name !== 'save_brief') {
         results.push({ type: 'tool_result', tool_use_id: call.id, is_error: true, content: 'Unknown tool. The only tool is save_brief.' });
+        allSaved = false;
         continue;
       }
       const brief = tidyBrief(call.input, session.brief);
       if (!brief.making || !brief.because || !brief.works_when) {
         results.push({ type: 'tool_result', tool_use_id: call.id, is_error: true, content: 'making, because and works_when are all required and must not be empty.' });
+        allSaved = false;
         continue;
       }
       const isUpdate = Boolean(session.brief);
@@ -560,22 +564,23 @@ async function runModel(env, session, send, timing = { rounds: [] }) {
         at: new Date().toISOString(),
       });
       const delivered = await delivering;
+      if (!delivered) allSaved = false;
       results.push({
         type: 'tool_result',
         tool_use_id: call.id,
-        content: shown.trim()
-          // The reply already had words: these results ride in front of the visitor's next message.
-          ? (delivered
-            ? 'Saved and sent to Kyle. The visitor can see the summary card.'
-            : 'Saved, and the visitor can see the summary card, but it could not be sent to Kyle automatically. When it fits, ask them to send it with the Request a call form on the page so nothing gets lost.')
-          : (delivered
-            ? 'Saved and sent to Kyle. The visitor can now see the summary card. Reply in one or two sentences: if this is the first version, ask whether anything is wrong and say they can fix it and you will update the brief; if they have already confirmed it, point them to the Request a call form on the page, where Kyle picks it up and emails them to set a time.'
-            : 'The visitor can see the summary card, but it could not be sent to Kyle automatically. Ask whether anything is wrong with it, and ask them to send it with the Request a call form on the page so nothing gets lost.'),
+        content: shown.trim() && delivered
+          // The reply already had words and the save worked: if every save did, this rides in front of the next message.
+          ? 'Saved and sent to Kyle. The visitor can see the summary card.'
+          : delivered
+            ? (shown.trim() ? '' : 'The visitor saw no words from you in this reply, so lead with your recommendation in a sentence. ')
+              + 'Saved and sent to Kyle. The visitor can now see the summary card. Reply in one or two sentences: if this is the first version, ask whether anything is wrong and say they can fix it and you will update the brief; if they have already confirmed it, point them to the Request a call form on the page, where Kyle picks it up and emails them to set a time.'
+            : 'The visitor can see the summary card, but it could not be sent to Kyle automatically. Ask whether anything is wrong with it, and ask them to send it with the Request a call form on the page so nothing gets lost.',
       });
     }
-    // One call per reply: when the visitor already saw words in this reply, end it here and keep the results
-    // for the next turn, instead of calling the model again just for a follow-up line.
-    if (shown.trim()) { session.pendingResults = results; return { spentUsd, failed: false }; }
+    // One call per reply: when the visitor already saw words in this reply and every save worked, end it here and
+    // keep the results for the next turn, instead of calling the model again just for a follow-up line. If a save
+    // failed or was rejected, the follow-up call still runs, so the visitor hears about it now.
+    if (shown.trim() && allSaved) { session.pendingResults = results; return { spentUsd, failed: false }; }
     session.messages.push({ role: 'user', content: results });
   }
   return { spentUsd, failed: false };

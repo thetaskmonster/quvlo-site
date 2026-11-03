@@ -31,6 +31,7 @@ function fakeKV() {
 
 const calls = { anthropic: [], warmups: [], airtable: [], formspree: [], other: [] };
 let script = []; // queue of scripted Anthropic replies
+let formspreeDown = false; // makes the brief notification fail
 
 const sse = (events) =>
   events.map(([name, data]) => `event: ${name}\ndata: ${JSON.stringify(data)}\n\n`).join('');
@@ -95,6 +96,7 @@ globalThis.fetch = async (input, init = {}) => {
   }
   if (url.startsWith('https://formspree.io/')) {
     calls.formspree.push({ url, body });
+    if (formspreeDown) return new Response('{"ok":false}', { status: 500 });
     return new Response('{"ok":true}', { status: 200 });
   }
   calls.other.push(url);
@@ -375,6 +377,26 @@ await test('one-call brief: waiting results go in front of the next message', as
   assert.deepEqual(lastUser.content[1], { type: 'text', text: 'Looks good' });
   const stored = JSON.parse(await env.CONCIERGE.get(`chat:${sessionId}`));
   assert.equal(stored.pendingResults, null);
+});
+
+await test('one-call brief: a failed delivery still gets the follow-up, so the visitor is told', async () => {
+  const saved = env.AIRTABLE_TOKEN; delete env.AIRTABLE_TOKEN; formspreeDown = true;
+  const brief = { making: 'A focused quote site', because: 'Calls go unbooked', works_when: 'Quotes arrive with photos' };
+  const before = calls.anthropic.length;
+  script.push({ body: messageEvents([
+    { type: 'text', pieces: ['Updated. Anything else?'] },
+    { type: 'tool_use', id: 'toolu_10', name: 'save_brief', input: brief },
+  ], 'tool_use') });
+  script.push(reply(['It did not reach Kyle, so please send it with the Request a call form.']));
+  const { res, pending } = await call({ sessionId, message: 'Add photos to it' }, { env, ip: freshIp() });
+  const events = await readEvents(res);
+  await Promise.all(pending);
+  formspreeDown = false; if (saved) env.AIRTABLE_TOKEN = saved;
+  assert.equal(calls.anthropic.length, before + 2, 'follow-up call ran');
+  assert.match(textOf(events), /Request a call form/);
+  const stored = JSON.parse(await env.CONCIERGE.get(`chat:${sessionId}`));
+  assert.equal(stored.pendingResults, null);
+  assert.equal(stored.messages.at(-1).role, 'assistant');
 });
 
 await test('refusal replaces the partial reply with the handoff line', async () => {
