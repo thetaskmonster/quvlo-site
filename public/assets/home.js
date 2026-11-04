@@ -783,7 +783,8 @@
         opener = from || document.activeElement; goTo = null;
         // Hold the section's height while its content is away, so nothing below it moves (Safari has no scroll anchoring).
         home.style.minHeight = home.offsetHeight + 'px';
-        place(body); doc.classList.add('pop-open'); pop.showModal();
+        place(body); doc.classList.add('pop-open');
+        try { pop.showModal(); } catch { restore(); return; }  // never leave the questions inside a closed pop-up
         const chat = $('#chat'), msg = $('#msg'), live = chat && !chat.hidden;
         body.scrollTop = live ? chat.getBoundingClientRect().top - body.getBoundingClientRect().top + body.scrollTop : 0;
         const target = live && msg && !msg.disabled ? msg : $('.opt[aria-pressed="true"]', inner) || $('.opt', inner);
@@ -810,6 +811,19 @@
         const id = decodeURIComponent(a.getAttribute('href').slice(1)), el = id && document.getElementById(id);
         goTo = el ? ($('h2', el) || el) : null; restore(); pop.close();
       });
+      // A choice picked in the page section opens the pop-up first. This listener runs in the capture phase, before
+      // the choice's own handler; that handler still runs on the same button (now inside the pop-up) and starts the
+      // chat there. Then the pop-up scrolls to the chat so the first reply is in view.
+      home.addEventListener('click', e => {
+        const opt = e.target.closest('.opt');
+        if (!opt || pop.open || e.button !== 0) return;
+        open(opt);
+        if (pop.open) opt.focus({ preventScroll: true });  // the picked choice, not the first one
+        requestAnimationFrame(() => {
+          const chat = $('#chat');
+          if (chat && !chat.hidden) body.scrollTop = chat.getBoundingClientRect().top - body.getBoundingClientRect().top + body.scrollTop;
+        });
+      }, true);
       document.addEventListener('click', e => {
         const a = e.target.closest('[data-concierge], a[href="#start"]');
         if (!a || pop.contains(a) || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
