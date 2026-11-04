@@ -386,7 +386,9 @@ async function deliverBrief(env, session, brief, isUpdate) {
   try {
     const res = await fetch(env.QUVLO_NOTIFY_URL || DEFAULT_NOTIFY, {
       method: 'POST',
-      headers: { accept: 'application/json', 'content-type': 'application/json' },
+      // Sent from the server, so say which site it is for: with Formspree's "Restrict to Domain" set to quvlo.co,
+      // a submission without it would be filed as spam.
+      headers: { accept: 'application/json', 'content-type': 'application/json', origin: 'https://quvlo.co', referer: 'https://quvlo.co/' },
       body: JSON.stringify({
         _subject: `Concierge brief${isUpdate ? ' (updated)' : ''}: ${brief.making.slice(0, 80)}`,
         name: brief.name || 'Quvlo concierge visitor',

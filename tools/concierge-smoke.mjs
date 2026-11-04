@@ -95,7 +95,7 @@ globalThis.fetch = async (input, init = {}) => {
     return new Response(JSON.stringify({ records: [{ id: 'recABCDEFGHIJKLMN', fields: {} }] }), { status: 200 });
   }
   if (url.startsWith('https://formspree.io/')) {
-    calls.formspree.push({ url, body });
+    calls.formspree.push({ url, body, headers: new Headers(init.headers) });
     if (formspreeDown) return new Response('{"ok":false}', { status: 500 });
     return new Response('{"ok":true}', { status: 200 });
   }
@@ -316,6 +316,8 @@ await test('save_brief: card event, Airtable create, follow-up line', async () =
   assert.equal(calls.airtable.length, 0, 'no Airtable token configured yet');
   assert.equal(calls.formspree.length, 1, 'fell back to Formspree email');
   assert.match(calls.formspree[0].body.message, /Leads fall through the cracks/);
+  assert.equal(calls.formspree[0].headers.get('origin'), 'https://quvlo.co', 'labelled for Restrict to Domain');
+  assert.equal(calls.formspree[0].headers.get('referer'), 'https://quvlo.co/');
 
   const second = calls.anthropic.at(-1).body.messages;
   const toolResult = second.at(-1);
