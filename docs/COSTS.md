@@ -33,6 +33,8 @@ Plan allotment: **1,200 credits / cycle**. `nano_banana_pro` = **2 credits / ima
 | Cloudflare Pages | Hosting (static site) | **Free tier — $0** |
 | Formspree | Free-teardown / contact form | **Free tier — $0** at current volume; paid tier only if submissions exceed the free monthly cap |
 | Domain `quvlo.co` | — | Annual renewal (per your registrar) |
+| Anthropic API (AI concierge, Claude Opus 5.5) | Live chat on the homepage | **Pay as you go, about 10 to 25 cents per chat.** Capped in code at $5/day and $50/month (env vars), plus a hard monthly limit set in the Claude Console. Starts only once `ANTHROPIC_API_KEY` is set in Cloudflare |
+| Cloudflare Workers KV (concierge history and limits) | Free tier: 1,000 writes a day, about 300 chat messages a day | **$0** now; Workers Paid ($5/month) only if chats pass ~300 messages a day |
 
 ---
 

@@ -1,15 +1,16 @@
-const m = await import('/opt/node22/lib/node_modules/playwright/index.js');
-const pw = m.default ?? m;
-const b = await pw.chromium.launch({executablePath:'/opt/pw-browsers/chromium',
-  args:['--use-gl=swiftshader','--no-sandbox','--no-proxy-server','--force-color-profile=srgb','--font-render-hinting=none']});
-const url = new URL('./card.html', import.meta.url).href;
-for (const [name, scale] of [['og-1x.png',1],['og-2x.png',2]]) {
-  const p = await b.newPage({viewport:{width:1200,height:630}, deviceScaleFactor:scale});
-  await p.goto(url,{waitUntil:'networkidle'}); await p.evaluate(()=>document.fonts.ready); await p.waitForTimeout(300);
-  await p.screenshot({path:name}); await p.close();
-}
-const p = await b.newPage({viewport:{width:1200,height:630}, deviceScaleFactor:1});
-await p.goto(url,{waitUntil:'networkidle'}); await p.evaluate(()=>document.fonts.ready); await p.waitForTimeout(300);
-await p.screenshot({path:'og-q92.jpg', type:'jpeg', quality:92});
-await p.screenshot({path:'og-q85.jpg', type:'jpeg', quality:85});
+// Renders the share card and the touch icon straight into public/.
+// Run from the repo root: NODE_PATH=$(npm root -g) node tools/og-image/render.mjs
+// Writes public/og-image.jpg (1200x630) and public/apple-touch-icon.png (180x180).
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
+const require = createRequire(import.meta.url);
+const { chromium } = require('playwright');
+const here = new URL('.', import.meta.url), pub = fileURLToPath(new URL('../../public/', import.meta.url));
+const b = await chromium.launch();
+let p = await b.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 });
+await p.goto(new URL('card.html', here).href, { waitUntil: 'networkidle' }); await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(300);
+await p.screenshot({ path: pub + 'og-image.jpg', type: 'jpeg', quality: 86 });
+p = await b.newPage({ viewport: { width: 180, height: 180 }, deviceScaleFactor: 1 });
+await p.goto(new URL('icon.html', here).href, { waitUntil: 'networkidle' }); await p.waitForTimeout(200);
+await p.screenshot({ path: pub + 'apple-touch-icon.png' });
 await b.close();

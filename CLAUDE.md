@@ -36,6 +36,8 @@ Follow every rule below on every task in this project without being reminded. If
 
 12. **Ask before expensive-to-reverse decisions.** Stack choice, hosting, domain, anything hard to undo — pause and confirm. Otherwise make the reasonable call and tell me what you decided.
 
+12a. **Checks go into the build, and get verified after it.** Added 2026-10-27, after an audit found fake-looking motion and device bugs on every scroll site that the builders' own QA had passed. Every instruction to build includes the acceptance checks in `tools/scrollfilm/CHECKS.md`. Every finished build or change is then reviewed by someone who did not build it, using the templates in `tools/scrollfilm/review/`: footage frame by frame, the site on iPhone, iPad (both orientations) and desktop, and old-vs-new for changes. Fixes are re-checked by that reviewer. Nothing goes on the preview or to me until it passes.
+
 ---
 
 ## DESIGN RULES

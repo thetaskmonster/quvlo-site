@@ -1,0 +1,591 @@
+{
+ "about": "Scale-model homepage media. Every URL is site-absolute. Camera space = the 1520x2734 px frame all sequences, stills, TV quads, rooms and framings are registered to; each variant is a uniform scale of it (draw any variant image at the CAM size and the CFG coordinates still hold).",
+ "camera": {
+  "w": 1520,
+  "h": 2734
+ },
+ "variants": {
+  "p": {
+   "scale": 0.5,
+   "w": 760,
+   "h": 1367,
+   "exactW": 760.0,
+   "exactH": 1367.0,
+   "frameQuality": 72
+  },
+  "d": {
+   "scale": 0.75,
+   "w": 1140,
+   "h": 2050,
+   "exactW": 1140.0,
+   "exactH": 2050.5,
+   "frameQuality": 75
+  }
+ },
+ "sequences": {
+  "pull": {
+   "count": 121,
+   "pattern": {
+    "p": "/model/pull/p/%03d.webp",
+    "d": "/model/pull/d/%03d.webp"
+   },
+   "bytes": {
+    "p": 4508760,
+    "d": 7567660
+   },
+   "avgKB": {
+    "p": 36.4,
+    "d": 61.1
+   },
+   "maxKB": {
+    "p": 47.3,
+    "d": 80.2
+   },
+   "largest": {
+    "p": [
+     {
+      "frame": 9,
+      "KB": 47.3
+     },
+     {
+      "frame": 8,
+      "KB": 47.2
+     },
+     {
+      "frame": 10,
+      "KB": 47.2
+     }
+    ],
+    "d": [
+     {
+      "frame": 9,
+      "KB": 80.2
+     },
+     {
+      "frame": 6,
+      "KB": 79.6
+     },
+     {
+      "frame": 10,
+      "KB": 79.5
+     }
+    ]
+   },
+   "size": {
+    "p": {
+     "scale": 0.5,
+     "w": 760,
+     "h": 1367,
+     "exactW": 760.0,
+     "exactH": 1367.0,
+     "frameQuality": 72
+    },
+    "d": {
+     "scale": 0.75,
+     "w": 1140,
+     "h": 2050,
+     "exactW": 1140.0,
+     "exactH": 2050.5,
+     "frameQuality": 75
+    }
+   },
+   "chain": "frame 1 == stills.shop; last frame == lift frame 1"
+  },
+  "lift": {
+   "count": 112,
+   "pattern": {
+    "p": "/model/lift/p/%03d.webp",
+    "d": "/model/lift/d/%03d.webp"
+   },
+   "bytes": {
+    "p": 3169124,
+    "d": 5491834
+   },
+   "avgKB": {
+    "p": 27.6,
+    "d": 47.9
+   },
+   "maxKB": {
+    "p": 33.8,
+    "d": 58.4
+   },
+   "largest": {
+    "p": [
+     {
+      "frame": 91,
+      "KB": 33.8
+     },
+     {
+      "frame": 95,
+      "KB": 33.8
+     },
+     {
+      "frame": 93,
+      "KB": 33.8
+     }
+    ],
+    "d": [
+     {
+      "frame": 93,
+      "KB": 58.4
+     },
+     {
+      "frame": 92,
+      "KB": 57.9
+     },
+     {
+      "frame": 95,
+      "KB": 57.9
+     }
+    ]
+   },
+   "size": {
+    "p": {
+     "scale": 0.5,
+     "w": 760,
+     "h": 1367,
+     "exactW": 760.0,
+     "exactH": 1367.0,
+     "frameQuality": 72
+    },
+    "d": {
+     "scale": 0.75,
+     "w": 1140,
+     "h": 2050,
+     "exactW": 1140.0,
+     "exactH": 2050.5,
+     "frameQuality": 75
+    }
+   },
+   "chain": "last frame == stills.roofOff (inside the WIDE rect)"
+  }
+ },
+ "stills": {
+  "shop": {
+   "rect": {
+    "x": 0,
+    "y": 0,
+    "w": 1520,
+    "h": 2734
+   },
+   "p": {
+    "src": "/model/stills/shop-p.webp",
+    "w": 760,
+    "h": 1367,
+    "bytes": 77160,
+    "quality": 77
+   },
+   "d": {
+    "src": "/model/stills/shop-d.webp",
+    "w": 1140,
+    "h": 2050,
+    "bytes": 151394,
+    "quality": 78
+   }
+  },
+  "roofOff": {
+   "rect": {
+    "x": -264,
+    "y": -13,
+    "w": 2046,
+    "h": 2747
+   },
+   "graded": null,
+   "p": {
+    "src": "/model/stills/roofOff-p.webp",
+    "w": 1023,
+    "h": 1374,
+    "bytes": 43622,
+    "quality": 72,
+    "rect": {
+     "x": -132.0,
+     "y": -6.5,
+     "w": 1023.0,
+     "h": 1373.5
+    }
+   },
+   "d": {
+    "src": "/model/stills/roofOff-d.webp",
+    "w": 1534,
+    "h": 2060,
+    "bytes": 77796,
+    "quality": 75,
+    "rect": {
+     "x": -198.0,
+     "y": -9.75,
+     "w": 1534.5,
+     "h": 2060.25
+    }
+   }
+  },
+  "night": {
+   "rect": {
+    "x": -264,
+    "y": -13,
+    "w": 2046,
+    "h": 2747
+   },
+   "graded": {
+    "cssFilter": "brightness(1.32) sepia(.14) saturate(1.06)",
+    "brightness": 1.32,
+    "sepia": 0.14,
+    "saturate": 1.06,
+    "note": "baked in; do not apply ctx.filter at draw time"
+   },
+   "p": {
+    "src": "/model/stills/night-p.webp",
+    "w": 1023,
+    "h": 1374,
+    "bytes": 39858,
+    "quality": 72,
+    "rect": {
+     "x": -132.0,
+     "y": -6.5,
+     "w": 1023.0,
+     "h": 1373.5
+    }
+   },
+   "d": {
+    "src": "/model/stills/night-d.webp",
+    "w": 1534,
+    "h": 2060,
+    "bytes": 73488,
+    "quality": 75,
+    "rect": {
+     "x": -198.0,
+     "y": -9.75,
+     "w": 1534.5,
+     "h": 2060.25
+    }
+   }
+  },
+  "predawn": {
+   "rect": {
+    "x": -264,
+    "y": -13,
+    "w": 2046,
+    "h": 2747
+   },
+   "graded": {
+    "cssFilter": "brightness(1.32) sepia(.14) saturate(1.06)",
+    "brightness": 1.32,
+    "sepia": 0.14,
+    "saturate": 1.06,
+    "note": "baked in; do not apply ctx.filter at draw time"
+   },
+   "p": {
+    "src": "/model/stills/predawn-p.webp",
+    "w": 1023,
+    "h": 1374,
+    "bytes": 40878,
+    "quality": 72,
+    "rect": {
+     "x": -132.0,
+     "y": -6.5,
+     "w": 1023.0,
+     "h": 1373.5
+    }
+   },
+   "d": {
+    "src": "/model/stills/predawn-d.webp",
+    "w": 1534,
+    "h": 2060,
+    "bytes": 75452,
+    "quality": 75,
+    "rect": {
+     "x": -198.0,
+     "y": -9.75,
+     "w": 1534.5,
+     "h": 2060.25
+    }
+   }
+  },
+  "note": "rect = where the image sits in camera px (variant rect = same in that variant's px). Draw each wide still at its rect (w/h may be fractional), not at its pixel size."
+ },
+ "poster": {
+  "note": "stills.shop doubles as the first-screen poster / LCP image; show placeholder until it decodes",
+  "p": "/model/stills/shop-p.webp",
+  "d": "/model/stills/shop-d.webp",
+  "placeholder": {
+   "w": 20,
+   "h": 36,
+   "dataUri": "data:image/webp;base64,UklGRrQAAABXRUJQVlA4IKgAAAAwBgCdASoUACQAPu1wr1KppiQipWmZMB2JQBAlJFZ5WJpJ1yOwcj5vQl5gSM7DX4fHK7xWZ9tCw4CAAP4UF3E7w8fkugmlh0PZTo9Xb+GqtCdxU9oc76CD0ZtTdTVzohjWEFK6TUQcCfZ8XBMzJ/jM462U8MkGIqurNiUyeA3ENtiQBjUq59Y+u3TGatC3dWC7K6RPXsKhsnR/v/BuaSmsnPjCNCAAAAA=",
+   "bytes": 275
+  }
+ },
+ "tv": {
+  "texture": {
+   "src": "/model/tv/tv.webp",
+   "w": 480,
+   "h": 282,
+   "bytes": 9862
+  },
+  "format": "{pull:[quad per frame], lift:[quad per frame], shop:quad, roofOff:quad}; quad = [TL, TR, BR, BL] as [x, y]",
+  "quads": {
+   "camera": {
+    "src": "/model/tv/tvq.json",
+    "scale": 1.0,
+    "bytes": 16283
+   },
+   "p": {
+    "src": "/model/tv/tvq-p.json",
+    "scale": 0.5,
+    "bytes": 15320
+   },
+   "d": {
+    "src": "/model/tv/tvq-d.json",
+    "scale": 0.75,
+    "bytes": 16251
+   }
+  }
+ },
+ "hook": {
+  "d": {
+   "src": "/model/hook/d.webp",
+   "w": 2280,
+   "h": 4101,
+   "scale": 1.5,
+   "bytes": 300494,
+   "quality": 88,
+   "rect": {
+    "x": 0,
+    "y": 0,
+    "w": 1520,
+    "h": 2734
+   }
+  },
+  "dCrop": {
+   "src": "/model/hook/d-crop.webp",
+   "w": 2780,
+   "h": 2636,
+   "scale": 2.0,
+   "bytes": 163732,
+   "quality": 79,
+   "rect": {
+    "x": 0,
+    "y": 1137,
+    "w": 1390,
+    "h": 1318
+   },
+   "visibleAtFraming": {
+    "x0": -542.4,
+    "y0": 1246.8,
+    "x1": 1213.7,
+    "y1": 2344.4
+   },
+   "framing": {
+    "fx": 860,
+    "fy": 1820,
+    "s": 0.82,
+    "sx": 1150,
+    "sy": 470,
+    "viewport": [
+     1440,
+     900
+    ]
+   },
+   "margin": 0.1,
+   "placeholder": {
+    "w": 20,
+    "h": 19,
+    "dataUri": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAADQBACdASoUABMAPu1orVCppaQiqAqpMB2JYwC90BEc8vCt8hWzEz3rNbOSsbKIAAD+7BwUzNClap6gGPjoX2tf8GH3Onz5lkR0DZeJRyp/MHXtUWM6/AAiBUsD5P8AAAA=",
+    "bytes": 179
+   }
+  },
+  "note": "Desktop only. Show dCrop (LCP) at its camera rect, swap to d (full frame) before the code zoom-out to framing.model. TV (Basalt hero) is baked into both.",
+  "alignToLiftFrame1": {
+   "plinth": [
+    -0.21,
+    -1.0
+   ],
+   "roof": [
+    0.44,
+    2.88
+   ],
+   "affineScaleY": 0.9972,
+   "ecc": 0.999,
+   "measured": "2026-10-21",
+   "note": "sub-pixel at the plinth; ~0.3% vertical scale makes the roof ~3 px lower on the hook. TV is baked on the hook but dark in the lift frames: keep the TV overlay on at the hand-off."
+  }
+ },
+ "idx": {
+  "ballast": {
+   "p": {
+    "src": "/model/idx/ballast-1080.webp",
+    "w": 1080,
+    "h": 1920,
+    "bytes": 116944,
+    "quality": 75
+   },
+   "d": {
+    "src": "/model/idx/ballast-1080.webp",
+    "w": 1080,
+    "h": 1920,
+    "bytes": 116944,
+    "quality": 75,
+    "note": "source is only 1080 px wide; not upscaled"
+   }
+  },
+  "basalt": {
+   "p": {
+    "src": "/model/idx/basalt-1080.webp",
+    "w": 1080,
+    "h": 1920,
+    "bytes": 111408,
+    "quality": 86
+   },
+   "d": {
+    "src": "/model/idx/basalt-1080.webp",
+    "w": 1080,
+    "h": 1920,
+    "bytes": 111408,
+    "quality": 86,
+    "note": "source is only 1080 px wide; not upscaled"
+   }
+  },
+  "inlay": {
+   "p": {
+    "src": "/model/idx/inlay-1080.webp",
+    "w": 1080,
+    "h": 1920,
+    "bytes": 114292,
+    "quality": 89
+   },
+   "d": {
+    "src": "/model/idx/inlay-1080.webp",
+    "w": 1080,
+    "h": 1920,
+    "bytes": 114292,
+    "quality": 89,
+    "note": "source is only 1080 px wide; not upscaled"
+   }
+  },
+  "lacquer": {
+   "p": {
+    "src": "/model/idx/lacquer-1080.webp",
+    "w": 1080,
+    "h": 1920,
+    "bytes": 98016,
+    "quality": 92
+   },
+   "d": {
+    "src": "/model/idx/lacquer-1080.webp",
+    "w": 1080,
+    "h": 1920,
+    "bytes": 98016,
+    "quality": 92,
+    "note": "source is only 1080 px wide; not upscaled"
+   }
+  },
+  "longhand": {
+   "p": {
+    "src": "/model/idx/longhand-1080.webp",
+    "w": 1080,
+    "h": 1920,
+    "bytes": 116050,
+    "quality": 75
+   },
+   "d": {
+    "src": "/model/idx/longhand-1080.webp",
+    "w": 1080,
+    "h": 1920,
+    "bytes": 116050,
+    "quality": 75,
+    "note": "source is only 1080 px wide; not upscaled"
+   }
+  },
+  "lowtide": {
+   "p": {
+    "src": "/model/idx/lowtide-1080.webp",
+    "w": 1080,
+    "h": 1920,
+    "bytes": 116874,
+    "quality": 71
+   },
+   "d": {
+    "src": "/model/idx/lowtide-1080.webp",
+    "w": 1080,
+    "h": 1920,
+    "bytes": 116874,
+    "quality": 71,
+    "note": "source is only 1080 px wide; not upscaled"
+   }
+  }
+ },
+ "site": {
+  "p": {
+   "src": "/model/site/basalt-top-p.webp",
+   "w": 780,
+   "h": 3400,
+   "bytes": 108416,
+   "quality": 72
+  },
+  "d": {
+   "src": "/model/site/basalt-top-d.webp",
+   "w": 1170,
+   "h": 5100,
+   "bytes": 179188,
+   "quality": 72
+  }
+ },
+ "totals": {
+  "hook.d": {
+   "bytes": 300494,
+   "MB": 0.29
+  },
+  "hook.dCrop": {
+   "bytes": 163732,
+   "MB": 0.16
+  },
+  "idx": {
+   "bytes": 673584,
+   "MB": 0.64
+  },
+  "lift.d": {
+   "bytes": 5491834,
+   "MB": 5.24
+  },
+  "lift.p": {
+   "bytes": 3169124,
+   "MB": 3.02
+  },
+  "poster.d": {
+   "bytes": 151394,
+   "MB": 0.14
+  },
+  "poster.p": {
+   "bytes": 77160,
+   "MB": 0.07
+  },
+  "pull.d": {
+   "bytes": 7567660,
+   "MB": 7.22
+  },
+  "pull.p": {
+   "bytes": 4508760,
+   "MB": 4.3
+  },
+  "site": {
+   "bytes": 287604,
+   "MB": 0.27
+  },
+  "stills.d": {
+   "bytes": 226736,
+   "MB": 0.22
+  },
+  "stills.p": {
+   "bytes": 124358,
+   "MB": 0.12
+  },
+  "tv": {
+   "bytes": 57716,
+   "MB": 0.06
+  }
+ },
+ "firstScreenBytes": {
+  "p": 77160,
+  "d": 163732,
+  "note": "model media before interaction: phone = shop poster, desktop = hook crop; placeholders are inline"
+ },
+ "missing": []
+}

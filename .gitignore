@@ -49,3 +49,6 @@ scrollcraft/**/*.png
 scrollcraft/**/*.webm
 scrollcraft/**/*.mov
 .env
+
+# Python bytecode
+__pycache__/

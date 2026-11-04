@@ -1,10 +1,10 @@
-/* Keyroom (concept by Quvlo). Scroll drives the garage film and a rev counter that follows the car. One
+/* Whitlock & Sons Car Rental (concept by Quvlo). Scroll drives the garage film and a rev counter that follows the car. One
    bay over, the showroom: three fixed views of each car, with one spec pinned to each view. The quote
    below follows whichever car is in the showroom. No libraries, no innerHTML. */
 (() => {
   'use strict';
   // Bump when any film frame or showroom picture changes, so browsers fetch the new files instead of cached ones.
-  const FV = '2026103101';
+  const FV = '2026110103';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -17,27 +17,27 @@
      box: the car's outline in that picture, so the card is placed on empty wall or floor, never on the car.
      Both measured on the showroom pictures (show/<car>/<view>-2400.webp). */
   const CARS = {
-    escalade: { name: 'Cadillac Escalade', rate: 289, deposit: 2500, mile: 1.0, views: {
+    escalade: { name: 'Cadillac Escalade', rate: 499, deposit: 2500, mile: 4.0, views: {
       front34: { v: '420 hp', k: '6.2L V8', a: [0.60, 0.42], box: [0.25, 0.29, 0.75, 0.75] },
       side: { v: '7 seats', k: 'Three full rows', a: [0.27, 0.345], box: [0.17, 0.27, 0.82, 0.72] },
       rear34: { v: '22 in', k: 'Wheels', a: [0.495, 0.66], box: [0.21, 0.27, 0.74, 0.75] } } },
-    tahoe: { name: 'Chevrolet Tahoe High Country', rate: 219, deposit: 2000, mile: 0.75, views: {
+    tahoe: { name: 'Chevrolet Tahoe High Country', rate: 379, deposit: 2000, mile: 3.0, views: {
       front34: { v: '420 hp', k: '6.2L V8', a: [0.60, 0.44], box: [0.26, 0.31, 0.75, 0.78] },
       side: { v: '7 seats', k: 'Third row that fits adults', a: [0.27, 0.36], box: [0.18, 0.29, 0.82, 0.73] },
       rear34: { v: '22 in', k: 'Wheels', a: [0.52, 0.66], box: [0.23, 0.27, 0.74, 0.75] } } },
-    e53: { name: 'Mercedes-AMG E 53 Hybrid', rate: 239, deposit: 2500, mile: 1.0, views: {
+    e53: { name: 'Mercedes-AMG E 53 Hybrid', rate: 349, deposit: 2500, mile: 3.0, views: {
       front34: { v: '577 hp', k: 'Combined output', a: [0.61, 0.455], box: [0.25, 0.32, 0.80, 0.75] },
       side: { v: '20 in', k: 'AMG wheels', a: [0.30, 0.64], box: [0.15, 0.34, 0.84, 0.73] },
       rear34: { v: '3.8 s', k: '0 to 60 with Race Start', a: [0.415, 0.675], box: [0.22, 0.34, 0.75, 0.75] } } },
-    i5: { name: 'BMW i5', rate: 179, deposit: 1500, mile: 0.75, views: {
-      front34: { v: 'Up to 295 mi', k: 'EPA range on 19 in wheels', a: [0.49, 0.655], box: [0.26, 0.34, 0.79, 0.75] },
+    i5: { name: 'BMW i5 eDrive40', rate: 249, deposit: 1500, mile: 2.0, views: {
+      front34: { v: 'Up to 295 mi', k: 'EPA range, eDrive40', a: [0.49, 0.655], box: [0.26, 0.34, 0.79, 0.75] },
       side: { v: '335 hp', k: 'Electric, rear drive', a: [0.30, 0.645], box: [0.14, 0.33, 0.85, 0.73] },
       rear34: { v: '5.7 s', k: '0 to 60 mph', a: [0.51, 0.66], box: [0.21, 0.34, 0.77, 0.75] } } },
-    bronco: { name: 'Ford Bronco 4-door', rate: 189, deposit: 1500, mile: 0.75, views: {
+    bronco: { name: 'Ford Bronco 4-door', rate: 219, deposit: 1500, mile: 2.0, views: {
       front34: { v: '300 hp', k: '2.3L turbo', a: [0.62, 0.44], box: [0.26, 0.30, 0.75, 0.79] },
-      side: { v: '4x4', k: 'All-terrain tires', a: [0.29, 0.665], box: [0.17, 0.28, 0.80, 0.75] },
-      rear34: { v: 'Open air', k: 'Removable roof and doors', a: [0.47, 0.29], box: [0.25, 0.27, 0.76, 0.75] } } },
-    modely: { name: 'Tesla Model Y', rate: 149, deposit: 1000, mile: 0.75, views: {
+      side: { v: '5 seats', k: 'Room for the gear', a: [0.40, 0.36], box: [0.17, 0.28, 0.80, 0.75] },
+      rear34: { v: '4x4', k: 'Low range, for ranch roads', a: [0.49, 0.65], box: [0.25, 0.27, 0.76, 0.75] } } },
+    modely: { name: 'Tesla Model Y', rate: 139, deposit: 1000, mile: 1.5, views: {
       front34: { v: 'Dual motor', k: 'All-wheel drive', a: [0.505, 0.665], box: [0.28, 0.34, 0.77, 0.75] },
       side: { v: '19 in', k: 'Wheels', a: [0.30, 0.655], box: [0.19, 0.32, 0.80, 0.74] },
       rear34: { v: 'Up to 327 mi', k: 'Range, EPA estimate', a: [0.62, 0.62], box: [0.23, 0.32, 0.75, 0.75] } } },
@@ -54,22 +54,25 @@
   const bar = $('.bar'), hero = $('#hero'), caps = $$('.cap');
   const stageEl = $('.film__stage');
   let opened = false;
-  function openLoader() { if (opened) return; opened = true; document.body.classList.remove('is-loading'); loader.classList.add('is-open'); }
+  function openLoader() { if (opened) return; opened = true; document.body.classList.remove('is-loading'); loader.classList.add('is-open');
+    // once faded, take the loader out of the page entirely: iPhone Safari tints its toolbars from fixed elements, even invisible ones
+    setTimeout(() => { loader.style.display = 'none'; }, 1000); }
 
-  /* Rev counter: off while the car is parked in the garage (shots 0 and 1). In the drive (shot 2) it
-     follows the car's speed, measured from the wall sliding past in each frame (at a steady gear, rpm
-     tracks speed). At the jet (shot 3) the engine idles. The 6.2 V8 redlines near 5,800; this never
-     gets close. */
+  /* Rev counter: off while the car is parked in the garage (shots 0 and 1). In the drive (shot 2) the car
+     cruises at a steady city speed; the counter follows the street's measured slide past the car, damped,
+     because the buildings also change distance as the street passes (so their slide is not pure speed).
+     At the jet (shot 3) the engine idles. The 6.2 V8 redlines near 5,800; this never gets close. */
   const tach = $('.tach'), tachRpm = $('#tachRpm'), tachFill = $('#tachFill'), MAX = 7000, IDLE = 650;
-  const DRIVE = [1630, 1600, 1570, 1550, 1530, 1490, 1460, 1440, 1420, 1400, 1380, 1360, 1360, 1350, 1330, 1330,
-    1340, 1350, 1360, 1390, 1430, 1470, 1490, 1510, 1530, 1540, 1540, 1540, 1560, 1560, 1560, 1570,
-    1570, 1570, 1570, 1570, 1570, 1560, 1540, 1550]; // one value per drive frame (source frames 20-59)
+  const DRIVE = [1290, 1330, 1380, 1400, 1400, 1410, 1420, 1420, 1410, 1410, 1400, 1390, 1380, 1390, 1400, 1410,
+    1420, 1430, 1430, 1430, 1430, 1450, 1480, 1510, 1520, 1510, 1480, 1450, 1420, 1400, 1390]; // one value per drive frame (source frames 0-30)
   function rpmAt(shot, local) {
     if (shot < 2) return 0;
     if (shot === 3) return IDLE;
     const k = clamp(local, 0, DRIVE.length - 1), i = Math.min(DRIVE.length - 2, Math.floor(k)), t = k - i;
     return DRIVE[i] + (DRIVE[i + 1] - DRIVE[i]) * t;
   }
+  // Real frames per shot, as "lens" in frames.json: the drive ends before the signals ahead come into view.
+  const SHOT_LEN = [40, 40, DRIVE.length, 40];
   let lastRpm = -1;
   function ui(v) {
     const f = v.f, shot = v.shot, PER = v.PER, local = f - shot * PER;
@@ -81,7 +84,7 @@
       if (reduce) on = s === shot;
       else if (s === 0) on = shot === 0 && local > 16 && local < PER - 2;
       else if (s === 3) on = shot === 3 && local > 3;
-      else on = shot === s && local > 2 && local < PER - 3;
+      else on = shot === s && local > 2 && local < SHOT_LEN[s] - 3;
       cap.classList.toggle('is-on', on);
     });
     const raw = rpmAt(shot, local), rpm = Math.round(raw / 10) * 10;
@@ -276,9 +279,11 @@
 
   /* =========================================================== Quote */
   const qCar = $('#qCar'), qDays = $('#qDays'), qDaysOut = $('#qDaysOut'), qTotal = $('#qTotal'), qLines = $('#qLines'), qTerms = $('#qTerms');
-  const WHERE = { home: ['Home or office delivery and collection', 95], hotel: ['Hotel delivery and collection', 95], fbo: ['Private terminal delivery and collection', 175] };
-  const COVER = { own: ['Your own policy', 0], std: ['Keyroom cover, $1,000 deductible', 39], plus: ['Keyroom cover plus, no deductible', 69] };
-  const TAX = 0.1, MILES_DAY = 150;
+  const WHERE = { home: ['Home or office delivery and collection', 150], hotel: ['Hotel delivery and collection', 150], fbo: ['Private terminal delivery and collection', 250] };
+  // A damage waiver, not insurance. In Texas it is part of the taxable rental price.
+  const COVER = { own: ['Your own policy', 0], std: ['Damage waiver, $1,000 max', 39], plus: ['Full damage waiver', 69] };
+  // Texas motor vehicle rental tax: 10% of the rent, delivery and any damage waiver
+  const TAX = 0.1, MILES_DAY = 100;
   const row = (k, v) => { const d = el('div'); d.append(el('dt', null, k), el('dd', null, v)); return d; };
   function quote() {
     const c = CARS[qCar.value] || CARS.escalade, days = clamp(+qDays.value || 1, 1, 14);
@@ -291,7 +296,7 @@
       row(`${c.name}, ${days} × ${money(c.rate)}`, money(rent)),
       row(where[0], money(where[1])),
       row(cover[0] + (cover[1] ? `, ${days} × ${money(cover[1])}` : ''), cover[1] ? money(ins) : '$0, your policy'),
-      row('Estimated tax (10%)', money(tax)),
+      row('Texas motor vehicle rental tax (10%)', money(tax)),
     );
     qTerms.replaceChildren(
       row('Security deposit, refundable hold, not in the total', money(c.deposit)),

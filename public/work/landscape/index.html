@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Teague &amp; Sons Landscape, North Texas (Concept)</title>
+<meta name="description" content="A Quvlo concept site for a fictional North Texas landscaping crew: four working days on an overgrown half-acre lot, then mow the stripes yourself and price your yard.">
+<meta name="theme-color" content="#1d3a2a">
+<link rel="canonical" href="https://quvlo.co/work/landscape/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Quvlo">
+<meta property="og:title" content="Teague &amp; Sons Landscape, a concept site by Quvlo">
+<meta property="og:description" content="An overgrown half-acre lot, about 12,000 sq ft of work, done by three crews in four working days with the live oak saved. Then you mow the stripes.">
+<meta property="og:url" content="https://quvlo.co/work/landscape/">
+<meta property="og:image" content="https://quvlo.co/work/landscape/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A finished backyard at dusk: a three-week-old Bermuda lawn, a flagstone patio and fire pit out past a live oak's canopy, and landscape lights along a cedar fence.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="fonts/young-serif.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/onest-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="landscape.css?v=2026110104">
+</head>
+<body class="is-loading">
+<a class="skip" href="#price">Skip to pricing</a>
+
+<!-- Loader: counts real frame downloads, framed as clearing the lot -->
+<div class="loader" id="loader" aria-hidden="true">
+  <p class="loader__k">Clearing the lot</p>
+  <p class="loader__n"><span id="loadPct">0</span><span class="loader__u">%</span></p>
+  <div class="loader__bar"><span id="loadBar"></span></div>
+</div>
+
+<header class="bar">
+  <a class="brand" href="#top" aria-label="Teague and Sons Landscape, back to top"><span>Teague <span class="brand__amp">&amp;</span> Sons</span><span class="brand__x"> Landscape</span></a>
+  <span class="tag">Concept site</span>
+  <nav class="bar__nav" aria-label="Main">
+    <a href="#services" class="hide-s">Services</a>
+    <a href="#mow" class="hide-s">Mow it</a>
+    <a href="#price" class="btn btn--sm">Price it</a>
+  </nav>
+</header>
+
+<main id="top">
+  <!-- The film: scroll runs the job, from the overgrown lot to the first mow three weeks later -->
+  <section class="film" id="film" aria-label="Scroll story: four days of landscaping work on an overgrown North Texas half-acre lot, then the first mow">
+    <div class="film__stage">
+      <canvas id="filmCanvas" class="film__canvas" role="img" aria-label="Footage of an overgrown backyard seen from a drone, a cut log of a dead tree lowered straight down on a rope while a roped climber watches, a loader grading the bare ground while the live oak stays fenced off, a salvia going into a compost-rich bed while mulch is blown onto the next bed, sod being laid and flagstone tapped level, then the finished yard at dusk with the lights and the gas fire pit on."></canvas>
+      <div class="shade" aria-hidden="true"></div>
+
+      <div class="hero" id="hero">
+        <p class="hero__k">Landscape construction, North Texas</p>
+        <h1 class="hero__h">From wild lot to the best room of the house.</h1>
+        <p class="hero__p"><span class="hero__x">We clear it, grade it, feed it and finish it. </span>This half-acre lot, about 12,000 sq ft of work, took four working days with three crews on site.<span class="hero__x"> Scroll to watch the crew.</span></p>
+      </div>
+
+      <!-- One caption per day, each placed clear of that shot's work: data-place (wide screens), data-phone (phones upright),
+           data-phl (phones on their side), data-brief (phones show the headline and tally only). The tallies count up with the work. -->
+      <div class="cap" data-shot="1" data-place="top-right" data-phone="top" data-brief data-early>
+        <p class="cap__day">Day 1</p>
+        <h2 class="cap__h">Two dead elms come down. The oak stays.</h2>
+        <p class="cap__p">A roped climber takes the dead wood down in pieces, so nothing lands on the fence or the house. Every limb is chipped and hauled off, and the old back fence comes down for a new cedar one.</p>
+        <p class="cap__tally"><span class="tally" data-from="9" data-to="9">9</span> cu yd of chips hauled off</p>
+      </div>
+      <div class="cap" data-shot="2" data-place="top-left" data-phone="top" data-brief>
+        <p class="cap__day">Day 2</p>
+        <h2 class="cap__h">Clear, break up, grade.</h2>
+        <p class="cap__p">The oak's root zone gets fenced off first. Then the slab is broken out, the ground is graded to fall at least 6 inches in the first 10 feet from the house, and our licensed irrigator trenches the sprinkler zones.</p>
+        <p class="cap__tally"><span class="tally" data-from="0" data-to="11800" data-steps="0,5200,11800" data-beats="13,27" data-sep="1">0</span> sq ft graded to drain</p>
+      </div>
+      <div class="cap" data-shot="3" data-place="top-right" data-phone="top" data-brief>
+        <p class="cap__day">Day 3</p>
+        <h2 class="cap__h">Feed the soil, then plant the natives.</h2>
+        <p class="cap__p">Compost is tilled into every bed first, since North Texas ground is hard on roots. Then the natives go in, under two inches of mulch from the blower truck.</p>
+        <p class="cap__tally"><span class="tally" data-from="0" data-to="86">0</span> native plants set</p>
+      </div>
+      <div class="cap" data-shot="4" data-place="top-left" data-phone="top" data-brief>
+        <p class="cap__day">Day 4</p>
+        <h2 class="cap__h">The last stones get tapped level.</h2>
+        <p class="cap__p">The Bermuda goes down in tight, staggered rows, with Zoysia in the oak's shade. Out past the oak's canopy, each flagstone around the fire pit is set by hand.</p>
+        <p class="cap__tally"><span class="tally" data-from="7400" data-to="7400" data-sep="1">7,400</span> sq ft of sod down</p>
+      </div>
+      <div class="cap cap--end" data-shot="5" data-place="top-left" data-phone="top" data-brief>
+        <p class="cap__day">Three weeks later, <span id="clock">4:30 pm</span></p>
+        <h2 class="cap__h">First cut, once the roots take hold.</h2>
+        <p class="cap__p">New sod isn't mowed until it has rooted. Three weeks on, the first stripes go in on the diagonal, and at dusk the lights come up and the gas fire pit is lit.</p>
+        <p class="cap__cta"><a class="btn" href="#mow">Now you mow it</a></p>
+      </div>
+
+      <!-- Job tracker: a strip of lawn that gets striped as the job moves along -->
+      <div class="track" id="track">
+        <div class="track__lawn" aria-hidden="true"><span class="track__cut" id="trackCut"></span></div>
+        <ol class="track__days" aria-label="Job progress">
+          <li data-shot="1"><b>Day 1</b> Tree removal</li>
+          <li data-shot="2"><b>Day 2</b> Grading</li>
+          <li data-shot="3"><b>Day 3</b> Beds</li>
+          <li data-shot="4"><b>Day 4</b> Sod and stone</li>
+          <li data-shot="5"><b>Week 3</b> First mow</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- Signature: mow the finished lawn yourself -->
+  <section class="mow" id="mow" aria-labelledby="mow-h">
+    <div class="wrap mow__head">
+      <p class="eyebrow">Mow it yourself</p>
+      <h2 id="mow-h" class="h2">The crew laid the sod. You cut the stripes.</h2>
+      <p class="lede">Pick a pattern, then drive. Stripes come from which way the blades lay the grass, so up and down passes read light and dark, just like the real thing.</p>
+    </div>
+    <div class="wrap mow__grid">
+      <div class="board" id="board">
+        <canvas id="mowCanvas" class="board__canvas" tabindex="0" role="application" aria-label="Mowing game. Top-down view of the finished lawn. Use the arrow keys or W A S D to drive the mower and Escape to pause, or drag on the lawn on a touch screen." aria-describedby="mowHelp"></canvas>
+        <div class="board__hud" id="hud" aria-hidden="true">
+          <span><b id="hudCov">0</b>% mowed</span>
+          <span id="hudTime">0:00</span>
+          <span class="board__msg" id="hudMsg"></span>
+        </div>
+        <button class="board__stop" type="button" id="mowStop" hidden>Pause</button>
+        <div class="board__start" id="mowStart">
+          <button class="btn" type="button" id="mowGo">Start mowing</button>
+          <p id="mowHelp" class="board__help"><span class="key-only">Arrow keys or W A S D to drive. Esc to pause.</span><span class="touch-only">Drag on the lawn. The mower drives to a spot just above your finger.</span></p>
+        </div>
+        <p class="board__done" id="mowDone" role="status" aria-live="polite"></p>
+      </div>
+      <div class="panel">
+        <fieldset class="pat">
+          <legend>Pattern</legend>
+          <label><input type="radio" name="pat" value="straight"><span>Straight</span></label>
+          <label><input type="radio" name="pat" value="diagonal" checked><span>Diagonal</span></label>
+          <label><input type="radio" name="pat" value="checker"><span>Checkerboard</span></label>
+          <label><input type="radio" name="pat" value="diamond"><span>Diamond</span></label>
+        </fieldset>
+        <dl class="score" aria-live="off">
+          <div><dt>Mowed</dt><dd><span id="sCov">0</span>%</dd></div>
+          <div><dt>Straight lines</dt><dd><span id="sStr">0</span>%</dd></div>
+          <div><dt>Time</dt><dd id="sTime">0:00</dd></div>
+        </dl>
+        <p class="goal">Mow 90% to finish, with at least 75% of it striped along the guide lines. <span id="crewLine">Then try to beat the crew.</span></p>
+        <p class="best" id="best"></p>
+        <div class="panel__btns">
+          <button class="btn btn--ghost" type="button" id="mowShow">Show me</button>
+          <button class="btn btn--ghost" type="button" id="mowReset">Fresh lawn</button>
+        </div>
+        <p class="panel__note">Changing the pattern starts a fresh lawn. Scores stay on this device. Nothing is sent anywhere.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="services" id="services" aria-labelledby="svc-h">
+    <div class="wrap">
+      <p class="eyebrow">What we do</p>
+      <h2 id="svc-h" class="h2">Heavy work, finished clean.</h2>
+      <ul class="svc">
+        <li><span class="svc__n">Day 1</span><h3>Tree removal</h3><p>Dead and storm-damaged trees taken down in sections by a roped climber, stumps ground below grade, everything chipped and hauled.</p><p class="svc__from">From $1,200 a tree</p></li>
+        <li><span class="svc__n">Day 2</span><h3>Grading and drainage</h3><p>Laser-checked grading away from the slab, French drains and dry creek beds for the yards that hold water after a storm.</p><p class="svc__from">From $0.45 a sq ft</p></li>
+        <li><span class="svc__n">Day 2</span><h3>Sprinklers</h3><p>New zones for the new lawn and beds, drip in the beds, a rain and freeze sensor on every system. Installed by our TCEQ-licensed irrigator, Irrigator Name, LI0000000 (sample name and license).</p><p class="svc__from">Priced at the walk-through</p></li>
+        <li><span class="svc__n">Day 3</span><h3>Beds, compost and mulch</h3><p>Beds amended with compost before planting, natives for North Texas summers, then mulch blown in by truck, not spread by the bag. Beds edged in steel.</p><p class="svc__from">From $95 a cu yd, installed</p></li>
+        <li><span class="svc__n">Day 4</span><h3>Sod and seed</h3><p>Fresh-cut Bermuda for sun, Zoysia or St. Augustine for shade, laid within a day of harvest in staggered rows. Seeded lawns for the big acreage.</p><p class="svc__from">From $1.60 a sq ft</p></li>
+        <li><span class="svc__n">Day 4</span><h3>Patios and stone</h3><p>Flagstone, limestone steppers, seat walls and fire pits, set by hand on a compacted base.</p><p class="svc__from">From $28 a sq ft</p></li>
+        <li><span class="svc__n">From week 3</span><h3>Weekly mowing programs</h3><p>Same crew, same day each week, starting once new sod has rooted. Bermuda cut at 1 to 1.5 inches, Zoysia 1 to 2, St. Augustine 3 to 4. Pick your stripe pattern; we rotate it so the turf stays upright.</p><p class="svc__from">From $45 a visit</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="price" id="price" aria-labelledby="price-h">
+    <div class="wrap price__grid">
+      <div>
+        <p class="eyebrow">Price your project</p>
+        <h2 id="price-h" class="h2">A ballpark here, a fixed price after we walk the yard.</h2>
+        <p class="lede">Rough out the job and the estimate moves as you tap. After a free walk-through we send a drawn plan and a fixed price, in writing, within the week.</p>
+        <p class="price__film"><button class="btn btn--ghost" type="button" id="filmYard">Price the yard in the film</button></p>
+      </div>
+      <form class="est" id="est" aria-label="Project estimator">
+        <fieldset>
+          <legend>Area we work on</legend>
+          <div class="chips">
+            <label><input type="radio" name="size" value="2500"><span>Small<small>2,500 sq ft</small></span></label>
+            <label><input type="radio" name="size" value="5000" checked><span>Typical<small>5,000 sq ft</small></span></label>
+            <label><input type="radio" name="size" value="12000"><span>Large<small>12,000 sq ft, like the film</small></span></label>
+            <label><input type="radio" name="size" value="21780"><span>Whole half acre<small>21,780 sq ft</small></span></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Dead trees to remove</legend>
+          <div class="step">
+            <button type="button" class="step__b" data-step="-1" aria-label="One fewer tree">&minus;</button>
+            <output id="treesOut" for="trees">1</output>
+            <button type="button" class="step__b" data-step="1" aria-label="One more tree">+</button>
+            <input type="hidden" name="trees" id="trees" value="1">
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Grass</legend>
+          <div class="chips">
+            <label><input type="radio" name="sod" value="0"><span>Keep my lawn</span></label>
+            <label><input type="radio" name="sod" value="1.6" checked><span>Bermuda sod</span></label>
+            <label><input type="radio" name="sod" value="2.4"><span>Zoysia sod</span></label>
+            <label><input type="radio" name="sod" value="1.8"><span>St. Augustine sod</span></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Add to the job</legend>
+          <div class="checks">
+            <label><input type="checkbox" name="grade" checked><span>Grading and drainage</span></label>
+            <label><input type="checkbox" name="irr"><span>Sprinklers for the new lawn</span></label>
+            <label><input type="checkbox" name="beds" checked><span>Native beds, compost and mulch</span></label>
+            <label><input type="checkbox" name="patio"><span>Flagstone patio, 300 sq ft</span></label>
+            <label><input type="checkbox" name="pit"><span>Stone fire pit</span></label>
+            <label><input type="checkbox" name="lights"><span>Landscape lighting, 12 fixtures</span></label>
+            <label><input type="checkbox" name="fence"><span>Cedar fence, back line</span></label>
+          </div>
+        </fieldset>
+        <div class="est__total">
+          <p class="est__k">Estimated project</p>
+          <p class="est__n" id="estN">$<span id="total">0</span></p>
+          <p class="est__days" id="days">2 working days</p>
+          <p class="est__mow" id="mowLine">Weekly mowing once the sod roots: <span id="mowRate">$55</span> a visit, <span id="mowPat">diagonal</span> stripes</p>
+        </div>
+        <p class="sr" id="estSay" aria-live="polite"></p>
+        <button class="btn btn--wide" type="button" id="bookBtn">Book a free walk-through</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="how" aria-labelledby="how-h">
+    <div class="wrap">
+      <p class="eyebrow">How it works</p>
+      <h2 id="how-h" class="h2">From the walk-through to the first mow.</h2>
+      <ol class="how__list">
+        <li><i>This week</i><b>Walk-through</b><span>Thirty minutes in your yard. We measure, check the drainage and look up at the trees.</span></li>
+        <li><i>Within a week</i><b>Fixed price</b><span>A drawn plan and one number, in writing.</span></li>
+        <li><i>Two to five working days</i><b>The build</b><span>We call Texas 811 at least two business days before we dig, and flag your sprinkler lines and lighting wire ourselves, since 811 only marks public utilities. On the last day we set your watering plan for the new sod.</span></li>
+        <li><i>About three weeks later</i><b>First mow</b><span>Once the sod has rooted, we cut the first stripes in the pattern you picked.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="faq" aria-labelledby="faq-h">
+    <div class="wrap faq__grid">
+      <h2 id="faq-h" class="h2">Questions we get</h2>
+      <div class="faq__list">
+        <details><summary>How do I water new sod in a Dallas summer?</summary><p>Little and often until it roots: enough to keep the soil under the sod moist, which can mean every day when it's over 80&deg;F. Once it has rooted, you switch to deep, infrequent watering. Dallas allows sprinklers two days a week and, since May 2026, never between 10 a.m. and 6 p.m. on any day of the year. For new sod we apply for the city's new-landscape variance, which allows extra watering days for up to five weeks after it goes in. Hand-watering with a hose is allowed any day. Other DFW cities set their own days, and we check yours.</p><p class="faq__srcs"><a class="faq__src" href="https://savedallaswater.com/resource-center/variances/" rel="noopener">Dallas watering rules and variances</a> <a class="faq__src" href="https://mytexas.ag.tamu.edu/publications/how-to-select-and-install-sod/" rel="noopener">Texas A&amp;M AgriLife: how to install and water sod</a></p></details>
+        <details><summary>When does the first mow happen?</summary><p>Mow once the sod has rooted and is being watered less often; in warm weather that is usually two to three weeks. If a corner holds when you tug it, it's rooted. Warm-season sod laid late in the fall may not root until spring, so the first cut waits until then.</p><p class="faq__srcs"><a class="faq__src" href="https://mytexas.ag.tamu.edu/publications/how-to-select-and-install-sod/" rel="noopener">Texas A&amp;M AgriLife: how to install and water sod</a></p></details>
+        <details><summary>Do you haul everything away?</summary><p>Yes. Chips, brush, broken concrete and old fence all leave on our trailers. You will not find a pile behind the shed.</p></details>
+        <details><summary>What if it rains during the job?</summary><p>Clay can't be graded wet, so we stop and pick back up once the ground firms up. The price stays the same; only the dates move.</p></details>
+        <details><summary>Can you handle the HOA?</summary><p>We draw the plan your HOA asks for and submit it with you before any work starts.</p></details>
+        <details><summary>Can I choose my mowing pattern?</summary><p>On a weekly program, yes. Straight, diagonal, checkerboard or diamond, rotated through the season so the grass stays healthy.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__grid">
+    <div>
+      <p class="foot__h">Got a wild lot?</p>
+      <a class="btn" href="#price">Price your project</a>
+    </div>
+    <div class="foot__small">
+      <p>Teague &amp; Sons Landscape is a fictional business. This is a concept site designed and built by <a class="foot__q" href="/">Quvlo</a> to show what is possible.</p>
+      <p>The footage and photos are AI-generated. Prices are samples.</p>
+      <p><a class="foot__more" href="/work/">More Quvlo work</a></p>
+    </div>
+  </div>
+</footer>
+
+<dialog class="book" id="book" aria-labelledby="book-h">
+  <form method="dialog">
+    <h2 id="book-h" class="book__h">Book a free walk-through</h2>
+    <p>This is a concept site, so nothing is booked and nothing is sent. On a real build, this button opens the crew's booking calendar.</p>
+    <button class="btn" value="close">Got it</button>
+  </form>
+</dialog>
+
+<!-- ?v= on the stylesheet and both scripts is FV in landscape.js: bump all four together whenever any of them, the engine or a frame changes -->
+<script src="film-engine.js?v=2026110104" defer></script>
+<script src="landscape.js?v=2026110104" defer></script>
+</body>
+</html>
