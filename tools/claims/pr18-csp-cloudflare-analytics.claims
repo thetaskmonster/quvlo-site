@@ -1,0 +1,25 @@
+# quvlo-site PR 18: the CSP lets Cloudflare Web Analytics load and report, and nothing else.
+# Run from the repository root:  bash <vault>/.claude/tools/gate-facts.sh <this file> --allow-exec
+# Base is the merge base with origin/main, so the claims hold after main moves.
+
+# C1: one line in public/_headers, two origins added, no unsafe-inline in script-src.
+file-contains | public/_headers | script-src 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com;
+file-contains | public/_headers | connect-src 'self' https://formspree.io https://cloudflareinsights.com;
+grep-count | public/_headers | script-src[^;]*unsafe-inline | 0
+git-diff-touches | . | origin/main | HEAD | public/_headers
+cmd-stdout-contains | 1 file changed, 1 insertion(+), 1 deletion(-) | git diff --shortstat origin/main...HEAD -- . ':(exclude)tools/claims'
+
+# C2: that is the only CSP the site sets.
+grep-count | public/_headers | Content-Security-Policy | 1
+cmd-exit | 1 | grep -rlI -i content-security-policy functions
+cmd-exit | 1 | grep -rlI -i --include=*.html --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=archive http-equiv=.content-security-policy .
+
+# C3: build passes and the built headers carry both origins.
+cmd-exit | 0 | npx --no-install vite build --logLevel error
+file-contains | dist/_headers | https://static.cloudflareinsights.com
+file-contains | dist/_headers | https://formspree.io https://cloudflareinsights.com;
+cmd-exit | 0 | npx --no-install oxlint --quiet
+
+# C6: the privacy page is untouched and its promise stays.
+git-same-as | . | origin/main | privacy.html
+file-contains | privacy.html | no tracking cookies
