@@ -1,0 +1,41 @@
+# quvlo-site PR 18: the CSP lets the Cloudflare Web Analytics script load, and the privacy page says the site counts visits.
+# Run from the repository root:  bash <vault>/.claude/tools/gate-facts.sh <this file> --allow-exec
+# Base is the merge base with origin/main, so the claims hold after main moves.
+# Round 2 (Kyle's picks): the unused connect-src origin is dropped, because the auto-injected beacon reports to the site's own /cdn-cgi/rum, which 'self' covers; the privacy page gains one paragraph on visit counts.
+
+# C1: script-src gains the beacon's origin; connect-src is unchanged from main; no unsafe-inline.
+file-contains | public/_headers | script-src 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com;
+file-contains | public/_headers | connect-src 'self' https://formspree.io;
+grep-count | public/_headers | connect-src[^;]*cloudflareinsights | 0
+grep-count | public/_headers | script-src[^;]*unsafe-inline | 0
+git-diff-touches | . | origin/main | HEAD | public/_headers
+cmd-stdout-contains | 3 files changed, 6 insertions(+), 5 deletions(-) | git diff --shortstat origin/main...HEAD -- . ':(exclude)tools/claims'
+
+# C2: that is the only CSP the site sets.
+grep-count | public/_headers | Content-Security-Policy | 1
+cmd-exit | 1 | grep -rlI -i content-security-policy functions
+cmd-exit | 1 | grep -rlI -i --include=*.html --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=archive http-equiv=.content-security-policy .
+
+# C3: build passes and the built headers carry the policy as written.
+cmd-exit | 0 | npx --no-install vite build --logLevel error
+file-contains | dist/_headers | https://challenges.cloudflare.com https://static.cloudflareinsights.com;
+file-contains | dist/_headers | connect-src 'self' https://formspree.io;
+cmd-exit | 0 | npx --no-install oxlint --quiet
+
+# C4: the privacy page names the visit counting, keeps its no-tracking-cookies promise, and moves its date.
+git-diff-touches | . | origin/main | HEAD | privacy.html
+file-contains | privacy.html | <p><strong>Visit counts.</strong> Cloudflare, which hosts the site, counts page visits for Quvlo
+file-contains | privacy.html | It sets no cookies and does not follow you to other sites.</p>
+file-contains | privacy.html | what you type into the call request form or the AI concierge, and a count of page visits.
+file-contains | privacy.html | no tracking cookies
+file-contains | privacy.html | Last updated November 7, 2026
+
+# C5 (round 3): the visit-count paragraph names everything Cloudflare's dimensions and the beacon record, and the network-address sentence covers the country lookup.
+file-contains | privacy.html | your browser, operating system and device type, your country (worked out from your network address), and how fast the page loaded.
+file-contains | privacy.html | It also uses it to work out the country in the visit count above.
+
+# C6 (round 3): no page promises no analytics. The Neap concept's demo note was the only one; it now says the page is counted.
+git-diff-touches | . | origin/main | HEAD | public/work/neap/index.html
+file-lacks | public/work/neap/index.html | no cookies and no analytics
+file-contains | public/work/neap/index.html | Like every page on quvlo.co, this one is included in a cookie-free count of visits; see <a href="/privacy">
+cmd-exit | 1 | grep -rlI -i --include=*.html --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=archive -e "nothing leaves the page" -e "no analytics\." .
